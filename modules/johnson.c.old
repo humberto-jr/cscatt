@@ -432,10 +432,9 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 
 	register const int max_ch = matrix_row(pot_energy);
 
-	/* NOTE: a = (I + hY)^-1 from the left term of Eq. (6). */
-	matrix *a = matrix_alloc(max_ch, max_ch, false);
-
-	matrix *eq6_right_term = matrix_alloc(max_ch, max_ch, false);
+	/* NOTE: z[1] is the left term and u[1] is the right term of Eq. (6). */
+	matrix *z = matrix_alloc(2, matrix_row(pot_energy), matrix_col(pot_energy), false);
+	matrix *u = matrix_alloc(2, matrix_row(pot_energy), matrix_col(pot_energy), false);
 
 /*
  *	Solve Eq. (7) of Ref. [14]:
@@ -446,19 +445,18 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 		register const double weight = (n == 0? 1.0 : 2.0);
 		register const double factor = grid_step*weight/3.0;
 
-		for (int p = 0; p < max_ch; ++p)
+		for (int p = 0; p < matrix_row(pot_energy); ++p)
 		{
-			matrix_set(a, p, p, 1.0 + matrix_get(y, p, p)*grid_step);
+			matrix_set(&z[0], p, p, 1.0 + matrix_get(y, p, p)*grid_step);
+			matrix_set(&u[1], p, p, matrix_get(pot_energy, p, p)*factor);
 
-			matrix_set(eq6_right_term, p, p, matrix_get(pot_energy, p, p)*factor);
-
-			for (int q = (p + 1); q < max_ch; ++q)
+			for (int q = (p + 1); q < matrix_col(pot_energy); ++q)
 			{
-				matrix_set(a, p, q, matrix_get(y, p, q)*grid_step);
-				matrix_set(a, q, p, matrix_get(y, q, p)*grid_step);
+				matrix_set(&z[0], p, q, 0.0 + matrix_get(y, p, q)*grid_step);
+				matrix_set(&u[1], p, q, matrix_get(pot_energy, p, q)*factor);
 
-				matrix_set(eq6_right_term, p, q, matrix_get(pot_energy, p, q)*factor);
-				matrix_set(eq6_right_term, q, p, matrix_get(pot_energy, q, p)*factor);
+				matrix_set(&z[0], q, p, 0.0 + matrix_get(y, q, p)*grid_step);
+				matrix_set(&u[1], q, p, matrix_get(pot_energy, q, p)*factor);
 			}
 		}
 	}
@@ -467,46 +465,36 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 		register const double weight = (n == grid_size? 1.0 : 4.0);
 		register const double factor = grid_step*grid_step/6.0;
 
-		/* NOTE: b = [I + (h^2/6)V]^-1 from the right term of Eq. (6). */
-		matrix *b = matrix_alloc(max_ch, max_ch, false);
-
-		for (int p = 0; p < max_ch; ++p)
+		for (int p = 0; p < matrix_row(pot_energy); ++p)
 		{
-			matrix_set(a, p, p, 1.0 + matrix_get(y, p, p)*grid_step);
+			matrix_set(&z[0], p, p, 1.0 + matrix_get(y, p, p)*grid_step);
+			matrix_set(&u[0], p, p, 1.0 + matrix_get(pot_energy, p, p)*factor);
 
-			matrix_set(b, p, p, 1.0 + matrix_get(pot_energy, p, p)*factor);
-
-			for (int q = (p + 1); q < max_ch; ++q)
+			for (int q = (p + 1); q < matrix_col(pot_energy); ++q)
 			{
-				matrix_set(a, p, q, matrix_get(y, p, q)*grid_step);
-				matrix_set(a, q, p, matrix_get(y, q, p)*grid_step);
+				matrix_set(&z[0], p, q, 0.0 + matrix_get(y, p, q)*grid_step);
+				matrix_set(&u[0], p, q, 0.0 + matrix_get(pot_energy, p, q)*factor);
 
-				matrix_set(b, p, q, matrix_get(pot_energy, p, q)*factor);
-				matrix_set(b, q, p, matrix_get(pot_energy, q, p)*factor);
+				matrix_set(&z[0], q, p, 0.0 + matrix_get(y, q, p)*grid_step);
+				matrix_set(&u[0], q, p, 0.0 + matrix_get(pot_energy, q, p)*factor);
 			}
 		}
 
-		matrix_inv(b);
-		matrix_mul(grid_step*weight/3.0, b, pot_energy, 0.0, eq6_right_term);
-
-		matrix_free(b);
+		matrix_inv(&u[0]);
+		matrix_mul(grid_step*weight/3.0, &u[0], pot_energy, 0.0, &u[1]);
 	}
 
-	matrix *eq6_left_term = matrix_alloc(max_ch, max_ch, false);
-
-	matrix_inv(a);
-	matrix_mul(1.0, a, y, 0.0, eq6_left_term);
-
-	matrix_free(a);
+	matrix_inv(&z[0]);
+	matrix_mul(1.0, &z[0], y, 0.0, &z[1]);
 
 /*
  *	Solve Eq. (6) of Ref. [14]:
  */
 
-	matrix_sub(1.0, eq6_left_term, 1.0, eq6_right_term, y, max_ch > 100);
+	matrix_sub(1.0, &z[1], 1.0, &u[1], y, matrix_row(pot_energy) > 100);
 
-	matrix_free(eq6_left_term);
-	matrix_free(eq6_right_term);
+	matrix_free_all(2, z);
+	matrix_free_all(2, u);
 }
 
 /******************************************************************************
@@ -548,8 +536,8 @@ matrix *johnson_kmatrix(const int l[],
  *	(A17) of Ref. [4]; where, Eq. (23) is also used:
  */
 
-	matrix *n = matrix_alloc(max_ch, max_ch, true);
-	matrix *j = matrix_alloc(max_ch, max_ch, true);
+	matrix *n = matrix_alloc(1, max_ch, max_ch, true);
+	matrix *j = matrix_alloc(1, max_ch, max_ch, true);
 
 	for (int i = 0; i < max_ch; ++i)
 	{
@@ -576,8 +564,8 @@ matrix *johnson_kmatrix(const int l[],
  *	shown in Eq. (A19) of Ref. [4]:
  */
 
-	matrix *rn = matrix_alloc(max_ch, max_ch, false);
-	matrix *rj = matrix_alloc(max_ch, max_ch, false);
+	matrix *rn = matrix_alloc(1, max_ch, max_ch, false);
+	matrix *rj = matrix_alloc(1, max_ch, max_ch, false);
 
 	matrix_mul(1.0, ratio, n, 0.0, rn);
 	matrix_mul(1.0, ratio, j, 0.0, rj);
@@ -623,7 +611,7 @@ matrix *johnson_kmatrix(const int l[],
  *	Step 4: resolve Eq. (A19) of Ref. [4] for the K matrix:
  */
 
-	matrix *k = matrix_alloc(max_ch, max_ch, false);
+	matrix *k = matrix_alloc(1, max_ch, max_ch, false);
 
 	matrix_inv(rn);
 	matrix_mul(-1.0, rn, rj, 0.0, k);

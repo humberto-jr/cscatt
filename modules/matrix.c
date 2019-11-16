@@ -47,6 +47,12 @@
 	#define LAPACK_DISABLE_NAN_CHECK
 #endif
 
+struct matrix
+{
+	double *data;
+	int max_row, max_col;
+};
+
 /******************************************************************************
 
  Macro DATA_OFFSET(): matrices are always ordinary vectors with elements stored
@@ -287,8 +293,8 @@ void matrix_end_gpu()
 
 /******************************************************************************
 
- Function matrix_alloc(): allocate resources for n matrices of shape max_row-by
- -max_col and return a pointer pointing the first one.
+ Function matrix_alloc(): allocate resources for a matrix of shape max_row-by
+ -max_col.
 
  NOTE: this function shall return only if all input parameters are good and if
  resources are allocated properly. Thus, neither the caller or other functions
@@ -296,35 +302,30 @@ void matrix_end_gpu()
 
 ******************************************************************************/
 
-matrix *matrix_alloc(const int n,
-                     const int max_row, const int max_col, const bool set_zero)
+matrix *matrix_alloc(const int max_row, const int max_col, const bool set_zero)
 {
-	ASSERT(n > 0)
 	ASSERT(max_row > 0)
 	ASSERT(max_col > 0)
 
-	matrix *pointer = calloc(n, sizeof(matrix));
+	matrix *pointer = calloc(1, sizeof(matrix));
 	ASSERT(pointer != NULL)
 
-	for (int m = 0; m < n; ++m)
-	{
-		pointer[m].max_row = max_row;
-		pointer[m].max_col = max_col;
+	pointer->max_row = max_row;
+	pointer->max_col = max_col;
 
-		#if defined(USE_MAGMA)
-			magma_dmalloc_pinned(&pointer[m].data, max_row*max_col);
-			if (set_zero) matrix_set_all(&pointer[m], 0.0, false);
-		#else
-			pointer[m].data = allocate(max_row*max_col, set_zero);
-		#endif
-	}
+	#if defined(USE_MAGMA)
+		magma_dmalloc_pinned(pointer->data, max_row*max_col);
+		if (set_zero) matrix_set_all(pointer, 0.0, false);
+	#else
+		pointer->data = allocate(max_row*max_col, set_zero);
+	#endif
 
 	return pointer;
 }
 
 /******************************************************************************
 
- Function matrix_free(): release resources allocated by matrix_alloc(), n = 1.
+ Function matrix_free(): release resources allocated by matrix_alloc().
 
 ******************************************************************************/
 
@@ -335,27 +336,6 @@ void matrix_free(matrix *m)
 	#else
 		free(m->data);
 	#endif
-
-	free(m);
-}
-
-/******************************************************************************
-
- Function matrix_free_all(): release resources allocated by matrix_alloc(),
- n = 1 and n > 1.
-
-******************************************************************************/
-
-void matrix_free_all(const int n, matrix *m)
-{
-	for (int p = 0; p < n; ++p)
-	{
-		#if defined(USE_MAGMA)
-			magma_free_pinned(&m[p].data);
-		#else
-			free(&m[p].data);
-		#endif
-	}
 
 	free(m);
 }

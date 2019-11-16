@@ -2,6 +2,13 @@
 	#define JOHNSON_HEADER
 	#include "matrix.h"
 
+	struct smatrix
+	{
+		matrix *re_part, *im_part;
+	};
+
+	typedef struct smatrix smatrix;
+
 	double johnson_riccati_bessel(const char type,
 	                              const int l,
 	                              const double wavenum,
@@ -40,5 +47,5 @@
 	                        const matrix *ratio,
 	                        const double R);
 
-	matrix *johnson_smatrix(const matrix *k);
+	smatrix *johnson_smatrix(const matrix *k);
 #endif

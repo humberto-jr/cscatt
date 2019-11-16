@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "globals.h"
+#include "coor.h"
 #include "pes.h"
 
 #if !defined(EXTERNAL_PES_NAME)
@@ -12,7 +13,11 @@
 	                                       const double *r_bc,
 	                                       const double *r_ac)
 	{
-		PRINT_ERROR("no external PES defined for r = (%f, %f, %f)\n", *r_ab, *r_bc, *r_ac)
+		ASSERT(r_ab != NULL)
+		ASSERT(r_bc != NULL)
+		ASSERT(r_ac != NULL)
+
+		PRINT_ERROR("%s\n", "no external PES defined")
 		exit(EXIT_FAILURE);
 	}
 #else
@@ -36,17 +41,17 @@
  face given above.
 
 ******************************************************************************/
-/*
+
 double pes(const jacobi_coor *x)
 {
 	#if defined(USE_NON_REACTIVE_PES)
 		return pot_(&x->r, &x->R, &x->theta);
 	#else
 		internuc_coor y;
-		jacobi_to_internuc(x, &y);
+		coor_jacobi_to_internuc(x, &y);
 		return pot_(&y.r_ab, &y.r_bc, &y.r_ac);
 	#endif
-}*/
+}
 
 /******************************************************************************
 
@@ -54,7 +59,7 @@ double pes(const jacobi_coor *x)
  nuclear distance, r, asymptotically as R -> inf, for a given PES arrangement.
 
 ******************************************************************************/
-/*
+
 double pec(const char arrang, const double r)
 {
 	const jacobi_coor x =
@@ -66,7 +71,7 @@ double pec(const char arrang, const double r)
 	};
 
 	return pes(&x);
-}*/
+}
 
 /******************************************************************************
 

@@ -3,18 +3,19 @@
 #include <stdlib.h>
 
 #include "globals.h"
-#include "jacobi.h"
+#include "coor.h"
+#include "mass.h"
 
 /******************************************************************************
 
- Function jacobi_to_internuc(): converts from a set of Jacobi coordinates to a
- set of internuclear distances for triatomic systems. The following convention
- of arrangement notation is used: arrangement index 'a' for A + BC, 'b' for
- B + CA and 'c' is C + AB. Where, A, B and C represents three atoms.
+ Function coor_jacobi_to_internuc(): converts from a set of Jacobi coordinates
+ to a set of internuclear distances for triatomic systems. The following order
+ of arrangements is used: arrangement index 'a' for A + BC, 'b' for B + CA and
+ 'c' is C + AB. Where, A, B and C represents three atoms.
 
 ******************************************************************************/
 
-void jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
+void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 {
 	xyz_coor a, b, c;
 

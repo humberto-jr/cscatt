@@ -2,24 +2,16 @@
 	#define MATRIX_HEADER
 	#include <stdbool.h>
 
-	struct matrix
-	{
-		double *data;
-		int max_row, max_col;
-	};
-
 	typedef struct matrix matrix;
 
 	void matrix_init_gpu();
 
 	void matrix_end_gpu();
 
-	matrix *matrix_alloc(const int n, const int max_row,
+	matrix *matrix_alloc(const int max_row,
 	                     const int max_col, const bool set_zero);
 
 	void matrix_free(matrix *m);
-
-	void matrix_free_all(const int n, matrix *m);
 
 	void matrix_set(matrix *m, const int p, const int q, const double x);
 
