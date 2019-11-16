@@ -964,7 +964,7 @@ matrix *matrix_read(FILE *input, const int max_row, const int max_col)
 	ASSERT(max_col > 0)
 	ASSERT(input != NULL)
 
-	matrix *m = matrix_alloc(1, max_row, max_col, false);
+	matrix *m = matrix_alloc(max_row, max_col, false);
 
 	rewind(input);
 	char line[MAX_LINE_LENGTH] = "\n";

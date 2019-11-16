@@ -38,8 +38,8 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			a.z = from->R*cos(from->theta*M_PI/180.0);
 
 			to->r_bc = from->r;
-			to->r_ac = distance(&a, &c);
-			to->r_ab = distance(&a, &b);
+			to->r_ac = coor_xyz_distance(&a, &c);
+			to->r_ab = coor_xyz_distance(&a, &b);
 		break;
 
 		case 'b':
@@ -59,8 +59,8 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			b.z = from->R*cos(from->theta*M_PI/180.0);
 
 			to->r_ac = from->r;
-			to->r_bc = distance(&b, &c);
-			to->r_ab = distance(&a, &b);
+			to->r_bc = coor_xyz_distance(&b, &c);
+			to->r_ab = coor_xyz_distance(&a, &b);
 		break;
 
 		case 'c':
@@ -80,8 +80,8 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			c.z = from->R*cos(from->theta*M_PI/180.0);
 
 			to->r_ab = from->r;
-			to->r_bc = distance(&b, &c);
-			to->r_ac = distance(&a, &c);
+			to->r_bc = coor_xyz_distance(&b, &c);
+			to->r_ac = coor_xyz_distance(&a, &c);
 		break;
 
 		default:

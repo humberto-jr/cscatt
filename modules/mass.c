@@ -15,7 +15,7 @@ static double mass_a, mass_b, mass_c,
 
  Function read_atomic_mass(): an auxiliary routine that scan a given input file
  searching for the first occurrence of a keyword of format "[key] = [value]".
- Where, [valeu] is expected as an atomic symbol, e.g. "1H", "2H", "4He", ...,
+ Where, [value] is expected as an atomic symbol, e.g. "1H", "2H", "4He", ...,
  "12C", etc. The actual atomic mass is returned if the keyword is found.
 
  NOTE: Lines starting by '#' are ignored.
@@ -83,8 +83,8 @@ void mass_read(FILE *input)
 
 /******************************************************************************
 
- Function mass(): return the many kind of masses and reduced masses for a three
- atoms system, previously initialized by mass_read().
+ Function mass(): return the many kind of masses and reduced masses for a tri
+ atomic system, previously initialized by mass_read().
 
  NOTE: see the enum mass_case definition for details.
 

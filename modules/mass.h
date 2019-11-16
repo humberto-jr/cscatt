@@ -4,7 +4,7 @@
 
 	/******************************************************************************
 
-	 Type mass_case: is an enumeration of several types of masses for a three atoms
+	 Type mass_case: is an enumeration of several types of masses for a triatomic
 	 system (A, B and C).
 
 	 NOTE: See function mass().

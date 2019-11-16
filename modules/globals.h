@@ -5,14 +5,30 @@
 	#include <float.h>
 	#include <math.h>
 
-	#if !defined(MAX_LINE_LENGTH)
-		#define MAX_LINE_LENGTH 1024
-	#endif
+	/******************************************************************************
+
+	 Type real: defines a general real type number to which precision, double or
+	 float, can be tuned during compilation.
+
+	 NOTE: not used.
+
+	******************************************************************************/
 
 	#if defined(USE_SINGLE_PRECISION)
 		typedef float real;
 	#else
 		typedef double real;
+	#endif
+
+	/******************************************************************************
+
+	 Macro MAX_LINE_LENGTH(): defines a default size for strings to be tuned during
+	 compilation.
+
+	******************************************************************************/
+
+	#if !defined(MAX_LINE_LENGTH)
+		#define MAX_LINE_LENGTH 1024
 	#endif
 
 	/******************************************************************************

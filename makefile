@@ -230,7 +230,7 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix tools nist johnson pes, mass, coor
+modules: matrix tools nist johnson pes mass coor
 drivers: about
 
 #
@@ -259,7 +259,7 @@ johnson: $(MODULES_DIR)/johnson.c $(MODULES_DIR)/johnson.h $(MODULES_DIR)/matrix
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
-pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/globals.h $(PES_OBJECT)
+pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/globals.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) $(PES_MACRO) -c $<
 	@echo
@@ -269,7 +269,7 @@ mass: $(MODULES_DIR)/mass.c $(MODULES_DIR)/mass.h $(MODULES_DIR)/globals.h $(MOD
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
-mass: $(MODULES_DIR)/coor.c $(MODULES_DIR)/coor.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mass.h
+coor: $(MODULES_DIR)/coor.c $(MODULES_DIR)/coor.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mass.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo

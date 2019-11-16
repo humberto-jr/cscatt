@@ -1,156 +1,28 @@
 /******************************************************************************
 
- AUTHOR
- ======
+ About
+ -----
 
- Written by Humberto Jr, 2018-2019
- Last modified: Jul 02, 2019
-
-
- ABOUT
- =====
-
- This module is a collection of routines designed to solve problems related to
- atomic and molecular scattering. It includes general-purpose functions to man
- ipulate files, pointers, linear algebra, several types of data structures and
- physics.
-
- All written in C (C99 standard) and the main dependency is the GNU Scientific
- Library (GSL).
-
- Atomic units are used through unless explicitly stated otherwise.
+ This module is a collection of routines applying the algorithms published by
+ B. R. Johnson on regarding computation of bound and scattering wavefunctions
+ (either single or multichannel).
 
 
- HOW TO BUILD
- ============
 
- Suppose a C compiler CC (e.g. CC=gcc or CC=icc) and a GSL installation in the
- path given by GSLROOT (e.g. GSLROOT=/usr/local),
+ References
+ ----------
 
- $CC -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$GSLROOT/include -c filename.c
-
- is a fairly general method to compile the module, and it is relatively simple
- to adapt for a given choice of CC. Specifying the C standard and pedantic opt
- ion is always recommended in order to avoid the use of C++ rules and others C
- specifications.
-
- Some optional macros are available to tune the compilation:
-
- USE_MKL              = switch on the use of Intel Math Kernel Library.
- USE_ESSL             = switch on the use of IBM Engineering and Scientific
-                        Subroutine Library.
- USE_LAPACKE          = switch on the use of LAPACKE library.
- USE_DUMMY_PES        = switch off the use of an user defined PES routine.
- MAX_LINE_LENGTH      = maximum length of all strings used in the module.
- GSL_MAX_WORKSPACE    = maximum number of elements used in all GSL workspace.
- USE_NON_REACTIVE_PES = uses Jacobi coordinates instead of internuclear dista
-                        nces when invoking the user defined PES routine.
-
- Often, the compiler option used to define macros is -D, e.g.
-
- -DUSE_MKL -DUSE_NON_REACTIVE_PES
-
- Thus, check out the documentation of your choice of CC.
-
-
- NAMING CONVENTION
- =================
-
- pes        = potential energy surface.
- pec        = potential energy curve.
- grid_size  = number of points in a grid mesh.
- grid_step  = step of a given variable in a grid.
- input      = a FILE object open with mode = 'r' (read only).
- output     = a FILE object open with mode = 'w' (write only).
- max_row    = maximum number of rows (matrices, data files etc).
- max_col    = maximum number of columns (matrices, data files etc).
- max_ch     = maximum number of (scattering) channels.
- ch         = (scattering) channel.
- wavef      = wavefunction.
- arrang     = arrangement; 'a' for A+BC, 'b' for B+CA, 'c' for C+AB etc.
- eigenvec   = eigenvector.
- eigenval   = eigenvalue.
- spin_mult  = spin multiplicity; 1 for singlet, 2 for doublet etc.
- pot_energy = potential energy (sometimes named v).
- kin_energy = kinetic energy.
- tot_energy = total energy.
- use_omp    = switch on/off the use of OpenMP.
- wavenum    = wavenumber; sqrt(2.0*mass*E), where E = E_tot - V(inf).
-
-
- DEV NOTES
- =========
-
- 1) Variables are set const whenever possible, for the sake of correctness.
-
- 2) Due to (1), on exit, all non-const input parameters are necessarily
-    modified and/or output.
-
- 3) On entry, all input representing sizes and pointers are always checked.
-    The use of size_t types is not recommended.
-
- 4) Maximum length for strings is given by the macro MAX_LINE_LENGTH.
-
- 5) Matrices are always ordinary vectors with elements stored in a row-major
-    scheme: vector[n*max_col + m], where n = [0, max_row) and m = [0, max_col).
-
- 6) Priority for efficiency. However complicated algorithms are sometimes
-    written in a non-efficient approach, provided the resulting code is
-    more readble and error-free.
-
- 7) The use of OpenMP in this module (often, use_omp = true) implies it is not
-    used anywhere else, including the external linear algebra libraries.
-
- 8) This module is thread-safe intended.
-
-
- REFERENCES
- ==========
-
- [1] M. Hernandez Vera et al. J. Chem. Phys. 146, 124310 (2017)
-     doi: https://doi.org/10.1063/1.4978475
-
- [2] R. T. Pack J. Chem. Phys. 60, 633 (1974)
-     doi: https://doi.org/10.1063/1.1681085
-
- [3] O. Dulieu et al. J. Chem. Phys. 103 (1) (1995)
-     doi: 10.1063/1.469622
-
- [4] B. R. Johnson J. Chem. Phys. 69, 4678 (1978)
+ [1] B. R. Johnson J. Chem. Phys. 69, 4678 (1978)
      doi: https://doi.org/10.1063/1.436421
 
- [5] V. Kokoouline et al. J. Chem. Phys. 110, 20 (1999)
-     doi:
+ [2] B. R. Johnson J. Comp. Phys. 13, 445-449 (1973)
+     doi: https://doi.org/10.1016/0021-9991(73)90049-1
 
- [6] W. H. Miller. J. Chem. Phys. 1, 50 (1969)
-     doi:
+ [3] B. R. Johnson J. Chem. Phys. 67, 4086 (1977)
+     doi: https://doi.org/10.1063/1.435384
 
- [7] R. B. Bernstein et al. Proc. R. Soc. Lond. A 1963 274 , 427-442
-     doi: https://doi.org/10.1098/rspa.1963.0142
-
- [8] A. E. DePristo et al. J. Phys. B: Atom. Molec. Phys., Vol. 9, No. 3 (1976)
-     doi:
-
- [9] D. D. Lopez-Duran et al. Com. Phys. Comm. 179 (2008) 821-838
-     doi: https://doi.org/10.1016/j.cpc.2008.07.017
-
- [10] B. R. Johnson J. Comp. Phys. 13, 445-449 (1973)
-      doi: https://doi.org/10.1016/0021-9991(73)90049-1
-
- [11] B. R. Johnson J. Chem. Phys. 67, 4086 (1977)
-      doi: https://doi.org/10.1063/1.435384
-
- [12] M. Monnerville et al. J. Chem. Phys. 101, 7580 (1994)
-      doi: http://dx.doi.org/10.1063/1.468252
-
- [13] R. E. Olson et al. Phys. Rev. A. 3, 1607 (1971)
-      doi: https://doi.org/10.1103/PhysRevA.3.1607
-
- [14] B. R. Johnson. J. Comp. Phys. 13, 445 (1973)
-      doi: https://doi.org/10.1016/0021-9991(73)90049-1
-
- [15] John C. Tully. J. Chem. Phys. 93, 1061 (1990)
-      doi: http://dx.doi.org/10.1063/1.459170
+ [4] B. R. Johnson. J. Comp. Phys. 13, 445 (1973)
+     doi: https://doi.org/10.1016/0021-9991(73)90049-1
 
 ******************************************************************************/
 
@@ -171,7 +43,7 @@
 
  Function johnson_riccati_bessel(): returns the Riccati-Bessel function J(l, x)
  if type = 'j', or N(l, x) if type = 'n', as defined in Eq. (14) and (15) of
- Ref. [10]. These are made upon spherical Bessel functions, j(l, x) and
+ Ref. [2]. These are made upon spherical Bessel functions, j(l, x) and
  y(l, x).
 
 ******************************************************************************/
@@ -192,8 +64,8 @@ double johnson_riccati_bessel(const char type, const int l,
 
  Function johnson_modif_spher_bessel(): returns the modified spherical Bessel
  functions J(l, x) if type = 'j', or N(l, x) if type = 'n', as defined in Eq.
- (16) and (17) of Ref. [10]. These are made upon regular and irregular
- modified spherical Bessel functions, i(l, x) and k(l, x).
+ (16) and (17) of Ref. [2]. These are made upon regular and irregular modified
+ spherical Bessel functions, i(l, x) and k(l, x).
 
 ******************************************************************************/
 
@@ -211,12 +83,12 @@ double johnson_modif_spher_bessel(const char type, const int l,
 
 /******************************************************************************
 
- Function johnson_jcp77_numerov(): use the method of B. R. Johnson, Ref. [11],
+ Function johnson_jcp77_numerov(): use the method of B. R. Johnson, Ref. [3],
  to construct the single channel wavefunction at a given trial energy. The
  return pointer contains the unormalized amplitude at grid_size points.
 
  NOTE: on exit, a negative number of nodes implies that no matching point has
- been found (see Ref. [11]).
+ been found (see Ref. [3]).
 
 ******************************************************************************/
 
@@ -342,7 +214,7 @@ double *johnson_jcp77_numerov(const int grid_size,
 
 /******************************************************************************
 
- Function johnson_jcp78_numerov(): use the method of B. R. Johnson, Ref. [4],
+ Function johnson_jcp78_numerov(): use the method of B. R. Johnson, Ref. [1],
  to propagate the ratio matrix of a multichannel wavefunction from the radial
  grid point (n - 1) to n at a given total energy.
 
@@ -359,7 +231,7 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 	if (!matrix_null(ratio)) matrix_inv(ratio);
 
 /*
- *	NOTE: From Eq. (2) and (17) of Ref. [4] the following numerical
+ *	NOTE: From Eq. (2) and (17) of Ref. [1] the following numerical
  *	factor is defined in atomic units:
  */
 
@@ -367,7 +239,7 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 		= -grid_step*grid_step*2.0*mass/12.0;
 
 /*
- *	Resolve Eq. (23) of Ref. [4] with Eq. (2) and (17) plugged in:
+ *	Resolve Eq. (23) of Ref. [1] with Eq. (2) and (17) plugged in:
  */
 
 	matrix *w = pot_energy;
@@ -388,7 +260,7 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 	}
 
 /*
- *	Solve Eq. (22) and (24) of Ref. [4]:
+ *	Solve Eq. (22) and (24) of Ref. [1]:
  */
 
 	matrix_inv(w);
@@ -413,11 +285,11 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 
 /******************************************************************************
 
- Function johnson_jcp73_logd(): use the algorithm of B. R. Johnson, Ref. [14],
+ Function johnson_jcp73_logd(): use the algorithm of B. R. Johnson, Ref. [4],
  in order to propagate the multichannel log derivative matrix, Y, from the
  radial grid point (n - 1) to n driven by the interaction potential V.
 
- NOTE: matrix V is defined as Eq. (2) of Ref. [14].
+ NOTE: matrix V is defined as Eq. (2) of Ref. [4].
 
 ******************************************************************************/
 
@@ -438,7 +310,7 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 	matrix *eq6_right_term = matrix_alloc(max_ch, max_ch, false);
 
 /*
- *	Solve Eq. (7) of Ref. [14]:
+ *	Solve Eq. (7) of Ref. [4]:
  */
 
 	if (GSL_IS_EVEN(n) == 1)
@@ -500,7 +372,7 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 	matrix_free(a);
 
 /*
- *	Solve Eq. (6) of Ref. [14]:
+ *	Solve Eq. (6) of Ref. [4]:
  */
 
 	matrix_sub(1.0, eq6_left_term, 1.0, eq6_right_term, y, max_ch > 100);
@@ -512,7 +384,7 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 /******************************************************************************
 
  Function johnson_kmatrix(): build the augmented reactant matrix K as described
- by Eq. (A19) of Ref. [4], from the ratio matrix of the multichannel scattering
+ by Eq. (A19) of Ref. [1], from the ratio matrix of the multichannel scattering
  wavefunction. Where, l and level are the asymptotic angular momentum and eigen
  value of each channel, respectively, as R -> inf.
 
@@ -536,7 +408,7 @@ matrix *johnson_kmatrix(const int l[],
 	register const int max_ch = matrix_row(ratio);
 
 /*
- *	NOTE: from Eq. (2) and (17) of Ref. [4] the following numerical factor is
+ *	NOTE: from Eq. (2) and (17) of Ref. [1] the following numerical factor is
  *	defined in atomic units:
  */
 
@@ -545,7 +417,7 @@ matrix *johnson_kmatrix(const int l[],
 
 /*
  *	Step 1: build the j(R) and n(R) diagonal matrices defined by Eq. (A16) and
- *	(A17) of Ref. [4]; where, Eq. (23) is also used:
+ *	(A17) of Ref. [1]; where, Eq. (23) is also used:
  */
 
 	matrix *n = matrix_alloc(max_ch, max_ch, true);
@@ -573,7 +445,7 @@ matrix *johnson_kmatrix(const int l[],
 
 /*
  *	Step 2: build the product rn and rj (r := ratio) at the grid point R, as
- *	shown in Eq. (A19) of Ref. [4]:
+ *	shown in Eq. (A19) of Ref. [1]:
  */
 
 	matrix *rn = matrix_alloc(max_ch, max_ch, false);
@@ -587,7 +459,7 @@ matrix *johnson_kmatrix(const int l[],
 
 /*
  *	Step 3: subtract j(R + grid_step) and n(R + grid_step) diagonal matrices
- *	from the rn(R) and rj(R) products, following Eq. (A19) of Ref. [4]:
+ *	from the rn(R) and rj(R) products, following Eq. (A19) of Ref. [1]:
  */
 
 	for (int i = 0; i < max_ch; ++i)
@@ -620,7 +492,7 @@ matrix *johnson_kmatrix(const int l[],
 	}
 
 /*
- *	Step 4: resolve Eq. (A19) of Ref. [4] for the K matrix:
+ *	Step 4: resolve Eq. (A19) of Ref. [1] for the K matrix:
  */
 
 	matrix *k = matrix_alloc(max_ch, max_ch, false);
@@ -643,13 +515,13 @@ matrix *johnson_kmatrix(const int l[],
 
  Where, I is the unit matrix and K is the open-open block of a reactant matrix.
 
- For details see Eq. (20) of Ref. [10].
+ For details see Eq. (20) of Ref. [2].
 
 ******************************************************************************/
 
 smatrix *johnson_smatrix(const matrix *k)
 {
-	register const int max_ch = matrix_row(k)
+	register const int max_ch = matrix_row(k);
 
 	matrix *a = matrix_alloc(max_ch, max_ch, false);
 	matrix *b = matrix_alloc(max_ch, max_ch, false);

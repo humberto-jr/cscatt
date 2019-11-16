@@ -28,28 +28,28 @@
 
 /******************************************************************************
 
- Wrapper pes(): is an interface for the external user defined PES named pot_(),
- as function of a set of Jacobi coordinates, x = (r, R, theta), which are trans
- lated to internuclear distances, y = (r_ab, r_bc, r_ac).
+ Wrapper pes(): is an interface for the external user defined PES as function
+ of a set of Jacobi coordinates, x = (r, R, theta), which are translated to
+ internuclear distances, y = (r_ab, r_bc, r_ac).
 
  NOTE: If the macro USE_NON_REACTIVE_PES is defined, the coordinate system is
  not converted and Jacobi is used all along, assuming
 
- pot_(r, R, theta)
+ EXTERNAL_PES_NAME(r, R, theta)
 
- Thus, make sure the order of each input parameter of pot_() follows the inter
- face given above.
+ Thus, make sure the order of each input parameter of EXTERNAL_PES_NAME follows
+ the interface given above.
 
 ******************************************************************************/
 
 double pes(const jacobi_coor *x)
 {
 	#if defined(USE_NON_REACTIVE_PES)
-		return pot_(&x->r, &x->R, &x->theta);
+		return EXTERNAL_PES_NAME(&x->r, &x->R, &x->theta);
 	#else
 		internuc_coor y;
 		coor_jacobi_to_internuc(x, &y);
-		return pot_(&y.r_ab, &y.r_bc, &y.r_ac);
+		return EXTERNAL_PES_NAME(&y.r_ab, &y.r_bc, &y.r_ac);
 	#endif
 }
 
