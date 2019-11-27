@@ -59,6 +59,7 @@ GSLROOT = /usr/local
 #
 
 CC = gcc
+CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
 
 ifeq ($(CC), gcc)
 	CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
@@ -230,7 +231,7 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix tools nist johnson pes mass coor
+modules: matrix tools nist johnson pes mass coor dvr
 drivers: about
 
 #
@@ -270,6 +271,11 @@ mass: $(MODULES_DIR)/mass.c $(MODULES_DIR)/mass.h $(MODULES_DIR)/globals.h $(MOD
 	@echo
 
 coor: $(MODULES_DIR)/coor.c $(MODULES_DIR)/coor.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mass.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -c $<
+	@echo
+
+dvr: $(MODULES_DIR)/dvr.c $(MODULES_DIR)/dvr.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo

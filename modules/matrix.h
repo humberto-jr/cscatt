@@ -17,6 +17,8 @@
 
 	void matrix_set_all(matrix *m, const double x, const bool use_omp);
 
+	void matrix_symm_set(matrix *m, const int p, const int q, const double x);
+
 	double matrix_get(const matrix *m, const int p, const int q);
 
 	int matrix_row(const matrix *m);
@@ -52,8 +54,8 @@
 
 	double matrix_col_sum(const matrix *m, const int q, const bool use_omp);
 
-	void matrix_mul(const double alpha, const matrix *a,
-	                const matrix *b, const double beta, matrix *c);
+	void matrix_multiply(const double alpha, const matrix *a,
+	                     const matrix *b, const double beta, matrix *c);
 
 	void matrix_add(const double alpha, const matrix *a, const double beta,
 	                const matrix *b, matrix *c, const bool use_omp);
@@ -61,7 +63,7 @@
 	void matrix_sub(const double alpha, const matrix *a, const double beta,
 	                const matrix *b, matrix *c, const bool use_omp);
 
-	void matrix_inv(matrix *m);
+	void matrix_inverse(matrix *m);
 
 	double *matrix_symm_eigen(matrix *m, const char job);
 

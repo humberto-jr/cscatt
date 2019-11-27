@@ -1,8 +1,4 @@
-#include <omp.h>
 #include <math.h>
-#include <time.h>
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -10,39 +6,25 @@
 #include "matrix.h"
 #include "dvr.h"
 
-struct dvr
-{
-	int max_ch;
-	matrix *eigenvec;
-	double *eigenval, r_min, r_max;
-};
-
 /******************************************************************************
 
- Function fgh_dvr(): return all eigenvalues/eigenvectors of a discrete variable
- representation (DVR) of the Fourier grid Hamiltonian (FGH), H = T + V, subject
- to a given single channel potential energy and reduced mass. As shown in Eq.
- (6a) and (6b) of Ref. [3].
+ Function fgh_dvr(): return the discrete variable representation (DVR) of the
+ Fourier grid Hamiltonian (FGH) subjected to a given single channel potential
+ energy and reduced mass. As shown in Eq. (6a) and (6b) of Ref. [3].
 
  NOTE: The m-th eigenvector is the m-th column in a grid_size-by-grid_size row-
  major matrix: eigenvec[n*grid_size + m], where n = m = [0, grid_size).
 
 ******************************************************************************/
 
-dvr *dvr_fgh_alloc(const int grid_size,
-                   const double grid_step,
-                   const double pot_energy[],
-                   const double mass,
-                   const double r_min,
-                   const double r_max)
+matrix *dvr_fgh(const int grid_size,
+                const double grid_step,
+                const double pot_energy[],
+                const double mass)
 {
 	ASSERT(pot_energy != NULL)
 
-	dvr *result = calloc(1, sizeof(dvr));
-	ASSERT(result != NULL)
-
-	result->eigenvec = matrix_alloc(1, grid_size, grid_size, false);
-	ASSERT(result->eigenvec != NULL)
+	matrix *result = matrix_alloc(grid_size, grid_size, false);
 
 	register const double box_length
 		= as_double(grid_size - 1)*grid_step;
@@ -55,22 +37,19 @@ dvr *dvr_fgh_alloc(const int grid_size,
 
 	for (int n = 0; n < grid_size; ++n)
 	{
-		matrix_set(result->eigenvec, n, n, nn_term + pot_energy[n]);
+		matrix_set(result, n, n, nn_term + pot_energy[n]);
 
 		for (int m = (n + 1); m < grid_size; ++m)
 		{
-			register const double nm = as_double((n + 1) - (m + 1));
-			register const double nm_term = sin(nm*M_PI/as_double(grid_size));
+			register const double nm
+				= as_double((n + 1) - (m + 1));
 
-			matrix_set(result->eigenvec, n, m, pow(-1.0, nm)*factor/pow(nm_term, 2));
-			matrix_set(result->eigenvec, m, n, pow(-1.0, nm)*factor/pow(nm_term, 2));
+			register const double nm_term
+				= sin(nm*M_PI/as_double(grid_size));
+
+			matrix_symm_set(result, n, m, pow(-1.0, nm)*factor/pow(nm_term, 2));
 		}
 	}
-
-	result->eigenval = matrix_symm_eigen(result->eigenvec, 'v');
-	result->r_min = r_min;
-	result->r_max = r_max;
-	result->max_ch = 1;
 
 	return result;
 }
@@ -90,19 +69,15 @@ dvr *dvr_fgh_alloc(const int grid_size,
 
 ******************************************************************************/
 
-dvr *dvr_multich_fgh_alloc(const int max_ch,
-                           const int grid_size,
-                           const double grid_step,
-                           const matrix pot_energy[],
-                           const double mass)
+matrix *dvr_multich_fgh(const int max_ch,
+                        const int grid_size,
+                        const double grid_step,
+                        const matrix *pot_energy, // TODO: matrix is now opaque and array is not allowed
+                        const double mass)
 {
 	ASSERT(pot_energy != NULL)
 
-	dvr *result = calloc(1, sizeof(dvr));
-	ASSERT(result != NULL)
-
-	result->eigenvec = matrix_alloc(1, grid_size*max_ch, grid_size*max_ch, false);
-	ASSERT(result->eigenvec != NULL)
+	matrix *result = matrix_alloc(grid_size*max_ch, grid_size*max_ch, false);
 
 	register const double box_length
 		= as_double(grid_size - 1)*grid_step;
@@ -123,11 +98,11 @@ dvr *dvr_multich_fgh_alloc(const int max_ch,
 			{
 				for (int m = 0; m < grid_size; ++m)
 				{
-					register double nmpq = 0.0;
+					register double pnqm = 0.0;
 
 					if (n == m && p == q)
 					{
-						nmpq = nn_term + matrix_get(&pot_energy[n], p, p);
+						pnqm = nn_term + matrix_get(pot_energy, p, p); // TODO
 					}
 
 					if (n != m && p == q)
@@ -138,15 +113,15 @@ dvr *dvr_multich_fgh_alloc(const int max_ch,
 						register const double nm_term
 							= sin(nm*M_PI/as_double(grid_size));
 
-						nmpq = pow(-1.0, nm)*factor/pow(nm_term, 2);
+						pnqm = pow(-1.0, nm)*factor/pow(nm_term, 2);
 					}
 
 					if (n == m && p != q)
 					{
-						nmpq = matrix_get(&pot_energy[n], p, q);
+						pnqm = matrix_get(pot_energy, p, q); // TODO
 					}
 
-					matrix_set(result->eigenvec, row, col, nmpq);
+					matrix_set(result, row, col, pnqm);
 					++col;
 				}
 			}
@@ -155,35 +130,36 @@ dvr *dvr_multich_fgh_alloc(const int max_ch,
 		}
 	}
 
-	result->eigenval = matrix_symm_eigen(result->eigenvec, 'v');
-	result->max_ch = max_ch;
-	result->r_min = r_min;
-	result->r_max = r_max;
-
 	return result;
 }
 
 /******************************************************************************
 
- Function fgh_dvr_wavef(): interpolate one eigenvector computed by fgh_dvr()
- using Eq. (4.1) of Ref. [5] and return its amplitude value at a given new r.
+ Function dvr_fgh_wavef(): interpolate the eigenvector a of the Hamiltonian
+ built by dvr_fgh(), using Eq. (4.1) of Ref. [5], and return its amplitude
+ value at a given new r.
 
 ******************************************************************************/
 
-double dvr_fgh_eigenvec(const dvr *g, const int v, const double r_new)
+double dvr_fgh_wavef(const matrix *fgh, const int a,
+                     const double r_min, const double r_max, const double r_new)
 {
+	register const int n_max = matrix_row(fgh);
+
+	ASSERT(a > -1)
+	ASSERT(a < n_max)
+
+	register const double r_step = (r_max - r_min)/as_double(n_max);
+
 	register double result = 0.0;
 
-	for (int n = 0; n < g->grid_size; ++n)
+	for (int n = 0; n < n_max; ++n)
 	{
-		register const double wavef
-			= matrix_get(g->eigenvec, n, v);
+		register const double wavef = matrix_get(fgh, n, a);
 
-		register const double r_old
-			= g->r_min + as_double(n)*g->r_step;
+		register const double r_old = r_min + as_double(n)*r_step;
 
-		register const double param
-			= M_PI*(r_new - r_old)/g->r_step;
+		register const double param = M_PI*(r_new - r_old)/r_step;
 
 		result += (fabs(param) > 1.0E-7? wavef*sinc(param) : wavef);
 	}
@@ -193,47 +169,47 @@ double dvr_fgh_eigenvec(const dvr *g, const int v, const double r_new)
 
 /******************************************************************************
 
- Function fgh_dvr_product(): interpolate two eigenvectors computed by fgh_dvr()
- using Eq. (4.1) of Ref. [5] and return the product of their amplitude value at
- a given new r.
+ Function dvr_fgh_product(): the same of dvr_fgh_wavef() but for the product of
+ two eigenvectors, a and b.
 
 ******************************************************************************/
 
-double fgh_dvr_product(const int grid_size,
-                       const double eigenvec_a[],
-                       const double eigenvec_b[],
-                       const double r_min,
-                       const double r_max,
-                       const double r_new)
+double dvr_fgh_product(const matrix *fgh, const int a, const int b,
+                       const double r_min, const double r_max, const double r_new)
 {
-	ASSERT(grid_size > 0)
-	ASSERT(eigenvec_a != NULL)
-	ASSERT(eigenvec_b != NULL)
+	register const int n_max = matrix_row(fgh);
 
-	register double a = 0.0, b = 0.0;
+	ASSERT(a > -1)
+	ASSERT(a < n_max)
 
-	register const double r_inc
-		= (r_max - r_min)/as_double(grid_size);
+	ASSERT(b > -1)
+	ASSERT(b < n_max)
 
-	for (int n = 0; n < grid_size; ++n)
+	register const double r_step = (r_max - r_min)/as_double(n_max);
+
+	register double result_a = 0.0, result_b = 0.0;
+
+	for (int n = 0; n < n_max; ++n)
 	{
-		register const double r_old
-			= r_min + as_double(n)*r_inc;
+		register const double wavef_a = matrix_get(fgh, n, a);
 
-		register const double param
-			= M_PI*(r_new - r_old)/r_inc;
+		register const double wavef_b = matrix_get(fgh, n, b);
+
+		register const double r_old = r_min + as_double(n)*r_step;
+
+		register const double param = M_PI*(r_new - r_old)/r_step;
 
 		if (fabs(param) > 1.0e-7)
 		{
-			a += eigenvec_a[n]*sinc(param);
-			b += eigenvec_b[n]*sinc(param);
+			result_a += wavef_a*sinc(param);
+			result_b += wavef_b*sinc(param);
 		}
 		else
 		{
-			a += eigenvec_a[n];
-			b += eigenvec_b[n];
+			result_a += wavef_a;
+			result_b += wavef_b;
 		}
 	}
 
-	return a*b;
+	return result_a*result_b;
 }

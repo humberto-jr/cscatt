@@ -228,7 +228,7 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 	ASSERT(ratio != NULL)
 	ASSERT(pot_energy != NULL)
 
-	if (!matrix_null(ratio)) matrix_inv(ratio);
+	if (!matrix_null(ratio)) matrix_inverse(ratio);
 
 /*
  *	NOTE: From Eq. (2) and (17) of Ref. [1] the following numerical
@@ -263,7 +263,7 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
  *	Solve Eq. (22) and (24) of Ref. [1]:
  */
 
-	matrix_inv(w);
+	matrix_inverse(w);
 
 	for (int n = 0; n < matrix_row(pot_energy); ++n)
 	{
@@ -358,16 +358,16 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 			}
 		}
 
-		matrix_inv(b);
-		matrix_mul(grid_step*weight/3.0, b, pot_energy, 0.0, eq6_right_term);
+		matrix_inverse(b);
+		matrix_multiply(grid_step*weight/3.0, b, pot_energy, 0.0, eq6_right_term);
 
 		matrix_free(b);
 	}
 
 	matrix *eq6_left_term = matrix_alloc(max_ch, max_ch, false);
 
-	matrix_inv(a);
-	matrix_mul(1.0, a, y, 0.0, eq6_left_term);
+	matrix_inverse(a);
+	matrix_multiply(1.0, a, y, 0.0, eq6_left_term);
 
 	matrix_free(a);
 
@@ -451,8 +451,8 @@ matrix *johnson_kmatrix(const int l[],
 	matrix *rn = matrix_alloc(max_ch, max_ch, false);
 	matrix *rj = matrix_alloc(max_ch, max_ch, false);
 
-	matrix_mul(1.0, ratio, n, 0.0, rn);
-	matrix_mul(1.0, ratio, j, 0.0, rj);
+	matrix_multiply(1.0, ratio, n, 0.0, rn);
+	matrix_multiply(1.0, ratio, j, 0.0, rj);
 
 	matrix_free(j);
 	matrix_free(n);
@@ -497,8 +497,8 @@ matrix *johnson_kmatrix(const int l[],
 
 	matrix *k = matrix_alloc(max_ch, max_ch, false);
 
-	matrix_inv(rn);
-	matrix_mul(-1.0, rn, rj, 0.0, k);
+	matrix_inverse(rn);
+	matrix_multiply(-1.0, rn, rj, 0.0, k);
 
 	matrix_free(rn);
 	matrix_free(rj);
@@ -531,7 +531,7 @@ smatrix *johnson_smatrix(const matrix *k)
  *	Resolve A = KK, B = (I + A) and C = (I - A):
  */
 
-	matrix_mul(1.0, k, k, 0.0, a);
+	matrix_multiply(1.0, k, k, 0.0, a);
 
 	for (int n = 0; n < max_ch; ++n)
 	{
@@ -552,15 +552,15 @@ smatrix *johnson_smatrix(const matrix *k)
  *	Build the S matrix, Re(S) = C*inv(B) and Im(S) = 2*K*inv(B):
  */
 
-	matrix_inv(b);
+	matrix_inverse(b);
 
 	smatrix *s = calloc(1, sizeof(smatrix));
 
 	s->re_part = matrix_alloc(max_ch, max_ch, false);
 	s->im_part = matrix_alloc(max_ch, max_ch, false);
 
-	matrix_mul(1.0, c, b, 0.0, s->re_part);
-	matrix_mul(2.0, k, b, 0.0, s->im_part);
+	matrix_multiply(1.0, c, b, 0.0, s->re_part);
+	matrix_multiply(2.0, k, b, 0.0, s->im_part);
 
 	matrix_free(a);
 	matrix_free(b);

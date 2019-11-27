@@ -47,12 +47,6 @@
 	#define LAPACK_DISABLE_NAN_CHECK
 #endif
 
-struct matrix
-{
-	double *data;
-	int max_row, max_col;
-};
-
 /******************************************************************************
 
  Macro DATA_OFFSET(): matrices are always ordinary vectors with elements stored
@@ -61,6 +55,12 @@ struct matrix
  for a given pq-element pointed by a pointer.
 
 ******************************************************************************/
+
+struct matrix
+{
+	double *data;
+	int max_row, max_col;
+};
 
 #define DATA_OFFSET(name, p, q) name->data[(p)*(name->max_col) + (q)]
 
@@ -370,6 +370,19 @@ void matrix_set_all(matrix *m, const double x, const bool use_omp)
 
 /******************************************************************************
 
+ Function matrix_symm_set(): set x to both the pq-element and qp-element of a
+ symmetric matrix m.
+
+******************************************************************************/
+
+void matrix_symm_set(matrix *m, const int p, const int q, const double x)
+{
+	DATA_OFFSET(m, p, q) = x;
+	DATA_OFFSET(m, q, p) = x;
+}
+
+/******************************************************************************
+
  Function matrix_get(): return the pq-element of matrix m.
 
 ******************************************************************************/
@@ -639,12 +652,12 @@ double matrix_col_sum(const matrix *m, const int q, const bool use_omp)
 
 /******************************************************************************
 
- Function matrix_mul(): perform the operation c = alpha*a*b + beta*c.
+ Function matrix_multiply(): perform the operation c = alpha*a*b + beta*c.
 
 ******************************************************************************/
 
-void matrix_mul(const double alpha,
-                const matrix *a, const matrix *b, const double beta, matrix *c)
+void matrix_multiply(const double alpha,
+                     const matrix *a, const matrix *b, const double beta, matrix *c)
 {
 	call_dgemm('n', 'n', a->max_row, b->max_col, a->max_col, alpha, a->data,
 	            a->max_row, b->data, a->max_col, beta, c->data, c->max_row);
@@ -690,11 +703,11 @@ void matrix_sub(const double alpha, const matrix *a, const double beta,
 
 /******************************************************************************
 
- Function matrix_inv(): to invert the matrix m.
+ Function matrix_inverse(): to invert the matrix m.
 
 ******************************************************************************/
 
-void matrix_inv(matrix *m)
+void matrix_inverse(matrix *m)
 {
 	#if defined(USE_MAGMA)
 	{
