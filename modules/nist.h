@@ -1,6 +1,10 @@
 #if !defined(NIST_HEADER)
 	#define NIST_HEADER
 
+	static const double nist_bohr_radius = 5.29177210903E-11; // m
+	static const double nist_hartree = 27.211386245988;       // eV
+	static const double nist_inv_fine_struct = 137.035999084;
+
 	/******************************************************************************
 
 	 Type enum isotope: is an enumeration for all chemical elements between

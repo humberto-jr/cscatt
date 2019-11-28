@@ -8,7 +8,6 @@
  (either single or multichannel).
 
 
-
  References
  ----------
 

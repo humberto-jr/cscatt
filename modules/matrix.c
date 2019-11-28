@@ -1,3 +1,14 @@
+/******************************************************************************
+
+ About
+ -----
+
+ This module defines the opaque type matrix and many general purpose functions
+ needed to manipulate it. Interfaces for few popular linear algebra libraries
+ are builtin (including the use of GPUs) and are tuned during compilation.
+
+******************************************************************************/
+
 #include <omp.h>
 #include <time.h>
 #include <stdio.h>

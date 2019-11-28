@@ -1,3 +1,26 @@
+/******************************************************************************
+
+ About
+ -----
+
+ This module is a collection of routines applying algorithms based on the
+ discrete variable representation (DVR) for atomic and molecular systems.
+
+
+ References
+ ----------
+
+ [1] O. Dulieu et al. J. Chem. Phys. 103 (1) (1995)
+     doi: http://dx.doi.org/10.1063/1.469622
+
+ [2] M. Monnerville et al. J. Chem. Phys. 101, 7580 (1994)
+     doi: http://dx.doi.org/10.1063/1.468252
+
+ [3] V. Kokoouline et al. J. Chem. Phys. 110, 20 (1999)
+     doi:
+
+******************************************************************************/
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -8,9 +31,9 @@
 
 /******************************************************************************
 
- Function fgh_dvr(): return the discrete variable representation (DVR) of the
+ Function dvr_fgh(): return the discrete variable representation (DVR) of the
  Fourier grid Hamiltonian (FGH) subjected to a given single channel potential
- energy and reduced mass. As shown in Eq. (6a) and (6b) of Ref. [3].
+ energy and reduced mass. As shown in Eq. (6a) and (6b) of Ref. [1].
 
  NOTE: The m-th eigenvector is the m-th column in a grid_size-by-grid_size row-
  major matrix: eigenvec[n*grid_size + m], where n = m = [0, grid_size).
@@ -18,9 +41,7 @@
 ******************************************************************************/
 
 matrix *dvr_fgh(const int grid_size,
-                const double grid_step,
-                const double pot_energy[],
-                const double mass)
+		        const double grid_step, const double pot_energy[], const double mass)
 {
 	ASSERT(pot_energy != NULL)
 
@@ -56,16 +77,9 @@ matrix *dvr_fgh(const int grid_size,
 
 /******************************************************************************
 
- Function multich_fgh_dvr(): the same as fgh_dvr(), except that the potential
- energy is the one of a problem with max_ch channels within grid_size points:
- pot_energy[p].data[n*max_ch + m] where, p = [0, grid_size) and n = m = [0,
- max_ch). For details see Eq. (19a), Eq. (19b) and Eq. (19c) of Ref. [12].
-
- NOTE: in the multichannel problem there are (grid_size*max_ch) eigenvalues
- and the eigenvectors are stored in a (grid_size*max_ch)-by-(grid_size*max_ch)
- row-major matrix. Thus, each multichannel eigenvector will have one component
- in every channel of the problem following the order in which the channels (or
- blocks) are arranged in the original potential matrix representation.
+ Function dvr_multich_fgh(): the same as dvr_fgh(), except that the potential
+ energy is the one of a problem with max_ch channels within grid_size points.
+ For details see Eq. (19a), Eq. (19b) and Eq. (19c) of Ref. [2].
 
 ******************************************************************************/
 
@@ -136,7 +150,7 @@ matrix *dvr_multich_fgh(const int max_ch,
 /******************************************************************************
 
  Function dvr_fgh_wavef(): interpolate the eigenvector a of the Hamiltonian
- built by dvr_fgh(), using Eq. (4.1) of Ref. [5], and return its amplitude
+ built by dvr_fgh(), using Eq. (4.1) of Ref. [3], and return its amplitude
  value at a given new r.
 
 ******************************************************************************/
@@ -199,7 +213,7 @@ double dvr_fgh_product(const matrix *fgh, const int a, const int b,
 
 		register const double param = M_PI*(r_new - r_old)/r_step;
 
-		if (fabs(param) > 1.0e-7)
+		if (fabs(param) > 1.0E-7)
 		{
 			result_a += wavef_a*sinc(param);
 			result_b += wavef_b*sinc(param);
