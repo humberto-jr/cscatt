@@ -234,7 +234,7 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
  *	factor is defined in atomic units:
  */
 
-	register const double factor
+	const double factor
 		= -grid_step*grid_step*2.0*mass/12.0;
 
 /*
@@ -245,7 +245,7 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 
 	for (int n = 0; n < matrix_row(pot_energy); ++n)
 	{
-		register double t = factor*(tot_energy - matrix_get(pot_energy, n, n));
+		double t = factor*(tot_energy - matrix_get(pot_energy, n, n));
 		matrix_set(w, n, n, 1.0 - t);
 
 		for (int m = (n + 1); m < matrix_col(pot_energy); ++m)
@@ -266,7 +266,7 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 
 	for (int n = 0; n < matrix_row(pot_energy); ++n)
 	{
-		register double u = 12.0*matrix_get(w, n, n) - 10.0;
+		double u = 12.0*matrix_get(w, n, n) - 10.0;
 		matrix_set(ratio, n, n, u - matrix_get(ratio, n, n));
 
 		for (int m = (n + 1); m < matrix_col(pot_energy); ++m)
@@ -301,7 +301,7 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 	ASSERT(pot_energy != NULL)
 	ASSERT(GSL_IS_ODD(grid_size) == 1)
 
-	register const int max_ch = matrix_row(pot_energy);
+	const int max_ch = matrix_row(pot_energy);
 
 	/* NOTE: a = (I + hY)^-1 from the left term of Eq. (6). */
 	matrix *a = matrix_alloc(max_ch, max_ch, false);
@@ -314,8 +314,8 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 
 	if (GSL_IS_EVEN(n) == 1)
 	{
-		register const double weight = (n == 0? 1.0 : 2.0);
-		register const double factor = grid_step*weight/3.0;
+		const double weight = (n == 0? 1.0 : 2.0);
+		const double factor = grid_step*weight/3.0;
 
 		for (int p = 0; p < max_ch; ++p)
 		{
@@ -335,8 +335,8 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 	}
 	else
 	{
-		register const double weight = (n == grid_size? 1.0 : 4.0);
-		register const double factor = grid_step*grid_step/6.0;
+		const double weight = (n == grid_size? 1.0 : 4.0);
+		const double factor = grid_step*grid_step/6.0;
 
 		/* NOTE: b = [I + (h^2/6)V]^-1 from the right term of Eq. (6). */
 		matrix *b = matrix_alloc(max_ch, max_ch, false);
@@ -404,14 +404,14 @@ matrix *johnson_kmatrix(const int l[],
 	ASSERT(ratio != NULL)
 	ASSERT(level != NULL)
 
-	register const int max_ch = matrix_row(ratio);
+	const int max_ch = matrix_row(ratio);
 
 /*
  *	NOTE: from Eq. (2) and (17) of Ref. [1] the following numerical factor is
  *	defined in atomic units:
  */
 
-	register const double factor
+	const double factor
 		= -grid_step*grid_step*2.0*mass/12.0;
 
 /*
@@ -426,10 +426,10 @@ matrix *johnson_kmatrix(const int l[],
 	{
 		if (level[i] < tot_energy)
 		{
-			register const double wavenum
+			const double wavenum
 				= sqrt(2.0*mass*(tot_energy - level[i]));
 
-			register const double w
+			const double w
 				= 1.0 - factor*(tot_energy - centr_term(l[i], mass, R));
 
 			matrix_set(n, i, i, w*johnson_riccati_bessel('n', l[i], wavenum, R));
@@ -463,16 +463,16 @@ matrix *johnson_kmatrix(const int l[],
 
 	for (int i = 0; i < max_ch; ++i)
 	{
-		register const double wavenum
+		const double wavenum
 			= sqrt(2.0*mass*(tot_energy - level[i]));
 
-		register const double w_prime
+		const double w_prime
 			= 1.0 - factor*(tot_energy - centr_term(l[i], mass, R + grid_step));
 
-		register const double n_prime
+		const double n_prime
 			= w_prime*johnson_riccati_bessel('n', l[i], wavenum, R + grid_step);
 
-		register const double j_prime
+		const double j_prime
 			= w_prime*johnson_riccati_bessel('j', l[i], wavenum, R + grid_step);
 
 		if (level[i] < tot_energy)
@@ -482,7 +482,7 @@ matrix *johnson_kmatrix(const int l[],
 		}
 		else
 		{
-			register const double w
+			const double w
 				= 1.0 - factor*(tot_energy - centr_term(l[i], mass, R));
 
 			matrix_decr(rn, i, i, n_prime/(w*johnson_modif_spher_bessel('n', l[i], wavenum, R)));
@@ -520,7 +520,7 @@ matrix *johnson_kmatrix(const int l[],
 
 smatrix *johnson_smatrix(const matrix *k)
 {
-	register const int max_ch = matrix_row(k);
+	const int max_ch = matrix_row(k);
 
 	matrix *a = matrix_alloc(max_ch, max_ch, false);
 	matrix *b = matrix_alloc(max_ch, max_ch, false);
@@ -534,16 +534,13 @@ smatrix *johnson_smatrix(const matrix *k)
 
 	for (int n = 0; n < max_ch; ++n)
 	{
-		matrix_set(b, n, n, 1.0 + matrix_get(a, n, n));
-		matrix_set(c, n, n, 1.0 - matrix_get(a, n, n));
+		matrix_diag_set(b, n, 1.0 + matrix_get(a, n, n));
+		matrix_diag_set(c, n, 1.0 - matrix_get(a, n, n));
 
 		for (int m = (n + 1); m < max_ch; ++m)
 		{
-			matrix_set(b, n, m, 0.0 + matrix_get(a, n, m));
-			matrix_set(b, m, n, 0.0 + matrix_get(a, m, n));
-
-			matrix_set(c, n, m, 0.0 - matrix_get(a, n, m));
-			matrix_set(c, m, n, 0.0 - matrix_get(a, m, n));
+			matrix_symm_set(b, n, m, 0.0 + matrix_get(a, n, m));
+			matrix_symm_set(c, n, m, 0.0 - matrix_get(a, n, m));
 		}
 	}
 

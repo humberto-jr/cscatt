@@ -62,7 +62,7 @@
 
  Macro DATA_OFFSET(): matrices are always ordinary vectors with elements stored
  in a row-major scheme: vector[p*max_col + q], where p = [0, max_row) and q =
- [0, max_col). Thus, this macro expands to the actual data offset expression
+ [0, max_col). Thus, DATA_OFFSET expands to the actual data offset expression
  for a given pq-element pointed by a pointer.
 
 ******************************************************************************/
@@ -118,10 +118,10 @@ void call_dgemm(const char trans_a,
  *		NOTE: a normal matrix in the host (row-major) implies transposed matrix
  *		in the device (col-major).
  */
-		register const magma_trans_t a_form
+		const magma_trans_t a_form
 			= (trans_a == 't'? MagmaNoTrans : MagmaTrans);
 
-		register const magma_trans_t b_form
+		const magma_trans_t b_form
 			= (trans_b == 't'? MagmaNoTrans : MagmaTrans);
 
 		double *a_gpu = NULL, *b_gpu = NULL, *c_gpu = NULL;
@@ -187,19 +187,19 @@ void call_dsyev(const char jobz,
 
 	#if defined(USE_MAGMA)
 	{
-		register const magma_vec_t job_mode
+		const magma_vec_t job_mode
 			= (jobz == 'n'? MagmaNoVec : MagmaVec);
 
-		register const magma_uplo_t fill_mode
+		const magma_uplo_t fill_mode
 			= (uplo == 'u'? MagmaUpper : MagmaLower);
 
-		register const magma_int_t nb
+		const magma_int_t nb
 			= magma_get_dsytrd_nb((magma_int_t) n);
 
-		register const magma_int_t lwork
+		const magma_int_t lwork
 			= (jobz == 'n'? 2*n + n*nb : GSL_MAX(2*n + n*nb, 1 + 6*n + 2*n*n));
 
-		register const magma_int_t liwork
+		const magma_int_t liwork
 			= (jobz == 'n'? n : 3 + 5*n);
 
 		double *work = NULL;
@@ -370,12 +370,39 @@ void matrix_set(matrix *m, const int p, const int q, const double x)
 
 void matrix_set_all(matrix *m, const double x, const bool use_omp)
 {
-	register const int n_max = m->max_row*m->max_col;
+	const int n_max = m->max_row*m->max_col;
 
 	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
 	for (int n = 0; n < n_max; ++n)
 	{
 		m->data[n] = x;
+	}
+}
+
+/******************************************************************************
+
+ Function matrix_diag_set(): set x to the p-th diagonal element of matrix m.
+
+******************************************************************************/
+
+void matrix_diag_set(matrix *m, const int p, const double x)
+{
+	DATA_OFFSET(m, p, p) = x;
+}
+
+/******************************************************************************
+
+ Function matrix_diag_set_all(): the same as matrix_diag_set() but for all
+ diagonal elements.
+
+******************************************************************************/
+
+void matrix_diag_set_all(matrix *m, const double x, const bool use_omp)
+{
+	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
+	for (int n = 0; n < m->max_row; ++n)
+	{
+		DATA_OFFSET(m, n, n) = x;
 	}
 }
 
@@ -434,8 +461,8 @@ int matrix_col(const matrix *m)
 
 void matrix_set_random(matrix *m, const bool use_omp)
 {
-	srand(time(NULL));
-	register const int n_max = m->max_row*m->max_col;
+	srand(rand());
+	const int n_max = m->max_row*m->max_col;
 
 	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
 	for (int n = 0; n < n_max; ++n)
@@ -463,7 +490,7 @@ void matrix_incr(matrix *m, const int p, const int q, const double x)
 
 void matrix_incr_all(matrix *m, const double x, const bool use_omp)
 {
-	register const int n_max = m->max_row*m->max_col;
+	const int n_max = m->max_row*m->max_col;
 
 	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
 	for (int n = 0; n < n_max; ++n)
@@ -491,7 +518,7 @@ void matrix_decr(matrix *m, const int p, const int q, const double x)
 
 void matrix_decr_all(matrix *m, const double x, const bool use_omp)
 {
-	register const int n_max = m->max_row*m->max_col;
+	const int n_max = m->max_row*m->max_col;
 
 	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
 	for (int n = 0; n < n_max; ++n)
@@ -519,7 +546,7 @@ void matrix_scale(matrix *m, const int p, const int q, const double x)
 
 void matrix_scale_all(matrix *m, const double x, const bool use_omp)
 {
-	register const int n_max = m->max_row*m->max_col;
+	const int n_max = m->max_row*m->max_col;
 
 	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
 	for (int n = 0; n < n_max; ++n)
@@ -530,32 +557,33 @@ void matrix_scale_all(matrix *m, const double x, const bool use_omp)
 
 /******************************************************************************
 
- Function matrix_copy(): copy the lk-element of matrix b to the pq-element of
- matrix a.
+ Function matrix_copy_element(): copy the lk-element of matrix b to the
+ pq-element of matrix a.
 
 ******************************************************************************/
 
-void matrix_copy(matrix *a, const int p, const int q,
-                 const matrix *b, const int l, const int k)
+void matrix_copy_element(matrix *a, const int p, const int q,
+                         const matrix *b, const int l, const int k)
 {
 	DATA_OFFSET(a, p, q) = DATA_OFFSET(b, l, k);
 }
 
 /******************************************************************************
 
- Function matrix_copy_all(): the same as matrix_copy() but for all elements.
+ Function matrix_copy(): copy all elements from b to a, a = b*alpha + beta.
 
 ******************************************************************************/
 
-void matrix_copy_all(matrix *a, const matrix *b, const bool use_omp)
+void matrix_copy(matrix *a, const matrix *b,
+                 const double alpha, const double beta, const bool use_omp)
 {
-	register const int n_max
+	const int n_max
 		= min(a->max_row*a->max_col, b->max_row*b->max_col);
 
 	#pragma omp parallel for default(none) shared(a, b) schedule(static) if(use_omp)
 	for (int n = 0; n < n_max; ++n)
 	{
-		a->data[n] = b->data[n];
+		a->data[n] = b->data[n]*alpha + beta;
 	}
 }
 
@@ -567,8 +595,8 @@ void matrix_copy_all(matrix *a, const matrix *b, const bool use_omp)
 
 void matrix_swap(matrix *a, matrix *b)
 {
-	register const int b_row = b->max_row;
-	register const int b_col = b->max_col;
+	const int b_row = b->max_row;
+	const int b_col = b->max_col;
 	double *b_data = b->data;
 
 	b->max_row = a->max_row;
@@ -590,7 +618,7 @@ void matrix_swap(matrix *a, matrix *b)
 
 double matrix_trace(const matrix *m, const bool use_omp)
 {
-	register double sum = 0.0;
+	double sum = 0.0;
 
 	#pragma omp parallel for default(none) shared(m) reduction(+:sum) if(use_omp)
 	for (int n = 0; n < m->max_row; ++n)
@@ -609,8 +637,8 @@ double matrix_trace(const matrix *m, const bool use_omp)
 
 double matrix_sum(const matrix *m, const bool use_omp)
 {
-	register double sum = 0.0;
-	register const int n_max = m->max_row*m->max_col;
+	double sum = 0.0;
+	const int n_max = m->max_row*m->max_col;
 
 	#pragma omp parallel for default(none) shared(m) reduction(+:sum) if(use_omp)
 	for (int n = 0; n < n_max; ++n)
@@ -630,7 +658,7 @@ double matrix_sum(const matrix *m, const bool use_omp)
 
 double matrix_row_sum(const matrix *m, const int p, const bool use_omp)
 {
-	register double sum = 0.0;
+	double sum = 0.0;
 
 	#pragma omp parallel for default(none) shared(m) reduction(+:sum) if(use_omp)
 	for (int q = 0; q < m->max_col; ++q)
@@ -650,7 +678,7 @@ double matrix_row_sum(const matrix *m, const int p, const bool use_omp)
 
 double matrix_col_sum(const matrix *m, const int q, const bool use_omp)
 {
-	register double sum = 0.0;
+	double sum = 0.0;
 
 	#pragma omp parallel for default(none) shared(m) reduction(+:sum) if(use_omp)
 	for (int p = 0; p < m->max_row; ++p)
@@ -659,6 +687,44 @@ double matrix_col_sum(const matrix *m, const int q, const bool use_omp)
 	}
 
 	return sum;
+}
+
+/******************************************************************************
+
+ Function matrix_min(): return the smallest element of matrix m.
+
+******************************************************************************/
+
+double matrix_min(const matrix *m)
+{
+	double min = INF;
+	const int n_max = m->max_row*m->max_col;
+
+	for (int n = 0; n < n_max; ++n)
+	{
+		if (m->data[n] < min) min = m->data[n];
+	}
+
+	return min;
+}
+
+/******************************************************************************
+
+ Function matrix_max(): return the biggest element of matrix m.
+
+******************************************************************************/
+
+double matrix_max(const matrix *m)
+{
+	double max = -INF;
+	const int n_max = m->max_row*m->max_col;
+
+	for (int n = 0; n < n_max; ++n)
+	{
+		if (m->data[n] > max) max = m->data[n];
+	}
+
+	return max;
 }
 
 /******************************************************************************
@@ -683,7 +749,7 @@ void matrix_multiply(const double alpha,
 void matrix_add(const double alpha, const matrix *a, const double beta,
                 const matrix *b, matrix *c, const bool use_omp)
 {
-	register const int n_max
+	const int n_max
 		= min(a->max_row*a->max_col, b->max_row*b->max_col);
 
 	#pragma omp parallel for default(none) shared(a, b, c) schedule(static) if(use_omp)
@@ -702,7 +768,7 @@ void matrix_add(const double alpha, const matrix *a, const double beta,
 void matrix_sub(const double alpha, const matrix *a, const double beta,
                 const matrix *b, matrix *c, const bool use_omp)
 {
-	register const int n_max
+	const int n_max
 		= min(a->max_row*a->max_col, b->max_row*b->max_col);
 
 	#pragma omp parallel for default(none) shared(a, b, c) schedule(static) if(use_omp)
@@ -740,7 +806,7 @@ void matrix_inverse(matrix *m)
 			exit(EXIT_FAILURE);
 		}
 
-		register const magma_int_t lwork
+		const magma_int_t lwork
 			= m->max_row*magma_get_dgetri_nb(m->max_row);
 
 		double *work = NULL;
@@ -772,8 +838,8 @@ void matrix_inverse(matrix *m)
 
 		ASSERT(ipiv != NULL)
 
-		register int info = LAPACKE_dsytrf(LAPACK_ROW_MAJOR, 'u', m->max_row,
-		                                          m->data, m->max_row, ipiv);
+		int info = LAPACKE_dsytrf(LAPACK_ROW_MAJOR, 'u', m->max_row,
+		                                 m->data, m->max_row, ipiv);
 
 		if (info != 0)
 		{
@@ -853,7 +919,7 @@ double *matrix_symm_eigen(matrix *m, const char job)
 
 bool matrix_null(const matrix *m)
 {
-	register const int n_max = m->max_row*m->max_col;
+	const int n_max = m->max_row*m->max_col;
 
 	for (int n = 0; n < n_max; ++n)
 	{
@@ -872,7 +938,7 @@ bool matrix_null(const matrix *m)
 
 bool matrix_positive(const matrix *m)
 {
-	register const int n_max = m->max_row*m->max_col;
+	const int n_max = m->max_row*m->max_col;
 
 	for (int n = 0; n < n_max; ++n)
 	{
@@ -891,7 +957,7 @@ bool matrix_positive(const matrix *m)
 
 bool matrix_negative(const matrix *m)
 {
-	register const int n_max = m->max_row*m->max_col;
+	const int n_max = m->max_row*m->max_col;
 
 	for (int n = 0; n < n_max; ++n)
 	{
@@ -910,6 +976,11 @@ bool matrix_negative(const matrix *m)
 
 void matrix_save(const matrix *m, const char filename[])
 {
+	ASSERT(m != NULL)
+	ASSERT(m->max_row > 0)
+	ASSERT(m->max_col > 0)
+	ASSERT(m->data != NULL)
+
 	FILE *output = fopen(filename, "wb");
 
 	if (output == NULL)
@@ -918,12 +989,9 @@ void matrix_save(const matrix *m, const char filename[])
 		exit(EXIT_FAILURE);
 	}
 
-	ASSERT(m != NULL)
-	ASSERT(m->max_row > 0)
-	ASSERT(m->max_col > 0)
-	ASSERT(m->data != NULL)
+	int status;
 
-	int status = fwrite(&m->max_row, sizeof(int), 1, output);
+	status = fwrite(&m->max_row, sizeof(int), 1, output);
 	ASSERT(status == 1)
 
 	status = fwrite(&m->max_col, sizeof(int), 1, output);
@@ -942,7 +1010,7 @@ void matrix_save(const matrix *m, const char filename[])
 
 ******************************************************************************/
 
-void matrix_load(matrix *m, const char filename[])
+matrix *matrix_load(const char filename[])
 {
 	FILE *input = fopen(filename, "rb");
 
@@ -952,25 +1020,22 @@ void matrix_load(matrix *m, const char filename[])
 		exit(EXIT_FAILURE);
 	}
 
-	ASSERT(m != NULL)
-	if (m->data != NULL)
-	{
-		free(m->data);
-		m->data = NULL;
-	}
+	int status, max_row, max_col;
 
-	int status = fread(&m->max_row, sizeof(int), 1, input);
+	status = fread(&max_row, sizeof(int), 1, input);
 	ASSERT(status == 1)
 
-	status = fread(&m->max_col, sizeof(int), 1, input);
+	status = fread(&max_col, sizeof(int), 1, input);
 	ASSERT(status == 1)
 
-	m->data = allocate(m->max_row*m->max_col, false);
+	matrix *m = matrix_alloc(max_row, max_col, false);
 
 	status = fread(m->data, sizeof(double), m->max_row*m->max_col, input);
 	ASSERT(status == m->max_row*m->max_col)
 
 	fclose(input);
+
+	return m;
 }
 
 /******************************************************************************
@@ -1026,8 +1091,8 @@ void matrix_write(const matrix *m,
 	ASSERT(max_col > 0)
 	ASSERT(output != NULL)
 
-	register const int p_max = min(max_row, m->max_row);
-	register const int q_max = min(max_col, m->max_col);
+	const int p_max = min(max_row, m->max_row);
+	const int q_max = min(max_col, m->max_col);
 
 	for (int p = 0; p < p_max; ++p)
 	{

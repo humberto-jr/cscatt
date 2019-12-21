@@ -41,31 +41,33 @@
 ******************************************************************************/
 
 matrix *dvr_fgh(const int grid_size,
-		        const double grid_step, const double pot_energy[], const double mass)
+                const double grid_step,
+                const double pot_energy[],
+                const double mass)
 {
 	ASSERT(pot_energy != NULL)
 
 	matrix *result = matrix_alloc(grid_size, grid_size, false);
 
-	register const double box_length
+	const double box_length
 		= as_double(grid_size - 1)*grid_step;
 
-	register const double factor
+	const double factor
 		= (M_PI*M_PI)/(mass*box_length*box_length);
 
-	register const double nn_term
+	const double nn_term
 		= factor*as_double(grid_size*grid_size + 2)/6.0;
 
 	for (int n = 0; n < grid_size; ++n)
 	{
-		matrix_set(result, n, n, nn_term + pot_energy[n]);
+		matrix_diag_set(result, n, nn_term + pot_energy[n]);
 
 		for (int m = (n + 1); m < grid_size; ++m)
 		{
-			register const double nm
+			const double nm
 				= as_double((n + 1) - (m + 1));
 
-			register const double nm_term
+			const double nm_term
 				= sin(nm*M_PI/as_double(grid_size));
 
 			matrix_symm_set(result, n, m, pow(-1.0, nm)*factor/pow(nm_term, 2));
@@ -158,22 +160,21 @@ matrix *dvr_multich_fgh(const int max_ch,
 double dvr_fgh_wavef(const matrix *fgh, const int a,
                      const double r_min, const double r_max, const double r_new)
 {
-	register const int n_max = matrix_row(fgh);
+	const int n_max = matrix_row(fgh);
 
 	ASSERT(a > -1)
 	ASSERT(a < n_max)
 
-	register const double r_step = (r_max - r_min)/as_double(n_max);
+	const double r_step = (r_max - r_min)/as_double(n_max);
 
-	register double result = 0.0;
+	double result = 0.0;
 
 	for (int n = 0; n < n_max; ++n)
 	{
-		register const double wavef = matrix_get(fgh, n, a);
+		const double wavef = matrix_get(fgh, n, a);
 
-		register const double r_old = r_min + as_double(n)*r_step;
-
-		register const double param = M_PI*(r_new - r_old)/r_step;
+		const double r_old = r_min + as_double(n)*r_step;
+		const double param = M_PI*(r_new - r_old)/r_step;
 
 		result += (fabs(param) > 1.0E-7? wavef*sinc(param) : wavef);
 	}
@@ -191,7 +192,7 @@ double dvr_fgh_wavef(const matrix *fgh, const int a,
 double dvr_fgh_product(const matrix *fgh, const int a, const int b,
                        const double r_min, const double r_max, const double r_new)
 {
-	register const int n_max = matrix_row(fgh);
+	const int n_max = matrix_row(fgh);
 
 	ASSERT(a > -1)
 	ASSERT(a < n_max)
@@ -199,19 +200,16 @@ double dvr_fgh_product(const matrix *fgh, const int a, const int b,
 	ASSERT(b > -1)
 	ASSERT(b < n_max)
 
-	register const double r_step = (r_max - r_min)/as_double(n_max);
-
-	register double result_a = 0.0, result_b = 0.0;
+	const double r_step = (r_max - r_min)/as_double(n_max);
+	double result_a = 0.0, result_b = 0.0;
 
 	for (int n = 0; n < n_max; ++n)
 	{
-		register const double wavef_a = matrix_get(fgh, n, a);
+		const double wavef_a = matrix_get(fgh, n, a);
+		const double wavef_b = matrix_get(fgh, n, b);
 
-		register const double wavef_b = matrix_get(fgh, n, b);
-
-		register const double r_old = r_min + as_double(n)*r_step;
-
-		register const double param = M_PI*(r_new - r_old)/r_step;
+		const double r_old = r_min + as_double(n)*r_step;
+		const double param = M_PI*(r_new - r_old)/r_step;
 
 		if (fabs(param) > 1.0E-7)
 		{
