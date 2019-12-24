@@ -76,6 +76,10 @@
 
 	double *matrix_symm_eigen(matrix *m, const char job);
 
+	double matrix_row_quadr(const matrix *m, const int p, const bool use_omp);
+
+	double matrix_col_quadr(const matrix *m, const int q, const bool use_omp);
+
 	bool matrix_null(const matrix *m);
 
 	bool matrix_positive(const matrix *m);

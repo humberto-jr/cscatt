@@ -912,6 +912,50 @@ double *matrix_symm_eigen(matrix *m, const char job)
 
 /******************************************************************************
 
+ Function matrix_row_quadr(): perform a 1/3-Simpson quadrature rule in the p-th
+ row of matrix m.
+
+******************************************************************************/
+
+double matrix_row_quadr(const matrix *m, const int p, const bool use_omp)
+{
+	const int q_max = (m->max_col%2 == 0? m->max_col : m->max_col - 1);
+
+	double sum = DATA_OFFSET(m, p, 0) + DATA_OFFSET(m, p, q_max - 1);
+
+	#pragma omp parallel for default(none) shared(m) reduction(+:sum) if(use_omp)
+	for (int q = 1; q < (q_max - 2); q += 2)
+	{
+		sum += 4.0*DATA_OFFSET(m, p, q) + 2.0*DATA_OFFSET(m, p, q + 1);
+	}
+
+	return sum/3.0;
+}
+
+/******************************************************************************
+
+ Function matrix_col_quadr(): perform a 1/3-Simpson quadrature rule in the q-th
+ column of matrix m.
+
+******************************************************************************/
+
+double matrix_col_quadr(const matrix *m, const int q, const bool use_omp)
+{
+	const int p_max = (m->max_row%2 == 0? m->max_row : m->max_row - 1);
+
+	double sum = DATA_OFFSET(m, 0, q) + DATA_OFFSET(m, p_max - 1, q);
+
+	#pragma omp parallel for default(none) shared(m) reduction(+:sum) if(use_omp)
+	for (int p = 1; p < (p_max - 2); p += 2)
+	{
+		sum += 4.0*DATA_OFFSET(m, p, q) + 2.0*DATA_OFFSET(m, p + 1, q);
+	}
+
+	return sum/3.0;
+}
+
+/******************************************************************************
+
  Function matrix_null(): return true if all elements are zero. Return false
  otherwise.
 
