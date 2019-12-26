@@ -77,6 +77,32 @@ struct matrix
 
 /******************************************************************************
 
+ Macro ASSERT_ROW_INDEX(): check if the p-th element is within the row bounds
+ of a matrix pointed by a given pointer.
+
+******************************************************************************/
+
+#define ASSERT_ROW_INDEX(pointer, p) \
+{                                    \
+	ASSERT((p) > -1)                 \
+	ASSERT((p) < pointer->max_row)   \
+}
+
+/******************************************************************************
+
+ Macro ASSERT_COL_INDEX(): check if the q-th element is within the column bounds
+ of a matrix pointed by a given pointer.
+
+******************************************************************************/
+
+#define ASSERT_COL_INDEX(pointer, q) \
+{                                    \
+	ASSERT((q) > -1)                 \
+	ASSERT((q) < pointer->max_col)   \
+}
+
+/******************************************************************************
+
  Function min(): return the min between two integers a and b.
 
 ******************************************************************************/
@@ -359,6 +385,8 @@ void matrix_free(matrix *m)
 
 void matrix_set(matrix *m, const int p, const int q, const double x)
 {
+	ASSERT_ROW_INDEX(m, p)
+	ASSERT_COL_INDEX(m, q)
 	DATA_OFFSET(m, p, q) = x;
 }
 
@@ -387,6 +415,7 @@ void matrix_set_all(matrix *m, const double x, const bool use_omp)
 
 void matrix_diag_set(matrix *m, const int p, const double x)
 {
+	ASSERT_ROW_INDEX(m, p)
 	DATA_OFFSET(m, p, p) = x;
 }
 
@@ -415,6 +444,9 @@ void matrix_diag_set_all(matrix *m, const double x, const bool use_omp)
 
 void matrix_symm_set(matrix *m, const int p, const int q, const double x)
 {
+	ASSERT_ROW_INDEX(m, p)
+	ASSERT_COL_INDEX(m, q)
+
 	DATA_OFFSET(m, p, q) = x;
 	DATA_OFFSET(m, q, p) = x;
 }
@@ -427,7 +459,79 @@ void matrix_symm_set(matrix *m, const int p, const int q, const double x)
 
 double matrix_get(const matrix *m, const int p, const int q)
 {
+	ASSERT_ROW_INDEX(m, p)
+	ASSERT_COL_INDEX(m, q)
 	return DATA_OFFSET(m, p, q);
+}
+
+/******************************************************************************
+
+ Function matrix_get_row(): the same as matrix_get() but return the p-th row of
+ matrix m.
+
+ NOTE: the return matrix is a row-matrix.
+
+******************************************************************************/
+
+matrix *matrix_get_row(const matrix *m, const int p, const bool use_omp)
+{
+	ASSERT_ROW_INDEX(m, p)
+
+	matrix *row = matrix_alloc(1, m->max_col, false);
+
+	#pragma omp parallel for default(none) shared(m, row) schedule(static) if(use_omp)
+	for (int q = 0; q < m->max_col; ++q)
+	{
+		DATA_OFFSET(row, 0, q) = DATA_OFFSET(m, p, q);
+	}
+
+	return row;
+}
+
+/******************************************************************************
+
+ Function matrix_get_col(): the same as matrix_get() but return the q-th column
+ of matrix m.
+
+ NOTE: the return matrix is a column-matrix.
+
+******************************************************************************/
+
+matrix *matrix_get_col(const matrix *m, const int q, const bool use_omp)
+{
+	ASSERT_COL_INDEX(m, q)
+
+	matrix *col = matrix_alloc(m->max_row, 1, false);
+
+	#pragma omp parallel for default(none) shared(m, col) schedule(static) if(use_omp)
+	for (int p = 0; p < m->max_row; ++p)
+	{
+		DATA_OFFSET(col, p, 0) = DATA_OFFSET(m, p, q);
+	}
+
+	return col;
+}
+
+/******************************************************************************
+
+ Function matrix_get_diag(): the same as matrix_get() but return the diagonal
+ of matrix m.
+
+ NOTE: the return matrix is a column-matrix.
+
+******************************************************************************/
+
+matrix *matrix_get_diag(const matrix *m, const bool use_omp)
+{
+	matrix *diag = matrix_alloc(m->max_row, 1, false);
+
+	#pragma omp parallel for default(none) shared(m, diag) schedule(static) if(use_omp)
+	for (int p = 0; p < m->max_row; ++p)
+	{
+		DATA_OFFSET(diag, p, 0) = DATA_OFFSET(m, p, p);
+	}
+
+	return diag;
 }
 
 /******************************************************************************
@@ -479,6 +583,8 @@ void matrix_set_random(matrix *m, const bool use_omp)
 
 void matrix_incr(matrix *m, const int p, const int q, const double x)
 {
+	ASSERT_ROW_INDEX(m, p)
+	ASSERT_COL_INDEX(m, q)
 	DATA_OFFSET(m, p, q) += x;
 }
 
@@ -507,6 +613,8 @@ void matrix_incr_all(matrix *m, const double x, const bool use_omp)
 
 void matrix_decr(matrix *m, const int p, const int q, const double x)
 {
+	ASSERT_ROW_INDEX(m, p)
+	ASSERT_COL_INDEX(m, q)
 	DATA_OFFSET(m, p, q) -= x;
 }
 
@@ -535,6 +643,8 @@ void matrix_decr_all(matrix *m, const double x, const bool use_omp)
 
 void matrix_scale(matrix *m, const int p, const int q, const double x)
 {
+	ASSERT_ROW_INDEX(m, p)
+	ASSERT_COL_INDEX(m, q)
 	DATA_OFFSET(m, p, q) *= x;
 }
 
@@ -565,6 +675,11 @@ void matrix_scale_all(matrix *m, const double x, const bool use_omp)
 void matrix_copy_element(matrix *a, const int p, const int q,
                          const matrix *b, const int l, const int k)
 {
+	ASSERT_ROW_INDEX(a, p)
+	ASSERT_COL_INDEX(a, q)
+	ASSERT_ROW_INDEX(b, l)
+	ASSERT_COL_INDEX(b, k)
+
 	DATA_OFFSET(a, p, q) = DATA_OFFSET(b, l, k);
 }
 
@@ -658,6 +773,8 @@ double matrix_sum(const matrix *m, const bool use_omp)
 
 double matrix_row_sum(const matrix *m, const int p, const bool use_omp)
 {
+	ASSERT_ROW_INDEX(m, p)
+
 	double sum = 0.0;
 
 	#pragma omp parallel for default(none) shared(m) reduction(+:sum) if(use_omp)
@@ -678,6 +795,8 @@ double matrix_row_sum(const matrix *m, const int p, const bool use_omp)
 
 double matrix_col_sum(const matrix *m, const int q, const bool use_omp)
 {
+	ASSERT_COL_INDEX(m, q)
+
 	double sum = 0.0;
 
 	#pragma omp parallel for default(none) shared(m) reduction(+:sum) if(use_omp)
@@ -919,6 +1038,8 @@ double *matrix_symm_eigen(matrix *m, const char job)
 
 double matrix_row_quadr(const matrix *m, const int p, const bool use_omp)
 {
+	ASSERT_ROW_INDEX(m, p)
+
 	const int q_max = (m->max_col%2 == 0? m->max_col : m->max_col - 1);
 
 	double sum = DATA_OFFSET(m, p, 0) + DATA_OFFSET(m, p, q_max - 1);
@@ -941,6 +1062,8 @@ double matrix_row_quadr(const matrix *m, const int p, const bool use_omp)
 
 double matrix_col_quadr(const matrix *m, const int q, const bool use_omp)
 {
+	ASSERT_COL_INDEX(m, q)
+
 	const int p_max = (m->max_row%2 == 0? m->max_row : m->max_row - 1);
 
 	double sum = DATA_OFFSET(m, 0, q) + DATA_OFFSET(m, p_max - 1, q);

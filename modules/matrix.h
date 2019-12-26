@@ -25,6 +25,12 @@
 
 	double matrix_get(const matrix *m, const int p, const int q);
 
+	matrix *matrix_get_row(const matrix *m, const int p, const bool use_omp);
+
+	matrix *matrix_get_col(const matrix *m, const int q, const bool use_omp);
+
+	matrix *matrix_get_diag(const matrix *m, const bool use_omp);
+
 	int matrix_row(const matrix *m);
 
 	int matrix_col(const matrix *m);
