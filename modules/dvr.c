@@ -225,3 +225,20 @@ double dvr_fgh_product(const matrix *fgh, const int a, const int b,
 
 	return result_a*result_b;
 }
+
+/******************************************************************************
+
+ Function dvr_fgh_norm(): normalize to unity the eigenvector a of a Hamiltonian
+ built by dvr_fgh(). On entry, the matrix is expected to be properly
+ diagonalized and its columns the respective eigenvectors.
+
+******************************************************************************/
+
+void dvr_fgh_norm(matrix *fgh,
+                  const int a, const double grid_step, const bool use_omp)
+{
+	const double norm
+		= grid_step*matrix_col_quadr(fgh, a, use_omp);
+
+	matrix_col_scale(fgh, a, 1.0/sqrt(norm), use_omp);
+}

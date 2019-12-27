@@ -667,6 +667,44 @@ void matrix_scale_all(matrix *m, const double x, const bool use_omp)
 
 /******************************************************************************
 
+ Function matrix_row_scale(): the same as matrix_scale() but for the p-th row
+ of matrix m.
+
+******************************************************************************/
+
+void matrix_row_scale(matrix *m,
+                      const int p, const double x, const bool use_omp)
+{
+	ASSERT_ROW_INDEX(m, p)
+
+	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
+	for (int q = 0; q < m->max_col; ++q)
+	{
+		DATA_OFFSET(m, p, q) *= x;
+	}
+}
+
+/******************************************************************************
+
+ Function matrix_col_scale(): the same as matrix_scale() but for the q-th
+ column of matrix m.
+
+******************************************************************************/
+
+void matrix_col_scale(matrix *m,
+                      const int q, const double x, const bool use_omp)
+{
+	ASSERT_COL_INDEX(m, q)
+
+	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
+	for (int p = 0; p < m->max_row; ++p)
+	{
+		DATA_OFFSET(m, p, q) *= x;
+	}
+}
+
+/******************************************************************************
+
  Function matrix_copy_element(): copy the lk-element of matrix b to the
  pq-element of matrix a.
 

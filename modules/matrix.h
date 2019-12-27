@@ -49,6 +49,12 @@
 
 	void matrix_scale_all(matrix *m, const double x, const bool use_omp);
 
+	void matrix_row_scale(matrix *m,
+	                      const int p, const double x, const bool use_omp);
+
+	void matrix_col_scale(matrix *m,
+	                      const int q, const double x, const bool use_omp);
+
 	void matrix_copy_element(matrix *a, const int p, const int q,
 	                         const matrix *b, const int l, const int k);
 

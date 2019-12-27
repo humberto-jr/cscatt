@@ -19,4 +19,9 @@
 	                       const double r_min,
 	                       const double r_max,
 	                       const double r_new);
+
+	void dvr_fgh_norm(matrix *fgh,
+	                  const int a,
+	                  const double grid_step,
+	                  const bool use_omp);
 #endif
