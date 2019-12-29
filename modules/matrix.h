@@ -31,6 +31,10 @@
 
 	matrix *matrix_get_diag(const matrix *m, const bool use_omp);
 
+	matrix *matrix_get_block(const matrix *m,
+	                         const int row_min, const int row_max,
+	                         const int col_min, const int col_max);
+
 	int matrix_row(const matrix *m);
 
 	int matrix_col(const matrix *m);

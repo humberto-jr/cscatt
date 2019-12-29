@@ -84,8 +84,8 @@ struct matrix
 
 #define ASSERT_ROW_INDEX(pointer, p) \
 {                                    \
-	ASSERT((p) > -1)                 \
-	ASSERT((p) < pointer->max_row)   \
+	ASSERT((p) > -1)                   \
+	ASSERT((p) < pointer->max_row)     \
 }
 
 /******************************************************************************
@@ -97,8 +97,8 @@ struct matrix
 
 #define ASSERT_COL_INDEX(pointer, q) \
 {                                    \
-	ASSERT((q) > -1)                 \
-	ASSERT((q) < pointer->max_col)   \
+	ASSERT((q) > -1)                   \
+	ASSERT((q) < pointer->max_col)     \
 }
 
 /******************************************************************************
@@ -536,6 +536,47 @@ matrix *matrix_get_diag(const matrix *m, const bool use_omp)
 
 /******************************************************************************
 
+ Function matrix_get_block(): the same as matrix_get() but return a block of
+ matrix m.
+
+******************************************************************************/
+
+matrix *matrix_get_block(const matrix *m,
+                         const int row_min,
+                         const int row_max,
+                         const int col_min,
+                         const int col_max)
+{
+	ASSERT(row_max >= row_min)
+	ASSERT(col_max >= col_min)
+
+	ASSERT_ROW_INDEX(m, row_min)
+	ASSERT_ROW_INDEX(m, row_max)
+
+	ASSERT_COL_INDEX(m, col_min)
+	ASSERT_COL_INDEX(m, col_max)
+
+	matrix *block
+		= matrix_alloc(row_max - row_min + 1, col_max - col_min + 1, false);
+
+	int row = 0;
+	for (int p = row_min; p <= row_max; ++p)
+	{
+		int col = 0;
+		for (int q = col_min; q <= col_max; ++q)
+		{
+			DATA_OFFSET(block, row, col) = DATA_OFFSET(m, p, q);
+			++col;
+		}
+
+		++row;
+	}
+
+	return block;
+}
+
+/******************************************************************************
+
  Function matrix_row(): return the number of rows in the matrix m.
 
 ******************************************************************************/
@@ -715,6 +756,7 @@ void matrix_copy_element(matrix *a, const int p, const int q,
 {
 	ASSERT_ROW_INDEX(a, p)
 	ASSERT_COL_INDEX(a, q)
+
 	ASSERT_ROW_INDEX(b, l)
 	ASSERT_COL_INDEX(b, k)
 
