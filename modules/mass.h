@@ -25,7 +25,7 @@
 		total
 	};
 
-	void mass_read(FILE *input);
+	void mass_init(FILE *input);
 
 	double mass(const enum mass_case m);
 #endif

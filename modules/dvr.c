@@ -171,12 +171,12 @@ double dvr_fgh_wavef(const matrix *fgh, const int a,
 
 	for (int n = 0; n < n_max; ++n)
 	{
-		const double wavef = matrix_get(fgh, n, a);
+		const double wavef_a = matrix_get(fgh, n, a);
 
 		const double r_old = r_min + as_double(n)*r_step;
 		const double param = M_PI*(r_new - r_old)/r_step;
 
-		result += (fabs(param) > 1.0E-7? wavef*sinc(param) : wavef);
+		result += (fabs(param) > 1.0E-7? wavef_a*sinc(param) : wavef_a);
 	}
 
 	return result;

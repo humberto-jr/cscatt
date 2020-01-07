@@ -354,7 +354,7 @@ matrix *matrix_alloc(const int max_row, const int max_col, const bool set_zero)
 		magma_dmalloc_pinned(pointer->data, max_row*max_col);
 		if (set_zero) matrix_set_all(pointer, 0.0, false);
 	#else
-		pointer->data = allocate(max_row*max_col, set_zero);
+		pointer->data = allocate(max_row*max_col, sizeof(double), set_zero);
 	#endif
 
 	return pointer;
@@ -1072,7 +1072,7 @@ void matrix_inverse(matrix *m)
 	}
 	#else
 	{
-		double *buffer = allocate(m->max_row*m->max_col, false);
+		double *buffer = allocate(m->max_row*m->max_col, sizeof(double), false);
 
 		for (int n = 0; n < m->max_row*m->max_col; ++n)
 		{
@@ -1103,7 +1103,7 @@ void matrix_inverse(matrix *m)
 
 double *matrix_symm_eigen(matrix *m, const char job)
 {
-	double *eigenval = allocate(m->max_row, false);
+	double *eigenval = allocate(m->max_row, sizeof(double), false);
 
 	call_dsyev(job, 'l', m->max_row, m->data, m->max_row, eigenval);
 	return eigenval;
@@ -1223,11 +1223,6 @@ bool matrix_negative(const matrix *m)
 
 void matrix_save(const matrix *m, const char filename[])
 {
-	ASSERT(m != NULL)
-	ASSERT(m->max_row > 0)
-	ASSERT(m->max_col > 0)
-	ASSERT(m->data != NULL)
-
 	FILE *output = fopen(filename, "wb");
 
 	if (output == NULL)
@@ -1354,6 +1349,18 @@ void matrix_write(const matrix *m,
 
 		fprintf(output, "\n");
 	}
+}
+
+/******************************************************************************
+
+ Function matrix_sizeof(): return the total size in bits of the content hold by
+ matrix m.
+
+******************************************************************************/
+
+size_t matrix_sizeof(const matrix *m)
+{
+	return 2*sizeof(int) + m->max_row*m->max_col*sizeof(double);
 }
 
 /******************************************************************************

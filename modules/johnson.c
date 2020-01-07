@@ -102,11 +102,11 @@ double *johnson_jcp77_numerov(const int grid_size,
 	ASSERT(grid_size > 0)
 	ASSERT(pot_energy != NULL)
 
-	double *T = allocate(grid_size, false);
-	double *F = allocate(grid_size, false);
+	double *T = allocate(grid_size, sizeof(double), false);
+	double *F = allocate(grid_size, sizeof(double), false);
 
-	double *inward_R  = allocate(grid_size, false);
-	double *outward_R = allocate(grid_size, false);
+	double *inward_R  = allocate(grid_size, sizeof(double), false);
+	double *outward_R = allocate(grid_size, sizeof(double), false);
 
 /*
  *	Solve Eq. (32), (35) and (46) for each T, U and R (inward) coefficient:
@@ -186,7 +186,7 @@ double *johnson_jcp77_numerov(const int grid_size,
  *	Solve Eq. (33) for the wavefunction (unnormalized):
  */
 
-	double *wavef = allocate(grid_size, false);
+	double *wavef = allocate(grid_size, sizeof(double), false);
 
 	for (int n = 0; n < grid_size; ++n)
 	{

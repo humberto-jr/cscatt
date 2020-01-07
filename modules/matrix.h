@@ -111,5 +111,7 @@
 	void matrix_write(const matrix *m,
 	                  FILE *output, const int max_row, const int max_col);
 
+	size_t matrix_sizeof(const matrix *m);
+
 	void matrix_about(FILE *output);
 #endif

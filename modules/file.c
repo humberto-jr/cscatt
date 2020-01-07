@@ -19,6 +19,80 @@
 
 /******************************************************************************
 
+ Function file_exist(): check if a file named filename exist.
+
+******************************************************************************/
+
+bool file_exist(const char filename[])
+{
+	return (access(filename, F_OK) == 0);
+}
+
+/******************************************************************************
+
+ Function file_open_input(): open a file named filename in read-only mode.
+
+ NOTE: binary format is used if bin_format = true.
+
+******************************************************************************/
+
+FILE *file_open_input(const char filename[], const bool bin_format)
+{
+	FILE *input
+		= (bin_format? fopen(filename, "rb") : fopen(filename, "r"));
+
+	if (input == NULL)
+	{
+		PRINT_ERROR("unable to open %s\n", filename)
+		exit(EXIT_FAILURE);
+	}
+
+	return input;
+}
+
+/******************************************************************************
+
+ Function file_open_input(): open a file named filename in write-only mode.
+
+ NOTE: binary format is used if bin_format = true.
+
+******************************************************************************/
+
+FILE *file_open_output(const char filename[],
+                       const bool bin_format, const bool to_append)
+{
+	FILE *output = NULL;
+
+	if (to_append)
+		output = (bin_format? fopen(filename, "ab") : fopen(filename, "a"));
+	else
+		output = (bin_format? fopen(filename, "wb") : fopen(filename, "w"));
+
+	if (output == NULL)
+	{
+		PRINT_ERROR("unable to open %s\n", filename)
+		exit(EXIT_FAILURE);
+	}
+
+	return output;
+}
+
+/******************************************************************************
+
+ Function file_init_stdin(): set a file named filename as the C stdin.
+
+******************************************************************************/
+
+void file_init_stdin(const char filename[])
+{
+	FILE *input = file_open_input(filename, false);
+
+	stdin = input;
+	input = NULL;
+}
+
+/******************************************************************************
+
  Function file_find_string(): scans a given input file searching for the first
  occurrence of a given pattern. If found it shall return the whole line or an
  empty string otherwise.
@@ -47,9 +121,9 @@ char *file_find_string(FILE *input, const char pattern[])
 /******************************************************************************
 
  Function file_get_key(): scans a given input file searching for the first
- occurrence of a keyword with the format "[key] = [value]". If found, and
- if [min] <= [value] <= [max], it shall return [value]. Otherwise, it
- returns a default value.
+ occurrence of a keyword with format "[key] = [value]". If found, and if [min]
+ <= [value] <= [max], it shall return [value]. Otherwise, it returns a default
+ value.
 
  NOTE: Lines starting by '#' are ignored.
 
@@ -143,61 +217,6 @@ int file_col_count(FILE *input)
 
 /******************************************************************************
 
- Function file_open_input(): open a file named filename in write-only mode.
-
- NOTE: binary format is used if bin_format = true.
-
-******************************************************************************/
-
-FILE *file_open_input(const char filename[], const bool bin_format)
-{
-	FILE *input
-		= (bin_format? fopen(filename, "rb") : fopen(filename, "r"));
-
-	if (input == NULL)
-	{
-		PRINT_ERROR("unable to open %s\n", filename)
-		exit(EXIT_FAILURE);
-	}
-
-	return input;
-}
-
-/******************************************************************************
-
- Function file_open_input(): open a file named filename in read-only mode.
-
- NOTE: binary format is used if bin_format = true.
-
-******************************************************************************/
-
-FILE *file_open_output(const char filename[], const bool bin_format)
-{
-	FILE *output
-		= (bin_format? fopen(filename, "wb") : fopen(filename, "w"));
-
-	if (output == NULL)
-	{
-		PRINT_ERROR("unable to open %s\n", filename)
-		exit(EXIT_FAILURE);
-	}
-
-	return output;
-}
-
-/******************************************************************************
-
- Function file_exist(): check if a file named filename exist.
-
-******************************************************************************/
-
-bool file_exist(const char filename[])
-{
-	return (access(filename, F_OK) == 0);
-}
-
-/******************************************************************************
-
  Function file_end(): check if a file has reached the end.
 
 ******************************************************************************/
@@ -216,21 +235,24 @@ bool file_end(FILE *input)
 
 ******************************************************************************/
 
-void file_write(const char filename[],
-                const int n, const int data_size, const void *data[])
+void file_write(const char filename[], const int n,
+                const int data_size, const void *data, const bool to_append)
 {
 	ASSERT(n > 0)
 	ASSERT(data != NULL)
 	ASSERT(data_size > 0)
 
-	FILE *output = file_open_output(filename, true);
+	FILE *output = file_open_output(filename, true, to_append);
 
-	if (fwrite(&data, data_size, n, output) != (size_t) n)
-	{
-		PRINT_ERROR("unable to write all %d elements\n", n)
-	}
+	const int info = fwrite(data, data_size, n, output);
 
 	fclose(output);
+
+	if (info < n)
+	{
+		PRINT_ERROR("only %d elements written to %s\n", info, filename)
+		exit(EXIT_FAILURE);
+	}
 }
 
 /******************************************************************************
@@ -242,67 +264,26 @@ void file_write(const char filename[],
 
 ******************************************************************************/
 
-void *file_read(const char filename[], const int n, const int data_size)
+void file_read(const char filename[], const int n,
+               const int data_size, void *data, const int offset)
 {
 	ASSERT(n > 0)
+	ASSERT(data != NULL)
 	ASSERT(data_size > 0)
 
 	FILE *input = file_open_input(filename, true);
 
-	void *data = malloc(data_size*n);
-	ASSERT(data != NULL)
-
-	if (fread(data, data_size, n, input) != (size_t) n)
+	if (offset > 0)
 	{
-		PRINT_ERROR("unable to write all %d elements\n", n)
+		fseek(input, offset, SEEK_SET);
 	}
 
+	const int info = fread(data, data_size, n, input);
 	fclose(input);
-	return data;
-}
 
-/******************************************************************************
-
- Function file_append(): append n data elements with a given data size to an
- already existing binary file.
-
- NOTE: data_size is often the output of sizeof().
-
-******************************************************************************/
-
-void file_append(const char filename[],
-                 const int n, const int data_size, const void *data[])
-{
-	ASSERT(n > 0)
-	ASSERT(data != NULL)
-	ASSERT(data_size > 0)
-
-	FILE *output = fopen(filename, "ab");
-
-	if (output == NULL)
+	if (info < n)
 	{
-		PRINT_ERROR("unable to open %s\n", filename)
+		PRINT_ERROR("only %d elements read from %s\n", info, filename);
 		exit(EXIT_FAILURE);
 	}
-
-	if(fwrite(&data, data_size, n, output) != (size_t) n)
-	{
-		PRINT_ERROR("unable to write all %d elements\n", n)
-	}
-
-	fclose(output);
-}
-
-/******************************************************************************
-
- Function file_init_stdin(): set a file named filename as the C stdin.
-
-******************************************************************************/
-
-void file_init_stdin(const char filename[])
-{
-	FILE *input = file_open_input(filename, false);
-
-	stdin = input;
-	input = NULL;
 }

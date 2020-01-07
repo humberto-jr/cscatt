@@ -122,7 +122,7 @@ int tools_col_count(FILE *input)
 		if (line[0] != '#' && line[0] != '\n') break;
 	}
 
-   	char *token = strtok(line, " ");
+	char *token = strtok(line, " ");
 
 	while (token != NULL)
 	{
@@ -161,4 +161,35 @@ const char *tools_time_stamp()
 double tools_wall_time()
 {
 	return omp_get_wtime();
+}
+
+/******************************************************************************
+
+ Function tools_bin_append(): append n data elements with a given data_size to
+ an already existing binary file.
+
+ NOTE: data_size is often the output of sizeof().
+
+******************************************************************************/
+
+void tools_bin_append(const char filename[],
+                      const int n, const int data_size, const void *data[])
+{
+	ASSERT(n > 0)
+	ASSERT(data_size > 0)
+
+	ASSERT(data != NULL)
+
+	FILE *output = fopen(filename, "a+b");
+
+	if (output == NULL)
+	{
+		PRINT_ERROR("unable to open %s\n", filename)
+		exit(EXIT_FAILURE);
+	}
+
+	int status = fwrite(&data, data_size, n, output);
+	ASSERT(status == n)
+
+	fclose(output);
 }

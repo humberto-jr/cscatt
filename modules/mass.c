@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #include "globals.h"
-#include "tools.h"
+#include "file.h"
 #include "nist.h"
 #include "mass.h"
 
@@ -26,7 +26,7 @@ static double read_atomic_mass(FILE *input, const char key[])
 {
 	ASSERT(input != NULL)
 
-	char *line = tools_find_string(input, key);
+	char *line = file_find_string(input, key);
 	char *token = strtok(line, "=");
 
 	while (token != NULL)
@@ -49,7 +49,7 @@ static double read_atomic_mass(FILE *input, const char key[])
 
 /******************************************************************************
 
- Function mass_read(): reads from a given input the atomic symbols for atoms A,
+ Function mass_init(): reads from a given input the atomic symbols for atoms A,
  B and C using the following format:
 
  mass_a = [symbol]
@@ -64,7 +64,7 @@ static double read_atomic_mass(FILE *input, const char key[])
 
 ******************************************************************************/
 
-void mass_read(FILE *input)
+void mass_init(FILE *input)
 {
 	ASSERT(input != NULL)
 

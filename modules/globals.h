@@ -108,16 +108,14 @@
 
 	******************************************************************************/
 
-	static inline double *allocate(const int n, const bool set_zero)
+	static inline void *allocate(const int n,
+	                             const int data_size, const bool set_zero)
 	{
-		ASSERT(n > 0)
-
-		double *pointer
-			= (set_zero? calloc(n, sizeof(double)) : malloc(sizeof(double)*n));
+		void *pointer = (set_zero? calloc(n, data_size) : malloc(n*data_size));
 
 		if (pointer == NULL)
 		{
-			PRINT_ERROR("unable to allocate resources for %d elements\n", n)
+			PRINT_ERROR("unable to allocate resources for %d elements of %d bits\n", n, data_size)
 			exit(EXIT_FAILURE);
 		}
 
