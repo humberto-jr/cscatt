@@ -95,13 +95,13 @@ matrix *dvr_multich_fgh(const int max_ch,
 
 	matrix *result = matrix_alloc(grid_size*max_ch, grid_size*max_ch, false);
 
-	register const double box_length
+	const double box_length
 		= as_double(grid_size - 1)*grid_step;
 
-	register const double factor
+	const double factor
 		= (M_PI*M_PI)/(mass*box_length*box_length);
 
-	register const double nn_term
+	const double nn_term
 		= factor*as_double(grid_size*grid_size + 2)/6.0;
 
 	int row = 0;
@@ -114,7 +114,7 @@ matrix *dvr_multich_fgh(const int max_ch,
 			{
 				for (int m = 0; m < grid_size; ++m)
 				{
-					register double pnqm = 0.0;
+					double pnqm = 0.0;
 
 					if (n == m && p == q)
 					{
@@ -123,10 +123,10 @@ matrix *dvr_multich_fgh(const int max_ch,
 
 					if (n != m && p == q)
 					{
-						register const double nm
+						const double nm
 							= as_double((n + 1) - (m + 1));
 
-						register const double nm_term
+						const double nm_term
 							= sin(nm*M_PI/as_double(grid_size));
 
 						pnqm = pow(-1.0, nm)*factor/pow(nm_term, 2);

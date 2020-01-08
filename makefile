@@ -60,6 +60,7 @@ GSLROOT = /usr/local
 
 CC = gcc
 CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
+LDFLAGS = -L$(GSLROOT)/lib -lgsl -lgslcblas -lm
 
 ifeq ($(CC), gcc)
 	CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
@@ -231,8 +232,8 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix tools nist johnson pes mass coor dvr
-drivers: about
+modules: matrix tools nist johnson pes mass coor dvr file network
+drivers: dbasis about
 
 #
 # Rules for modules:
@@ -280,13 +281,48 @@ dvr: $(MODULES_DIR)/dvr.c $(MODULES_DIR)/dvr.h $(MODULES_DIR)/globals.h $(MODULE
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
+file: $(MODULES_DIR)/file.c $(MODULES_DIR)/file.h $(MODULES_DIR)/globals.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -c $<
+	@echo
+
+phys: $(MODULES_DIR)/phys.c $(MODULES_DIR)/phys.h $(MODULES_DIR)/globals.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -c $<
+	@echo
+
+miller: $(MODULES_DIR)/clib.h $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/pes.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/coor.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/matrix.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -c $<
+	@echo
+
+#network: $(MODULES_DIR)/network.c $(MODULES_DIR)/network.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
+#	@echo "\033[31m$<\033[0m"
+#	$(CC) $(CFLAGS) -c $<
+#	@ech
+
 #
 # Rules for drivers:
 #
 
+dbasis: dbasis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o mass.o dvr.o pes.o nist.o coor.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	@echo
+
 about: about.c $(MODULES_DIR)/matrix.h $(MODULES_DIR)/pes.h matrix.o pes.o $(PES_OBJECT)
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o pes.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	@echo
+
+network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/tools.h $(MODULES_DIR)/matrix.h matrix.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out matrix.o tools.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	@echo
+
+test_suit: test_suit.c $(MODULES_DIR)/matrix.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 #
