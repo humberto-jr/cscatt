@@ -232,7 +232,7 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix tools nist johnson pes mass coor dvr file network
+modules: matrix tools nist johnson pes mass coor dvr file miller network
 drivers: dbasis about
 
 #
