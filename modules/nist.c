@@ -15,7 +15,7 @@
 
 ******************************************************************************/
 
-double nist_atomic_mass(const enum isotope a)
+double nist_atomic_mass(const isotope a)
 {
 	switch (a)
 	{
@@ -3382,7 +3382,7 @@ double nist_atomic_mass(const enum isotope a)
 
 ******************************************************************************/
 
-const char *nist_atomic_symbol(const enum isotope a)
+const char *nist_atomic_symbol(const isotope a)
 {
 	switch (a)
 	{
@@ -6749,11 +6749,12 @@ const char *nist_atomic_symbol(const enum isotope a)
 
 ******************************************************************************/
 
-enum isotope nist_isotope(const char s[])
+isotope nist_isotope(const char s[])
 {
 	for (int n = 0; n < 3352; ++n)
 	{
-		if (strcmp(nist_atomic_symbol(n), s) == 0) return (enum isotope) n;
+		const isotope enum_n = (isotope) n;
+		if (strcmp(nist_atomic_symbol(enum_n), s) == 0) return enum_n;
 	}
 
 	PRINT_ERROR("invalid atomic symbol s = %s\n", s)

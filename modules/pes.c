@@ -71,6 +71,34 @@ double pec(const char arrang, const double r)
 
 /******************************************************************************
 
+ Function pes_asymptotic_min(): returns the min value of a diatomic potential,
+ V(r) as function of the internuclear distance, r, asymptotically as R -> inf,
+ for a given PES arrangement.
+
+ NOTE: the PES is scanned in the interval r = [0, 50], R = inf and theta = 90.
+
+******************************************************************************/
+
+double pes_asymptotic_min(const char arrang, const double scan_step)
+{
+	ASSERT(scan_step > 0.0)
+
+	double min = INF;
+	const int grid_size = as_int(50.0/scan_step);
+
+	for (int n = 0; n < grid_size; ++n)
+	{
+		const double r = as_double(n)*scan_step;
+		const double energy = pec(arrang, r);
+
+		if (energy < min) min = energy;
+	}
+
+	return min;
+}
+
+/******************************************************************************
+
  Function pes_about(): print in a given output file the conditions in which the
  module was compiled.
 

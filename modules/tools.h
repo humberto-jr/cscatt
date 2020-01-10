@@ -1,5 +1,6 @@
 #if !defined(TOOLS_HEADER)
 	#define TOOLS_HEADER
+	#include "clib.h"
 
 	char *tools_find_string(FILE *input, const char pattern[]);
 

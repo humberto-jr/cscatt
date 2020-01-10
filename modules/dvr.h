@@ -1,6 +1,7 @@
 #if !defined(DVR_HEADER)
 	#define DVR_HEADER
 	#include "matrix.h"
+	#include "clib.h"
 
 	matrix *dvr_fgh(const int grid_size,
 	                const double grid_step,

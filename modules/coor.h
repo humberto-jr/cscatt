@@ -1,6 +1,6 @@
 #if !defined(COOR_HEADER)
 	#define COOR_HEADER
-	#include <math.h>
+	#include "clib.h"
 
 	/******************************************************************************
 

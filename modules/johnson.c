@@ -34,6 +34,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_sf_bessel.h>
 
+#include "phys.h"
 #include "globals.h"
 #include "johnson.h"
 #include "matrix.h"
@@ -467,7 +468,7 @@ matrix *johnson_kmatrix(const int l[],
 			= sqrt(2.0*mass*(tot_energy - level[i]));
 
 		const double w_prime
-			= 1.0 - factor*(tot_energy - centr_term(l[i], mass, R + grid_step));
+			= 1.0 - factor*(tot_energy - phys_centr_term(l[i], mass, R + grid_step));
 
 		const double n_prime
 			= w_prime*johnson_riccati_bessel('n', l[i], wavenum, R + grid_step);
@@ -483,7 +484,7 @@ matrix *johnson_kmatrix(const int l[],
 		else
 		{
 			const double w
-				= 1.0 - factor*(tot_energy - centr_term(l[i], mass, R));
+				= 1.0 - factor*(tot_energy - phys_centr_term(l[i], mass, R));
 
 			matrix_decr(rn, i, i, n_prime/(w*johnson_modif_spher_bessel('n', l[i], wavenum, R)));
 			matrix_decr(rj, i, i, j_prime/(w*johnson_modif_spher_bessel('j', l[i], wavenum, R)));

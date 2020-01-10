@@ -1,5 +1,6 @@
 #if !defined(NIST_HEADER)
 	#define NIST_HEADER
+	#include "clib.h"
 
 	static const double nist_bohr_radius = 5.29177210903E-11; // m
 	static const double nist_hartree = 27.211386245988;       // eV
@@ -3368,9 +3369,11 @@
 		atom_295Og
 	};
 
-	double nist_atomic_mass(const enum isotope a);
+	typedef enum isotope isotope;
 
-	const char *nist_atomic_symbol(const enum isotope a);
+	double nist_atomic_mass(const isotope a);
 
-	enum isotope nist_isotope(const char s[]);
+	const char *nist_atomic_symbol(const isotope a);
+
+	isotope nist_isotope(const char s[]);
 #endif

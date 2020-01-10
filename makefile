@@ -61,6 +61,7 @@ GSLROOT = /usr/local
 CC = gcc
 CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
 LDFLAGS = -L$(GSLROOT)/lib -lgsl -lgslcblas -lm
+FORT_LIB = -lgfortran
 
 ifeq ($(CC), gcc)
 	CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
@@ -232,8 +233,8 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix tools nist johnson pes mass coor dvr file miller network
-drivers: dbasis about
+modules: matrix tools nist johnson pes mass coor dvr file miller
+drivers: dbasis test_suit about
 
 #
 # Rules for modules:
@@ -263,7 +264,7 @@ johnson: $(MODULES_DIR)/johnson.c $(MODULES_DIR)/johnson.h $(MODULES_DIR)/matrix
 
 pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/globals.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) $(PES_MACRO) -c $<
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $(PES_MACRO) -c $<
 	@echo
 
 mass: $(MODULES_DIR)/mass.c $(MODULES_DIR)/mass.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/tools.h $(MODULES_DIR)/nist.h
@@ -291,7 +292,7 @@ phys: $(MODULES_DIR)/phys.c $(MODULES_DIR)/phys.h $(MODULES_DIR)/globals.h
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
-miller: $(MODULES_DIR)/clib.h $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/pes.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/coor.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/matrix.h
+miller: $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/clib.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/pes.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/coor.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/matrix.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo
@@ -305,14 +306,19 @@ miller: $(MODULES_DIR)/clib.h $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(
 # Rules for drivers:
 #
 
-dbasis: dbasis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
+dbasis: dbasis.c config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o mass.o dvr.o pes.o nist.o coor.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-about: about.c $(MODULES_DIR)/matrix.h $(MODULES_DIR)/pes.h matrix.o pes.o $(PES_OBJECT)
+cmatrix: cmatrix.c config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/miller.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/phys.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o pes.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o miller.o file.o mass.o phys.o pes.o coor.o dvr.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	@echo
+
+about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/pes.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o pes.o coor.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/tools.h $(MODULES_DIR)/matrix.h matrix.o
@@ -333,7 +339,7 @@ LIB_DIR = lib
 
 gsl: $(LIB_DIR)/gsl-2.5.tar.gz
 	tar -zxvf $<
-	cd gsl-2.5/; ./configure; make; make install
+	cd gsl-2.5/; ./configure CC=$(CC) --prefix=$(GSLROOT); make; make install
 	rm -rf gsl-2.5/
 
 lapacke: $(LIB_DIR)/lapack-3.5.0.tar

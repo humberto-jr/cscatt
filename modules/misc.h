@@ -1,6 +1,6 @@
 #if !defined(MISC_HEADER)
 	#define MISC_HEADER
-	#include <math.h>
+	#include "clib.h"
 
 	#include "globals.h"
 

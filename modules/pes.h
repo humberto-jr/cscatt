@@ -7,5 +7,7 @@
 
 	double pec(const char arrang, const double r);
 
+	double pes_asymptotic_min(const char arrang, const double scan_step);
+
 	void pes_about(FILE *output);
 #endif

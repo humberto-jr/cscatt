@@ -34,7 +34,9 @@ static double read_atomic_mass(FILE *input, const char key[])
 		if (strstr(line, key) != NULL)
 		{
 			token = strtok(NULL, "=");
-			const enum isotope s = nist_isotope(token);
+			token = trim(token);
+
+			const isotope s = nist_isotope(token);
 
 			/* NOTE: masses are returned in atomic units. */
 			return nist_atomic_mass(s)*1822.8873843;

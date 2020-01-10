@@ -1,6 +1,7 @@
 #if !defined(JOHNSON_HEADER)
 	#define JOHNSON_HEADER
 	#include "matrix.h"
+	#include "clib.h"
 
 	struct smatrix
 	{
