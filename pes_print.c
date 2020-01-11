@@ -88,23 +88,25 @@ int main(int argc, char *argv[])
 	for (int n = 0; n < rovib_grid_size; ++n)
 	{
 		coor.r = r_min + as_double(n)*r_step;
-
 		for (int m = 0; m < scatt_grid_size; ++m)
 		{
 			coor.R = R_min + as_double(m)*R_step;
-
 			for (int p = 0; p <= theta_grid_size; ++p)
 			{
 				coor.theta = theta_min + as_double(p)*theta_step;
 
 				printf("% 6f\t % 6f\t % 6f\t % -8e\n",
 				coor.r, coor.R, coor.theta, (pes(&coor) + shift)*scale);
+
+				if (p == 0 && theta_step == 0.0) break;
 			}
 
-			if (rovib_grid_size > 1 && scatt_grid_size > 1) printf("\n");
+			if (rovib_grid_size > 1 && scatt_grid_size > 1 && theta_step != 0.0) printf("\n");
+			if (m == 0 && R_step == 0.0) break;
 		}
 
-		if (scatt_grid_size > 1) printf("\n");
+		if (scatt_grid_size > 1 && R_step != 0.0) printf("\n");
+		if (n == 0 && r_step == 0.0) break;
 	}
 
 	return EXIT_SUCCESS;
