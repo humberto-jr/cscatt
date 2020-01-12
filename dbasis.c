@@ -6,7 +6,8 @@
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-#include "config.h"
+#include "mass_config.h"
+#include "basis_config.h"
 
 #define FORMAT "# %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
 

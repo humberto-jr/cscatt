@@ -5,11 +5,10 @@
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-#include "config.h"
-
-#if defined(USE_MPI)
-	#include <mpi.h>
-#endif
+#include "mpi_config.h"
+#include "mass_config.h"
+#include "basis_config.h"
+#include "coupl_config.h"
 
 struct task
 {
@@ -19,37 +18,30 @@ struct task
 
 typedef struct task task;
 
-/******************************************************************************
-			 NOTE: Eq. (15) of R. T. Pack J. Chem. Phys. 60, 633 (1974).
-******************************************************************************/
-
 double integral(const int J,
                 const char arrang,
                 const int lambda_max,
-                const int lambda_inc,
+                const int lambda_step,
                 const scatt_basis *a,
                 const scatt_basis *b,
                 const double R)
 {
 	double result = 0.0;
-	for (int lambda = 0; lambda <= lambda_max; lambda += lambda_inc)
+	for (int lambda = 0; lambda <= lambda_max; lambda += lambda_step)
 	{
 		const double f
-			 = phys_percival_seaton(a->spin_mult, a->j, b->j, a->l, b->l, lambda, J);
+		= phys_percival_seaton(a->spin_mult, a->j, b->j, a->l, b->l, lambda, J);
 
 		if (f == 0.0) continue;
 
 		const double v
-			 = miller_jcp69_vib_integral(lambda, arrang, a->wavef, b->wavef, a->r_min, a->r_max, R);
+		= miller_jcp69_vib_integral(lambda, arrang, a->wavef, b->wavef, a->r_min, a->r_max, R);
 
 		result += v*f;
 	}
 
 	return result;
 }
-
-/******************************************************************************
-******************************************************************************/
 
 int main(int argc, char *argv[])
 {
@@ -80,7 +72,7 @@ int main(int argc, char *argv[])
 		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 100.0);
 
 	const double R_min
-		= file_get_key(stdin, "R_min", 0.0, INF, 0.0);
+		= file_get_key(stdin, "R_min", 0.0, INF, 0.5);
 
 	const double R_max
 		= file_get_key(stdin, "R_max", R_min, INF, R_min + 100.0);
@@ -89,28 +81,14 @@ int main(int argc, char *argv[])
 		= (R_max - R_min)/as_double(scatt_grid_size);
 
 /*
- * Arrangement (1 == a, 2 == b, 3 == c), atomic masses and channels:
+ * Arrangement (1 == a, 2 == b, 3 == c) and channels:
  */
 
 	const char arrang
-		= 96 + (int) file_get_key(stdin, "arrangement", 1.0, 3.0, 1.0);
-
-	mass_init(stdin);
+		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
 
 	const int max_ch
 		= count_basis(arrang, J);
-
-/*
- * Multipolar coefficients, lambda:
- */
-
-	const int lambda_max
-		= (int) file_get_key(stdin, "lambda_max", 0.0, INF, 20.0);
-
-	const int lambda_step
-		= init_lambda_step(arrang);
-
-	mass_init(stdin);
 
 /*
  *	OpenMP (0 = false, 1 = true):
@@ -138,24 +116,7 @@ int main(int argc, char *argv[])
  *	calculations. If sequential running are used, the chunk of tasks is of
  *	size scatt_grid_size and, thus, remainder = 0, n_min = 0 and n_max =
  *	(scatt_grid_size - 1).
- */
-
-	const int mpi_task_chunk
-		= scatt_grid_size/max_cpu;
-
-	const int n_min
-		= cpu_id*mpi_task_chunk;
-
-	const int n_max
-		= cpu_id*mpi_task_chunk + (mpi_task_chunk - 1);
-
-	const int mpi_last_task
-		= (max_cpu - 1)*mpi_task_chunk + (mpi_task_chunk - 1);
-
-	const int remainder
-		= (scatt_grid_size - 1) - mpi_last_task;
-
-/*
+ *
  *	NOTE: For output, when MPI running are considered, each CPU shall open its
  *	own output file. Filenames are built using the CPU ID, the respective total
  *	angular momentum of the problem, J, and the arrangement index; thus, files
@@ -165,62 +126,59 @@ int main(int argc, char *argv[])
  *	C stdout.
  */
 
+	const int mpi_task_chunk
+		= scatt_grid_size/max_cpu;
+
+	const int n_min
+		= cpu_id*mpi_task_chunk;
+
+	const int n_max
+		= n_min + (mpi_task_chunk - 1);
+
+	const int mpi_last_task
+		= (max_cpu - 1)*mpi_task_chunk + (mpi_task_chunk - 1);
+
+	const int remainder
+		= (scatt_grid_size - 1) - mpi_last_task;
+
 	#if defined(USE_MPI)
-		FILE *output = open_mpi_stdout(cpu_id, arrang, J);
-	#else
-		FILE *output = stdout;
+		open_mpi_stdout(cpu_id, arrang, J, false);
 	#endif
+
+/*
+ *	Atomic masses:
+ */
+
+	const enum mass_case m
+		= init_atomic_masses(stdin, arrang, 'a');
+
+/*
+ * Multipolar coefficients, lambda:
+ */
+
+	const int lambda_max
+		= (int) file_get_key(stdin, "lambda_max", 0.0, INF, 20.0);
+
+	const int lambda_step
+		= init_lambda_step(arrang);
 
 /*
  *	Sum up the main entries before starting actual computations:
  */
 
-	if (output != NULL)
-	{
-		fprintf(output, "#\n");
-		fprintf(output, "# REDUCED MASSES:\n");
-		fprintf(output, "# Atom A = %f a.u.\n", mass(atom_a));
-		fprintf(output, "# Atom B = %f a.u.\n", mass(atom_b));
-		fprintf(output, "# Atom C = %f a.u.\n", mass(atom_c));
-
-		enum mass_case m;
-
-		switch (arrang)
-		{
-			case 'a':
-				m = arrang_a;
-				fprintf(output, "# Arrangement A + BC = %f\n", mass(m));
-			break;
-
-			case 'b':
-				m = arrang_b;
-				fprintf(output, "# Arrangement B + CA = %f\n", mass(m));
-			break;
-
-			case 'c':
-				m = arrang_c;
-				fprintf(output, "# Arrangement C + AB = %f\n", mass(m));
-			break;
-
-			default:
-				m = arrang_a;
-				fprintf(output, "# Arrangement A + BC = %f (assuming arrang = 1)\n", mass(m));
-		}
-
-		fprintf(output, "#\n");
-		fprintf(output, "# COUPLING MATRIX FOR J = %d\n", J);
-		fprintf(output, "# Scatt. grid  = %d\n", scatt_grid_size);
-		fprintf(output, "# MPI CPUs     = %d\n", max_cpu);
-		fprintf(output, "# Grid/CPU     = %d\n", mpi_task_chunk);
-		fprintf(output, "# Grid used    = [%d, %d]\n", n_min, n_max);
-		fprintf(output, "# Remainder    = %d\n", remainder);
-		fprintf(output, "# Max. channel = %d\n", max_ch);
-		fprintf(output, "# Tasks/grid   = %d\n", omp_last_task);
-		fprintf(output, "# OMP threads  = %d\n", max_thread);
-		fprintf(output, "# Tasks/thread = %d\n", omp_task_chunk);
-		fprintf(output, "# Max. lambda  = %d\n", lambda_max);
-		fprintf(output, "# Lambda step  = %d\n", lambda_step);
-	}
+	printf("#\n");
+	printf("# COUPLING MATRIX FOR J = %d\n", J);
+	printf("# Scatt. grid  = %d\n", scatt_grid_size);
+	printf("# MPI CPUs     = %d\n", max_cpu);
+	printf("# Grid/CPU     = %d\n", mpi_task_chunk);
+	printf("# Grid used    = [%d, %d]\n", n_min, n_max);
+	printf("# Remainder    = %d\n", remainder);
+	printf("# Max. channel = %d\n", max_ch);
+	printf("# Tasks/grid   = %d\n", omp_last_task);
+	printf("# OMP threads  = %d\n", max_thread);
+	printf("# Tasks/thread = %d\n", omp_task_chunk);
+	printf("# Max. lambda  = %d\n", lambda_max);
+	printf("# Lambda step  = %d\n", lambda_step);
 
 	scatt_basis *basis
 		= allocate(max_ch, sizeof(scatt_basis), true);
@@ -301,18 +259,15 @@ int main(int argc, char *argv[])
 		const double end_time = wall_time();
 
 		char filename[MAX_LINE_LENGTH];
-		sprintf(filename, UMATRIX_BUFFER_FORMAT, arrang, n, J);
+		sprintf(filename, CMATRIX_BUFFER_FORMAT, arrang, n, J);
 
 		matrix_save(u, filename);
 		matrix_free(u);
 
-		if (output != NULL)
-		{
-			fprintf(output, "#\n");
-			fprintf(output, "# R           = %f\n", R);
-			fprintf(output, "# Wall time   = %f s\n", end_time - start_time);
-			fprintf(output, "# Disk buffer = %s\n", filename);
-		}
+		printf("#\n");
+		printf("# R           = %f\n", R);
+		printf("# Wall time   = %f s\n", end_time - start_time);
+		printf("# Disk buffer = %s\n", filename);
 
 /*
  *		NOTE: If remainder > 0, each CPU shall compute one extra grid point
