@@ -234,7 +234,7 @@ USE_MACRO = DUMMY_MACRO
 
 all: modules drivers
 modules: matrix tools nist johnson pes mass coor dvr file miller
-drivers: dbasis test_suit about
+drivers: dbasis test_suit about pes_print bprint
 
 #
 # Rules for modules:
@@ -319,6 +319,16 @@ cmatrix: cmatrix.c config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(M
 about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/pes.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o pes.o coor.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	@echo
+
+pes_print: pes_print.c config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/coor.h $(MODULES_DIR)/pes.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out pes.o coor.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	@echo
+
+bprint: bprint.c basis_utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/tools.h $(MODULES_DIR)/matrix.h matrix.o

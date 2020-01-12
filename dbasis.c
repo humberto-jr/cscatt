@@ -8,8 +8,7 @@
 
 #include "config.h"
 
-#define FORMAT1 "# %5d   %5d   %5d   %5d   %5d     % -8e  % -8e  % -8e\n"
-#define FORMAT2 "# %5d   %5d   %5d   %5d   %5d\n"
+#define FORMAT "# %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
 
 int main(int argc, char *argv[])
 {
@@ -63,7 +62,7 @@ int main(int argc, char *argv[])
 		= file_get_key(stdin, "r_min", 0.0, INF, 0.0);
 
 	const double r_max
-		= file_get_key(stdin, "r_max", r_min, INF, r_min + 100.0);
+		= file_get_key(stdin, "r_max", r_min, INF, r_min + 30.0);
 
 	const double r_step
 		= (r_max - r_min)/as_double(rovib_grid_size);
@@ -84,9 +83,6 @@ int main(int argc, char *argv[])
 
 	const enum mass_case m
 		= init_atomic_masses(stdin, arrang, 'p');
-
-//	const double pec_min
-//		= pes_asymptotic_min(arrang, 0.01);
 
 /*
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
@@ -141,10 +137,8 @@ int main(int argc, char *argv[])
 			{
 				if (phys_parity(j + l) != J_parity && J_parity != 0) continue;
 
-				if (l == abs(J - j))
-					printf(FORMAT1, max_ch, v, j, l, phys_parity(j + l), eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
-				else
-					printf(FORMAT2, max_ch, v, j, l, phys_parity(j + l));
+				printf(FORMAT, max_ch, v, j, l, phys_parity(j + l),
+				       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
 
 /*
  *				Step 4: save each basis function |vjl> in the disk and increment the counter of

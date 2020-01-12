@@ -16,10 +16,10 @@ int main(int argc, char *argv[])
 		= (int) file_get_key(stdin, "rovib_grid_size", 1.0, INF, 100.0);
 
 	const double r_min
-		= file_get_key(stdin, "r_min", 0.0, INF, 0.0);
+		= file_get_key(stdin, "r_min", 0.0, INF, 0.5);
 
 	const double r_max
-		= file_get_key(stdin, "r_max", r_min, INF, r_min + 100.0);
+		= file_get_key(stdin, "r_max", r_min, INF, r_min + 30.0);
 
 	const double r_step
 		= (r_max - r_min)/as_double(rovib_grid_size);
@@ -32,10 +32,10 @@ int main(int argc, char *argv[])
 		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 100.0);
 
 	const double R_min
-		= file_get_key(stdin, "R_min", 0.0, INF, 0.0);
+		= file_get_key(stdin, "R_min", 0.0, INF, 0.5);
 
 	const double R_max
-		= file_get_key(stdin, "R_max", R_min, INF, R_min + 100.0);
+		= file_get_key(stdin, "R_max", R_min, INF, R_min + 50.0);
 
 	const double R_step
 		= (R_max - R_min)/as_double(scatt_grid_size);
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 	printf("# Energy shift = %f\n", shift);
 	printf("# Energy scale = %f\n", scale);
 
-	printf("# \n");
+	printf("#\n");
 
 	jacobi_coor coor;
 	coor.arrang = arrang;
