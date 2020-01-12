@@ -93,6 +93,20 @@ void file_init_stdin(const char filename[])
 
 /******************************************************************************
 
+ Function file_init_stdout(): set a file named filename as the C stdout.
+
+******************************************************************************/
+
+void file_init_stdout(const char filename[], const bool to_append)
+{
+	FILE *output = file_open_output(filename, false, to_append);
+
+	stdout = output;
+	output = NULL;
+}
+
+/******************************************************************************
+
  Function file_find_string(): scans a given input file searching for the first
  occurrence of a given pattern. If found it shall return the whole line or an
  empty string otherwise.
