@@ -25,7 +25,9 @@
 		total
 	};
 
+	typedef enum mass_case mass_case;
+
 	void mass_init(FILE *input);
 
-	double mass(const enum mass_case m);
+	double mass(const mass_case m);
 #endif

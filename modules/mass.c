@@ -86,13 +86,13 @@ void mass_init(FILE *input)
 /******************************************************************************
 
  Function mass(): return the many kind of masses and reduced masses for a tri
- atomic system, previously initialized by mass_read().
+ atomic system, previously initialized by mass_init().
 
  NOTE: see the enum mass_case definition for details.
 
 ******************************************************************************/
 
-double mass(const enum mass_case m)
+double mass(const mass_case m)
 {
 	switch (m)
 	{
