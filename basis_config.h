@@ -1,5 +1,5 @@
-#if !defined(BASIS_UTILS_HEADER)
-	#define BASIS_UTILS_HEADER
+#if !defined(BASIS_CONFIG_HEADER)
+	#define BASIS_CONFIG_HEADER
 
 	#if !defined(BASIS_BUFFER_FORMAT)
 		#define BASIS_BUFFER_FORMAT "basis_arrang=%c_ch=%d_J=%d.bin"
