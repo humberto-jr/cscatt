@@ -233,7 +233,7 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix tools nist johnson pes mass coor dvr file miller
+modules: matrix tools nist johnson pes mass coor dvr file phys miller
 drivers: dbasis test_suit about pes_print bprint
 
 #
@@ -306,12 +306,12 @@ miller: $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/clib.h $(
 # Rules for drivers:
 #
 
-dbasis: dbasis.c config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
+dbasis: dbasis.c mass_config.h basis_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o mass.o dvr.o pes.o nist.o coor.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-cmatrix: cmatrix.c config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/miller.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/phys.h
+cmatrix: cmatrix.c mpi_config.h mass_config.h basis_config.h coupl_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/miller.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/phys.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o miller.o file.o mass.o phys.o pes.o coor.o dvr.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
@@ -321,12 +321,12 @@ about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/p
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o pes.o coor.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-pes_print: pes_print.c config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/coor.h $(MODULES_DIR)/pes.h
+pes_print: pes_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/coor.h $(MODULES_DIR)/pes.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out pes.o coor.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-bprint: bprint.c basis_utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
+bprint: bprint.c basis_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
@@ -361,4 +361,4 @@ lapacke: $(LIB_DIR)/lapack-3.5.0.tar
 	rm -rf lapack-3.5.0/
 
 clean:
-	rm -f *.o
+	rm -f *.o *.out

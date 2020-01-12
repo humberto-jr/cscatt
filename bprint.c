@@ -2,7 +2,7 @@
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-#include "basis_utils.h"
+#include "basis_config.h"
 
 int main(int argc, char *argv[])
 {
