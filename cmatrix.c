@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
  *	Atomic masses:
  */
 
-	const enum mass_case m
+	const mass_case a
 		= init_atomic_masses(stdin, arrang, 'a');
 
 /*
@@ -235,11 +235,11 @@ int main(int argc, char *argv[])
 	{
 		extra_step: /* This is an empty statement */;
 
-		matrix *u = matrix_alloc(max_ch, max_ch, false);
+		matrix *c = matrix_alloc(max_ch, max_ch, false);
 		const double R = R_min + as_double(n)*R_step;
 		const double start_time = wall_time();
 
-		#pragma omp parallel for default(none) shared(u, list) schedule(static) if(use_omp)
+		#pragma omp parallel for default(none) shared(c, list) schedule(static) if(use_omp)
 		for (int m = 0; m < omp_last_task; ++m)
 		{
 			double result
@@ -247,12 +247,12 @@ int main(int argc, char *argv[])
 
 			if (list[m].ch_a == list[m].ch_b)
 			{
-				result += phys_centr_term(list[m].basis_a->l, mass(m), R) + list[m].basis_a->energy;
-				matrix_diag_set(u, list[m].ch_a, result);
+				result += phys_centr_term(list[m].basis_a->l, mass(a), R) + list[m].basis_a->energy;
+				matrix_diag_set(c, list[m].ch_a, result);
 			}
 			else
 			{
-				matrix_symm_set(u, list[m].ch_a, list[m].ch_b, result);
+				matrix_symm_set(c, list[m].ch_a, list[m].ch_b, result);
 			}
 		}
 
@@ -261,8 +261,8 @@ int main(int argc, char *argv[])
 		char filename[MAX_LINE_LENGTH];
 		sprintf(filename, CMATRIX_BUFFER_FORMAT, arrang, n, J);
 
-		matrix_save(u, filename);
-		matrix_free(u);
+		matrix_save(c, filename);
+		matrix_free(c);
 
 		printf("#\n");
 		printf("# R           = %f\n", R);

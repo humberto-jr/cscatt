@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 		= (int) file_get_key(stdin, "rovib_grid_size", as_double(v_max + 1), INF, 500.0);
 
 	const double r_min
-		= file_get_key(stdin, "r_min", 0.0, INF, 0.0);
+		= file_get_key(stdin, "r_min", 0.0, INF, 0.5);
 
 	const double r_max
 		= file_get_key(stdin, "r_max", r_min, INF, r_min + 30.0);
