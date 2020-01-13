@@ -32,8 +32,8 @@ int main(int argc, char *argv[])
 		fprintf(output, "# v = %d\n", basis.v);
 		fprintf(output, "# j = %d\n", basis.j);
 		fprintf(output, "# l = %d\n", basis.l);
-		fprintf(output, "# spin multiplicity = %d\n", basis.spin_mult);
-		fprintf(output, "# eigenvalue = %8e\n", basis.energy);
+		fprintf(output, "# spin mult. = %d\n", basis.spin_mult);
+		fprintf(output, "# eigenvalue = % -8e\n", basis.energy);
 		fprintf(output, "# file created on %s\n", time_stamp());
 
 		for (int n = 0; n < matrix_row(basis.wavef); ++n)

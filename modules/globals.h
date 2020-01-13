@@ -134,8 +134,8 @@
 
 	/******************************************************************************
 
-	 Function as_double(): is a simple interface to a very common operation of
-	 casting an double, n, as an integer number.
+	 Function as_int(): is a simple interface to a very common operation of casting
+	 an double, n, as an integer number.
 
 	******************************************************************************/
 
@@ -145,7 +145,7 @@
 	}
 	/******************************************************************************
 
-	 Function tools_wall_time(): return the wall time in units of seconds.
+	 Function wall_time(): return the wall time in units of seconds.
 
 	******************************************************************************/
 
@@ -213,5 +213,24 @@
 	inline static char *trim(char s[])
 	{
 		return right_trim(left_trim(s));
+	}
+
+	/******************************************************************************
+
+	 Function time_stamp(): return the current YMDHMS date as a time stamp.
+
+	 Example: 31 May, 2001 09:45:54 AM.
+
+	******************************************************************************/
+
+	inline static const char *time_stamp()
+	{
+		time_t now = time(NULL);
+		const struct tm *info = localtime(&now);
+
+		static char stamp[50];
+		strftime(stamp, 50, "%B %d, %Y %I:%M:%S %p", info);
+
+		return stamp;
 	}
 #endif

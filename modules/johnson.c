@@ -431,7 +431,7 @@ matrix *johnson_kmatrix(const int l[],
 				= sqrt(2.0*mass*(tot_energy - level[i]));
 
 			const double w
-				= 1.0 - factor*(tot_energy - centr_term(l[i], mass, R));
+				= 1.0 - factor*(tot_energy - phys_centr_term(l[i], mass, R));
 
 			matrix_set(n, i, i, w*johnson_riccati_bessel('n', l[i], wavenum, R));
 			matrix_set(j, i, i, w*johnson_riccati_bessel('j', l[i], wavenum, R));

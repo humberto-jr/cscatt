@@ -131,7 +131,7 @@ double miller_jcp69_rot_integral(const char arrang,
 
 ******************************************************************************/
 
-static inline double vib_integrand(const double r, const void *params)
+static inline double vib_integrand(const double r, void *params)
 {
 	const struct vib_params *p
 		= (struct vib_params *) params;
@@ -174,7 +174,7 @@ double miller_jcp69_vib_integral(const int lambda,
 
 	ASSERT(work != NULL)
 
-	const struct vib_params p =
+	struct vib_params p =
 	{
 		.R = R,
 		.r_min = r_min,

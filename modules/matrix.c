@@ -1214,6 +1214,24 @@ bool matrix_negative(const matrix *m)
 	return true;
 }
 
+/******************************************************************************
+
+ Function matrix_has_nan(): return true if at least one element has a NaN.
+ Return false otherwise.
+
+******************************************************************************/
+
+bool matrix_has_nan(const matrix *m)
+{
+	const int n_max = m->max_row*m->max_col;
+
+	for (int n = 0; n < n_max; ++n)
+	{
+		if (isnan(m->data[n]) != 0) return true;
+	}
+
+	return false;
+}
 /*****************************************************************************
 
  Function matrix_save(): saves a matrix object in the disk. Binary format is
