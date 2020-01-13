@@ -1,6 +1,6 @@
 #if !defined(FILE_HEADER)
 	#define FILE_HEADER
-	#include "clib.h"
+	#include "globals.h"
 
 	bool file_exist(const char filename[]);
 

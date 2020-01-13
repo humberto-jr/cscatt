@@ -1,6 +1,6 @@
 #if !defined(MILLER_HEADER)
 	#define MILLER_HEADER
-	#include "clib.h"
+	#include "globals.h"
 	#include "matrix.h"
 
 	double miller_jcp69_rot_integral(const char arrang, const int lambda,

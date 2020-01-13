@@ -1,6 +1,5 @@
 #if !defined(PHYS_HEADER)
 	#define PHYS_HEADER
-	#include "clib.h"
 	#include "globals.h"
 
 	double phys_wigner_3j(const int a, const int b, const int c,

@@ -1,4 +1,13 @@
-#include "globals.h"
+/******************************************************************************
+
+ About
+ -----
+
+ This module is an interface to an external user defined potential energy
+ surface routine provided during compilation by the macro EXTERNAL_PES_NAME.
+
+******************************************************************************/
+
 #include "coor.h"
 #include "pes.h"
 

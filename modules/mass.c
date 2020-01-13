@@ -1,9 +1,13 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
+/******************************************************************************
 
-#include "globals.h"
+ About
+ -----
+
+ This module is a collection of routines to handle the many kinds of masses
+ needed in atomic and molecular physics.
+
+******************************************************************************/
+
 #include "file.h"
 #include "nist.h"
 #include "mass.h"

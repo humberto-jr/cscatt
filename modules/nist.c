@@ -1,7 +1,13 @@
-#include <string.h>
-#include <stdlib.h>
+/******************************************************************************
 
-#include "globals.h"
+ About
+ -----
+
+ This module is a collection of routines to retrieve data and physical
+ constants from the nist database.
+
+******************************************************************************/
+
 #include "nist.h"
 
 /******************************************************************************

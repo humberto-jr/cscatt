@@ -3,16 +3,9 @@
  About
  -----
 
- This module is a collection of routines applying algorithms based on the
- discrete variable representation (DVR) for atomic and molecular systems.
 
 ******************************************************************************/
 
-#include <math.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
-#include "globals.h"
 #include "matrix.h"
 #include "network.h"
 

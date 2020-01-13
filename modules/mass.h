@@ -1,6 +1,6 @@
 #if !defined(MASS_HEADER)
 	#define MASS_HEADER
-	#include "clib.h"
+	#include "globals.h"
 
 	/******************************************************************************
 

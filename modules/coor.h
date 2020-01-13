@@ -1,6 +1,6 @@
 #if !defined(COOR_HEADER)
 	#define COOR_HEADER
-	#include "clib.h"
+	#include "globals.h"
 
 	/******************************************************************************
 

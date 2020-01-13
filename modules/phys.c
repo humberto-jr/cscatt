@@ -21,14 +21,12 @@
 
 ******************************************************************************/
 
-#include <math.h>
+#include "phys.h"
 
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_sf_bessel.h>
 #include <gsl/gsl_sf_coupling.h>
 #include <gsl/gsl_sf_legendre.h>
-
-#include "globals.h"
 
 /******************************************************************************
 

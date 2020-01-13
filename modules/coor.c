@@ -1,10 +1,15 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
+/******************************************************************************
 
-#include "globals.h"
-#include "coor.h"
+ About
+ -----
+
+ This module is a collection of routines and types to handle various sets of
+ physical coordinates.
+
+******************************************************************************/
+
 #include "mass.h"
+#include "coor.h"
 
 /******************************************************************************
 

@@ -1,6 +1,6 @@
 #if !defined(NIST_HEADER)
 	#define NIST_HEADER
-	#include "clib.h"
+	#include "globals.h"
 
 	static const double nist_bohr_radius = 5.29177210903E-11; // m
 	static const double nist_hartree = 27.211386245988;       // eV

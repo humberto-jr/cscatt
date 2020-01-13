@@ -21,11 +21,6 @@
 
 ******************************************************************************/
 
-#include <math.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
-#include "globals.h"
 #include "matrix.h"
 #include "dvr.h"
 

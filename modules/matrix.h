@@ -1,6 +1,6 @@
 #if !defined(MATRIX_HEADER)
 	#define MATRIX_HEADER
-	#include "clib.h"
+	#include "globals.h"
 
 	typedef struct matrix matrix;
 

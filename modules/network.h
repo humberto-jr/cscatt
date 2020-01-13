@@ -1,6 +1,6 @@
 #if !defined(NETWORK_HEADER)
 	#define NETWORK_HEADER
-	#include "clib.h"
+	#include "globals.h"
 
 	typedef struct network network;
 #endif

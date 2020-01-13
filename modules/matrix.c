@@ -9,13 +9,6 @@
 
 ******************************************************************************/
 
-#include <omp.h>
-#include <time.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
 #if defined(USE_MKL)
 	#include <mkl.h>
 	#define LINEAR_ALGEBRA_LIB "Intel Math Kernel Library (MKL)"
@@ -51,7 +44,6 @@
 	typedef enum CBLAS_TRANSPOSE CBLAS_TRANSPOSE;
 #endif
 
-#include "globals.h"
 #include "matrix.h"
 
 #if !defined(LAPACK_DISABLE_NAN_CHECK)

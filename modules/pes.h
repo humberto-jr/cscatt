@@ -1,6 +1,6 @@
 #if !defined(PES_HEADER)
 	#define PES_HEADER
-	#include "clib.h"
+	#include "globals.h"
 	#include "coor.h"
 
 	double pes(const jacobi_coor *x);

@@ -19,9 +19,8 @@
 #include "dvr.h"
 #include "coor.h"
 #include "mass.h"
-#include "miller.h"
 #include "matrix.h"
-#include "globals.h"
+#include "miller.h"
 
 #include <gsl/gsl_sf_legendre.h>
 #include <gsl/gsl_integration.h>

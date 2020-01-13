@@ -1,6 +1,7 @@
 #if !defined(CLIB_HEADER)
 	#define CLIB_HEADER
 
+	/* C89 to C99 */
 	#include <math.h>
 	#include <time.h>
 	#include <fenv.h>
@@ -25,6 +26,9 @@
 	#include <stdbool.h>
 	#include <complex.h>
 	#include <inttypes.h>
+
+	/* C POSIX library */ 
+	#include <unistd.h>
 
 	#if (__STDC_VERSION__ > 199901L)
 		#include <uchar.h>
