@@ -9,10 +9,6 @@ int main(int argc, char *argv[])
 	ASSERT(argc > 1)
 	file_init_stdin(argv[1]);
 
-/*
- *	Total angular momentum and arrangement:
- */
-
 	const int J
 		= (int) file_get_key(stdin, "J", 0.0, INF, 0.0);
 
@@ -37,8 +33,8 @@ int main(int argc, char *argv[])
 		fprintf(output, "# j = %d\n", basis.j);
 		fprintf(output, "# l = %d\n", basis.l);
 		fprintf(output, "# spin multiplicity = %d\n", basis.spin_mult);
-
-		fprintf(output, "#\n");
+		fprintf(output, "# eigenvalue = %8e\n", basis.energy);
+		fprintf(output, "# file created on %s\n", time_stamp());
 
 		for (int n = 0; n < matrix_row(basis.wavef); ++n)
 		{
