@@ -233,8 +233,8 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix tools nist johnson pes mass coor dvr file phys miller
-drivers: dbasis test_suit about pes_print bprint
+modules: matrix nist johnson pes mass coor dvr file phys miller
+drivers: dbasis cmatrix test_suit about pes_print bprint
 
 #
 # Rules for modules:
@@ -245,11 +245,6 @@ MODULES_DIR = modules
 matrix: $(MODULES_DIR)/matrix.c $(MODULES_DIR)/matrix.h $(MODULES_DIR)/globals.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) $(LINEAR_ALGEBRA_INC) -D$(USE_MACRO) -c $<
-	@echo
-
-tools: $(MODULES_DIR)/tools.c $(MODULES_DIR)/tools.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) -c $<
 	@echo
 
 nist: $(MODULES_DIR)/nist.c $(MODULES_DIR)/nist.h $(MODULES_DIR)/globals.h
@@ -267,7 +262,7 @@ pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/globals.h
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $(PES_MACRO) -c $<
 	@echo
 
-mass: $(MODULES_DIR)/mass.c $(MODULES_DIR)/mass.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/tools.h $(MODULES_DIR)/nist.h
+mass: $(MODULES_DIR)/mass.c $(MODULES_DIR)/mass.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/nist.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo
@@ -331,9 +326,14 @@ bprint: bprint.c basis_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
-network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/tools.h $(MODULES_DIR)/matrix.h matrix.o
+cprint: cprint.c coupl_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) $< -o $@.out matrix.o tools.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	@echo
+
+network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h matrix.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out matrix.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 test_suit: test_suit.c $(MODULES_DIR)/matrix.h
@@ -347,18 +347,24 @@ test_suit: test_suit.c $(MODULES_DIR)/matrix.h
 
 LIB_DIR = lib
 
-gsl: $(LIB_DIR)/gsl-2.5.tar.gz
+gsl: $(LIB_DIR)/gsl-2.5.tar.gz $(GSLROOT)
 	tar -zxvf $<
 	cd gsl-2.5/; ./configure CC=$(CC) --prefix=$(GSLROOT); make; make install
 	rm -rf gsl-2.5/
 
-lapacke: $(LIB_DIR)/lapack-3.5.0.tar
+lapacke: $(LIB_DIR)/lapack-3.5.0.tar $(LAPACKEROOT)/lib $(LAPACKEROOT)/include
 	tar -xvf $<
 	cd lapack-3.5.0/; cp make.inc.example make.inc
 	cd lapack-3.5.0/BLAS/SRC; make
 	cd lapack-3.5.0; make; make lapackelib
 	cd lapack-3.5.0; mv librefblas.a libblas.a; cp lib*.a $(LAPACKEROOT)/lib/; cp lapacke/include/*.h $(LAPACKEROOT)/include/
 	rm -rf lapack-3.5.0/
+
+magma: $(LIB_DIR)/magma-2.5.1-alpha1.tar.gz $(CUDAROOT) $(MAGMAROOT)
+	tar -zxvf $<
+	cp magma-2.5.1-alpha1/make.inc-examples/make.inc.mkl-$(CC) magma-2.5.1-alpha1/make.inc
+	cd magma-2.5.1-alpha1/; export CUDADIR=$(CUDAROOT); export GPU_TARGET="Kepler Maxwell Pascal"; make; make install prefix=$(MAGMAROOT);
+	rm -rf magma-2.5.1-alpha1/
 
 clean:
 	rm -f *.o *.out

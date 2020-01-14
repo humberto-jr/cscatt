@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
  */
 
 	const int scatt_grid_size
-		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 100.0);
+		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 500.0);
 
 	const double R_min
 		= file_get_key(stdin, "R_min", 0.0, INF, 0.5);
@@ -239,15 +239,17 @@ int main(int argc, char *argv[])
 		const double R = R_min + as_double(n)*R_step;
 		const double start_time = wall_time();
 
-		#pragma omp parallel for default(none) shared(c, list) schedule(static) if(use_omp)
+		#pragma omp parallel for default(none) shared(c, list) schedule(dynamic, omp_task_chunk) if(use_omp)
 		for (int m = 0; m < omp_last_task; ++m)
 		{
-			double result
-				= integral(J, arrang, lambda_max, lambda_step, list[m].basis_a, list[m].basis_b, R);
+			double result = integral(J, arrang, lambda_max, lambda_step,
+			                         list[m].basis_a, list[m].basis_b, R);
 
 			if (list[m].ch_a == list[m].ch_b)
 			{
-				result += phys_centr_term(list[m].basis_a->l, mass(a), R) + list[m].basis_a->energy;
+				result += list[m].basis_a->energy
+				        + phys_centr_term(list[m].basis_a->l, mass(a), R);
+
 				matrix_diag_set(c, list[m].ch_a, result);
 			}
 			else
