@@ -4,6 +4,13 @@
 
 	typedef struct matrix matrix;
 
+	struct tensor
+	{
+		matrix *value;
+	};
+
+	typedef struct tensor tensor;
+
 	void matrix_init_gpu();
 
 	void matrix_end_gpu();
@@ -34,6 +41,9 @@
 	matrix *matrix_get_block(const matrix *m,
 	                         const int row_min, const int row_max,
 	                         const int col_min, const int col_max);
+
+	double matrix_get_pow(const matrix *m,
+	                      const int p, const int q, const double power);
 
 	int matrix_row(const matrix *m);
 

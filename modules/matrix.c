@@ -569,6 +569,22 @@ matrix *matrix_get_block(const matrix *m,
 
 /******************************************************************************
 
+ Function matrix_get_pow(): return the pq-element of matrix m raised to a given
+ power.
+
+******************************************************************************/
+
+double matrix_get_pow(const matrix *m,
+                      const int p, const int q, const double power)
+{
+	ASSERT_ROW_INDEX(m, p)
+	ASSERT_COL_INDEX(m, q)
+
+	return pow(DATA_OFFSET(m, p, q), power);
+}
+
+/******************************************************************************
+
  Function matrix_row(): return the number of rows in the matrix m.
 
 ******************************************************************************/

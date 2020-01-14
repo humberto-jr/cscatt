@@ -42,7 +42,8 @@ matrix *dvr_fgh(const int grid_size,
 {
 	ASSERT(pot_energy != NULL)
 
-	matrix *result = matrix_alloc(grid_size, grid_size, false);
+	matrix *result
+		= matrix_alloc(grid_size, grid_size, false);
 
 	const double box_length
 		= as_double(grid_size - 1)*grid_step;
@@ -83,12 +84,14 @@ matrix *dvr_fgh(const int grid_size,
 matrix *dvr_multich_fgh(const int max_ch,
                         const int grid_size,
                         const double grid_step,
-                        const matrix *pot_energy, // TODO: matrix is now opaque and array is not allowed
+                        const tensor pot_energy[],
                         const double mass)
 {
+	ASSERT(max_ch > 0)
 	ASSERT(pot_energy != NULL)
 
-	matrix *result = matrix_alloc(grid_size*max_ch, grid_size*max_ch, false);
+	matrix *result
+		= matrix_alloc(grid_size*max_ch, grid_size*max_ch, false);
 
 	const double box_length
 		= as_double(grid_size - 1)*grid_step;
@@ -113,7 +116,8 @@ matrix *dvr_multich_fgh(const int max_ch,
 
 					if (n == m && p == q)
 					{
-						pnqm = nn_term + matrix_get(pot_energy, p, p); // TODO
+						pnqm = nn_term
+						     + matrix_get(pot_energy[n].value, p, p);
 					}
 
 					if (n != m && p == q)
@@ -129,7 +133,7 @@ matrix *dvr_multich_fgh(const int max_ch,
 
 					if (n == m && p != q)
 					{
-						pnqm = matrix_get(pot_energy, p, q); // TODO
+						pnqm = matrix_get(pot_energy[n].value, p, q);
 					}
 
 					matrix_set(result, row, col, pnqm);
@@ -232,8 +236,19 @@ double dvr_fgh_product(const matrix *fgh, const int a, const int b,
 void dvr_fgh_norm(matrix *fgh,
                   const int a, const double grid_step, const bool use_omp)
 {
-	const double norm
-		= grid_step*matrix_col_quadr(fgh, a, use_omp);
+	const int n_max
+		= (matrix_row(fgh)%2 == 0? matrix_row(fgh) : matrix_row(fgh) - 1);
 
-	matrix_col_scale(fgh, a, 1.0/sqrt(norm), use_omp);
+	double sum = matrix_get_pow(fgh, 0, a, 2.0)
+	           + matrix_get_pow(fgh, n_max - 1, a, 2.0);
+
+	#pragma omp parallel for default(none) shared(fgh) reduction(+:sum) if(use_omp)
+	for (int n = 1; n < (n_max - 2); n += 2)
+	{
+		sum += 4.0*matrix_get_pow(fgh, n, a, 2.0)
+		     + 2.0*matrix_get_pow(fgh, n + 1, a, 2.0);
+	}
+
+	sum = grid_step*sum/3.0;
+	matrix_col_scale(fgh, a, 1.0/sqrt(sum), use_omp);
 }
