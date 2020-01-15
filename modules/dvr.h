@@ -36,4 +36,10 @@
 	                             const int max_ch,
 	                             const int n,
 	                             const int v);
+
+	void dvr_multich_fgh_norm(matrix *fgh,
+	                          const int max_ch,
+	                          const int v,
+	                          const double grid_step,
+	                          const bool use_omp);
 #endif

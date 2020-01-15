@@ -161,12 +161,9 @@ matrix *dvr_multich_fgh_comp(matrix *fgh,
                              const int max_ch, const int n, const int v)
 {
 	ASSERT(n < max_ch)
-
 	const int grid_size = matrix_row(fgh)/max_ch;
-	const int n_min = n*grid_size;
-	const int n_max = n_min + (grid_size - 1);
 
-	return matrix_get_block(fgh, n_min, n_max, v, v);
+	return matrix_get_block(fgh, n*grid_size, n*grid_size + (grid_size - 1), v, v);
 }
 
 /******************************************************************************
@@ -276,28 +273,36 @@ void dvr_fgh_norm(matrix *fgh,
 
 /******************************************************************************
 
- Function dvr_fgh_norm(): normalize to unity the eigenvector a of a Hamiltonian
- built by dvr_fgh(). On entry, the matrix is expected to be properly
- diagonalized and its columns the respective eigenvectors.
+ Function dvr_fgh_norm(): the same of dvr_fgh_norm() but for eigenvectos from
+ those matrices built by dvr_multich_fgh().
 
 ******************************************************************************/
 
 void dvr_multich_fgh_norm(matrix *fgh, const int max_ch,
-                          const int a, const double grid_step, const bool use_omp)
+                          const int v, const double grid_step, const bool use_omp)
 {
 	const int n_max
 	= ((matrix_row(fgh)/max_ch)%2 == 0? matrix_row(fgh)/max_ch : matrix_row(fgh)/max_ch - 1);
 
-	double sum = matrix_get_pow(fgh, 0, a, 2.0)
-	           + matrix_get_pow(fgh, n_max - 1, a, 2.0);
+	double sum = 0.0;
 
 	#pragma omp parallel for default(none) shared(fgh) reduction(+:sum) if(use_omp)
-	for (int n = 1; n < (n_max - 2); n += 2)
+	for(int m = 0; m < max_ch; ++m)
 	{
-		sum += 4.0*matrix_get_pow(fgh, n, a, 2.0)
-		     + 2.0*matrix_get_pow(fgh, n + 1, a, 2.0);
+		matrix *wavef_m = dvr_multich_fgh_comp(fgh, max_ch, m, v);
+
+		sum += matrix_get_pow(wavef_m, 0, 0, 2.0)
+		     + matrix_get_pow(wavef_m, n_max - 1, 0, 2.0);
+
+		for (int n = 1; n < (n_max - 2); n += 2)
+		{
+			sum += 4.0*matrix_get_pow(wavef_m, n, 0, 2.0)
+			     + 2.0*matrix_get_pow(wavef_m, n + 1, 0, 2.0);
+		}
+
+		matrix_free(wavef_m);
 	}
 
 	sum = grid_step*sum/3.0;
-	matrix_col_scale(fgh, a, 1.0/sqrt(sum), use_omp);
+	matrix_col_scale(fgh, v, 1.0/sqrt(sum), use_omp);
 }
