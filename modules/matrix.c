@@ -542,10 +542,7 @@ matrix *matrix_get_block(const matrix *m,
 	ASSERT(row_max >= row_min)
 	ASSERT(col_max >= col_min)
 
-	ASSERT_ROW_INDEX(m, row_min)
 	ASSERT_ROW_INDEX(m, row_max)
-
-	ASSERT_COL_INDEX(m, col_min)
 	ASSERT_COL_INDEX(m, col_max)
 
 	matrix *block

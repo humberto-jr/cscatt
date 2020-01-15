@@ -25,4 +25,15 @@
 	                  const int a,
 	                  const double grid_step,
 	                  const bool use_omp);
+
+	matrix *dvr_multich_fgh(const int max_ch,
+	                        const int grid_size,
+	                        const double grid_step,
+	                        const tensor pot_energy[],
+	                        const double mass);
+
+	matrix *dvr_multich_fgh_comp(matrix *fgh,
+	                             const int max_ch,
+	                             const int n,
+	                             const int v);
 #endif

@@ -150,6 +150,27 @@ matrix *dvr_multich_fgh(const int max_ch,
 
 /******************************************************************************
 
+ Function dvr_multich_fgh_comp(): return the n-th component of a multichannel
+ eigenvector v from the Hamiltonian built by dvr_multich_fgh(). On entry, the
+ matrix is expected to be properly diagonalized and its columns the respective
+ eigenvectors.
+
+******************************************************************************/
+
+matrix *dvr_multich_fgh_comp(matrix *fgh,
+                             const int max_ch, const int n, const int v)
+{
+	ASSERT(n < max_ch)
+
+	const int grid_size = matrix_row(fgh)/max_ch;
+	const int n_min = n*grid_size;
+	const int n_max = n_min + (grid_size - 1);
+
+	return matrix_get_block(fgh, n_min, n_max, v, v);
+}
+
+/******************************************************************************
+
  Function dvr_fgh_wavef(): interpolate the eigenvector a of the Hamiltonian
  built by dvr_fgh(), using Eq. (4.1) of Ref. [3], and return its amplitude
  value at a given new r.
@@ -238,6 +259,34 @@ void dvr_fgh_norm(matrix *fgh,
 {
 	const int n_max
 		= (matrix_row(fgh)%2 == 0? matrix_row(fgh) : matrix_row(fgh) - 1);
+
+	double sum = matrix_get_pow(fgh, 0, a, 2.0)
+	           + matrix_get_pow(fgh, n_max - 1, a, 2.0);
+
+	#pragma omp parallel for default(none) shared(fgh) reduction(+:sum) if(use_omp)
+	for (int n = 1; n < (n_max - 2); n += 2)
+	{
+		sum += 4.0*matrix_get_pow(fgh, n, a, 2.0)
+		     + 2.0*matrix_get_pow(fgh, n + 1, a, 2.0);
+	}
+
+	sum = grid_step*sum/3.0;
+	matrix_col_scale(fgh, a, 1.0/sqrt(sum), use_omp);
+}
+
+/******************************************************************************
+
+ Function dvr_fgh_norm(): normalize to unity the eigenvector a of a Hamiltonian
+ built by dvr_fgh(). On entry, the matrix is expected to be properly
+ diagonalized and its columns the respective eigenvectors.
+
+******************************************************************************/
+
+void dvr_multich_fgh_norm(matrix *fgh, const int max_ch,
+                          const int a, const double grid_step, const bool use_omp)
+{
+	const int n_max
+	= ((matrix_row(fgh)/max_ch)%2 == 0? matrix_row(fgh)/max_ch : matrix_row(fgh)/max_ch - 1);
 
 	double sum = matrix_get_pow(fgh, 0, a, 2.0)
 	           + matrix_get_pow(fgh, n_max - 1, a, 2.0);

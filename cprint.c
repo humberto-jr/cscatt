@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 			if (file_exist(filename) && n == 0) remove(filename);
 			FILE *output = file_open_output(filename, false, true);
 
-			fprintf(output, "  % 6f\t", R_min + as_double(n)*R_step);
+			fprintf(output, "% -8e\t", R_min + as_double(n)*R_step);
 
 /*
  *			NOTE: "% -8e\t" print numbers left-justified with an invisible
