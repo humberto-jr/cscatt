@@ -28,13 +28,13 @@ int main(int argc, char *argv[])
 		= file_get_key(stdin, "energy_shift", -INF, INF, 0.0);
 
 	const double scale
-		= get_key(stdin, "energy_scale", -INF, INF, 1.0);
+		= file_get_key(stdin, "energy_scale", -INF, INF, 1.0);
 
 	const char arrang
-		= 96 + (int) get_key(stdin, "arrangement", 1.0, 3.0, 1.0);
+		= 96 + (int) file_get_key(stdin, "arrangement", 1.0, 3.0, 1.0);
 
 	const bool adiabatic
-		= (bool) get_key(stdin, "print_adiabatic", 0.0, 1.0, 0.0);
+		= (bool) file_get_key(stdin, "print_adiabatic", 0.0, 1.0, 0.0);
 
 	printf("# J                 = %d\n", J);
 	printf("# Arrangement       = %c\n", arrang);
@@ -51,9 +51,7 @@ int main(int argc, char *argv[])
 
 	while (file_exist(filename))
 	{
-		const double R = R_min + as_double(n)*R_step;
-
-		matrix *c = load_matrix(filename);
+		matrix *c = matrix_load(filename);
 
 		printf("# %5d: reading %s, size = %dx%d\n",
 		       n, filename, matrix_row(c), matrix_col(c));
@@ -64,12 +62,12 @@ int main(int argc, char *argv[])
 		for (int ch_a = 0; ch_a < matrix_row(c); ++ch_a)
 		{
 			memset(filename, 0, sizeof(filename));
-			sprintf(filename, CMATRIX_FILENAME_FORMAT, arrang, ch_a, J);
+			sprintf(filename, CMATRIX_DATAFILE_FORMAT, arrang, ch_a, J);
 
 			if (file_exist(filename) && n == 0) remove(filename);
 			FILE *output = file_open_output(filename, false, true);
 
-			fprintf(output, "  % 6f\t", R);
+			fprintf(output, "  % 6f\t", R_min + as_double(n)*R_step);
 
 /*
  *			NOTE: "% -8e\t" print numbers left-justified with an invisible

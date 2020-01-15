@@ -234,7 +234,7 @@ USE_MACRO = DUMMY_MACRO
 
 all: modules drivers
 modules: matrix nist johnson pes mass coor dvr file phys miller
-drivers: dbasis cmatrix test_suit about pes_print bprint
+drivers: dbasis cmatrix test_suit about pes_print bprint cprint
 
 #
 # Rules for modules:
