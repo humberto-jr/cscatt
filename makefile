@@ -54,49 +54,21 @@ SHELL = /bin/sh
 LINEAR_ALGEBRA = GSL
 GSLROOT = /usr/local
 
-#
-# GNU gcc compiler:
-#
-
 CC = gcc
 CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
 LDFLAGS = -L$(GSLROOT)/lib -lgsl -lgslcblas -lm
 FORT_LIB = -lgfortran
 
-ifeq ($(CC), gcc)
-	CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
-	LDFLAGS = -L$(GSLROOT)/lib -lgsl -lgslcblas -lm
-	FORT_LIB = -lgfortran
-endif
-
 #
-# clang compiler:
-#
-
-ifeq ($(CC), clang)
-	CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
-	LDFLAGS = -L$(GSLROOT)/lib -lgsl -lgslcblas -lm
-	FORT_LIB = -lgfortran
-endif
-
-#
-# Intel icc compiler:
-#
-
-ifeq ($(CC), icc)
-	CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
-	LDFLAGS = -L$(GSLROOT)/lib -lgsl -lgslcblas -lm
-	FORT_LIB = -lgfortran
-endif
-
-#
-# (GNU or Intel) mpicc:
+# GNU or Intel MPI compilers:
 #
 
 ifeq ($(CC), mpicc)
-	CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -DUSE_MPI -I$(GSLROOT)/include
-	LDFLAGS = -L$(GSLROOT)/lib -lgsl -lgslcblas -lm
-	FORT_LIB = -lgfortran
+	CFLAGS += -DUSE_MPI
+endif
+
+ifeq ($(CC), mpiicc)
+	CFLAGS += -DUSE_MPI
 endif
 
 #
@@ -135,6 +107,14 @@ endif
 ifeq ($(CC), mpixlc_r)
 	CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -DUSE_MPI
 	FORT_LIB = -lxlf90_r -lxl -lxlfmath -L$(XLFROOT)/bglib64
+endif
+
+#
+# PGI pgcc compiler:
+#
+
+ifeq ($(CC), pgcc)
+	override CFLAGS = -mp -O3 -I$(GSLROOT)/include
 endif
 
 #
@@ -215,12 +195,6 @@ ifeq ($(LINEAR_ALGEBRA), ATLAS)
 	LINEAR_ALGEBRA_INC = -I$(ATLASROOT)/include -DUSE_ATLAS
 	LINEAR_ALGEBRA_LIB = -L$(ATLASROOT)/lib -latlas -lptcblas -lm
 endif
-
-#
-# scatt_utils module + dependencies:
-#
-
-SCATT_UTILS_LIB = scatt_utils.o $(PES_LIB) $(GSL_LIB) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 
 #
 # Extra macros, if any, in order to tune the building:

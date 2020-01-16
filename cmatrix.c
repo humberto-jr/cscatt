@@ -291,7 +291,6 @@ int main(int argc, char *argv[])
 	free(basis);
 
 	#if defined(USE_MPI)
-		fclose(output);
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	#endif
