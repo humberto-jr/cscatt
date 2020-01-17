@@ -83,14 +83,14 @@ int main(int argc, char *argv[])
 		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
 
 	const enum mass_case m
-		= init_atomic_masses(stdin, arrang, 'p');
+		= init_atomic_masses(stdin, arrang, 'p', 0);
 
 /*
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
  */
 
 	printf("#\n");
-	printf("# J = %d, spin multiplicity = %d\n", J, spin_mult);
+	printf("# J = %d, J-parity = %d, spin mult. = %d\n", J, J_parity, spin_mult);
 	printf("#   Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
 	printf("# -------------------------------------------------------------------------------------\n");
 

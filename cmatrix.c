@@ -116,14 +116,6 @@ int main(int argc, char *argv[])
  *	calculations. If sequential running are used, the chunk of tasks is of
  *	size scatt_grid_size and, thus, remainder = 0, n_min = 0 and n_max =
  *	(scatt_grid_size - 1).
- *
- *	NOTE: For output, when MPI running are considered, each CPU shall open its
- *	own output file. Filenames are built using the CPU ID, the respective total
- *	angular momentum of the problem, J, and the arrangement index; thus, files
- *	belonging to different calculations and processes would not overlap. The
- *	filename template is defined in the macro STDOUT_BUFFER_FORMAT. If a
- *	sequential running is considered, then the output is the usual
- *	C stdout.
  */
 
 	const int mpi_task_chunk
@@ -141,16 +133,12 @@ int main(int argc, char *argv[])
 	const int remainder
 		= (scatt_grid_size - 1) - mpi_last_task;
 
-	#if defined(USE_MPI)
-		open_mpi_stdout(cpu_id, arrang, J, false);
-	#endif
-
 /*
  *	Atomic masses:
  */
 
 	const mass_case a
-		= init_atomic_masses(stdin, arrang, 'a');
+		= init_atomic_masses(stdin, arrang, 'a', cpu_id);
 
 /*
  * Multipolar coefficients, lambda:
@@ -166,19 +154,21 @@ int main(int argc, char *argv[])
  *	Sum up the main entries before starting actual computations:
  */
 
-	printf("#\n");
-	printf("# COUPLING MATRIX FOR J = %d\n", J);
-	printf("# Scatt. grid  = %d\n", scatt_grid_size);
-	printf("# MPI CPUs     = %d\n", max_cpu);
-	printf("# Grid/CPU     = %d\n", mpi_task_chunk);
-	printf("# Grid used    = [%d, %d]\n", n_min, n_max);
-	printf("# Remainder    = %d\n", remainder);
-	printf("# Max. channel = %d\n", max_ch);
-	printf("# Tasks/grid   = %d\n", omp_last_task);
-	printf("# OMP threads  = %d\n", max_thread);
-	printf("# Tasks/thread = %d\n", omp_task_chunk);
-	printf("# Max. lambda  = %d\n", lambda_max);
-	printf("# Lambda step  = %d\n", lambda_step);
+	if (cpu_id == 0)
+	{
+		printf("#\n");
+		printf("# COUPLING MATRIX FOR J = %d\n", J);
+		printf("# Scatt. grid  = %d\n", scatt_grid_size);
+		printf("# MPI CPUs     = %d\n", max_cpu);
+		printf("# Grid/CPU     = %d\n", mpi_task_chunk);
+		printf("# Remainder    = %d\n", remainder);
+		printf("# Max. channel = %d\n", max_ch);
+		printf("# Tasks/grid   = %d\n", omp_last_task);
+		printf("# OMP threads  = %d\n", max_thread);
+		printf("# Tasks/thread = %d\n", omp_task_chunk);
+		printf("# Max. lambda  = %d\n", lambda_max);
+		printf("# Lambda step  = %d\n", lambda_step);
+	}
 
 	scatt_basis *basis
 		= allocate(max_ch, sizeof(scatt_basis), true);
@@ -226,6 +216,7 @@ int main(int argc, char *argv[])
 	}
 
 	ASSERT(counter == omp_last_task);
+	counter = 0;
 
 /*
  *	Build the coupling matrix, U(Rn) for n = [n_min, n_max]:
@@ -266,10 +257,43 @@ int main(int argc, char *argv[])
 		matrix_save(c, filename);
 		matrix_free(c);
 
-		printf("#\n");
-		printf("# R           = %f\n", R);
-		printf("# Wall time   = %f s\n", end_time - start_time);
-		printf("# Disk buffer = %s\n", filename);
+		if (cpu_id == 0)
+		{
+			printf("#\n");
+			printf("# CPU         = %d\n", cpu_id);
+			printf("# R value     = %f a.u.\n", R);
+			printf("# Wall time   = %f min\n", (end_time - start_time)/60.0);
+			printf("# Disk buffer = %s\n", filename);
+			++counter;
+
+			#if defined(USE_MPI)
+				for (int their_id = 1; their_id < max_cpu; ++their_id)
+				{
+					if (counter == scatt_grid_size) break;
+
+					char their_log[MAX_LINE_LENGTH];
+					MPI_Recv(&their_log, MAX_LINE_LENGTH, MPI_BYTE, their_id, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+					printf(their_log);
+					++counter;
+				}
+			#endif
+		}
+		else
+		{
+			#if defined(USE_MPI)
+				char my_log[MAX_LINE_LENGTH];
+
+				sprintf(my_log, "#\n");
+				sprintf(my_log + strlen(my_log), "# CPU         = %d\n", cpu_id);
+				sprintf(my_log + strlen(my_log), "# R value     = %f a.u.\n", R);
+				sprintf(my_log + strlen(my_log), "# Wall time   = %f min\n", (end_time - start_time)/60.0);
+				sprintf(my_log + strlen(my_log), "# Disk buffer = %s\n", filename);
+
+				MPI_Request info;
+				MPI_Isend(&my_log, MAX_LINE_LENGTH, MPI_BYTE, 0, 666, MPI_COMM_WORLD, &info);
+			#endif
+		}
 
 /*
  *		NOTE: If remainder > 0, each CPU shall compute one extra grid point
@@ -287,8 +311,13 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	free(list);
+	for (int n = 0; n < max_ch; ++n)
+	{
+		matrix_free(basis[n].wavef);
+	}
+
 	free(basis);
+	free(list);
 
 	#if defined(USE_MPI)
 		MPI_Barrier(MPI_COMM_WORLD);

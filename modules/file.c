@@ -80,6 +80,7 @@ void file_init_stdin(const char filename[])
 {
 	FILE *input = file_open_input(filename, false);
 
+	fclose(stdin);
 	stdin = input;
 	input = NULL;
 }
@@ -94,6 +95,7 @@ void file_init_stdout(const char filename[], const bool to_append)
 {
 	FILE *output = file_open_output(filename, false, to_append);
 
+	fclose(stdout);
 	stdout = output;
 	output = NULL;
 }
