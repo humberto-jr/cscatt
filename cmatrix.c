@@ -57,12 +57,16 @@ int main(int argc, char *argv[])
 	ASSERT(argc > 1)
 	file_init_stdin(argv[1]);
 
-	/* total angular momentum, J */
+/*
+ *	Total angular momentum, J:
+ */
 
 	const int J
 		= (int) file_get_key(stdin, "J", 0.0, INF, 0.0);
 
-	/* scattering grid, R */
+/*
+ *	Scattering grid, R:
+ */
 
 	const int scatt_grid_size
 		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 500.0);
@@ -76,7 +80,9 @@ int main(int argc, char *argv[])
 	const double R_step
 		= (R_max - R_min)/as_double(scatt_grid_size);
 
-	/* arrangement (1 == a, 2 == b, 3 == c) and scatt. channels */
+/*
+ *	Arrangement (1 == a, 2 == b, 3 == c) and scatt. channels:
+ */
 
 	const char arrang
 		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
@@ -84,7 +90,9 @@ int main(int argc, char *argv[])
 	const int max_ch
 		= count_basis(arrang, J);
 
-	/* OpenMP (0 = false = not use, 1 = true = use) */
+/*
+ * OpenMP (0 = false = not use, 1 = true = use):
+ */
 
 	const bool use_omp
 		= (bool) file_get_key(stdin, "use_omp", 0.0, 1.0, 1.0);
@@ -98,7 +106,9 @@ int main(int argc, char *argv[])
 	const int omp_task_chunk
 		= omp_last_task/max_thread;
 
-	/* MPI */
+/*
+ * MPI:
+ */
 
 	const int mpi_task_chunk
 		= scatt_grid_size/max_cpu;
@@ -115,12 +125,16 @@ int main(int argc, char *argv[])
 	const int remainder
 		= (scatt_grid_size - 1) - mpi_last_task;
 
-	/* atomic masses and arrang. reduced mass */
+/*
+ *	Atomic masses and arrang. reduced mass:
+ */
 
 	const mass_case a
 		= init_atomic_masses(stdin, arrang, 'a', cpu_id);
 
-	/* multipolar expansion coefficients, lambda */
+/*
+ *	Multipolar expansion coefficients, lambda:
+ */
 
 	const int lambda_max
 		= (int) file_get_key(stdin, "lambda_max", 0.0, INF, 20.0);

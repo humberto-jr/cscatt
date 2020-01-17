@@ -33,33 +33,44 @@
 	******************************************************************************/
 
 	mass_case init_atomic_masses(FILE *input,
-	                             const char arrang, const char mode)
+	                             const char arrang, const char mode, const int cpu_id)
 	{
 		mass_init(input);
 
-		printf("#\n");
-		printf("# REDUCED MASSES:\n");
-		printf("# Atom A = %f a.u.\n", mass(atom_a));
-		printf("# Atom B = %f a.u.\n", mass(atom_b));
-		printf("# Atom C = %f a.u.\n", mass(atom_c));
+		if (cpu_id == 0)
+		{
+			printf("# REDUCED MASSES:\n");
+			printf("# Atom A = %f a.u.\n", mass(atom_a));
+			printf("# Atom B = %f a.u.\n", mass(atom_b));
+			printf("# Atom C = %f a.u.\n", mass(atom_c));
+		}
 
 		switch (arrang)
 		{
 			case 'a':
-				printf("# Diatom BC = %f a.u.\n", mass(pair_bc));
-				printf("# Arrangement A + BC = %f a.u.\n", mass(arrang_a));
+				if (cpu_id == 0)
+				{
+					printf("# Diatom BC = %f a.u.\n", mass(pair_bc));
+					printf("# Arrangement A + BC = %f a.u.\n", mass(arrang_a));
+				}
 
 				return (mode == 'p'? pair_bc : arrang_a);
 
 			case 'b':
-				printf("# Diatom CA = %f a.u.\n", mass(pair_ac));
-				printf("# Arrangement B + CA = %f a.u.\n", mass(arrang_b));
+				if (cpu_id == 0)
+				{
+					printf("# Diatom CA = %f a.u.\n", mass(pair_ac));
+					printf("# Arrangement B + CA = %f a.u.\n", mass(arrang_b));
+				}
 
 				return (mode == 'p'? pair_ac : arrang_b);
 
 			case 'c':
-				printf("# Diatom AB = %f a.u.\n", mass(pair_ab));
-				printf("# Arrangement C + AB = %f a.u.\n", mass(arrang_c));
+				if (cpu_id == 0)
+				{
+					printf("# Diatom AB = %f a.u.\n", mass(pair_ab));
+					printf("# Arrangement C + AB = %f a.u.\n", mass(arrang_c));
+				}
 
 				return (mode == 'p'? pair_ab : arrang_c);
 
