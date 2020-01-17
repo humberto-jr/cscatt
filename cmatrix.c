@@ -57,16 +57,12 @@ int main(int argc, char *argv[])
 	ASSERT(argc > 1)
 	file_init_stdin(argv[1]);
 
-/*
- *	Total angular momentum, J:
- */
+	/* total angular momentum, J */
 
 	const int J
 		= (int) file_get_key(stdin, "J", 0.0, INF, 0.0);
 
-/*
- *	Scattering grid, R:
- */
+	/* scattering grid, R */
 
 	const int scatt_grid_size
 		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 500.0);
@@ -80,9 +76,7 @@ int main(int argc, char *argv[])
 	const double R_step
 		= (R_max - R_min)/as_double(scatt_grid_size);
 
-/*
- * Arrangement (1 == a, 2 == b, 3 == c) and channels:
- */
+	/* arrangement (1 == a, 2 == b, 3 == c) and scatt. channels */
 
 	const char arrang
 		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
@@ -90,9 +84,7 @@ int main(int argc, char *argv[])
 	const int max_ch
 		= count_basis(arrang, J);
 
-/*
- *	OpenMP (0 = false, 1 = true):
- */
+	/* OpenMP (0 = false = not use, 1 = true = use) */
 
 	const bool use_omp
 		= (bool) file_get_key(stdin, "use_omp", 0.0, 1.0, 1.0);
@@ -106,17 +98,7 @@ int main(int argc, char *argv[])
 	const int omp_task_chunk
 		= omp_last_task/max_thread;
 
-/*
- *	MPI:
- *
- *	NOTE: On regarding MPI, chunks of R-values are computed independently by each
- *	CPU, where the grid points n = [n_min, n_max] are determined by their IDs. If
- *	the total number of tasks are not equally divided by the total number of CPUs
- *	(common case), a remainder shall be computed after, in a second round of
- *	calculations. If sequential running are used, the chunk of tasks is of
- *	size scatt_grid_size and, thus, remainder = 0, n_min = 0 and n_max =
- *	(scatt_grid_size - 1).
- */
+	/* MPI */
 
 	const int mpi_task_chunk
 		= scatt_grid_size/max_cpu;
@@ -133,26 +115,18 @@ int main(int argc, char *argv[])
 	const int remainder
 		= (scatt_grid_size - 1) - mpi_last_task;
 
-/*
- *	Atomic masses:
- */
+	/* atomic masses and arrang. reduced mass */
 
 	const mass_case a
 		= init_atomic_masses(stdin, arrang, 'a', cpu_id);
 
-/*
- * Multipolar coefficients, lambda:
- */
+	/* multipolar expansion coefficients, lambda */
 
 	const int lambda_max
 		= (int) file_get_key(stdin, "lambda_max", 0.0, INF, 20.0);
 
 	const int lambda_step
 		= init_lambda_step(arrang);
-
-/*
- *	Sum up the main entries before starting actual computations:
- */
 
 	if (cpu_id == 0)
 	{
@@ -179,22 +153,13 @@ int main(int argc, char *argv[])
 	}
 
 /*
- *	NOTE: Once the basis set is built we shall compute the coupling matrix U as
- *	function of the scatt. coordinate R. If a MPI running is considered, then
- *	each CPU will resolve the matrices for given chunks of R values. If OMP
- *	is also used, threads will handle the ro-vibrational integrals of each
- *	matrix element, U(R) = <v'j'l'| V(r, R, theta) |vjl>.
- */
-
-/*
- *	NOTE: As the coupling, U, is a symmetric matrix of shape max_ch-by-max_ch,
- *	the usual way of using two for-loops to iterate over its triangular upper
- *	(or lower) part would give rise a fairly unbalanced workload of tasks for
- *	each thread (when OMP is used). In order to overcome this problem we shall
- *	unfold the upper triangular part into a vector max_ch*(max_ch + 1)/2 long
- *	(including diagonal elements). Thus, the team of threads would divide the
- *	matrix elements into equally spaced chunks of tasks (as much as possible),
- *	being more efficient in terms of computing time.
+ *	NOTE: As the coupling is a symmetric matrix of shape max_ch-by-max_ch the
+ *	usual way of using two for-loops to iterate over its triangular upper (or
+ *	lower) part gives rise to a fairly unbalanced workload of tasks for each
+ *	thread. In order to overcome this problem we will unfold the upper part in
+ *	a long vector of size omp_last_task = max_ch*(max_ch + 1)/2. Thus, the team
+ *	of threads can now divide the matrix elements into equally spaced chunks of
+ *	tasks (as much as possible) being more efficient in terms of computing time.
  */
 
 	task *list
@@ -218,15 +183,12 @@ int main(int argc, char *argv[])
 	ASSERT(counter == omp_last_task);
 	counter = 0;
 
-/*
- *	Build the coupling matrix, U(Rn) for n = [n_min, n_max]:
- */
-
 	for (int n = n_min; n <= n_max; ++n)
 	{
 		extra_step: /* This is an empty statement */;
 
 		matrix *c = matrix_alloc(max_ch, max_ch, false);
+
 		const double R = R_min + as_double(n)*R_step;
 		const double start_time = wall_time();
 
@@ -272,7 +234,9 @@ int main(int argc, char *argv[])
 					if (counter == scatt_grid_size) break;
 
 					char their_log[MAX_LINE_LENGTH];
-					MPI_Recv(&their_log, MAX_LINE_LENGTH, MPI_BYTE, their_id, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+					MPI_Recv(&their_log, MAX_LINE_LENGTH, MPI_BYTE,
+					         their_id, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 					printf(their_log);
 					++counter;
@@ -282,26 +246,26 @@ int main(int argc, char *argv[])
 		else
 		{
 			#if defined(USE_MPI)
-				char my_log[MAX_LINE_LENGTH];
-
-				sprintf(my_log, "#\n");
-				sprintf(my_log + strlen(my_log), "# CPU         = %d\n", cpu_id);
-				sprintf(my_log + strlen(my_log), "# R value     = %f a.u.\n", R);
-				sprintf(my_log + strlen(my_log), "# Wall time   = %f min\n", (end_time - start_time)/60.0);
-				sprintf(my_log + strlen(my_log), "# Disk buffer = %s\n", filename);
-
 				MPI_Request info;
-				MPI_Isend(&my_log, MAX_LINE_LENGTH, MPI_BYTE, 0, 666, MPI_COMM_WORLD, &info);
+				char log[MAX_LINE_LENGTH];
+
+				sprintf(log, "#\n");
+				sprintf(log + strlen(log), "# CPU         = %d\n", cpu_id);
+				sprintf(log + strlen(log), "# R value     = %f a.u.\n", R);
+				sprintf(log + strlen(log), "# Wall time   = %f min\n", (end_time - start_time)/60.0);
+				sprintf(log + strlen(log), "# Disk buffer = %s\n", filename);
+
+				MPI_Isend(&log, MAX_LINE_LENGTH,
+				          MPI_BYTE, 0, 666, MPI_COMM_WORLD, &info);
 			#endif
 		}
 
 /*
- *		NOTE: If remainder > 0, each CPU shall compute one extra grid point
- *		after mpi_last_task. Where, CPU 0 handles the (mpi_last_task + 1)
- *		point and, likewise, CPU 1 for the (mpi_last_task + 2), ..., until
- *		CPU N for the (mpi_last_task + N + 1). Thus, they have to redefine
- *		the grid index n and jump back to their new R value in order to
- *		loop over.
+ *		NOTE: If remainder > 0, each CPU shall compute one extra grid point after
+ *		mpi_last_task. Where, CPU 0 handles the (mpi_last_task + 1)-th point and,
+ *		likewise, CPU 1 goes for the (mpi_last_task + 2)-th, ..., until CPU N for
+ *		the (mpi_last_task + N + 1). Thus, they have to redefine the grid index n
+ *		and jump back to their new R value in order to loop over.
  */
 
 		if (n == n_max && remainder > 0)
