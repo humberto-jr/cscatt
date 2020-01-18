@@ -182,7 +182,7 @@ CUDAROOT = /usr/local/cuda
 
 ifeq ($(LINEAR_ALGEBRA), MAGMA)
 	LINEAR_ALGEBRA_INC = -I$(CUDAROOT)/include -I$(MAGMAROOT)/include -DUSE_MAGMA -DADD_
-	LINEAR_ALGEBRA_LIB = -L$(MAGMAROOT)/lib -lmagma -lm
+	LINEAR_ALGEBRA_LIB = -L$(MAGMAROOT)/lib -L$(CUDAROOT)/lib64 -lmagma -lm
 endif
 
 #
