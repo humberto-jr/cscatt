@@ -106,6 +106,17 @@ inline static int min(const int a, const int b)
 
 /******************************************************************************
 
+ Function max(): return the max between two integers a and b.
+
+******************************************************************************/
+
+inline static int max(const int a, const int b)
+{
+	return (a > b? a : b);
+}
+
+/******************************************************************************
+
  Wrapper call_dgemm(): a general call to dgemm interfacing the many different
  possible libraries. For the meaning of each input parameter, please refer to
  dgemm documentation in the netlib repository:
@@ -215,7 +226,7 @@ void call_dsyev(const char jobz,
 			= magma_get_dsytrd_nb((magma_int_t) n);
 
 		const magma_int_t lwork
-			= (jobz == 'n'? 2*n + n*nb : GSL_MAX(2*n + n*nb, 1 + 6*n + 2*n*n));
+			= (jobz == 'n'? 2*n + n*nb : max(2*n + n*nb, 1 + 6*n + 2*n*n));
 
 		const magma_int_t liwork
 			= (jobz == 'n'? n : 3 + 5*n);
@@ -343,7 +354,7 @@ matrix *matrix_alloc(const int max_row, const int max_col, const bool set_zero)
 	pointer->max_col = max_col;
 
 	#if defined(USE_MAGMA)
-		magma_dmalloc_pinned(pointer->data, max_row*max_col);
+		magma_dmalloc_pinned(&pointer->data, max_row*max_col);
 		if (set_zero) matrix_set_all(pointer, 0.0, false);
 	#else
 		pointer->data = allocate(max_row*max_col, sizeof(double), set_zero);
@@ -361,7 +372,7 @@ matrix *matrix_alloc(const int max_row, const int max_col, const bool set_zero)
 void matrix_free(matrix *m)
 {
 	#if defined(USE_MAGMA)
-		magma_free_pinned(m->data);
+		magma_free_pinned(&m->data);
 	#else
 		free(m->data);
 	#endif
