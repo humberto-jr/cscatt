@@ -35,11 +35,11 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			b.y = -c.y;
 			b.z =  0.0;
 
+			const double cb_com
+			= (c.y*mass(atom_c) + b.y*mass(atom_b))/(mass(atom_c) + mass(atom_b));
+
 			a.x = 0.0;
-
-			a.y = (c.y*mass(atom_c) + b.y*mass(atom_b))/(mass(atom_c) + mass(atom_b))
-			    + from->R*sin(from->theta*M_PI/180.0);
-
+			a.y = cb_com + from->R*sin(from->theta*M_PI/180.0);
 			a.z = from->R*cos(from->theta*M_PI/180.0);
 
 			to->r_bc = from->r;
@@ -56,11 +56,11 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			a.y = -c.y;
 			a.z =  0.0;
 
+			const double ca_com
+			= (c.y*mass(atom_c) + a.y*mass(atom_a))/(mass(atom_c) + mass(atom_a));
+
 			b.x = 0.0;
-
-			b.y = (c.y*mass(atom_c) + a.y*mass(atom_a))/(mass(atom_c) + mass(atom_a))
-			    + from->R*sin(from->theta*M_PI/180.0);
-
+			b.y = ca_com + from->R*sin(from->theta*M_PI/180.0);
 			b.z = from->R*cos(from->theta*M_PI/180.0);
 
 			to->r_ac = from->r;
@@ -77,11 +77,11 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			b.y = -a.y;
 			b.z =  0.0;
 
+			const double ab_com
+			= (a.y*mass(atom_a) + b.y*mass(atom_b))/(mass(atom_a) + mass(atom_b));
+
 			c.x = 0.0;
-
-			c.y = (a.y*mass(atom_a) + b.y*mass(atom_b))/(mass(atom_a) + mass(atom_b))
-			    + from->R*sin(from->theta*M_PI/180.0);
-
+			c.y = ab_com + from->R*sin(from->theta*M_PI/180.0);
 			c.z = from->R*cos(from->theta*M_PI/180.0);
 
 			to->r_ab = from->r;

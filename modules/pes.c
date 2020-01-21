@@ -70,7 +70,7 @@ double pec(const char arrang, const double r)
 	const jacobi_coor x =
 	{
 		.r = r,
-		.R = INF,
+		.R = 1000.0,
 		.theta = 90.0,
 		.arrang = arrang
 	};
