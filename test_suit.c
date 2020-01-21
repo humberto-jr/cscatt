@@ -322,15 +322,15 @@ int main()
 			matrix_free(v);
 		}
 	}
-
+*/
 	printf("\n");
-	printf("# Timing of matrix_mul(): n-by-n; n vs. wall time (s)\n");
+	printf("Timing for matrix_multiply(1.0, a, b, 1.0, c); n-by-n; n vs. wall time (s)\n");
 
 	for (int n = 128; n < 2560; n += 32)
 	{
-		matrix *a = matrix_alloc(1, n, n, false);
-		matrix *b = matrix_alloc(1, n, n, false);
-		matrix *c = matrix_alloc(1, n, n, false);
+		a = matrix_alloc(n, n, false);
+		b = matrix_alloc(n, n, false);
+		c = matrix_alloc(n, n, false);
 
 		matrix_set_all(a, 1.0, false);
 		matrix_set_all(b, 2.0, false);
@@ -340,7 +340,7 @@ int main()
 
 		const double start_time = wall_time();
 
-		matrix_mul(1.0, a, b, 1.0, c);
+		matrix_multiply(1.0, a, b, 1.0, c);
 
 		const double end_time = wall_time();
 
@@ -352,7 +352,7 @@ int main()
 
 				if (error > 1.0E-8)
 				{
-					PRINT_ERROR("%s", "# matrix_mul() failed, abs. error = ")
+					PRINT_ERROR("%s", "matrix_multiply() failed with abs. error = ")
 					PRINT_ERROR("%-8e\n at (%d, %d)\n", error, p, q)
 				}
 			}
@@ -365,6 +365,7 @@ int main()
 		matrix_free(c);
 	}
 
+/*
 	printf("\n");
 	printf("# Timing of matrix_inv(): n-by-n; n vs. wall time (s)\n");
 
