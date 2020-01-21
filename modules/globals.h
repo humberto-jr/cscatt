@@ -233,4 +233,26 @@
 
 		return stamp;
 	}
+
+	/******************************************************************************
+
+	 Function min(): return the min between two integers a and b.
+
+	******************************************************************************/
+
+	inline static int min(const int a, const int b)
+	{
+		return (a < b? a : b);
+	}
+
+	/******************************************************************************
+
+	 Function max(): return the max between two integers a and b.
+
+	******************************************************************************/
+
+	inline static int max(const int a, const int b)
+	{
+		return (a > b? a : b);
+	}
 #endif
