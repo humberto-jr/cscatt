@@ -27,6 +27,7 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 	switch (from->arrang)
 	{
 		case 'a':
+		{
 			c.x = 0.0;
 			c.y = from->r/2.0;
 			c.z = 0.0;
@@ -35,8 +36,9 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			b.y = -c.y;
 			b.z =  0.0;
 
-			const double cb_com
-			= (c.y*mass(atom_c) + b.y*mass(atom_b))/(mass(atom_c) + mass(atom_b));
+			const double mass_c = mass(atom_c);
+			const double mass_b = mass(atom_b);
+			const double cb_com = (c.y*mass_c + b.y*mass_b)/(mass_c + mass_b);
 
 			a.x = 0.0;
 			a.y = cb_com + from->R*sin(from->theta*M_PI/180.0);
@@ -45,9 +47,11 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			to->r_bc = from->r;
 			to->r_ac = coor_xyz_distance(&a, &c);
 			to->r_ab = coor_xyz_distance(&a, &b);
+		}
 		break;
 
 		case 'b':
+		{
 			c.x = 0.0;
 			c.y = from->r/2.0;
 			c.z = 0.0;
@@ -56,8 +60,9 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			a.y = -c.y;
 			a.z =  0.0;
 
-			const double ca_com
-			= (c.y*mass(atom_c) + a.y*mass(atom_a))/(mass(atom_c) + mass(atom_a));
+			const double mass_c = mass(atom_c);
+			const double mass_a = mass(atom_a);
+			const double ca_com = (c.y*mass_c + a.y*mass_a)/(mass_c + mass_a);
 
 			b.x = 0.0;
 			b.y = ca_com + from->R*sin(from->theta*M_PI/180.0);
@@ -66,9 +71,11 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			to->r_ac = from->r;
 			to->r_bc = coor_xyz_distance(&b, &c);
 			to->r_ab = coor_xyz_distance(&a, &b);
+		}
 		break;
 
 		case 'c':
+		{
 			a.x = 0.0;
 			a.y = from->r/2.0;
 			a.z = 0.0;
@@ -77,8 +84,9 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			b.y = -a.y;
 			b.z =  0.0;
 
-			const double ab_com
-			= (a.y*mass(atom_a) + b.y*mass(atom_b))/(mass(atom_a) + mass(atom_b));
+			const double mass_a = mass(atom_a);
+			const double mass_b = mass(atom_b);
+			const double ab_com = (a.y*mass_a + b.y*mass_b)/(mass_a + mass_b);
 
 			c.x = 0.0;
 			c.y = ab_com + from->R*sin(from->theta*M_PI/180.0);
@@ -87,6 +95,7 @@ void coor_jacobi_to_internuc(const jacobi_coor *from, internuc_coor *to)
 			to->r_ab = from->r;
 			to->r_bc = coor_xyz_distance(&b, &c);
 			to->r_ac = coor_xyz_distance(&a, &c);
+		}
 		break;
 
 		default:
