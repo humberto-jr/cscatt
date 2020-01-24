@@ -46,12 +46,12 @@
 
 	******************************************************************************/
 
-	inline static void load_coupl(const char arrang,
-	                              const int n, const int J, matrix *c)
+	inline static matrix *load_coupl(const char arrang,
+	                                 const int n, const int J)
 	{
 		char filename[MAX_LINE_LENGTH];
 		sprintf(filename, CMATRIX_BUFFER_FORMAT, arrang, n, J);
 
-		c = matrix_load(filename);
+		return matrix_load(filename);
 	}
 #endif

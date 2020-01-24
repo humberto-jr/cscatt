@@ -110,11 +110,14 @@ int main(int argc, char *argv[])
 
 		for (int n = 0; n < scatt_grid_size; ++n)
 		{
-			load_coupl(arrang, n, j, pot_energy[n].value);
+			pot_energy[n].value = load_coupl(arrang, n, j);
 		}
 
+		const int max_state
+			= matrix_row(pot_energy[0].value);
+
 		matrix *eigenvec
-			= dvr_multich_fgh(max_ch, scatt_grid_size, R_step, pot_energy, mass(m));
+			= dvr_multich_fgh(max_state, scatt_grid_size, R_step, pot_energy, mass(m));
 
 		for (int n = 0; n < scatt_grid_size; ++n)
 		{
@@ -135,7 +138,7 @@ int main(int argc, char *argv[])
 		{
 			if (eigenval[v] >= 0.0) continue;
 
-			dvr_multich_fgh_norm(eigenvec, max_ch, v, R_step, false);
+			dvr_multich_fgh_norm(eigenvec, max_state, v, R_step, false);
 			matrix *wavef = matrix_get_col(eigenvec, v, false);
 
 /*
