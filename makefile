@@ -305,6 +305,11 @@ cprint: cprint.c coupl_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
+tbasis: tbasis.c mass_config.h basis_config.h coupl_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/dvr.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o mass.o dvr.o nist.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	@echo
+
 network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h matrix.o
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)

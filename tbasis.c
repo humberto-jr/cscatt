@@ -7,6 +7,7 @@
 #include "modules/globals.h"
 
 #include "mass_config.h"
+#include "coupl_config.h"
 #include "basis_config.h"
 
 #define FORMAT "# %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
@@ -85,7 +86,7 @@ int main(int argc, char *argv[])
 		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
 
 	const enum mass_case m
-		= init_atomic_masses(stdin, arrang, 'a');
+		= init_atomic_masses(stdin, arrang, 'a', 0);
 
 /*
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
@@ -111,6 +112,11 @@ int main(int argc, char *argv[])
 		for (int n = 0; n < scatt_grid_size; ++n)
 		{
 			pot_energy[n].value = load_coupl(arrang, n, j);
+
+			if (n > 0)
+			{
+				ASSERT(matrix_row(pot_energy[n - 1].value) == matrix_row(pot_energy[n].value))
+			}
 		}
 
 		const int max_state
@@ -172,6 +178,7 @@ int main(int argc, char *argv[])
 				file_write(filename, 1, sizeof(int), &j, true);
 				file_write(filename, 1, sizeof(int), &l, true);
 				file_write(filename, 1, sizeof(int), &spin_mult, true);
+				file_write(filename, 1, sizeof(int), &max_state, true);
 
 				++max_ch;
 			}
