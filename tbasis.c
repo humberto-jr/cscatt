@@ -29,6 +29,8 @@ int main(int argc, char *argv[])
 
 /*
  *	Vibrational quantum numbers, v:
+ *
+ *	NOTE: shall not be necessarily the same values used in dbasis driver.
  */
 
 	const int v_min
@@ -42,6 +44,8 @@ int main(int argc, char *argv[])
 
 /*
  *	Rotational quantum numbers, j:
+ *
+ *	NOTE: it is equivalent to all J values used in dbasis and cmatrix drivers.
  */
 
 	const int j_min
@@ -55,6 +59,8 @@ int main(int argc, char *argv[])
 
 /*
  *	Vibrational grid:
+ *
+ *	NOTE: it is equivalent to the scattering grid, along R, used in cmatrix driver.
  */
 
 	const int scatt_grid_size
@@ -89,16 +95,16 @@ int main(int argc, char *argv[])
 		= init_atomic_masses(stdin, arrang, 'a', 0);
 
 /*
- *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
+ *	Resolve the triatomic eigenvalues for each j-case and sort results as scatt. channels:
  */
 
 	printf("#\n");
-	printf("# J = %d, spin multiplicity = %d\n", J, spin_mult);
+	printf("# J = %d, J-parity = %d, spin mult. = %d\n", J, J_parity, spin_mult);
 	printf("#   Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
 	printf("# -------------------------------------------------------------------------------------\n");
 
 /*
- *	Step 1: loop over rotational states j of the diatom and solve the diatomic eigenvalue problem
+ *	Step 1: loop over rotational states j of the triatom and solve a multichannel eigenvalue problem
  *	using the Fourier grid Hamiltonian discrete variable representation (FGH-DVR) method.
  */
 
@@ -119,6 +125,11 @@ int main(int argc, char *argv[])
 			}
 		}
 
+/*
+ *		NOTE: the total number of diatomic states used to expand the triatomic eigenvectos is named
+ *		max_state and it is equal max_ch from dbasis driver.
+ */
+
 		const int max_state
 			= matrix_row(pot_energy[0].value);
 
@@ -136,7 +147,7 @@ int main(int argc, char *argv[])
 			= matrix_symm_eigen(eigenvec, 'v');
 
 /*
- *		Step 2: loop over the vibrational states v of the diatom, solutions of step 2, and select
+ *		Step 2: loop over the vibrational states v of the triatom, solutions of step 2, and select
  *		only those of interest.
  */
 
@@ -148,7 +159,7 @@ int main(int argc, char *argv[])
 			matrix *wavef = matrix_get_col(eigenvec, v, false);
 
 /*
- *			Step 3: loop over all partial waves l of the atom around the diatom given by the
+ *			Step 3: loop over all partial waves l of the atom around the triatom given by the
  *			respective J and j.
  */
 
@@ -161,7 +172,7 @@ int main(int argc, char *argv[])
 
 /*
  *				Step 4: save each basis function |vjl> in the disk and increment the counter of
- *				channels.
+ *				atom-triatom channels.
  */
 
 				char filename[MAX_LINE_LENGTH];
