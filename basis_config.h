@@ -19,7 +19,7 @@
 	struct scatt_basis
 	{
 		matrix *wavef;
-		int v, j, l, spin_mult;
+		int v, j, l, spin_mult, max_state;
 		double r_min, r_max, r_step, energy;
 	};
 
@@ -95,5 +95,8 @@
 
 		file_offset += sizeof(int);
 		file_read(filename, 1, sizeof(int), &b->spin_mult, file_offset);
+
+		file_offset += sizeof(int);
+		file_read(filename, 1, sizeof(int), &b->max_state, file_offset);
 	}
 #endif

@@ -21,22 +21,27 @@ int main(int argc, char *argv[])
 		scatt_basis basis;
 		load_basis(arrang, ch, J, &basis);
 
+		const int grid_size
+			 = matrix_row(basis.wavef)/basis.max_state;
+
 		char filename[MAX_LINE_LENGTH];
 		sprintf(filename, BASIS_DATAFILE_FORMAT, arrang, ch, J);
 
 		FILE *output
 			= file_open_output(filename, false, false);
 
-		printf("# writing %s\n", filename);
+		printf("# Writing %s\n", filename);
 
 		fprintf(output, "# v = %d\n", basis.v);
 		fprintf(output, "# j = %d\n", basis.j);
 		fprintf(output, "# l = %d\n", basis.l);
-		fprintf(output, "# spin mult. = %d\n", basis.spin_mult);
-		fprintf(output, "# eigenvalue = % -8e\n", basis.energy);
-		fprintf(output, "# file created on %s\n", time_stamp());
+		fprintf(output, "# Spin mult. = %d\n", basis.spin_mult);
+		fprintf(output, "# Components = %d\n", basis.max_state);
+		fprintf(output, "# Eigenvalue = % -8e\n", basis.energy);
+		fprintf(output, "# File created on %s\n", time_stamp());
+		fprintf(output, "#\n");
 
-		for (int n = 0; n < matrix_row(basis.wavef); ++n)
+		for (int n = 0; n < grid_size; ++n)
 		{
 			const double r
 				= basis.r_min + as_double(n)*basis.r_step;
@@ -46,8 +51,23 @@ int main(int argc, char *argv[])
  *			plus sign, if any, 8 digits wide in scientific notation + tab.
  */
 
-			fprintf(output, "%06f\t % -8e\t\n",
-			        r, matrix_get(basis.wavef, n, 0));
+			if (basis.max_state == 1)
+			{
+				fprintf(output, "%06f\t % -8e\t\n",
+				        r, matrix_get(basis.wavef, n, 0));
+			}
+			else
+			{
+				fprintf(output, "%06f\t ", r);
+
+				for (int m = 0; m < basis.max_state; ++m)
+				{
+					fprintf(output, "% -8e\t ",
+					        matrix_get(basis.wavef, m*grid_size + n, 0));
+				}
+
+				fprintf(output, "\n");
+			}
 		}
 
 		matrix_free(basis.wavef);

@@ -111,6 +111,8 @@ int main(int argc, char *argv[])
 			pot_energy[n] = pec(arrang, r) + phys_centr_term(j, mass(m), r);
 		}
 
+		const int max_state = 1;
+
 		matrix *eigenvec
 			= dvr_fgh(rovib_grid_size, r_step, pot_energy, mass(m));
 
@@ -160,6 +162,7 @@ int main(int argc, char *argv[])
 				file_write(filename, 1, sizeof(int), &j, true);
 				file_write(filename, 1, sizeof(int), &l, true);
 				file_write(filename, 1, sizeof(int), &spin_mult, true);
+				file_write(filename, 1, sizeof(int), &max_state, true);
 
 				++max_ch;
 			}
