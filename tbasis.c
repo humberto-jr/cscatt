@@ -56,17 +56,19 @@ int main(int argc, char *argv[])
  *	Vibrational grid:
  */
 
-	const int rovib_grid_size
-		= (int) file_get_key(stdin, "rovib_grid_size", as_double(v_max + 1), INF, 500.0);
+	const int scatt_grid_size
+		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 500.0);
 
-	const double r_min
-		= file_get_key(stdin, "r_min", 0.0, INF, 0.5);
+	const double R_min
+		= file_get_key(stdin, "R_min", 0.0, INF, 0.5);
 
-	const double r_max
-		= file_get_key(stdin, "r_max", r_min, INF, r_min + 30.0);
+	const double R_max
+		= file_get_key(stdin, "R_max", R_min, INF, R_min + 100.0);
 
-	const double r_step
-		= (r_max - r_min)/as_double(rovib_grid_size);
+	const double R_step
+		= (R_max - R_min)/as_double(scatt_grid_size);
+
+	ASSERT(scatt_grid_size >= v_max + 1)
 
 /*
  *	Electronic spin multiplicity:
@@ -83,7 +85,7 @@ int main(int argc, char *argv[])
 		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
 
 	const enum mass_case m
-		= init_atomic_masses(stdin, arrang, 'p');
+		= init_atomic_masses(stdin, arrang, 'a');
 
 /*
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
@@ -103,16 +105,21 @@ int main(int argc, char *argv[])
 
 	for (int j = j_min; j <= j_max; j += j_step)
 	{
-		double *pot_energy = allocate(rovib_grid_size, sizeof(double), false);
+		tensor *pot_energy
+			= allocate(scatt_grid_size, sizeof(tensor), true);
 
-		for (int n = 0; n < rovib_grid_size; ++n)
+		for (int n = 0; n < scatt_grid_size; ++n)
 		{
-			const double r = r_min + as_double(n)*r_step;
-			pot_energy[n] = pec(arrang, r) + phys_centr_term(j, mass(m), r);
+			load_coupl(arrang, n, j, pot_energy[n].value);
 		}
 
 		matrix *eigenvec
-			= dvr_fgh(rovib_grid_size, r_step, pot_energy, mass(m));
+			= dvr_multich_fgh(max_ch, scatt_grid_size, R_step, pot_energy, mass(m));
+
+		for (int n = 0; n < scatt_grid_size; ++n)
+		{
+			matrix_free(pot_energy[n].value);
+		}
 
 		free(pot_energy);
 
@@ -126,7 +133,9 @@ int main(int argc, char *argv[])
 
 		for (int v = v_min; v <= v_max; v += v_step)
 		{
-			dvr_fgh_norm(eigenvec, v, r_step, false);
+			if (eigenval[v] >= 0.0) continue;
+
+			dvr_multich_fgh_norm(eigenvec, max_ch, v, R_step, false);
 			matrix *wavef = matrix_get_col(eigenvec, v, false);
 
 /*
@@ -151,9 +160,9 @@ int main(int argc, char *argv[])
 
 				matrix_save(wavef, filename);
 
-				file_write(filename, 1, sizeof(double), &r_min, true);
-				file_write(filename, 1, sizeof(double), &r_max, true);
-				file_write(filename, 1, sizeof(double), &r_step, true);
+				file_write(filename, 1, sizeof(double), &R_min, true);
+				file_write(filename, 1, sizeof(double), &R_max, true);
+				file_write(filename, 1, sizeof(double), &R_step, true);
 				file_write(filename, 1, sizeof(double), &eigenval[v], true);
 
 				file_write(filename, 1, sizeof(int), &v, true);
@@ -171,8 +180,8 @@ int main(int argc, char *argv[])
 		free(eigenval);
 	}
 
-	printf("\n# A total of %d basis functions are computed with %d grid "
-	       "points in r = [%f, %f)\n", max_ch, rovib_grid_size, r_min, r_max);
+	printf("\n# A total of %d multichannel basis functions are computed with %d grid "
+	       "points in R = [%f, %f)\n", max_ch, scatt_grid_size, R_min, R_max);
 
 	return EXIT_SUCCESS;
 }
