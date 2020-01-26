@@ -3,7 +3,7 @@ set -u
 set -e
 
 J_min=0
-J_max=5
+J_max=10
 J_step=1
 
 arrang=1
@@ -12,56 +12,58 @@ atom_a="35Cl"
 atom_b="1H"
 atom_c="1H"
 
-J_min=0
-J_max=5
-J_step=1
-
 v_min=0
 v_max=2
 v_step=1
 
 j_min=0
-j_max=2
+j_max=8
 j_step=2
 
 lambda_max=4
 
-r_min=0.5
-r_max=5.0
-rovib_grid_size=200
+r_min="0.5"
+r_max="5.0"
+rovib_grid_size=500
 
-R_min=0.5
-R_max=5.0
-scatt_grid_size=200
+R_min="2.0"
+R_max="500.0"
+scatt_grid_size=2000
 
-use_omp=0
+use_omp=1
+
+energy_shift="0.0"
+energy_scale="1.0"
+print_adiabatic=0
 
 # executables
-dbasis_exe="hahaha"
-bprint_exe="cucuc"
-cmatrix_exe="kakak"
-cprint_exe="kikiikik"
+dbasis_exe="/home/humberto/H2+Cl_minus/exec/dbasis.out"
+bprint_exe=""
+cmatrix_exe="/home/humberto/H2+Cl_minus/exec/cmatrix.out"
+cprint_exe=""
 
 # misc
 input_filename="input.d"
 slurm_filename="job.sh"
+pbs_filename="job.pbs"
 bprint_datafile="basis_arrang=*_ch=*_J=*.dat"
 cmatrix_datafile="cmatrix_arrang=*_n=*_J=*.dat"
 
-# slurm configuration
-wall_time="5:00:00"
-max_memory="2G"
-nodes=6
-mpi_cpus=12
-omp_threads=8
-modules=""
+# batch job configuration
+wall_time="12:00:00"
+max_memory="2Gb"
+nodes=10
+mpi_cpus=10
+omp_threads=12
+queue_name="balalab"
+modules="intelmpi/16.1.2"
 
 # OpenMP configuration
-env_omp_threads='OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK'
+env_omp_threads="OMP_NUM_THREADS=$omp_threads"
 
 # MPI configuration
-mpi_proc_placement='I_MPI_JOB_RESPECT_PROCESS_PLACEMENT=0'
-mpirun_call='mpirun -np $SLURM_NTASKS -genv OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK -genv I_MPI_PIN_DOMAIN=omp'
+mpi_pin_domain_name="I_MPI_PIN_DOMAIN=omp"
+mpi_proc_placement="I_MPI_JOB_RESPECT_PROCESS_PLACEMENT=0"
 
 # end of inputs ###############################################################
 
@@ -86,26 +88,115 @@ build_dir ()
 	fi
 }
 
-assert_file $dbasis_exe
+build_batch_job ()
+{
+	if [ -e $1 ]
+	then
+		echo ""                                         >> $1
+		echo "export $env_omp_threads"                  >> $1
 
-if [ "$bprint_exe"  != "" ]
+		if [ "$mpi_proc_placement" != "" ]
+		then
+			echo "export $mpi_proc_placement"            >> $1
+		fi
+
+		if [ "$modules" != "" ]
+		then
+			echo ""                                      >> $1
+			echo "module load $modules"                  >> $1
+		fi
+
+		echo ""                                         >> $1
+		echo 'bin_dir="'$bin_dir'"'                     >> $1
+		echo 'channels_dir="'$channels_dir'"'           >> $1
+		echo 'basis_wavef_dir="'$basis_wavef_dir'"'     >> $1
+
+		echo ""                                         >> $1
+		echo 'dbasis_exe="'$dbasis_exe'"'               >> $1
+		echo 'bprint_exe="'$bprint_exe'"'               >> $1
+		echo 'cmatrix_exe="'$cmatrix_exe'"'             >> $1
+		echo 'cprint_exe="'$cprint_exe'"'               >> $1
+
+		echo ""                                         >> $1
+		echo 'mpirun_call="'$mpirun_call'"'             >> $1
+
+		echo ""                                         >> $1
+		echo 'input="'$input'"'                         >> $1
+
+		echo ""                                         >> $1
+		echo 'bprint_datafile="'$bprint_datafile'"'     >> $1
+		echo 'cmatrix_datafile="'$cmatrix_datafile'"'   >> $1
+
+		echo ""                                         >> $1
+		echo 'echo "Calculation starting at $(date)"'   >> $1
+
+		echo ""                                         >> $1
+		echo 'cd $bin_dir/'                             >> $1
+
+		echo ""                                         >> $1
+		echo '$dbasis_exe $input'                       >> $1
+
+		if [ "$bprint_exe" != "" ]
+		then
+			echo ""                                      >> $1
+			echo '$bprint_exe $input'                    >> $1
+			echo 'mv $bprint_datafile $basis_wavef_dir/' >> $1
+		fi
+
+		if [ "$cmatrix_exe" != "" ]
+		then
+			echo ""                                      >> $1
+			echo '$mpirun_call $cmatrix_exe $input'      >> $1
+		fi
+
+		if [ "$cprint_exe" != "" ]
+		then
+			echo ""                                      >> $1
+			echo '$cprint_exe $input'                    >> $1
+			echo 'mv $cmatrix_datafile $channels_dir/'   >> $1
+		fi
+
+		echo ""                                         >> $1
+		echo 'echo "Calculation ending at $(date)"'     >> $1
+	fi
+}
+
+#assert_file $dbasis_exe
+
+#if [ "$bprint_exe"  != "" ]
+#then
+#	assert_file $bprint_exe
+#fi
+
+#if [ "$cmatrix_exe" != "" ]
+#then
+#	assert_file $cmatrix_exe
+#fi
+
+#if [ "$cprint" != "" ]
+#then
+#	assert_file $cprint_exe
+#fi
+
+if [ "$mpi_cpus" == "1" ]
 then
-	assert_file $bprint_exe
+	mpirun_call=""
+else
+	if [ "$mpi_pin_domain_name" == "" ]
+	then
+		mpirun_call="mpirun -np $mpi_cpus -genv OMP_NUM_THREADS=$omp_threads"
+	else
+		mpirun_call="mpirun -np $mpi_cpus -genv OMP_NUM_THREADS=$omp_threads -genv $mpi_pin_domain_name"
+	fi
 fi
 
-if [ "$cmatrix_exe" != "" ]
-then
-	assert_file $cmatrix_exe
-fi
-
-if [ "$cprint" != "" ]
-then
-	assert_file $cprint_exe
-fi
+#pbs_ncpus=$(echo "($mpi_cpus + $omp_threads)/$nodes" | bc)
+#pbs_mpiprocs=$(echo "$pbs_ncpus - $omp_threads" | bc)
+#pbs_mpiprocs=$mpi_cpus
 
 for J in $(seq $J_min $J_step $J_max)
 do
-	work_dir="J=$J"
+	work_dir="$PWD/J=$J"
 	build_dir $work_dir
 
 	for parity in $(seq -1 2 +1)
@@ -187,6 +278,11 @@ do
 		echo "scatt_grid_size = $scatt_grid_size" >> $filename
 
 		echo ""                                   >> $filename
+		echo "energy_shift = $energy_shift"       >> $filename
+		echo "energy_scale = $energy_scale"       >> $filename
+		echo "print_adiabatic = $print_adiabatic" >> $filename
+
+		echo ""                                   >> $filename
 		echo "use_omp = $use_omp"                 >> $filename
 
 		filename="$parity_dir/$slurm_filename"
@@ -206,48 +302,26 @@ do
 		echo ""                                         >> $filename
 		echo "# Job script generated at $(date) by $0"  >> $filename
 
-		echo ""                                         >> $filename
-		echo "export $mpi_proc_placement"               >> $filename
-		echo "export $env_omp_threads"                  >> $filename
+		build_batch_job $filename
 
-		if [ "$modules" != "" ]
+		filename="$parity_dir/$pbs_filename"
+
+		echo "#!/bin/sh"                                                                                     > $filename
+		echo "#PBS -l select=$nodes:ncpus=$omp_threads:mpiprocs=1:ompthreads=$omp_threads:mem=$max_memory"  >> $filename
+		echo "#PBS -l walltime=$wall_time"                                                                  >> $filename
+
+		if [ $queue_name != "" ]
 		then
-			echo ""                                      >> $filename
-			echo "module load $modules"                  >> $filename
+			echo "#PBS -q $queue_name"                                                                        >> $filename
 		fi
 
-		echo ""                                         >> $filename
-		echo 'echo "Calculation starting at $(date)"'   >> $filename
+		echo '#PBS -N "'$job_name'"'                                                                        >> $filename
 
-		echo ""                                         >> $filename
-		echo "cd $bin_dir/"                             >> $filename
+		echo ""                                                                                             >> $filename
+		echo "# Job script generated at $(date) by $0"                                                      >> $filename
 
-		echo ""                                         >> $filename
-		echo "$dbasis_exe $input"                       >> $filename
-
-		if [ "$bprint_exe" != "" ]
-		then
-			echo ""                                      >> $filename
-			echo "$bprint_exe $input"                    >> $filename
-			echo "mv $bprint_datafile $basis_wavef_dir/" >> $filename
-		fi
-
-		if [ "$cmatrix_exe" != "" ]
-		then
-			echo ""                                      >> $filename
-			echo "$mpirun_call $cmatrix_exe $input"      >> $filename
-		fi
-
-		if [ "$cprint_exe" != "" ]
-		then
-			echo ""                                      >> $filename
-			echo "$cprint_exe $input"                    >> $filename
-			echo "mv $cmatrix_datafile $channels_dir/"   >> $filename
-		fi
-
-		echo ""                                         >> $filename
-		echo 'echo "Calculation ending at $(date)"'     >> $filename
+		build_batch_job $filename
 	done
 
-	echo $work_dir
+	echo "J=$J"
 done
