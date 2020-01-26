@@ -51,18 +51,21 @@ cmatrix_datafile="cmatrix_arrang=*_n=*_J=*.dat"
 
 # batch job configuration
 wall_time="12:00:00"
-max_memory="2Gb"
-nodes=10
-mpi_cpus=10
-omp_threads=12
+max_memory="5Gb"
+nodes=1
+mpi_cpus=1
+omp_threads=24
 queue_name="balalab"
 modules="intelmpi/16.1.2"
+
+# libraries
+env_ld_paths='$HOME/lib/gsl'
 
 # OpenMP configuration
 env_omp_threads="OMP_NUM_THREADS=$omp_threads"
 
 # MPI configuration
-mpi_pin_domain_name="I_MPI_PIN_DOMAIN=omp"
+mpi_pin_domain="I_MPI_PIN_DOMAIN=omp"
 mpi_proc_placement="I_MPI_JOB_RESPECT_PROCESS_PLACEMENT=0"
 
 # end of inputs ###############################################################
@@ -98,6 +101,11 @@ build_batch_job ()
 		if [ "$mpi_proc_placement" != "" ]
 		then
 			echo "export $mpi_proc_placement"            >> $1
+		fi
+
+		if [ "$env_ld_path" != "" ]
+		then
+			echo $env_ld_path                            >> $1
 		fi
 
 		if [ "$modules" != "" ]
@@ -178,21 +186,22 @@ build_batch_job ()
 #	assert_file $cprint_exe
 #fi
 
-if [ "$mpi_cpus" == "1" ]
+if [ "$mpi_cpus" == "0" ]
 then
 	mpirun_call=""
 else
-	if [ "$mpi_pin_domain_name" == "" ]
+	if [ "$mpi_pin_domain" == "" ]
 	then
 		mpirun_call="mpirun -np $mpi_cpus -genv OMP_NUM_THREADS=$omp_threads"
 	else
-		mpirun_call="mpirun -np $mpi_cpus -genv OMP_NUM_THREADS=$omp_threads -genv $mpi_pin_domain_name"
+		mpirun_call="mpirun -np $mpi_cpus -genv OMP_NUM_THREADS=$omp_threads -genv $mpi_pin_domain"
 	fi
 fi
 
-#pbs_ncpus=$(echo "($mpi_cpus + $omp_threads)/$nodes" | bc)
-#pbs_mpiprocs=$(echo "$pbs_ncpus - $omp_threads" | bc)
-#pbs_mpiprocs=$mpi_cpus
+if [ "$env_ld_path" != "" ]
+then
+	env_ld_path='export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:'$env_ld_path'"'
+fi
 
 for J in $(seq $J_min $J_step $J_max)
 do
