@@ -55,6 +55,7 @@ do
 		echo "arrang = $5" >> $input_filename
 
 		$4 $input_filename
+		rm -rf $bprint_datafile
 
 		cd $start_dir
 	done
