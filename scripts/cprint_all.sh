@@ -1,14 +1,14 @@
 #!/bin/bash
 #
 # Usage:
-# ./script.sh [J_min] [J_step] [J_max] [arrang] [shift] [scale] [adiabatic] [cprint.out]
+# ./script.sh [J_min] [J_step] [J_max] [shift] [scale] [adiabatic] [cprint.out]
 #
 
 set -e
 set -u
 
 input_filename="input.d"
-cmatrix_datafile="cmatrix_arrang=%c_n=%d_J=%d.bin"
+cmatrix_datafile="cmatrix_arrang=*_n=*_J=*.bin"
 
 assert_file ()
 {
@@ -21,7 +21,7 @@ assert_file ()
 	fi
 }
 
-assert_file $8
+assert_file $7
 start_dir=$PWD
 
 for J in $(seq $1 $2 $3)
@@ -33,33 +33,50 @@ do
 	do
 		if [ "$parity" == "-1" ]
 		then
+			if [ "$J" == "0" ]
+			then
+				continue
+			fi
+
 			bin_dir="$work_dir/parity=-1/bin"
 			assert_file $bin_dir
 
 			channels_dir="$work_dir/parity=-1/channels"
 			assert_file $channels_dir
+
+			input="$work_dir/parity=-1/$input_filename"
+			assert_file $input
 		else
 			bin_dir="$work_dir/parity=+1/bin"
 			assert_file $bin_dir
 
 			channels_dir="$work_dir/parity=+1/channels"
 			assert_file $channels_dir
+
+			input="$work_dir/parity=+1/$input_filename"
+			assert_file $input
 		fi
 
-		echo ""
+		echo "#"
+		echo "# $channels_dir"
+
 		cd $channels_dir
 
-		ln -s "$bin_dir/$cmatrix_datafile" .
+		rm -rf $cmatrix_datafile
+		ln -s $bin_dir/$cmatrix_datafile .
 
-		echo "J = $J"                > $input_filename
-		echo "arrang = $4"          >> $input_filename
+		cp $input .
 
-		echo ""
-		echo "energy_shift = $5"    >> $input_filename
-		echo "energy_scale = $6"    >> $input_filename
-		echo "print_adiabatic = $7" >> $input_filename
+		shift_pattern=$(grep "energy_shift = " $input_filename)
+		sed -i "s/$shift_pattern/energy_shift = $4/g" $input_filename
 
-		$8 $input_filename
+		scale_pattern=$(grep "energy_scale = " $input_filename)
+		sed -i "s/$scale_pattern/energy_scale = $5/g" $input_filename
+
+		print_pattern=$(grep "print_adiabatic = " $input_filename)
+		sed -i "s/$print_pattern/print_adianatic = $6/g" $input_filename
+
+		$7 $input_filename
 		rm -rf $cmatrix_datafile
 
 		cd $start_dir
