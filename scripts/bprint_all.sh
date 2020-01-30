@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Usage:
-# ./script.sh [J_min] [J_step] [J_max] [bprint.out] [arrang]
+# ./script.sh [J_min] [J_step] [J_max] [bprint.out]
 #
 
 set -e
@@ -33,26 +33,36 @@ do
 	do
 		if [ "$parity" == "-1" ]
 		then
-			bin_dir="$work_dir/parity=-1/bin"
-			assert_file $bin_dir
+			if [ "$J" == "0" ]
+			then
+				continue
+			fi
 
-			basis_wavef_dir="$work_dir/parity=-1/basis_wavef"
-			assert_file $basis_wavef_dir
+			parity_dir="$work_dir/parity=-1"
 		else
-			bin_dir="$work_dir/parity=+1/bin"
-			assert_file $bin_dir
-
-			basis_wavef_dir="$work_dir/parity=+1/basis_wavef"
-			assert_file $basis_wavef_dir
+			parity_dir="$work_dir/parity=+1"
 		fi
 
-		echo ""
+		assert_file $parity_dir
+
+		bin_dir="$parity_dir/bin"
+		assert_file $bin_dir
+
+		basis_wavef_dir="$parity_dir/basis_wavef"
+		assert_file $basis_wavef_dir
+
+		input="$parity_dir/$input_filename"
+		assert_file $input
+
+		echo "#"
+		echo "# $basis_wavef_dir"
+
 		cd $basis_wavef_dir
 
-		ln -s "$bin_dir/$bprint_datafile" .
+		rm -rf $bprint_datafile
+		ln -s $bin_dir/$bprint_datafile .
 
-		echo "J = $J"       > $input_filename
-		echo "arrang = $5" >> $input_filename
+		cp $input .
 
 		$4 $input_filename
 		rm -rf $bprint_datafile

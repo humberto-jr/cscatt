@@ -38,24 +38,21 @@ do
 				continue
 			fi
 
-			bin_dir="$work_dir/parity=-1/bin"
-			assert_file $bin_dir
-
-			channels_dir="$work_dir/parity=-1/channels"
-			assert_file $channels_dir
-
-			input="$work_dir/parity=-1/$input_filename"
-			assert_file $input
+			parity_dir="$work_dir/parity=-1"
 		else
-			bin_dir="$work_dir/parity=+1/bin"
-			assert_file $bin_dir
-
-			channels_dir="$work_dir/parity=+1/channels"
-			assert_file $channels_dir
-
-			input="$work_dir/parity=+1/$input_filename"
-			assert_file $input
+			parity_dir="$work_dir/parity=+1"
 		fi
+
+		assert_file $parity_dir
+
+		bin_dir="$parity_dir/bin"
+		assert_file $bin_dir
+
+		channels_dir="$parity_dir/channels"
+		assert_file $channels
+
+		input="$parity_dir/$input_filename"
+		assert_file $input
 
 		echo "#"
 		echo "# $channels_dir"
