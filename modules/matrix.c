@@ -350,7 +350,7 @@ matrix *matrix_alloc(const int max_row, const int max_col, const bool set_zero)
 void matrix_free(matrix *m)
 {
 	#if defined(USE_MAGMA)
-		magma_free_pinned(&m->data);
+		magma_free_pinned(m->data);
 	#else
 		free(m->data);
 	#endif
