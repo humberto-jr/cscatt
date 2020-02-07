@@ -290,7 +290,7 @@ about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/p
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o pes.o coor.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-pes_print: pes_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/coor.h $(MODULES_DIR)/pes.h
+pes_print: pes_print.c mass_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/coor.h $(MODULES_DIR)/pes.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out pes.o coor.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo

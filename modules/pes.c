@@ -59,6 +59,24 @@ double pes(const jacobi_coor *x)
 }
 
 /******************************************************************************
+******************************************************************************/
+
+void pes_init()
+{
+	const jacobi_coor x =
+	{
+		.r = 1000.0,
+		.R = 1000.0,
+		.theta = 90.0,
+		.arrang = 'a'
+	};
+
+	const bool is_nan = isnan(pes(&x));
+
+	ASSERT(is_nan == false)
+}
+
+/******************************************************************************
 
  Function pec(): returns the diatomic potential, V(r) as function of the inter
  nuclear distance, r, asymptotically as R -> inf, for a given PES arrangement.
