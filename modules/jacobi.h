@@ -18,15 +18,15 @@
 
 	typedef struct jacobi jacobi;
 
-	struct jacobi_sfixed
+	struct jacobi_sf
 	{
 		char arrang;
-		double r, theta, phi;
+		double r, theta, phi, mass_a, mass_b;
 	};
 
-	typedef struct jacobi_sfixed jacobi_sfixed;
+	typedef struct jacobi_sf jacobi_sf;
 
-	inline static void jacobi_to_cartesian(const jacobi_sfixed *a, cartesian *b)
+	inline static void jacobi_to_cartesian(const jacobi_sf *a, cartesian *b)
 	{
 		b->x = a->r*sin(a->theta*M_PI/180.0)*cos(a->phi*M_PI/180.0);
 		b->y = a->r*sin(a->theta*M_PI/180.0)*sin(a->phi*M_PI/180.0);
