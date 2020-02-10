@@ -1,7 +1,10 @@
 #include "modules/pes.h"
 #include "modules/coor.h"
 #include "modules/file.h"
+#include "modules/mass.h"
 #include "modules/globals.h"
+
+#include "mass_config.h"
 
 int main(int argc, char *argv[])
 {
@@ -67,11 +70,17 @@ int main(int argc, char *argv[])
 		= file_get_key(stdin, "energy_scale", -INFINITY, INFINITY, 1.0);
 
 /*
- *	Arrangement:
+ *	Arrangement and masses:
  */
 
 	const char arrang
 		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
+
+	init_atomic_masses(stdin, arrang, 'p', 0);
+
+	pes_init();
+
+	printf("#\n");
 
 	printf("# r            = (%f, %f, %f)\n", r_min, r_max, r_step);
 	printf("# R            = (%f, %f, %f)\n", R_min, R_max, R_step);

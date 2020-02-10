@@ -5,6 +5,8 @@
 
 	double pes(const jacobi_coor *x);
 
+	void pes_init();
+
 	double pec(const char arrang, const double r);
 
 	double pes_asymptotic_min(const char arrang, const double scan_step);
