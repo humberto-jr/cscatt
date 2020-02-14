@@ -85,6 +85,8 @@ int main(int argc, char *argv[])
 	const enum mass_case m
 		= init_atomic_masses(stdin, arrang, 'p', 0);
 
+	pes_init();
+
 /*
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
  */

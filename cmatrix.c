@@ -1,3 +1,4 @@
+#include "modules/pes.h"
 #include "modules/phys.h"
 #include "modules/mass.h"
 #include "modules/file.h"
@@ -141,6 +142,8 @@ int main(int argc, char *argv[])
 
 	const int lambda_step
 		= init_lambda_step(arrang);
+
+	pes_init();
 
 	if (cpu_id == 0)
 	{
