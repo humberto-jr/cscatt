@@ -22,6 +22,7 @@
 #include "matrix.h"
 #include "miller.h"
 
+#include <gsl/gsl_errno.h>
 #include <gsl/gsl_sf_legendre.h>
 #include <gsl/gsl_integration.h>
 
@@ -72,11 +73,6 @@ static inline double rot_integrand(const double theta, void *params)
 double miller_jcp69_rot_integral(const char arrang,
                                  const int lambda, const double r, const double R)
 {
-	gsl_integration_workspace *work
-		= gsl_integration_workspace_alloc(GSL_MAX_WORKSPACE);
-
-	ASSERT(work != NULL)
-
 	struct rot_params p =
 	{
 		.lambda = lambda,
@@ -111,10 +107,20 @@ double miller_jcp69_rot_integral(const char arrang,
 		 theta_max = M_PI/2.0;
 	}
 
-	gsl_integration_qag(&f, 0.0, theta_max, 0.1, 1.0e-12,
-	                    GSL_MAX_WORKSPACE, GSL_INTEG_GAUSS61, work, &result, &error);
+	gsl_integration_workspace *work
+		= gsl_integration_workspace_alloc(GSL_MAX_WORKSPACE);
+
+	ASSERT(work != NULL)
+
+	const int info = gsl_integration_qags(&f, 0.0, theta_max, 1.0e-6, 0.0,
+	                                      GSL_MAX_WORKSPACE, work, &result, &error);
 
 	gsl_integration_workspace_free(work);
+
+	if (info != 0)
+	{
+		PRINT_ERROR("QAG %s for r = %f, R = %f; error = %f\n", gsl_strerror(info), r, R, error)
+	}
 
 	return as_double(2*lambda + 1)*factor*result/2.0;
 }
@@ -168,11 +174,6 @@ double miller_jcp69_vib_integral(const int lambda,
                                  const double r_max,
                                  const double R)
 {
-	gsl_integration_workspace *work
-		= gsl_integration_workspace_alloc(GSL_MAX_WORKSPACE);
-
-	ASSERT(work != NULL)
-
 	struct vib_params p =
 	{
 		.R = R,
@@ -192,10 +193,22 @@ double miller_jcp69_vib_integral(const int lambda,
 
 	double error = 0.0, result = 0.0;
 
-	gsl_integration_qag(&f, r_min, r_max, 0.1, 1.0e-12,
-	                    GSL_MAX_WORKSPACE, GSL_INTEG_GAUSS61, work, &result, &error);
+	gsl_integration_workspace *work
+		= gsl_integration_workspace_alloc(GSL_MAX_WORKSPACE);
+
+	ASSERT(work != NULL)
+
+	gsl_set_error_handler_off();
+
+	const int info = gsl_integration_qags(&f, r_min, r_max, 1.0e-6, 0.0,
+	                                      GSL_MAX_WORKSPACE, work, &result, &error);
 
 	gsl_integration_workspace_free(work);
+
+	if (info != 0)
+	{
+		PRINT_ERROR("QAG %s for R = %f; error = %f\n", gsl_strerror(info), R, error)
+	}
 
 	return result;
 }
