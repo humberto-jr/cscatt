@@ -2,64 +2,68 @@
 set -u
 set -e
 
+# Total angular momentum, J
 J_min=0
 J_max=10
 J_step=1
 
+# Arrangement (1 = a + bc, 2 = b + ac, 3 = c + ab)
 arrang=1
-
-atom_a="35Cl"
-atom_b="1H"
+atom_a="1H"
+atom_b="16O"
 atom_c="1H"
 
+# Diatomic vibration quantum number, v
 v_min=0
 v_max=2
 v_step=1
 
+# Diatomic rotation quantum number, j
 j_min=0
 j_max=8
-j_step=2
+j_step=1
 
+# Number of atom-diatom potential expansion coefficients
 lambda_max=4
 
-r_min="0.5"
-r_max="5.0"
-rovib_grid_size=500
+# Diatomic radial grid
+r_min="0.6"
+r_max="6.0"
+rovib_grid_size=150
 
-R_min="2.0"
-R_max="500.0"
-scatt_grid_size=2000
+# Scattering radial grid
+R_min="0.5"
+R_max="20.0"
+scatt_grid_size=250
 
-use_omp=1
+# Use of OpenMP (0 = no, 1 = yes)
+use_omp=0
 
+# Printing properties for energies
 energy_shift="0.0"
-energy_scale="1.0"
+energy_scale="219474.63137054"
 print_adiabatic=0
 
-# executables
-dbasis_exe="/home/humberto/H2+Cl_minus/exec/dbasis.out"
-bprint_exe=""
-cmatrix_exe="/home/humberto/H2+Cl_minus/exec/cmatrix.out"
-cprint_exe=""
+# Executables
+dbasis_exe="/home/hsilva/workdir/H+OH/murrell1984/exe/dbasis.out"
+bprint_exe="/home/hsilva/workdir/H+OH/murrell1984/exe/bprint.out"
+cmatrix_exe="/home/hsilva/workdir/H+OH/murrell1984/exe/cmatrix.out"
+cprint_exe="/home/hsilva/workdir/H+OH/murrell1984/exe/cprint.out"
 
-# misc
-input_filename="input.d"
-slurm_filename="job.sh"
-pbs_filename="job.pbs"
-bprint_datafile="basis_arrang=*_ch=*_J=*.dat"
-cmatrix_datafile="cmatrix_arrang=*_n=*_J=*.dat"
+# PES external datafiles and/or any other dependency needed (format: "file_a file_b etc")
+pes_extern_data=""
 
-# batch job configuration
-wall_time="12:00:00"
+# Batch job configuration (slurm and/or pbs)
+wall_time="24:00:00"
 max_memory="5Gb"
-nodes=1
-mpi_cpus=1
-omp_threads=24
-queue_name="balalab"
-modules="intelmpi/16.1.2"
+nodes=20
+mpi_cpus=250
+omp_threads=1
+queue_name=""
+modules=""
 
-# libraries
-env_ld_paths='$HOME/lib/gsl'
+# Libraries to load by LD_LIBRARY_PATH (format: 'path_a:path_b:path_c:etc')
+env_ld_path='$HOME/lib/gsl/lib'
 
 # OpenMP configuration
 env_omp_threads="OMP_NUM_THREADS=$omp_threads"
@@ -67,6 +71,13 @@ env_omp_threads="OMP_NUM_THREADS=$omp_threads"
 # MPI configuration
 mpi_pin_domain="I_MPI_PIN_DOMAIN=omp"
 mpi_proc_placement="I_MPI_JOB_RESPECT_PROCESS_PLACEMENT=0"
+
+# Misc
+input_filename="input.d"
+slurm_filename="job.sh"
+pbs_filename="job.pbs"
+bprint_datafile="basis_arrang=*_ch=*_J=*.dat"
+cmatrix_datafile="cmatrix_arrang=*_n=*_J=*.dat"
 
 # end of inputs ###############################################################
 
@@ -85,7 +96,7 @@ build_dir ()
 {
 	if [ -d $1 ]
 	then
-		rm -rf "$1/*"
+		rm -rf $1/*
 	else
 		mkdir $1
 	fi
@@ -132,17 +143,21 @@ build_batch_job ()
 		echo 'input="'$input'"'                         >> $1
 
 		echo ""                                         >> $1
-		echo 'bprint_datafile="'$bprint_datafile'"'     >> $1
-		echo 'cmatrix_datafile="'$cmatrix_datafile'"'   >> $1
+		echo "bprint_datafile=$bprint_datafile"         >> $1
+		echo "cmatrix_datafile=$cmatrix_datafile"       >> $1
 
 		echo ""                                         >> $1
-		echo 'echo "Calculation starting at $(date)"'   >> $1
+		echo 'echo "# Calculation starting at $(date)"' >> $1
+
+		echo 'echo ""'                                  >> $1
 
 		echo ""                                         >> $1
 		echo 'cd $bin_dir/'                             >> $1
 
-		echo ""                                         >> $1
 		echo '$dbasis_exe $input'                       >> $1
+
+		echo ""                                         >> $1
+		echo 'echo ""'                                  >> $1
 
 		if [ "$bprint_exe" != "" ]
 		then
@@ -151,11 +166,17 @@ build_batch_job ()
 			echo 'mv $bprint_datafile $basis_wavef_dir/' >> $1
 		fi
 
+		echo ""                                         >> $1
+		echo 'echo ""'                                  >> $1
+
 		if [ "$cmatrix_exe" != "" ]
 		then
 			echo ""                                      >> $1
 			echo '$mpirun_call $cmatrix_exe $input'      >> $1
 		fi
+
+		echo ""                                         >> $1
+		echo 'echo ""'                                  >> $1
 
 		if [ "$cprint_exe" != "" ]
 		then
@@ -165,30 +186,33 @@ build_batch_job ()
 		fi
 
 		echo ""                                         >> $1
-		echo 'echo "Calculation ending at $(date)"'     >> $1
+		echo 'echo ""'                                  >> $1
+
+		echo 'echo "# Calculation ending at $(date)"'   >> $1
 	fi
 }
 
-#assert_file $dbasis_exe
+assert_file $dbasis_exe
 
-#if [ "$bprint_exe"  != "" ]
-#then
-#	assert_file $bprint_exe
-#fi
+if [ "$bprint_exe"  != "" ]
+then
+	assert_file $bprint_exe
+fi
 
-#if [ "$cmatrix_exe" != "" ]
-#then
-#	assert_file $cmatrix_exe
-#fi
+if [ "$cmatrix_exe" != "" ]
+then
+	assert_file $cmatrix_exe
+fi
 
-#if [ "$cprint" != "" ]
-#then
-#	assert_file $cprint_exe
-#fi
+if [ "$cprint_exe" != "" ]
+then
+	assert_file $cprint_exe
+fi
 
 if [ "$mpi_cpus" == "0" ]
 then
 	mpirun_call=""
+	mpi_cpus=$(($mpi_cpus + 1))
 else
 	if [ "$mpi_pin_domain" == "" ]
 	then
@@ -319,7 +343,7 @@ do
 		echo "#PBS -l select=$nodes:ncpus=$omp_threads:mpiprocs=1:ompthreads=$omp_threads:mem=$max_memory"  >> $filename
 		echo "#PBS -l walltime=$wall_time"                                                                  >> $filename
 
-		if [ $queue_name != "" ]
+		if [ "$queue_name" != "" ]
 		then
 			echo "#PBS -q $queue_name"                                                                        >> $filename
 		fi
@@ -330,6 +354,11 @@ do
 		echo "# Job script generated at $(date) by $0"                                                      >> $filename
 
 		build_batch_job $filename
+
+		if [ ! "$pes_extern_data" == "" ]
+		then
+			cp -f $pes_extern_data $bin_dir
+		fi
 	done
 
 	echo "J=$J"
