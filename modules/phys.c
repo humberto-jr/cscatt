@@ -99,3 +99,15 @@ double phys_percival_seaton(const int spin_mult, const int j1, const int j2,
 
 	return result;
 }
+
+/******************************************************************************
+
+ Function phys_clebsch_gordan():
+
+******************************************************************************/
+
+double phys_clebsch_gordan(const int j1, const int j2, const int j3,
+                           const int m1, const int m2, const int m3)
+{
+	return pow(-1.0, j1 - j2 + m3)*sqrt(2*j3 + 1)*phys_wigner_3j(j1, j2, j3, m1, m2, -m3);
+}

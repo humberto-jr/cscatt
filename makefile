@@ -207,8 +207,8 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix nist johnson pes mass coor dvr file phys miller
-drivers: dbasis cmatrix test_suit about pes_print bprint cprint
+modules: matrix nist johnson pes mass coor dvr file phys miller spherical
+drivers: dbasis cmatrix test_suit about pes_print bprint cprint tbasis
 
 #
 # Rules for modules:
@@ -266,6 +266,11 @@ miller: $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/clib.h $(
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
+spherical: $(MODULES_DIR)/spherical.c $(MODULES_DIR)/spherical.h $(MODULES_DIR)/phys.h $(MODULES_DIR)/cartesian.h $(MODULES_DIR)/globals.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -c $<
+	@echo
+
 #network: $(MODULES_DIR)/network.c $(MODULES_DIR)/network.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
 #	@echo "\033[31m$<\033[0m"
 #	$(CC) $(CFLAGS) -c $<
@@ -317,7 +322,7 @@ network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h matrix.o
 
 test_suit: test_suit.c $(MODULES_DIR)/matrix.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o spherical.o phys.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 #

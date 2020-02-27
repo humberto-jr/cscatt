@@ -1,7 +1,6 @@
 #if !defined(SPHERICAL_HEADER)
 	#define SPHERICAL_HEADER
 	#include "globals.h"
-	#include "cartesian.h"
 
 	/******************************************************************************
 
@@ -16,17 +15,9 @@
 
 	typedef struct spherical spherical;
 
-	/******************************************************************************
+	double spherical_harmonics(const int l, const int m,
+	                           const double theta, const double phi);
 
-	 Function spherical_to_cartesian(): resolves a set of Cartesian coordinates, b,
-	 from spherical ones, a.
-
-	******************************************************************************/
-
-	inline static double spherical_to_cartesian(const spherical *a, cartesian *b)
-	{
-		b->x = a->rho*sin(a->theta*M_PI/180.0)*cos(a->phi*M_PI/180.0);
-		b->y = a->rho*sin(a->theta*M_PI/180.0)*sin(a->phi*M_PI/180.0);
-		b->z = a->rho*cos(a->theta*M_PI/180.0);
-	}
+	double spherical_harmonics_ab(const int l[], const int m[],
+	                              const double theta[], const double phi[]);
 #endif

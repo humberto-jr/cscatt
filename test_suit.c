@@ -1,3 +1,5 @@
+#include "modules/spherical.h"
+#include "modules/cartesian.h"
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
@@ -254,6 +256,26 @@ int main()
 	matrix_free(h);
 
 	free(eigenval);
+
+	printf("\ncartesian x = {.x = 3.0, .y = 4.0, .z = 5.0};\n");
+	cartesian x = {.x = 3.0, .y = 4.0, .z = 5.0};
+
+	printf("\nspherical y = {.rho = 0.0, .theta = 0.0, .phi = 0.0};\n");
+	spherical y = {.rho = 0.0, .theta = 0.0, .phi = 0.0};
+
+	printf("\ncartesian_to_spherical(&x, &y);\n");
+	cartesian_to_spherical(&x, &y);
+
+	printf("y.rho = %f, y.theta = %f, y.phi = %f\n", y.rho, y.theta, y.phi);
+
+	printf("\ncartesian z = {.x = 0.0, .y = 0.0, .z = 0.0};\n");
+	cartesian z = {.x = 0.0, .y = 0.0, .z = 0.0};
+
+	printf("\ncartesian_from_spherical(&y, &z);\n");
+	cartesian_from_spherical(&y, &z);
+
+	printf("z.x = %f, z.y = %f, z.z = %f\n", z.x, z.y, z.z);
+
 /*
 	printf("\n");
 	printf("# Test of matrix_inv() #######################################\n");

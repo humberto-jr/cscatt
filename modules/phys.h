@@ -11,6 +11,8 @@
 	double phys_percival_seaton(const int spin_mult, const int j1, const int j2,
 	                            const int l1, const int l2, const int lambda, const int J);
 
+	double phys_clebsch_gordan(const int j1, const int j2, const int j3,
+	                           const int m1, const int m2, const int m3);
 
 	/******************************************************************************
 
