@@ -1,10 +1,11 @@
 #if !defined(CARTESIAN_HEADER)
 	#define CARTESIAN_HEADER
 	#include "globals.h"
+	#include "spherical.h"
 
 	/******************************************************************************
 
-	 Type cartesian: represent one set of Cartesian coordinates.
+	 Type cartesian: represents a set of Cartesian coordinates.
 
 	******************************************************************************/
 
@@ -53,40 +54,36 @@
 
 	/******************************************************************************
 
-	 Function cartesian_to_jacobi(): resolves space-fixed Jacobi coordinates from
-	 Cartesian coordinates.
+	 Function cartesian_to_spherical(): resolves a set of spherical coordinates, b,
+	 from Cartesian ones, a.
+
+	 NOTE: outputted angles in degree.
 
 	******************************************************************************/
 
-	inline static void cartesian_to_jacobi(const cartesian *a, jacobi_sfixed *b)
+	inline static void cartesian_to_spherical(const cartesian *a, spherical *b)
 	{
-		const double c = sqrt(a.x*a.x + a.y*a.y + a.z*a.z);
+		b->rho = cartesian_length(a);
 
-		if (c == 0.0)
+		if (b->rho == 0.0)
 		{
 			b->theta = 0.0;
-			b->phi = 90.0;
-			b->r = 0.0;
+			b->phi = 0.0;
 			return;
 		}
 
-		b->r = c;
-		b->theta = acos(a.z/c);
+		b->theta = acos(a->z/b->rho)*180.0/M_PI;
 
-		if (a.x > 0.0)
-			b->phi = atan(a.y/a.x);
-		else if (a.x < 0.0 && a.y >= 0.0)
-			b->phi = atan(a.y/a.x) + M_PI;
-		else if (a.x < 0.0 && a.y < 0.0)
-			b->phi = atan(a.y/a.x) - M_PI;
-		else if (a.x == 0.0 && a.y > 0.0)
-			b->phi = M_PI/2.0;
-		else if (a.x == 0.0 && a.y < 0.0)
-			b->phi = -M_PI/2.0;
-		else if (a.x == 0.0 && a.y == 0.0)
-			b->phi = -M_PI/2.0;
+		if (a->x == 0.0 && a->y == 0.0)
+			b->phi = 0.0;
 
-		b->theta *= 180.0/M_PI;
-		b->phi *= 180.0/M_PI;
+		else if (a->x == 0.0 && a->y > 0.0)
+			b->phi = 90.0;
+
+		else if (a->x == 0.0 && a->y < 0.0)
+			b->phi = 270.0;
+
+		else
+			b->phi = atan(a->y/a->x)*180.0/M_PI;
 	}
 #endif
