@@ -207,7 +207,7 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix nist johnson pes mass coor dvr file phys miller spherical
+modules: matrix nist johnson pes mass coor dvr file phys miller spherical integral
 drivers: dbasis cmatrix test_suit about pes_print bprint cprint tbasis
 
 #
@@ -267,6 +267,11 @@ miller: $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/clib.h $(
 	@echo
 
 spherical: $(MODULES_DIR)/spherical.c $(MODULES_DIR)/spherical.h $(MODULES_DIR)/phys.h $(MODULES_DIR)/cartesian.h $(MODULES_DIR)/globals.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -c $<
+	@echo
+
+integral: $(MODULES_DIR)/integral.c $(MODULES_DIR)/integral.h $(MODULES_DIR)/globals.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo
