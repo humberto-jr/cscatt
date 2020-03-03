@@ -32,7 +32,9 @@ void integral_set_workspace(const int size)
 ******************************************************************************/
 
 double integral_qag(const double x_min,
-                    const double x_max, void *params, qag_integrand *f)
+                    const double x_max,
+                    void *params,
+                    double (*f)(double x, void *params))
 {
 	gsl_function gsl_f =
 	{
@@ -64,7 +66,9 @@ double integral_qag(const double x_min,
 ******************************************************************************/
 
 double integral_qags(const double x_min,
-                     const double x_max, void *params, qag_integrand *f)
+                     const double x_max,
+                     void *params,
+                     double (*f)(double x, void *params))
 {
 	gsl_function gsl_f =
 	{
@@ -95,18 +99,18 @@ double integral_qags(const double x_min,
 /******************************************************************************
 ******************************************************************************/
 
-double integral_mc_plain(const int dim,
+double integral_mc_plain(const int n,
                          const double x_min[],
                          const double x_max[],
                          const int max_call,
                          void *params,
-                         mc_integrand *f)
+                         double (*integrand)(double x[], size_t n, void *params))
 {
 	gsl_monte_function gsl_f =
 	{
 		.params = params,
-		.dim = dim,
-		.f = f
+		.f = integrand,
+		.dim = n
 	};
 
 	gsl_monte_plain_state *work
@@ -121,7 +125,7 @@ double integral_mc_plain(const int dim,
 
 	double result = 0.0, error = 0.0;
 
-	const int info = gsl_monte_plain_integrate(&gsl_f, x_min, x_max, dim,
+	const int info = gsl_monte_plain_integrate(&gsl_f, x_min, x_max, n,
 	                                           max_call, r, work, &result, &error);
 
 	gsl_rng_free(r);
@@ -138,18 +142,18 @@ double integral_mc_plain(const int dim,
 /******************************************************************************
 ******************************************************************************/
 
-double integral_mc_vegas(const int dim,
+double integral_mc_vegas(const int n,
                          double x_min[],
                          double x_max[],
                          const int max_call,
                          void *params,
-                         mc_integrand *f)
+                         double (*integrand)(double x[], size_t n, void *params))
 {
 	gsl_monte_function gsl_f =
 	{
 		.params = params,
-		.dim = dim,
-		.f = f
+		.f = integrand,
+		.dim = n
 	};
 
 	gsl_monte_vegas_state *work
@@ -164,7 +168,7 @@ double integral_mc_vegas(const int dim,
 
 	double result = 0.0, error = 0.0;
 
-	const int info = gsl_monte_vegas_integrate(&gsl_f, x_min, x_max, dim,
+	const int info = gsl_monte_vegas_integrate(&gsl_f, x_min, x_max, n,
 	                                           max_call, r, work, &result, &error);
 
 	gsl_rng_free(r);
@@ -181,18 +185,18 @@ double integral_mc_vegas(const int dim,
 /******************************************************************************
 ******************************************************************************/
 
-double integral_mc_miser(const int dim,
+double integral_mc_miser(const int n,
                          const double x_min[],
                          const double x_max[],
                          const int max_call,
                          void *params,
-                         mc_integrand *f)
+                         double (*integrand)(double x[], size_t n, void *params))
 {
 	gsl_monte_function gsl_f =
 	{
 		.params = params,
-		.dim = dim,
-		.f = f
+		.f = integrand,
+		.dim = n
 	};
 
 	gsl_monte_miser_state *work
@@ -207,7 +211,7 @@ double integral_mc_miser(const int dim,
 
 	double result = 0.0, error = 0.0;
 
-	const int info = gsl_monte_miser_integrate(&gsl_f, x_min, x_max, dim,
+	const int info = gsl_monte_miser_integrate(&gsl_f, x_min, x_max, n,
 	                                           max_call, r, work, &result, &error);
 
 	gsl_rng_free(r);
