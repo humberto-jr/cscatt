@@ -209,22 +209,32 @@ void call_dsyev(const char jobz,
 		const magma_int_t liwork
 			= (jobz == 'n'? n : 3 + 5*n);
 
-		double *work = NULL;
+		double *a_gpu = NULL, *work = NULL;
+
+		magma_dmalloc(&a_gpu, n*n);
 		magma_dmalloc_cpu(&work, lwork);
 
-		magma_int_t *iwork = NULL;
+		magma_int_t *iwork = NULL, info = 1;
+
 		magma_imalloc_cpu(&iwork, liwork);
 
-		magma_int_t info = 1;
+		magma_dsetmatrix(n, n, a, lda, a_gpu, lda, gpu_queue);
 
-		magma_dsyevd_m(1, job_mode, fill_mode,
-		               n, a, lda, w, work, lwork, iwork, liwork, &info);
+		magma_dsyevd_gpu(job_mode, fill_mode, n, a_gpu, lda,
+		                 w, a, n, work, lwork, iwork, liwork, &info);
 
 		if (info != 0)
 		{
-			PRINT_ERROR("magma_dsyevd_m() failed with error code %d\n", info)
+			PRINT_ERROR("magma_dsyevd_gpu() failed with error code %d\n", info)
 			exit(EXIT_FAILURE);
 		}
+
+		if (jobz != 'n')
+		{
+			magma_dgetmatrix(n, n, a_gpu, lda, a, lda, gpu_queue);
+		}
+
+		magma_free(a_gpu);
 
 		magma_free_cpu(work);
 		magma_free_cpu(iwork);
