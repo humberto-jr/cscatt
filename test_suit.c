@@ -1,7 +1,20 @@
+#include "modules/integral.h"
 #include "modules/spherical.h"
-#include "modules/cartesian.h"
+//#include "modules/cartesian.h"
 #include "modules/matrix.h"
 #include "modules/globals.h"
+
+static double mc_result = 1.3932039296856768591842462603255;
+
+double mc_integrand(double x[], size_t n, void *params)
+{
+	ASSERT(n > 0)
+	ASSERT(params == NULL)
+
+	const double A = 1.0/(M_PI*M_PI*M_PI);
+
+	return A/(1.0 - cos(x[0])*cos(x[1])*cos(x[2]));
+}
 
 int main()
 {
@@ -256,7 +269,7 @@ int main()
 	matrix_free(h);
 
 	free(eigenval);
-
+/*
 	printf("\ncartesian x = {.x = 3.0, .y = 4.0, .z = 5.0};\n");
 	cartesian x = {.x = 3.0, .y = 4.0, .z = 5.0};
 
@@ -275,6 +288,22 @@ int main()
 	cartesian_from_spherical(&y, &z);
 
 	printf("z.x = %f, z.y = %f, z.z = %f\n", z.x, z.y, z.z);
+*/
+
+	printf("\n");
+	printf("Error of integral_mc_*(3, x_min, x_max, n, NULL, mc_integrand) for n points; n vs. plain, vegas, miser\n");
+
+	for (int n = 25000; n < 1000000; n += 10000)
+	{
+		double x_min[3] = {0.0, 0.0, 0.0};
+		double x_max[3] = {M_PI, M_PI, M_PI};
+
+		const double plain = mc_result - integral_mc_plain(3, x_min, x_max, n, NULL, mc_integrand);
+		const double vegas = mc_result - integral_mc_vegas(3, x_min, x_max, n, NULL, mc_integrand);
+		const double miser = mc_result - integral_mc_miser(3, x_min, x_max, n, NULL, mc_integrand);
+
+		printf("%4d\t % -8e\t % -8e\t % -8e\n", n, plain, vegas, miser);
+	}
 
 /*
 	printf("\n");

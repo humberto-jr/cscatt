@@ -113,14 +113,10 @@ double integral_mc_plain(const int n,
 		.dim = n
 	};
 
-	gsl_monte_plain_state *work
-		= gsl_monte_plain_alloc(workspace_size);
-
+	gsl_monte_plain_state *work = gsl_monte_plain_alloc(n);
 	ASSERT(work != NULL)
 
-	gsl_rng *r
-		= gsl_rng_alloc(gsl_rng_ranlxd2);
-
+	gsl_rng *r = gsl_rng_alloc(gsl_rng_ranlxd2);
 	ASSERT(r != NULL)
 
 	double result = 0.0, error = 0.0;
@@ -156,14 +152,10 @@ double integral_mc_vegas(const int n,
 		.dim = n
 	};
 
-	gsl_monte_vegas_state *work
-		= gsl_monte_vegas_alloc(workspace_size);
-
+	gsl_monte_vegas_state *work = gsl_monte_vegas_alloc(n);
 	ASSERT(work != NULL)
 
-	gsl_rng *r
-		= gsl_rng_alloc(gsl_rng_ranlxd2);
-
+	gsl_rng *r = gsl_rng_alloc(gsl_rng_ranlxd2);
 	ASSERT(r != NULL)
 
 	double result = 0.0, error = 0.0;
@@ -199,14 +191,10 @@ double integral_mc_miser(const int n,
 		.dim = n
 	};
 
-	gsl_monte_miser_state *work
-		= gsl_monte_miser_alloc(workspace_size);
-
+	gsl_monte_miser_state *work = gsl_monte_miser_alloc(n);
 	ASSERT(work != NULL)
 
-	gsl_rng *r
-		= gsl_rng_alloc(gsl_rng_ranlxd2);
-
+	gsl_rng *r = gsl_rng_alloc(gsl_rng_ranlxd2);
 	ASSERT(r != NULL)
 
 	double result = 0.0, error = 0.0;
