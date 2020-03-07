@@ -1,3 +1,13 @@
+/******************************************************************************
+
+ About
+ -----
+
+ This module is a collection of routines to perform numerical integration,
+ either using quadratures or statistical methods.
+
+******************************************************************************/
+
 #include "integral.h"
 
 #include <gsl/gsl_rng.h>
@@ -11,6 +21,11 @@ static int workspace_size = 5000;
 static double abs_error = 1.0e-6;
 
 /******************************************************************************
+
+ Function integral_set_error(): sets the absolute error for the QAG kind of
+ methods (1e-6 by default). If a given abs. error cannot be reached, an error
+ message is printed in the C stderr.
+
 ******************************************************************************/
 
 void integral_set_error(const double error)
@@ -20,6 +35,10 @@ void integral_set_error(const double error)
 }
 
 /******************************************************************************
+
+ Function integral_set_workspace(): sets the size of auxiliary workspace used
+ during the integrations (5000 by default).
+
 ******************************************************************************/
 
 void integral_set_workspace(const int size)
@@ -29,10 +48,15 @@ void integral_set_workspace(const int size)
 }
 
 /******************************************************************************
+
+ Function integral_qag(): return the integral of f(x) from a to b, using a 61
+ point Gauss-Kronrod rule in a QAG framework. Where, params points to a struct
+ of parameters that f may depend on (NULL if not needed).
+
 ******************************************************************************/
 
-double integral_qag(const double x_min,
-                    const double x_max,
+double integral_qag(const double a,
+                    const double b,
                     void *params,
                     double (*f)(double x, void *params))
 {
@@ -49,7 +73,7 @@ double integral_qag(const double x_min,
 
 	double result = 0.0, error = 0.0;
 
-	const int info = gsl_integration_qag(&gsl_f, x_min, x_max, abs_error, 0.0,
+	const int info = gsl_integration_qag(&gsl_f, a, b, abs_error, 0.0,
 	                                     workspace_size, GSL_INTEG_GAUSS61, work, &result, &error);
 
 	gsl_integration_workspace_free(work);
@@ -63,10 +87,14 @@ double integral_qag(const double x_min,
 }
 
 /******************************************************************************
+
+ Function integral_qags(): the same as integral_qag() but using a smaller order
+ in the Gauss-Kronrod rule (21) and assuming that f may be singular.
+
 ******************************************************************************/
 
-double integral_qags(const double x_min,
-                     const double x_max,
+double integral_qags(const double a,
+                     const double b,
                      void *params,
                      double (*f)(double x, void *params))
 {
@@ -83,7 +111,7 @@ double integral_qags(const double x_min,
 
 	double result = 0.0, error = 0.0;
 
-	const int info = gsl_integration_qags(&gsl_f, x_min, x_max, abs_error, 0.0,
+	const int info = gsl_integration_qags(&gsl_f, a, b, abs_error, 0.0,
 	                                      workspace_size, work, &result, &error);
 
 	gsl_integration_workspace_free(work);
@@ -97,20 +125,25 @@ double integral_qags(const double x_min,
 }
 
 /******************************************************************************
+
+ Function integral_plain_mcarlo(): return the n-dimensional integral of f(x)
+ from a[0, 1, ..., n] to b[0, 1, ..., n], using a plain Monte Carlo algorithm
+ for a given number of f calls.
+
 ******************************************************************************/
 
-double integral_mc_plain(const int n,
-                         const double x_min[],
-                         const double x_max[],
-                         const int max_call,
-                         void *params,
-                         double (*integrand)(double x[], size_t n, void *params))
+double integral_plain_mcarlo(const int n,
+                             const int calls,
+                             const double a[],
+                             const double b[],
+                             void *params,
+                             double (*f)(double x[], size_t n, void *params))
 {
 	gsl_monte_function gsl_f =
 	{
 		.params = params,
-		.f = integrand,
-		.dim = n
+		.dim = n,
+		.f = f
 	};
 
 	gsl_monte_plain_state *work = gsl_monte_plain_alloc(n);
@@ -121,8 +154,8 @@ double integral_mc_plain(const int n,
 
 	double result = 0.0, error = 0.0;
 
-	const int info = gsl_monte_plain_integrate(&gsl_f, x_min, x_max, n,
-	                                           max_call, r, work, &result, &error);
+	const int info = gsl_monte_plain_integrate(&gsl_f, a, b, n,
+	                                           calls, r, work, &result, &error);
 
 	gsl_rng_free(r);
 	gsl_monte_plain_free(work);
@@ -136,20 +169,24 @@ double integral_mc_plain(const int n,
 }
 
 /******************************************************************************
+
+ Function integral_vegas_mcarlo(): the same as integral_plain_mcarlo() but
+ using the VEGAS algorithm.
+
 ******************************************************************************/
 
-double integral_mc_vegas(const int n,
-                         double x_min[],
-                         double x_max[],
-                         const int max_call,
-                         void *params,
-                         double (*integrand)(double x[], size_t n, void *params))
+double integral_vegas_mcarlo(const int n,
+                             const int calls,
+                             double a[],
+                             double b[],
+                             void *params,
+                             double (*f)(double x[], size_t n, void *params))
 {
 	gsl_monte_function gsl_f =
 	{
 		.params = params,
-		.f = integrand,
-		.dim = n
+		.dim = n,
+		.f = f
 	};
 
 	gsl_monte_vegas_state *work = gsl_monte_vegas_alloc(n);
@@ -160,8 +197,8 @@ double integral_mc_vegas(const int n,
 
 	double result = 0.0, error = 0.0;
 
-	const int info = gsl_monte_vegas_integrate(&gsl_f, x_min, x_max, n,
-	                                           max_call, r, work, &result, &error);
+	const int info = gsl_monte_vegas_integrate(&gsl_f, a, b, n,
+	                                           calls, r, work, &result, &error);
 
 	gsl_rng_free(r);
 	gsl_monte_vegas_free(work);
@@ -175,20 +212,24 @@ double integral_mc_vegas(const int n,
 }
 
 /******************************************************************************
+
+ Function integral_miser_mcarlo(): the same as integral_plain_mcarlo() but
+ using the MISER algorithm.
+
 ******************************************************************************/
 
-double integral_mc_miser(const int n,
-                         const double x_min[],
-                         const double x_max[],
-                         const int max_call,
-                         void *params,
-                         double (*integrand)(double x[], size_t n, void *params))
+double integral_miser_mcarlo(const int n,
+                             const int calls,
+                             const double a[],
+                             const double b[],
+                             void *params,
+                             double (*f)(double x[], size_t n, void *params))
 {
 	gsl_monte_function gsl_f =
 	{
 		.params = params,
-		.f = integrand,
-		.dim = n
+		.dim = n,
+		.f = f
 	};
 
 	gsl_monte_miser_state *work = gsl_monte_miser_alloc(n);
@@ -199,8 +240,8 @@ double integral_mc_miser(const int n,
 
 	double result = 0.0, error = 0.0;
 
-	const int info = gsl_monte_miser_integrate(&gsl_f, x_min, x_max, n,
-	                                           max_call, r, work, &result, &error);
+	const int info = gsl_monte_miser_integrate(&gsl_f, a, b, n,
+	                                           calls, r, work, &result, &error);
 
 	gsl_rng_free(r);
 	gsl_monte_miser_free(work);
@@ -211,4 +252,64 @@ double integral_mc_miser(const int n,
 	}
 
 	return result;
+}
+
+/******************************************************************************
+
+ Function mcarlo_example(): is an auxiliary function that returns the
+ 3-dimensional integrand, I,
+
+ I = A/[1 - cos(x)*cos(y)*cos(z)]; where, A = 1/pi*pi*pi.
+
+ Useful to test Monte Carlo methods from a = (0, 0, 0) to b = (pi, pi, pi). The
+ answer is 1.3932039296856768591842462603255.
+
+******************************************************************************/
+
+static inline double mcarlo_example(double x[], size_t n, void *params)
+{
+	ASSERT(n > 0)
+	ASSERT(params == NULL)
+
+	const double A = 1.0/(M_PI*M_PI*M_PI);
+
+	return A/(1.0 - cos(x[0])*cos(x[1])*cos(x[2]));
+}
+/******************************************************************************
+
+ Function integral_mcarlo_benchmark(): return the error and wall time for the
+ Monte Carlo methods (plain, type = 'p'; vegas, type = 'v'; miser, type = 'm')
+ for a given number of calls. Where, a 3-dimensional integral example is used.
+
+******************************************************************************/
+
+void integral_mcarlo_benchmark(const char type,
+                               const int calls, double *error, double *wtime)
+{
+	double start_time = 0.0, end_time = 0.0, result = 0.0;
+	double a[3] = {0.0, 0.0, 0.0}, b[3] = {M_PI, M_PI, M_PI};
+
+	switch (type)
+	{
+		case 'p':
+			start_time = wall_time();
+			result = integral_plain_mcarlo(3, calls, a, b, NULL, mcarlo_example);
+			end_time = wall_time();
+		break;
+
+		case 'v':
+			start_time = wall_time();
+			result = integral_vegas_mcarlo(3, calls, a, b, NULL, mcarlo_example);
+			end_time = wall_time();
+		break;
+
+		case 'm':
+			start_time = wall_time();
+			result = integral_miser_mcarlo(3, calls, a, b, NULL, mcarlo_example);
+			end_time = wall_time();
+		break;
+	}
+
+	*wtime = end_time - start_time;
+	*error = result - 1.3932039296856768591842462603255;
 }
