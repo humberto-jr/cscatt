@@ -49,6 +49,63 @@ void integral_set_workspace(const int size)
 
 /******************************************************************************
 
+ Function integral_simpson(): return the integral of f(x) using the 1/3-Simpson
+ quadrature rule. Where, values of f in a grid-mesh of grid_size x-points is
+ given.
+
+******************************************************************************/
+
+double integral_simpson(const int grid_size,
+                        const double grid_step,
+                        const bool use_omp,
+                        const double f[])
+{
+	ASSERT(f != NULL)
+	ASSERT(grid_size > 6)
+
+	const int n_max = (grid_size%2 == 0? grid_size : grid_size - 1);
+
+	double sum = f[0] + f[n_max - 1];
+
+	#pragma omp parallel for default(none) shared(f) reduction(+:sum) if(use_omp)
+	for (int n = 1; n < (n_max - 2); n += 2)
+	{
+		sum += 4.0*f[n] + 2.0*f[n + 1];
+	}
+
+	return grid_step*sum/3.0;
+}
+
+/******************************************************************************
+
+ Function integral_simpson_2nd(): the same as integral_simpson() but using
+ Simpson's second rule, i.e. 3/8-Simpson quadrature.
+
+******************************************************************************/
+
+double integral_simpson_2nd(const int grid_size,
+                            const double grid_step,
+                            const bool use_omp,
+                            const double f[])
+{
+	ASSERT(f != NULL)
+	ASSERT(grid_size > 12)
+
+	const int n_max = (grid_size%3 == 0? grid_size : grid_size - 2);
+
+	double sum = f[0] + f[n_max - 1];
+
+	#pragma omp parallel for default(none) shared(f) reduction(+:sum) if(use_omp)
+	for (int n = 1; n < (n_max - 2); n += 3)
+	{
+		sum += 3.0*f[n] + 3.0*f[n + 1] + 2.0*f[n + 2];
+	}
+
+	return grid_step*3.0*sum/8.0;
+}
+
+/******************************************************************************
+
  Function integral_qag(): return the integral of f(x) from a to b, using a 61
  point Gauss-Kronrod rule in a QAG framework. Where, params points to a struct
  of parameters that f may depend on (NULL if not needed).
@@ -275,6 +332,9 @@ static inline double mcarlo_example(double x[], size_t n, void *params)
 
 	return A/(1.0 - cos(x[0])*cos(x[1])*cos(x[2]));
 }
+
+#define MCARLO_EXAMPLE_ANSWER 1.3932039296856768591842462603255
+
 /******************************************************************************
 
  Function integral_mcarlo_benchmark(): return the error and wall time for the
@@ -286,30 +346,46 @@ static inline double mcarlo_example(double x[], size_t n, void *params)
 void integral_mcarlo_benchmark(const char type,
                                const int calls, double *error, double *wtime)
 {
-	double start_time = 0.0, end_time = 0.0, result = 0.0;
-	double a[3] = {0.0, 0.0, 0.0}, b[3] = {M_PI, M_PI, M_PI};
+	double a[3] = {0.0, 0.0, 0.0};
+	double b[3] = {M_PI, M_PI, M_PI};
 
 	switch (type)
 	{
 		case 'p':
-			start_time = wall_time();
-			result = integral_plain_mcarlo(3, calls, a, b, NULL, mcarlo_example);
-			end_time = wall_time();
+		{
+			const double start_time = wall_time();
+			const double result = integral_plain_mcarlo(3, calls, a, b, NULL, mcarlo_example);
+			const double end_time = wall_time();
+
+			*wtime = end_time - start_time;
+			*error = result - MCARLO_EXAMPLE_ANSWER;
+		}
 		break;
 
 		case 'v':
-			start_time = wall_time();
-			result = integral_vegas_mcarlo(3, calls, a, b, NULL, mcarlo_example);
-			end_time = wall_time();
+		{
+			const double start_time = wall_time();
+			const double result = integral_vegas_mcarlo(3, calls, a, b, NULL, mcarlo_example);
+			const double end_time = wall_time();
+
+			*wtime = end_time - start_time;
+			*error = result - MCARLO_EXAMPLE_ANSWER;
+		}
 		break;
 
 		case 'm':
-			start_time = wall_time();
-			result = integral_miser_mcarlo(3, calls, a, b, NULL, mcarlo_example);
-			end_time = wall_time();
-		break;
-	}
+		{
+			const double start_time = wall_time();
+			const double result = integral_miser_mcarlo(3, calls, a, b, NULL, mcarlo_example);
+			const double end_time = wall_time();
 
-	*wtime = end_time - start_time;
-	*error = result - 1.3932039296856768591842462603255;
+			*wtime = end_time - start_time;
+			*error = result - MCARLO_EXAMPLE_ANSWER;
+		}
+		break;
+
+		default:
+			PRINT_ERROR("invalid Monte Carlo method %c\n", type)
+			exit(EXIT_FAILURE);
+	}
 }

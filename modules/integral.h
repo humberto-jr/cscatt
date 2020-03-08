@@ -6,6 +6,16 @@
 
 	void integral_set_workspace(const int size);
 
+	double integral_simpson(const int grid_size,
+	                        const double grid_step,
+	                        const bool use_omp,
+	                        const double f[]);
+
+	double integral_simpson_2nd(const int grid_size,
+	                            const double grid_step,
+	                            const bool use_omp,
+	                            const double f[]);
+
 	double integral_qag(const double a,
 	                    const double b,
 	                    void *params,

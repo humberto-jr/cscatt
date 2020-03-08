@@ -328,7 +328,7 @@ network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h matrix.o
 
 test_suit: test_suit.c $(MODULES_DIR)/matrix.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o spherical.o phys.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o spherical.o phys.o integral.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 #
