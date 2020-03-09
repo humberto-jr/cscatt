@@ -313,17 +313,17 @@ double integral_miser_mcarlo(const int n,
 
 /******************************************************************************
 
- Function mcarlo_example(): is an auxiliary function that returns the
- 3-dimensional integrand, I,
+ Function example_a(): is an auxiliary function that returns the 3-dimensional
+ integrand
 
- I = A/[1 - cos(x)*cos(y)*cos(z)]; where, A = 1/pi*pi*pi.
+ I(x, y, z) = A/[1 - cos(x)*cos(y)*cos(z)]; where, A = 1/pi*pi*pi.
 
  Useful to test Monte Carlo methods from a = (0, 0, 0) to b = (pi, pi, pi). The
  answer is 1.3932039296856768591842462603255.
 
 ******************************************************************************/
 
-static inline double mcarlo_example(double x[], size_t n, void *params)
+static inline double example_a(double x[], size_t n, void *params)
 {
 	ASSERT(n > 0)
 	ASSERT(params == NULL)
@@ -333,59 +333,124 @@ static inline double mcarlo_example(double x[], size_t n, void *params)
 	return A/(1.0 - cos(x[0])*cos(x[1])*cos(x[2]));
 }
 
-#define MCARLO_EXAMPLE_ANSWER 1.3932039296856768591842462603255
+#define EXAMPLEA_ANSWER 1.3932039296856768591842462603255
 
 /******************************************************************************
 
- Function integral_mcarlo_benchmark(): return the error and wall time for the
- Monte Carlo methods (plain, type = 'p'; vegas, type = 'v'; miser, type = 'm')
- for a given number of calls. Where, a 3-dimensional integral example is used.
+ Function example_b(): is an auxiliary function that returns the integrand
+
+ I(x) = exp(-x)*cos(x).
+
+ Useful to test all integral methods from a = 0 to b = inf. The answer is 1/2.
 
 ******************************************************************************/
 
-void integral_mcarlo_benchmark(const char type,
-                               const int calls, double *error, double *wtime)
+static inline double example_b(double x, void *params)
 {
-	double a[3] = {0.0, 0.0, 0.0};
-	double b[3] = {M_PI, M_PI, M_PI};
+	ASSERT(params == NULL)
+	return exp(-x)*cos(x);
+}
 
+#define EXAMPLEB_ANSWER 0.5
+
+/******************************************************************************
+
+ Function integral_benchmark(): return the error and wall time for a given
+ method of integration.
+
+******************************************************************************/
+
+void integral_benchmark(const integral_method type,
+                        const int n_max, double *error, double *wtime)
+{
 	switch (type)
 	{
-		case 'p':
+		case simpson_1st:
 		{
+			const double dx = 100.0/as_double(n_max);
+			double *f = allocate(n_max, sizeof(double), false);
+
+			for (int n = 0; n < n_max; ++n)
+			{
+				f[n] = example_b(as_double(n)*dx, NULL);
+			}
+
 			const double start_time = wall_time();
-			const double result = integral_plain_mcarlo(3, calls, a, b, NULL, mcarlo_example);
+			const double result = integral_simpson(n_max, dx, false, f);
 			const double end_time = wall_time();
 
+			free(f);
+
 			*wtime = end_time - start_time;
-			*error = result - MCARLO_EXAMPLE_ANSWER;
+			*error = result - EXAMPLEB_ANSWER;
 		}
 		break;
 
-		case 'v':
+		case simpson_2nd:
 		{
+			const double dx = 100.0/as_double(n_max);
+			double *f = allocate(n_max, sizeof(double), false);
+
+			for (int n = 0; n < n_max; ++n)
+			{
+				f[n] = example_b(as_double(n)*dx, NULL);
+			}
+
 			const double start_time = wall_time();
-			const double result = integral_vegas_mcarlo(3, calls, a, b, NULL, mcarlo_example);
+			const double result = integral_simpson_2nd(n_max, dx, false, f);
 			const double end_time = wall_time();
 
+			free(f);
+
 			*wtime = end_time - start_time;
-			*error = result - MCARLO_EXAMPLE_ANSWER;
+			*error = result - EXAMPLEB_ANSWER;
 		}
 		break;
 
-		case 'm':
+		case plain_monte_carlo:
 		{
+			const double a[3] = {0.0, 0.0, 0.0};
+			const double b[3] = {M_PI, M_PI, M_PI};
+
 			const double start_time = wall_time();
-			const double result = integral_miser_mcarlo(3, calls, a, b, NULL, mcarlo_example);
+			const double result = integral_plain_mcarlo(3, n_max, a, b, NULL, example_a);
 			const double end_time = wall_time();
 
 			*wtime = end_time - start_time;
-			*error = result - MCARLO_EXAMPLE_ANSWER;
+			*error = result - EXAMPLEA_ANSWER;
+		}
+		break;
+
+		case vegas_monte_carlo:
+		{
+			double a[3] = {0.0, 0.0, 0.0};
+			double b[3] = {M_PI, M_PI, M_PI};
+
+			const double start_time = wall_time();
+			const double result = integral_vegas_mcarlo(3, n_max, a, b, NULL, example_a);
+			const double end_time = wall_time();
+
+			*wtime = end_time - start_time;
+			*error = result - EXAMPLEA_ANSWER;
+		}
+		break;
+
+		case miser_monte_carlo:
+		{
+			const double a[3] = {0.0, 0.0, 0.0};
+			const double b[3] = {M_PI, M_PI, M_PI};
+
+			const double start_time = wall_time();
+			const double result = integral_miser_mcarlo(3, n_max, a, b, NULL, example_a);
+			const double end_time = wall_time();
+
+			*wtime = end_time - start_time;
+			*error = result - EXAMPLEA_ANSWER;
 		}
 		break;
 
 		default:
-			PRINT_ERROR("invalid Monte Carlo method %c\n", type)
+			PRINT_ERROR("invalid method %d\n", type)
 			exit(EXIT_FAILURE);
 	}
 }

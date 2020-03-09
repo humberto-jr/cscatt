@@ -2,6 +2,19 @@
 	#define INTEGRAL_HEADER
 	#include "globals.h"
 
+	enum integral_method
+	{
+		qag,
+		qags,
+		simpson_1st,
+		simpson_2nd,
+		plain_monte_carlo,
+		vegas_monte_carlo,
+		miser_monte_carlo
+	};
+
+	typedef enum integral_method integral_method;
+
 	void integral_set_error(const double error);
 
 	void integral_set_workspace(const int size);
@@ -47,6 +60,6 @@
 	                             void *params,
 	                             double (*f)(double x[], size_t n, void *params));
 
-	void integral_mcarlo_benchmark(const char type,
-	                               const int calls, double *error, double *wtime);
+	void integral_benchmark(const integral_method type,
+	                        const int n_max, double *error, double *wtime);
 #endif

@@ -4,18 +4,6 @@
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-static double mc_result = 1.3932039296856768591842462603255;
-
-double mc_integrand(double x[], size_t n, void *params)
-{
-	ASSERT(n > 0)
-	ASSERT(params == NULL)
-
-	const double A = 1.0/(M_PI*M_PI*M_PI);
-
-	return A/(1.0 - cos(x[0])*cos(x[1])*cos(x[2]));
-}
-
 int main()
 {
 	printf("\nmatrix_init_gpu();\n");
@@ -291,18 +279,25 @@ int main()
 */
 
 	printf("\n");
-	printf("Error of integral_mc_*(3, x_min, x_max, n, NULL, mc_integrand) for n points; n vs. plain, vegas, miser\n");
+	printf("Timing for integral_benchmark(simpson_1st, n, &error, &time) for n points; n vs. error, time\n");
 
-	for (int n = 25000; n < 1000000; n += 10000)
+	for (int n = 100; n < 1000; n += 50)
 	{
-		double x_min[3] = {0.0, 0.0, 0.0};
-		double x_max[3] = {M_PI, M_PI, M_PI};
+		double error = 0.0, time = 0.0;
 
-		const double plain = mc_result - integral_mc_plain(3, x_min, x_max, n, NULL, mc_integrand);
-		const double vegas = mc_result - integral_mc_vegas(3, x_min, x_max, n, NULL, mc_integrand);
-		const double miser = mc_result - integral_mc_miser(3, x_min, x_max, n, NULL, mc_integrand);
+		integral_benchmark(simpson_1st, n, &error, &time);
+		printf("%4d\t % -8e\t % -8e\t\n", n, error, time);
+	}
 
-		printf("%4d\t % -8e\t % -8e\t % -8e\n", n, plain, vegas, miser);
+	printf("\n");
+	printf("Timing for integral_benchmark(simpson_2nd, n, &error, &time) for n points; n vs. error, time\n");
+
+	for (int n = 100; n < 1000; n += 50)
+	{
+		double error = 0.0, time = 0.0;
+
+		integral_benchmark(simpson_2nd, n, &error, &time);
+		printf("%4d\t % -8e\t % -8e\t\n", n, error, time);
 	}
 
 /*
