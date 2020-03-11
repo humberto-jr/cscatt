@@ -10,53 +10,79 @@
 
 ******************************************************************************/
 
-double spherical_harmonics(const int l, const int m,
-                           const double theta, const double phi)
+double spherical_harmonics(const int l, const int m, const spherical *r)
 {
-	ASSERT(m >= 0)
-	ASSERT(l >= m)
+	ASSERT(l >= abs(m))
 
-	const double x = cos(theta*M_PI/180.0);
-	const double y = as_double(m)*(phi*M_PI/180.0);
+	const double x
+		= cos(r->theta*M_PI/180.0);
+
+	const double m_phase
+		= (m > 0? pow(-1.0, m) : 1.0);
+
+	const double phi_wavef
+		= exp(as_double(m)*r->phi*M_PI/180.0)/sqrt(2.0*M_PI);
 
 	/* NOTE: see equation 1.43 (pag. 8) of Angular Momentum by Richard N. Zare. */
-	return pow(-1.0, m)*gsl_sf_legendre_sphPlm(l, m, x)*pow(2.0*M_PI, -0.5)*exp(y);
+	return m_phase*gsl_sf_legendre_sphPlm(l, abs(m), x)*phi_wavef;
 }
 
 /******************************************************************************
 
- Function spherical_harmonics_ab(): returns the coupled spherical harmonics for
- angular momentum l[0] + l[1], with projection m[0] + m[1], at (theta, phi);
- built upon two spherical harmonics, |a> and |b>. Where, index 0 labels all
- inputs for function a and index 1 those for function b.
+ Function spherical_harmonics_coupl(): returns a coupled spherical harmonics
+ built upon the combination of n uncoupled ones for a total angular momentum
+ l[0] + l[1] + ... + l[n], with projection m[0] + m[1] + ... + m[n], at r[0],
+ r[1], ..., r[n].
 
 ******************************************************************************/
 
-double spherical_harmonics_ab(const int l[], const int m[],
-                              const double theta[], const double phi[])
+double spherical_harmonics_coupl(const int n
+                                 const int l[],
+                                 const int m[],
+                                 const spherical r[])
 {
+	ASSERT(n > 0)
+	ASSERT(n < 3)
 	ASSERT(l != NULL)
 	ASSERT(m != NULL)
-	ASSERT(phi != NULL)
-	ASSERT(theta != NULL)
+	ASSERT(r != NULL)
 
 	double result = 0.0;
-	const int L = l[0] + l[1];
 
-	for (int m_0 = 0; m_0 <= m[0]; ++m_0)
+	switch (n)
 	{
-		for (int m_1 = 0; m_1 <= m[1]; ++m_1)
+		case 1:
 		{
-			const double y_0
-				= spherical_harmonics(l[0], m_0, theta[0], phi[0]);
-
-			const double y_1
-				= spherical_harmonics(l[1], m_1, theta[1], phi[1]);
-
-			const int M = m_0 + m_1;
-
-			result += phys_clebsch_gordan(l[0], l[1], L, m_0, m_1, M)*y_0*y_1;
+			result = spherical_harmonics(l[0], m[0], &r[0]);
 		}
+		break;
+
+		case 2:
+		{
+			const int L = l[0] + l[1];
+
+			for (int a = -l[0]; a <= l[0]; ++a)
+			{
+				for (int b = -l[1]; b <= l[1]; ++b)
+				{
+					const int M = a + b;
+
+					const double c
+						= phys_clebsch_gordan(l[0], l[1], L, a, b, M);
+
+					if (c == 0.0) continue;
+
+					const double Ya
+						= spherical_harmonics(l[0], a, &r[0]);
+
+					const double Yb
+						= spherical_harmonics(l[1], b, &r[1]);
+
+					result += c*Ya*Yb;
+				}
+			}
+		}
+		break;
 	}
 
 	return result;
