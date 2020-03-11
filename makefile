@@ -277,6 +277,11 @@ integral: $(MODULES_DIR)/integral.c $(MODULES_DIR)/integral.h $(MODULES_DIR)/glo
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
+jacobi: $(MODULES_DIR)/jacobi.c $(MODULES_DIR)/cartesian.h $(MODULES_DIR)/spherical.h $(MODULES_DIR)/globals.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -c $<
+	@echo
+
 #network: $(MODULES_DIR)/network.c $(MODULES_DIR)/network.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
 #	@echo "\033[31m$<\033[0m"
 #	$(CC) $(CFLAGS) -c $<
