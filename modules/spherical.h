@@ -21,6 +21,5 @@
 
 	double spherical_harmonics_coupl(const int n,
 	                                 const int l[],
-	                                 const int m[],
 	                                 const spherical r[]);
 #endif

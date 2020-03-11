@@ -31,54 +31,39 @@ double spherical_harmonics(const int l, const int m, const spherical *r)
 
  Function spherical_harmonics_coupl(): returns a coupled spherical harmonics
  built upon the combination of n uncoupled ones for a total angular momentum
- l[0] + l[1] + ... + l[n], with projection m[0] + m[1] + ... + m[n], at r[0],
- r[1], ..., r[n].
+ l[0] + l[1] + ... + l[n], at r[0], r[1], ..., r[n].
 
 ******************************************************************************/
 
-double spherical_harmonics_coupl(const int n
+double spherical_harmonics_coupl(const int n,
                                  const int l[],
-                                 const int m[],
                                  const spherical r[])
 {
-	ASSERT(n > 0)
-	ASSERT(n < 3)
 	ASSERT(l != NULL)
-	ASSERT(m != NULL)
 	ASSERT(r != NULL)
 
 	double result = 0.0;
 
 	switch (n)
 	{
-		case 1:
-		{
-			result = spherical_harmonics(l[0], m[0], &r[0]);
-		}
-		break;
-
 		case 2:
 		{
-			const int L = l[0] + l[1];
-
 			for (int a = -l[0]; a <= l[0]; ++a)
 			{
 				for (int b = -l[1]; b <= l[1]; ++b)
 				{
-					const int M = a + b;
+					const double coeff
+						= phys_clebsch_gordan(l[0], l[1], l[0] + l[1], a, b, a + b);
 
-					const double c
-						= phys_clebsch_gordan(l[0], l[1], L, a, b, M);
+					if (coeff == 0.0) continue;
 
-					if (c == 0.0) continue;
-
-					const double Ya
+					const double wavef_a
 						= spherical_harmonics(l[0], a, &r[0]);
 
-					const double Yb
+					const double wavef_b
 						= spherical_harmonics(l[1], b, &r[1]);
 
-					result += c*Ya*Yb;
+					result += coeff*wavef_a*wavef_b;
 				}
 			}
 		}

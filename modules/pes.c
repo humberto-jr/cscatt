@@ -8,6 +8,7 @@
 
 ******************************************************************************/
 
+#include "jacobi.h"
 #include "coor.h"
 #include "pes.h"
 
@@ -56,6 +57,21 @@ double pes(const jacobi_coor *x)
 		coor_jacobi_to_internuc(x, &y);
 		return EXTERNAL_PES_NAME(&y.r_ab, &y.r_bc, &y.r_ac);
 	#endif
+}
+
+double _pes(const jacobi_sf *x)
+{
+	ASSERT(x != NULL)
+/*
+	#if defined(USE_NON_REACTIVE_PES)
+		return EXTERNAL_PES_NAME(&x->r, &x->R, &x->theta);
+	#else
+		internuc_coor y;
+		coor_jacobi_to_internuc(x, &y);
+		return EXTERNAL_PES_NAME(&y.r_ab, &y.r_bc, &y.r_ac);
+	#endif
+	*/
+	return 0.0;
 }
 
 /******************************************************************************
