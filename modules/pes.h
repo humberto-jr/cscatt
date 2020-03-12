@@ -1,9 +1,12 @@
 #if !defined(PES_HEADER)
 	#define PES_HEADER
 	#include "globals.h"
+	#include "jacobi.h"
 	#include "coor.h"
 
 	double pes(const jacobi_coor *x);
+
+	double pes_sf(const jacobi_sf *set);
 
 	void pes_init();
 

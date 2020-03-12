@@ -4,7 +4,9 @@
 	#include "cartesian.h"
 	#include "spherical.h"
 
-	#define MAX_JACOBI_VECTOR 3
+	#define MAX_JACOBI_VECTOR 5
+	#define MAX_ATOM (MAX_JACOBI_VECTOR + 1)
+	#define MAX_INTERNUC_DISTANCE (3*MAX_ATOM - 6)
 
 	/******************************************************************************
 

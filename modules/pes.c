@@ -8,7 +8,6 @@
 
 ******************************************************************************/
 
-#include "jacobi.h"
 #include "coor.h"
 #include "pes.h"
 
@@ -59,19 +58,21 @@ double pes(const jacobi_coor *x)
 	#endif
 }
 
-double _pes(const jacobi_sf *x)
+/******************************************************************************
+
+ Wrapper pes_sf(): is an interface for the user defined PES as function of a
+ set of n Jacobi vectors in a space-fixed (SF) reference frame. Where, n =
+ set->size. Jacobi coordinates are transformed in the user's internuclear
+ distances.
+
+******************************************************************************/
+
+double pes_sf(const jacobi_sf *set)
 {
-	ASSERT(x != NULL)
-/*
-	#if defined(USE_NON_REACTIVE_PES)
-		return EXTERNAL_PES_NAME(&x->r, &x->R, &x->theta);
-	#else
-		internuc_coor y;
-		coor_jacobi_to_internuc(x, &y);
-		return EXTERNAL_PES_NAME(&y.r_ab, &y.r_bc, &y.r_ac);
-	#endif
-	*/
-	return 0.0;
+	double r[MAX_INTERNUC_DISTANCE];
+	jacobi_to_internuc(set, r);
+
+	return 0.0; // EXTERNAL_PES_NAME(r);
 }
 
 /******************************************************************************
