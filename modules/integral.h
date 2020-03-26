@@ -19,15 +19,29 @@
 
 	void integral_set_workspace(const int size);
 
-	double integral_simpson(const int grid_size,
-	                        const double grid_step,
+	double integral_simpson(const int n,
+	                        const double a,
+	                        const double b,
+	                        void *params,
 	                        const bool use_omp,
-	                        const double f[]);
+	                        double (*f)(double x, void *params));
 
-	double integral_simpson_2nd(const int grid_size,
+	double integral_simpson_2nd(const int n,
+	                            const double a,
+	                            const double b,
+	                            void *params,
+	                            const bool use_omp,
+	                            double (*f)(double x, void *params));
+
+	double integral_tab_simpson(const int grid_size,
 	                            const double grid_step,
 	                            const bool use_omp,
 	                            const double f[]);
+
+	double integral_tab_simpson_2nd(const int grid_size,
+	                                const double grid_step,
+	                                const bool use_omp,
+	                                const double f[]);
 
 	double integral_qag(const double a,
 	                    const double b,

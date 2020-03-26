@@ -2,6 +2,10 @@
 	#define PHYS_HEADER
 	#include "globals.h"
 
+	double phys_legendre(const int l, const double x);
+
+	double phys_norm_legendre(const int l, const int m, const double x);
+
 	double phys_wigner_3j(const int a, const int b, const int c,
 	                      const int d, const int e, const int f);
 

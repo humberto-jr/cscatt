@@ -49,16 +49,81 @@ void integral_set_workspace(const int size)
 
 /******************************************************************************
 
+ Function integral_simpson(): return the integral of f(x) from a to b, using
+ the 1/3-Simpson quadrature rule. Where, values of f are evaluated in a grid
+ of n points.
+
+******************************************************************************/
+
+double integral_simpson(const int n,
+                        const double a,
+                        const double b,
+                        void *params,
+                        const bool use_omp,
+                        double (*f)(double x, void *params))
+{
+	ASSERT(n%2 == 0)
+
+	const double grid_step = (b - a)/as_double(n);
+	double sum = f(a, params) + f(b, params);
+
+	#pragma omp parallel for default(none) shared(f, params) reduction(+:sum) if(use_omp)
+	for (int m = 1; m < (n - 2); m += 2)
+	{
+		sum += 4.0*f(a + as_double(m)*grid_step, params);
+		sum += 2.0*f(a + as_double(m + 1)*grid_step, params);
+	}
+
+	sum += 4.0*f(a + as_double(n - 1)*grid_step, params);
+
+	return grid_step*sum/3.0;
+}
+
+/******************************************************************************
+
+ Function integral_simpson_2nd(): the same as integral_simpson() but using
+ Simpson's second rule, i.e. 3/8-Simpson quadrature.
+
+******************************************************************************/
+
+double integral_simpson_2nd(const int n,
+                            const double a,
+                            const double b,
+                            void *params,
+                            const bool use_omp,
+                            double (*f)(double x, void *params))
+{
+	ASSERT(n%3 == 0)
+
+	const double grid_step = (b - a)/as_double(n);
+	double sum = f(a, params) + f(b, params);
+
+	#pragma omp parallel for default(none) shared(f, params) reduction(+:sum) if(use_omp)
+	for (int m = 1; m < (n - 2); m += 3)
+	{
+		sum += 3.0*f(a + as_double(m)*grid_step, params);
+		sum += 3.0*f(a + as_double(m + 1)*grid_step, params);
+		sum += 2.0*f(a + as_double(m + 2)*grid_step, params);
+	}
+
+	sum += 3.0*f(a + as_double(n - 1)*grid_step, params);
+	sum += 3.0*f(a + as_double(n - 2)*grid_step, params);
+
+	return grid_step*3.0*sum/8.0;
+}
+
+/******************************************************************************
+
  Function integral_simpson(): return the integral of f(x) using the 1/3-Simpson
  quadrature rule. Where, values of f in a grid-mesh of grid_size x-points is
  given.
 
 ******************************************************************************/
 
-double integral_simpson(const int grid_size,
-                        const double grid_step,
-                        const bool use_omp,
-                        const double f[])
+double integral_tab_simpson(const int grid_size,
+                            const double grid_step,
+                            const bool use_omp,
+                            const double f[])
 {
 	ASSERT(f != NULL)
 	ASSERT(grid_size > 6)
@@ -83,10 +148,10 @@ double integral_simpson(const int grid_size,
 
 ******************************************************************************/
 
-double integral_simpson_2nd(const int grid_size,
-                            const double grid_step,
-                            const bool use_omp,
-                            const double f[])
+double integral_tab_simpson_2nd(const int grid_size,
+                                const double grid_step,
+                                const bool use_omp,
+                                const double f[])
 {
 	ASSERT(f != NULL)
 	ASSERT(grid_size > 12)
@@ -376,7 +441,7 @@ void integral_benchmark(const integral_method type,
 			}
 
 			const double start_time = wall_time();
-			const double result = integral_simpson(n_max, dx, false, f);
+			const double result = integral_tab_simpson(n_max, dx, false, f);
 			const double end_time = wall_time();
 
 			free(f);
@@ -397,7 +462,7 @@ void integral_benchmark(const integral_method type,
 			}
 
 			const double start_time = wall_time();
-			const double result = integral_simpson_2nd(n_max, dx, false, f);
+			const double result = integral_tab_simpson_2nd(n_max, dx, false, f);
 			const double end_time = wall_time();
 
 			free(f);

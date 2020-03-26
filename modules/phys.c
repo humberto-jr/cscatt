@@ -30,6 +30,38 @@
 
 /******************************************************************************
 
+ Function phys_legendre(): returns a Legendre polynomial at x within [-1, 1].
+ Where, l is positive.
+
+******************************************************************************/
+
+double phys_legendre(const int l, const double x)
+{
+	ASSERT(l >= 0)
+	ASSERT(fabs(x) <= 1.0)
+
+	return gsl_sf_legendre_Pl(l, x);
+}
+
+/******************************************************************************
+
+ Function phys_norm_legendre(): returns a normalized associated Legendre
+ polynomial at x within [-1, 1], suitable for use in spherical harmonics.
+ Where, l >= m and m is positive.
+
+******************************************************************************/
+
+double phys_norm_legendre(const int l, const int m, const double x)
+{
+	ASSERT(m >= 0)
+	ASSERT(l >= m)
+	ASSERT(fabs(x) <= 1.0)
+
+	return gsl_sf_legendre_sphPlm(l, m, x);
+}
+
+/******************************************************************************
+
  Function wigner_3j():
 
 ******************************************************************************/
