@@ -38,16 +38,6 @@
 	                        const bool use_omp,
 	                        double (*f)(double x, void *params));
 
-	double integral_tab_simpson(const int grid_size,
-	                            const double grid_step,
-	                            const bool use_omp,
-	                            const double f[]);
-
-	double integral_tab_simpson_2nd(const int grid_size,
-	                                const double grid_step,
-	                                const bool use_omp,
-	                                const double f[]);
-
 	double math_qag(const double a,
 	                const double b,
 	                void *params,

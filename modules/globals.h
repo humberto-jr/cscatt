@@ -100,9 +100,9 @@
 
 	/******************************************************************************
 
-	 Function allocate(): allocate resources for n elements with double precision
-	 and return a pointer pointing the first one (initialized to zero if set_zero
-	 = true).
+	 Function allocate(): allocate resources for n elements with data_size bits and
+	 return a pointer pointing the first one (initialized to zero if set_zero =
+	 true).
 
 	******************************************************************************/
 

@@ -17,7 +17,6 @@
 
 #include "pes.h"
 #include "dvr.h"
-#include "coor.h"
 #include "mass.h"
 #include "matrix.h"
 #include "miller.h"
@@ -114,8 +113,6 @@ double miller_jcp69_rot_integral(const char arrang,
 
 	const int info = gsl_integration_qags(&f, 0.0, theta_max, 1.0e-6, 0.0,
 	                                      GSL_MAX_WORKSPACE, work, &result, &error);
-
-	gsl_integration_workspace_free(work);
 
 	if (info != 0)
 	{

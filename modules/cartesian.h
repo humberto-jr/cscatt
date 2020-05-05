@@ -1,7 +1,6 @@
 #if !defined(CARTESIAN_HEADER)
 	#define CARTESIAN_HEADER
 	#include "globals.h"
-	#include "spherical.h"
 
 	/******************************************************************************
 
@@ -18,7 +17,20 @@
 
 	/******************************************************************************
 
-	 Function cartesian_distance(): resolves the distance between two vectors, a =
+	 Type spherical: represents a set of spherical coordinates.
+
+	******************************************************************************/
+
+	struct spherical
+	{
+		double rho, theta, phi;
+	};
+
+	typedef struct spherical spherical;
+
+	/******************************************************************************
+
+	 Function cartesian_distance(): resolves the distance between two points, a =
 	 (x, y, z) and b = (x', y', z'), in Cartesian coordinates.
 
 	******************************************************************************/
@@ -42,8 +54,8 @@
 
 	/******************************************************************************
 
-	 Function cartesian_length(): resolves the length of a vector a = (x, y, z) in
-	 Cartesian coordinates.
+	 Function cartesian_length(): resolves the length of a vector a = (x, y, z), in
+	 Cartesian coordinates, measured from the origin (0, 0, 0).
 
 	******************************************************************************/
 
