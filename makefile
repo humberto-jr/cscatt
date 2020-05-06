@@ -57,7 +57,7 @@ GSLROOT = /usr/local
 CC = gcc
 CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
 LDFLAGS = -L$(GSLROOT)/lib -lgsl -lgslcblas -lm
-FORT_LIB = -lifcore -lgfortran
+FORT_LIB = -lgfortran
 
 #
 # GNU or Intel MPI compilers:
@@ -69,6 +69,7 @@ endif
 
 ifeq ($(CC), mpiicc)
 	CFLAGS += -DUSE_MPI
+	FORT_LIB += -lifcore 
 endif
 
 #
@@ -208,7 +209,7 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix nist johnson pes mass coor dvr file phys miller spherical integral
+modules: matrix nist johnson pes mass dvr file miller math
 drivers: dbasis cmatrix test_suit about pes_print bprint cprint tbasis
 
 #
@@ -232,17 +233,12 @@ johnson: $(MODULES_DIR)/johnson.c $(MODULES_DIR)/johnson.h $(MODULES_DIR)/matrix
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
-pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/globals.h
+pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/cartesian.h $(MODULES_DIR)/globals.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $(PES_MACRO) -c $<
 	@echo
 
 mass: $(MODULES_DIR)/mass.c $(MODULES_DIR)/mass.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/nist.h
-	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -c $<
-	@echo
-
-coor: $(MODULES_DIR)/coor.c $(MODULES_DIR)/coor.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mass.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo
@@ -257,27 +253,12 @@ file: $(MODULES_DIR)/file.c $(MODULES_DIR)/file.h $(MODULES_DIR)/globals.h
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
-phys: $(MODULES_DIR)/phys.c $(MODULES_DIR)/phys.h $(MODULES_DIR)/globals.h
+miller: $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/clib.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/pes.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/matrix.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
-miller: $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/clib.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/pes.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/coor.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/matrix.h
-	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -c $<
-	@echo
-
-spherical: $(MODULES_DIR)/spherical.c $(MODULES_DIR)/spherical.h $(MODULES_DIR)/phys.h $(MODULES_DIR)/cartesian.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -c $<
-	@echo
-
-integral: $(MODULES_DIR)/integral.c $(MODULES_DIR)/integral.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -c $<
-	@echo
-
-jacobi: $(MODULES_DIR)/jacobi.c $(MODULES_DIR)/cartesian.h $(MODULES_DIR)/spherical.h $(MODULES_DIR)/globals.h
+math: $(MODULES_DIR)/math.c $(MODULES_DIR)/math.h $(MODULES_DIR)/globals.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo
@@ -293,22 +274,22 @@ jacobi: $(MODULES_DIR)/jacobi.c $(MODULES_DIR)/cartesian.h $(MODULES_DIR)/spheri
 
 dbasis: dbasis.c mass_config.h basis_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o mass.o dvr.o pes.o nist.o coor.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o mass.o dvr.o pes.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-cmatrix: cmatrix.c mpi_config.h mass_config.h basis_config.h coupl_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/miller.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/phys.h $(MODULES_DIR)/pes.h
+cmatrix: cmatrix.c mpi_config.h mass_config.h basis_config.h coupl_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/miller.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/pes.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o miller.o file.o mass.o phys.o pes.o coor.o dvr.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o miller.o file.o mass.o pes.o dvr.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/pes.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o pes.o coor.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o pes.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-pes_print: pes_print.c mass_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/coor.h $(MODULES_DIR)/pes.h
+pes_print: pes_print.c mass_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/mass.h $(MODULES_DIR)/pes.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out pes.o coor.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out pes.o mass.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 bprint: bprint.c basis_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
@@ -333,7 +314,7 @@ network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h matrix.o
 
 test_suit: test_suit.c $(MODULES_DIR)/matrix.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o spherical.o phys.o integral.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o math.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 #

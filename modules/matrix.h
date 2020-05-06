@@ -42,6 +42,10 @@
 	                         const int row_min, const int row_max,
 	                         const int col_min, const int col_max);
 
+	double *matrix_raw_row(const matrix *m, const int p, const bool use_omp);
+
+	double *matrix_raw_col(const matrix *m, const int q, const bool use_omp);
+
 	double matrix_get_pow(const matrix *m,
 	                      const int p, const int q, const double power);
 

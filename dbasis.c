@@ -1,7 +1,5 @@
 #include "modules/pes.h"
-#include "modules/dvr.h"
 #include "modules/mass.h"
-#include "modules/phys.h"
 #include "modules/file.h"
 #include "modules/matrix.h"
 #include "modules/globals.h"
@@ -10,6 +8,108 @@
 #include "basis_config.h"
 
 #define FORMAT "# %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
+
+/******************************************************************************
+
+ Function parity(): return the parity p = (-1)^l for a given l; either p = +1
+ or p = -1.
+
+******************************************************************************/
+
+inline static int parity(const int l)
+{
+	return (int) pow(-1.0, l);
+}
+
+/******************************************************************************
+
+ Function centr_term(): returns the actual centrifugal potential term at x for
+ a given angular momentum l, provided the mass under consideration.
+
+******************************************************************************/
+
+inline static double centr_term(const int l,
+                                const double mass, const double x)
+{
+	return as_double(l*(l + 1))/(2.0*mass*x*x);
+}
+
+/******************************************************************************
+
+ Function fgh_matrix(): return the discrete variable representation (DVR) of a
+ Fourier grid Hamiltonian (FGH) subjected to a given single channel potential
+ energy and reduced mass. As shown in Eq. (6a) and (6b) of Ref. [1].
+
+ NOTE: The m-th eigenvector is the m-th column in a grid_size-by-grid_size row-
+ major matrix: eigenvec[n*grid_size + m], where n = m = [0, grid_size).
+
+******************************************************************************/
+
+matrix *fgh_matrix(const int grid_size,
+                   const double grid_step,
+                   const double pot_energy[],
+                   const double mass)
+{
+	ASSERT(pot_energy != NULL)
+
+	matrix *result
+		= matrix_alloc(grid_size, grid_size, false);
+
+	const double box_length
+		= as_double(grid_size - 1)*grid_step;
+
+	const double factor
+		= (M_PI*M_PI)/(mass*box_length*box_length);
+
+	const double nn_term
+		= factor*as_double(grid_size*grid_size + 2)/6.0;
+
+	for (int n = 0; n < grid_size; ++n)
+	{
+		matrix_diag_set(result, n, nn_term + pot_energy[n]);
+
+		for (int m = (n + 1); m < grid_size; ++m)
+		{
+			const double nm
+				= as_double((n + 1) - (m + 1));
+
+			const double nm_term
+				= sin(nm*M_PI/as_double(grid_size));
+
+			matrix_symm_set(result, n, m, pow(-1.0, nm)*factor/pow(nm_term, 2));
+		}
+	}
+
+	return result;
+}
+
+/******************************************************************************
+
+ Function fgh_norm(): normalize to unity the eigenvector a of a Hamiltonian
+ built by fgh_matrix(). On entry, the matrix representation is expected
+ properly diagonalized and its columns the respective eigenvectors.
+
+******************************************************************************/
+
+void fgh_norm(matrix *m,
+              const int a, const double grid_step, const bool use_omp)
+{
+	const int n_max
+		= (matrix_row(m)%2 == 0? matrix_row(m) : matrix_row(m) - 1);
+
+	double sum = matrix_get_pow(m, 0, a, 2.0)
+	           + matrix_get_pow(m, n_max - 1, a, 2.0);
+
+	#pragma omp parallel for default(none) shared(m) reduction(+:sum) if(use_omp)
+	for (int n = 1; n < (n_max - 2); n += 2)
+	{
+		sum += 4.0*matrix_get_pow(m, n, a, 2.0)
+		     + 2.0*matrix_get_pow(m, n + 1, a, 2.0);
+	}
+
+	sum = grid_step*sum/3.0;
+	matrix_col_scale(m, a, 1.0/sqrt(sum), use_omp);
+}
 
 int main(int argc, char *argv[])
 {
@@ -69,13 +169,6 @@ int main(int argc, char *argv[])
 		= (r_max - r_min)/as_double(rovib_grid_size);
 
 /*
- *	Electronic spin multiplicity:
- */
-
-	const int spin_mult
-		= (int) file_get_key(stdin, "spin_mult", 1.0, 3.0, 1.0);
-
-/*
  *	Arrangement (1 == a, 2 == b, 3 == c) and atomic masses:
  */
 
@@ -92,7 +185,7 @@ int main(int argc, char *argv[])
  */
 
 	printf("#\n");
-	printf("# J = %d, J-parity = %d, spin mult. = %d\n", J, J_parity, spin_mult);
+	printf("# J = %d, J-parity = %d\n", J, J_parity);
 	printf("#   Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
 	printf("# -------------------------------------------------------------------------------------\n");
 
@@ -110,13 +203,11 @@ int main(int argc, char *argv[])
 		for (int n = 0; n < rovib_grid_size; ++n)
 		{
 			const double r = r_min + as_double(n)*r_step;
-			pot_energy[n] = pec(arrang, r) + phys_centr_term(j, mass(m), r);
+			pot_energy[n] = pec(arrang, r) + centr_term(j, mass(m), r);
 		}
 
-		const int max_state = 1;
-
 		matrix *eigenvec
-			= dvr_fgh(rovib_grid_size, r_step, pot_energy, mass(m));
+			= fgh_matrix(rovib_grid_size, r_step, pot_energy, mass(m));
 
 		free(pot_energy);
 
@@ -130,8 +221,8 @@ int main(int argc, char *argv[])
 
 		for (int v = v_min; v <= v_max; v += v_step)
 		{
-			dvr_fgh_norm(eigenvec, v, r_step, false);
-			matrix *wavef = matrix_get_col(eigenvec, v, false);
+			fgh_norm(eigenvec, v, r_step, false);
+			double *wavef = matrix_raw_col(eigenvec, v, false);
 
 /*
  *			Step 3: loop over all partial waves l of the atom around the diatom given by the
@@ -140,9 +231,9 @@ int main(int argc, char *argv[])
 
 			for (int l = abs(J - j); l <= (J + j); ++l)
 			{
-				if (phys_parity(j + l) != J_parity && J_parity != 0) continue;
+				if (parity(j + l) != J_parity && J_parity != 0) continue;
 
-				printf(FORMAT, max_ch, v, j, l, phys_parity(j + l),
+				printf(FORMAT, max_ch, v, j, l, parity(j + l),
 				       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
 
 /*
@@ -150,33 +241,32 @@ int main(int argc, char *argv[])
  *				channels.
  */
 
-				char filename[MAX_LINE_LENGTH];
-				sprintf(filename, BASIS_BUFFER_FORMAT, arrang, max_ch, J);
+				FILE *output = open_basis_file("wb", arrang, max_ch, J);
 
-				matrix_save(wavef, filename);
+				fwrite(&v, sizeof(int), 1, output);
+				fwrite(&j, sizeof(int), 1, output);
+				fwrite(&l, sizeof(int), 1, output);
 
-				file_write(filename, 1, sizeof(double), &r_min, true);
-				file_write(filename, 1, sizeof(double), &r_max, true);
-				file_write(filename, 1, sizeof(double), &r_step, true);
-				file_write(filename, 1, sizeof(double), &eigenval[v], true);
+				fwrite(&r_min, sizeof(double), 1, output);
+				fwrite(&r_max, sizeof(double), 1, output);
+				fwrite(&r_step, sizeof(double), 1, output);
+				fwrite(&eigenval[v], sizeof(double), 1, output);
 
-				file_write(filename, 1, sizeof(int), &v, true);
-				file_write(filename, 1, sizeof(int), &j, true);
-				file_write(filename, 1, sizeof(int), &l, true);
-				file_write(filename, 1, sizeof(int), &spin_mult, true);
-				file_write(filename, 1, sizeof(int), &max_state, true);
+				fwrite(&rovib_grid_size, sizeof(int), 1, output);
+				fwrite(wavef, sizeof(double), rovib_grid_size, output);
 
+				fclose(output);
 				++max_ch;
 			}
 
-			matrix_free(wavef);
+			free(wavef);
 		}
 
 		matrix_free(eigenvec);
 		free(eigenval);
 	}
 
-	printf("\n# A total of %d basis functions are computed with %d grid "
+	printf("\n#\n# A total of %d basis functions are computed with %d grid "
 	       "points in r = [%f, %f)\n", max_ch, rovib_grid_size, r_min, r_max);
 
 	return EXIT_SUCCESS;

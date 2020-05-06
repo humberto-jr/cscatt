@@ -565,6 +565,50 @@ matrix *matrix_get_block(const matrix *m,
 
 /******************************************************************************
 
+ Function matrix_raw_row(): the same as matrix_get_row() but return the p-th
+ row of matrix m as a C raw array.
+
+******************************************************************************/
+
+double *matrix_raw_row(const matrix *m, const int p, const bool use_omp)
+{
+	ASSERT_ROW_INDEX(m, p)
+
+	double *row = allocate(m->max_col, sizeof(double), false);
+
+	#pragma omp parallel for default(none) shared(m, row) schedule(static) if(use_omp)
+	for (int q = 0; q < m->max_col; ++q)
+	{
+		row[q] = DATA_OFFSET(m, p, q);
+	}
+
+	return row;
+}
+
+/******************************************************************************
+
+ Function matrix_raw_col(): the same as matrix_get_col() but return the q-th
+ column of matrix m as a C raw array.
+
+******************************************************************************/
+
+double *matrix_raw_col(const matrix *m, const int q, const bool use_omp)
+{
+	ASSERT_COL_INDEX(m, q)
+
+	double *col = allocate(m->max_row, sizeof(double), false);
+
+	#pragma omp parallel for default(none) shared(m, col) schedule(static) if(use_omp)
+	for (int p = 0; p < m->max_row; ++p)
+	{
+		col[p] = DATA_OFFSET(m, p, q);
+	}
+
+	return col;
+}
+
+/******************************************************************************
+
  Function matrix_get_pow(): return the pq-element of matrix m raised to a given
  power.
 

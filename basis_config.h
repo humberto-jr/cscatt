@@ -27,12 +27,40 @@
 
 	/******************************************************************************
 
-	 Function check_basis(): checks whether a basis function file exist in the disk
-	 for a given arrangement, channel index and J.
+	 Function open_basis_file(): opens the basis function file for a given arrang.,
+	 channel index and J. Where, mode is the file access mode of fopen() from the C
+	 library.
+
+	 NOTE: mode = "wb" for write + binary format and "rb" for read + binary format.
 
 	******************************************************************************/
 
-	inline static bool check_basis(const char arrang, const int ch, const int J)
+	inline static FILE *open_basis_file(const char mode[],
+                                       const char arrang, const int ch, const int J)
+	{
+		char filename[MAX_LINE_LENGTH];
+		sprintf(filename, BASIS_BUFFER_FORMAT, arrang, ch, J);
+
+		FILE *basis = fopen(filename, mode);
+
+		if (basis == NULL)
+		{
+			PRINT_ERROR("unable to open %s\n", filename)
+			exit(EXIT_FAILURE);
+		}
+
+		return basis;
+	}
+
+	/******************************************************************************
+
+	 Function check_basis_file(): checks whether a basis function file exist in the
+	 disk for a given arrang., channel index and J.
+
+	******************************************************************************/
+
+	inline static bool check_basis_file(const char arrang,
+	                                    const int ch, const int J)
 	{
 		char filename[MAX_LINE_LENGTH];
 		sprintf(filename, BASIS_BUFFER_FORMAT, arrang, ch, J);
@@ -47,10 +75,10 @@
 
 	******************************************************************************/
 
-	inline static int count_basis(const char arrang, const int J)
+	inline static int count_basis_file(const char arrang, const int J)
 	{
 		int counter = 0;
-		while (check_basis(arrang, counter, J)) ++counter;
+		while (check_basis_file(arrang, counter, J)) ++counter;
 
 		return counter;
 	}
