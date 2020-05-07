@@ -18,9 +18,8 @@
 
 	struct scatt_basis
 	{
-		matrix *wavef;
-		int v, j, l, spin_mult, max_state;
-		double r_min, r_max, r_step, energy;
+		int v, j, l, grid_size, state;
+		double r_min, r_max, grid_step, energy, *wavef;
 	};
 
 	typedef struct scatt_basis scatt_basis;
@@ -78,53 +77,44 @@
 	inline static int count_basis_file(const char arrang, const int J)
 	{
 		int counter = 0;
-		while (check_basis_file(arrang, counter, J)) ++counter;
+		while (check_basis_file(arrang, counter, J) == true) ++counter;
 
 		return counter;
 	}
 
 	/******************************************************************************
 
-	 Function load_basis(): load from the disk the basis for a given arrangement,
+	 Function read_basis_file(): load from the disk the basis for a given arrang.,
 	 channel index and J
 
 	******************************************************************************/
 
-	void load_basis(const char arrang,
-	                const int ch, const int J, scatt_basis *b)
+	void read_basis_file(const char arrang,
+	                     const int ch, const int J, scatt_basis *b)
 	{
 		ASSERT(b != NULL)
 
-		char filename[MAX_LINE_LENGTH];
-		sprintf(filename, BASIS_BUFFER_FORMAT, arrang, ch, J);
+		FILE *input = open_basis_file("rb", arrang, ch, J);
 
-		b->wavef = matrix_load(filename);
+		int status;
 
-		int file_offset = matrix_sizeof(b->wavef);
-		file_read(filename, 1, sizeof(double), &b->r_min, file_offset);
+		status = fread(&b->v, sizeof(int), 1, input);
+		status = fread(&b->j, sizeof(int), 1, input);
+		status = fread(&b->l, sizeof(int), 1, input);
+		status = fread(&b->state, sizeof(int), 1, input);
 
-		file_offset += sizeof(double);
-		file_read(filename, 1, sizeof(double), &b->r_max, file_offset);
+		status = fread(&b->r_min, sizeof(double), 1, input);
+		status = fread(&b->r_max, sizeof(double), 1, input);
+		status = fread(&b->grid_step, sizeof(double), 1, input);
 
-		file_offset += sizeof(double);
-		file_read(filename, 1, sizeof(double), &b->r_step, file_offset);
+		status = fread(&b->energy, sizeof(double), 1, input);
+		status = fread(&b->grid_size, sizeof(int), 1, input);
 
-		file_offset += sizeof(double);
-		file_read(filename, 1, sizeof(double), &b->energy, file_offset);
+		b->wavef = allocate(b->grid_size, sizeof(double), false);
 
-		file_offset += sizeof(double);
-		file_read(filename, 1, sizeof(int), &b->v, file_offset);
+		status = fread(b->wavef, sizeof(double), b->grid_size, input);
 
-		file_offset += sizeof(int);
-		file_read(filename, 1, sizeof(int), &b->j, file_offset);
-
-		file_offset += sizeof(int);
-		file_read(filename, 1, sizeof(int), &b->l, file_offset);
-
-		file_offset += sizeof(int);
-		file_read(filename, 1, sizeof(int), &b->spin_mult, file_offset);
-
-		file_offset += sizeof(int);
-		file_read(filename, 1, sizeof(int), &b->max_state, file_offset);
+		ASSERT(status == b->grid_size)
+		fclose(input);
 	}
 #endif

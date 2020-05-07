@@ -85,30 +85,38 @@ matrix *fgh_matrix(const int grid_size,
 
 /******************************************************************************
 
- Function fgh_norm(): normalize to unity the eigenvector a of a Hamiltonian
- built by fgh_matrix(). On entry, the matrix representation is expected
- properly diagonalized and its columns the respective eigenvectors.
+ Function norm(): normalize to unity a radial eigenvector of grid_size points,
+ using a 1/3-Simpson quadrature rule.
 
 ******************************************************************************/
 
-void fgh_norm(matrix *m,
-              const int a, const double grid_step, const bool use_omp)
+void norm(const int grid_size,
+          const double grid_step, const bool use_omp, double eigenvec[])
 {
+	ASSERT(grid_size > 0)
+	ASSERT(eigenvec != NULL)
+
 	const int n_max
-		= (matrix_row(m)%2 == 0? matrix_row(m) : matrix_row(m) - 1);
+		= (grid_size%2 == 0? grid_size : grid_size - 1);
 
-	double sum = matrix_get_pow(m, 0, a, 2.0)
-	           + matrix_get_pow(m, n_max - 1, a, 2.0);
+	double sum
+		= eigenvec[0]*eigenvec[0] + eigenvec[n_max - 1]*eigenvec[n_max - 1];
 
-	#pragma omp parallel for default(none) shared(m) reduction(+:sum) if(use_omp)
+	#pragma omp parallel for default(none) shared(eigenvec) reduction(+:sum) if(use_omp)
 	for (int n = 1; n < (n_max - 2); n += 2)
 	{
-		sum += 4.0*matrix_get_pow(m, n, a, 2.0)
-		     + 2.0*matrix_get_pow(m, n + 1, a, 2.0);
+		sum += 4.0*eigenvec[n]*eigenvec[n];
+		sum += 2.0*eigenvec[n + 1]*eigenvec[n + 1];
 	}
 
 	sum = grid_step*sum/3.0;
-	matrix_col_scale(m, a, 1.0/sqrt(sum), use_omp);
+	sum = sqrt(sum);
+
+	#pragma omp parallel for default(none) shared(eigenvec, sum) if(use_omp)
+	for (int n = 0; n < grid_size; ++n)
+	{
+		eigenvec[n] = eigenvec[n]/sum;
+	}
 }
 
 int main(int argc, char *argv[])
@@ -156,7 +164,7 @@ int main(int argc, char *argv[])
  *	Vibrational grid:
  */
 
-	const int rovib_grid_size
+	const int grid_size
 		= (int) file_get_key(stdin, "rovib_grid_size", as_double(v_max + 1), INF, 500.0);
 
 	const double r_min
@@ -165,8 +173,8 @@ int main(int argc, char *argv[])
 	const double r_max
 		= file_get_key(stdin, "r_max", r_min, INF, r_min + 30.0);
 
-	const double r_step
-		= (r_max - r_min)/as_double(rovib_grid_size);
+	const double grid_step
+		= (r_max - r_min)/as_double(grid_size);
 
 /*
  *	Arrangement (1 == a, 2 == b, 3 == c) and atomic masses:
@@ -195,24 +203,23 @@ int main(int argc, char *argv[])
  */
 
 	int max_ch = 0;
+	const int max_state = -666;
 
 	for (int j = j_min; j <= j_max; j += j_step)
 	{
-		double *pot_energy = allocate(rovib_grid_size, sizeof(double), false);
+		double *pot_energy = allocate(grid_size, sizeof(double), false);
 
-		for (int n = 0; n < rovib_grid_size; ++n)
+		for (int n = 0; n < grid_size; ++n)
 		{
-			const double r = r_min + as_double(n)*r_step;
+			const double r = r_min + as_double(n)*grid_step;
 			pot_energy[n] = pec(arrang, r) + centr_term(j, mass(m), r);
 		}
 
-		matrix *eigenvec
-			= fgh_matrix(rovib_grid_size, r_step, pot_energy, mass(m));
+		matrix *eigenvec = fgh_matrix(grid_size, grid_step, pot_energy, mass(m));
 
 		free(pot_energy);
 
-		double *eigenval
-			= matrix_symm_eigen(eigenvec, 'v');
+		double *eigenval = matrix_symm_eigen(eigenvec, 'v');
 
 /*
  *		Step 2: loop over the vibrational states v of the diatom, solutions of step 2, and select
@@ -221,8 +228,9 @@ int main(int argc, char *argv[])
 
 		for (int v = v_min; v <= v_max; v += v_step)
 		{
-			fgh_norm(eigenvec, v, r_step, false);
 			double *wavef = matrix_raw_col(eigenvec, v, false);
+
+			norm(grid_size, grid_step, (grid_size >= 3000), wavef);
 
 /*
  *			Step 3: loop over all partial waves l of the atom around the diatom given by the
@@ -246,14 +254,16 @@ int main(int argc, char *argv[])
 				fwrite(&v, sizeof(int), 1, output);
 				fwrite(&j, sizeof(int), 1, output);
 				fwrite(&l, sizeof(int), 1, output);
+				fwrite(&max_state, sizeof(int), 1, output);
 
 				fwrite(&r_min, sizeof(double), 1, output);
 				fwrite(&r_max, sizeof(double), 1, output);
-				fwrite(&r_step, sizeof(double), 1, output);
+				fwrite(&grid_step, sizeof(double), 1, output);
+
 				fwrite(&eigenval[v], sizeof(double), 1, output);
 
-				fwrite(&rovib_grid_size, sizeof(int), 1, output);
-				fwrite(wavef, sizeof(double), rovib_grid_size, output);
+				fwrite(&grid_size, sizeof(int), 1, output);
+				fwrite(wavef, sizeof(double), grid_size, output);
 
 				fclose(output);
 				++max_ch;
@@ -267,7 +277,7 @@ int main(int argc, char *argv[])
 	}
 
 	printf("\n#\n# A total of %d basis functions are computed with %d grid "
-	       "points in r = [%f, %f)\n", max_ch, rovib_grid_size, r_min, r_max);
+	       "points in r = [%f, %f)\n", max_ch, grid_size, r_min, r_max);
 
 	return EXIT_SUCCESS;
 }

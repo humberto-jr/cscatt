@@ -1,7 +1,5 @@
 #include "modules/pes.h"
-#include "modules/dvr.h"
 #include "modules/mass.h"
-#include "modules/phys.h"
 #include "modules/file.h"
 #include "modules/matrix.h"
 #include "modules/globals.h"
@@ -10,7 +8,139 @@
 #include "coupl_config.h"
 #include "basis_config.h"
 
-#define FORMAT "# %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
+#define FORMAT "# %5d   %5d   %5d   %5d   %+5d   %5d     % -8e  % -8e  % -8e\n"
+
+/******************************************************************************
+
+ Function parity(): return the parity p = (-1)^l for a given l; either p = +1
+ or p = -1.
+
+******************************************************************************/
+
+inline static int parity(const int l)
+{
+	return (int) pow(-1.0, l);
+}
+
+/******************************************************************************
+
+ Function fgh_multich_matrix(): the same as fgh_matrix(), except that the
+ potential energy is the one of a problem with max_ch channels within grid_size
+ points. For details see Eq. (19a), Eq. (19b) and Eq. (19c) of Ref. [2].
+
+******************************************************************************/
+
+matrix *fgh_multich_matrix(const int max_ch,
+                           const int grid_size,
+                           const double grid_step,
+                           const tensor pot_energy[],
+                           const double mass)
+{
+	ASSERT(max_ch > 0)
+	ASSERT(pot_energy != NULL)
+
+	matrix *result
+		= matrix_alloc(grid_size*max_ch, grid_size*max_ch, false);
+
+	const double box_length
+		= as_double(grid_size - 1)*grid_step;
+
+	const double factor
+		= (M_PI*M_PI)/(mass*box_length*box_length);
+
+	const double nn_term
+		= factor*as_double(grid_size*grid_size + 2)/6.0;
+
+	int row = 0;
+	for (int p = 0; p < max_ch; ++p)
+	{
+		for (int n = 0; n < grid_size; ++n)
+		{
+			int col = 0;
+			for (int q = 0; q < max_ch; ++q)
+			{
+				for (int m = 0; m < grid_size; ++m)
+				{
+					double pnqm = 0.0;
+
+					if (n == m && p == q)
+					{
+						pnqm = nn_term
+						     + matrix_get(pot_energy[n].value, p, p);
+					}
+
+					if (n != m && p == q)
+					{
+						const double nm
+							= as_double((n + 1) - (m + 1));
+
+						const double nm_term
+							= sin(nm*M_PI/as_double(grid_size));
+
+						pnqm = pow(-1.0, nm)*factor/pow(nm_term, 2);
+					}
+
+					if (n == m && p != q)
+					{
+						pnqm = matrix_get(pot_energy[n].value, p, q);
+					}
+
+					matrix_set(result, row, col, pnqm);
+					++col;
+				}
+			}
+
+			++row;
+		}
+	}
+
+	return result;
+}
+
+/******************************************************************************
+
+ Function norm(): normalize to unity a radial multichannel eigenvector composed
+ of max_state components and grid_size points, using a 1/3-Simpson quadrature
+ rule.
+
+******************************************************************************/
+
+void norm(const int max_state, const int grid_size,
+          const double grid_step, const bool use_omp, double eigenvec[])
+{
+	ASSERT(max_state > 0)
+	ASSERT(grid_size > 0)
+	ASSERT(eigenvec != NULL)
+
+	double total_sum = 0.0;
+
+	#pragma omp parallel for default(none) shared(eigenvec) reduction(+:total_sum) if(use_omp)
+	for (int m = 0; m < max_state; ++m)
+	{
+		const int n_min = m*grid_size;
+		const int n_max = n_min + (grid_size%2 == 0? grid_size : grid_size - 1);
+
+		double sum
+			= eigenvec[n_min]*eigenvec[n_min] + eigenvec[n_max - 1]*eigenvec[n_max - 1];
+
+		for (int n = n_min + 1; n < (n_max - 2); n += 2)
+		{
+			sum += 4.0*eigenvec[n]*eigenvec[n];
+			sum += 2.0*eigenvec[n + 1]*eigenvec[n + 1];
+		}
+
+		sum = grid_step*sum/3.0;
+		total_sum += sum;
+	}
+
+	total_sum = sqrt(total_sum);
+
+	#pragma omp parallel for default(none) shared(eigenvec, total_sum) if(use_omp)
+	for (int n = 0; n < max_state*grid_size; ++n)
+	{
+		eigenvec[n] = eigenvec[n]/total_sum;
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -63,7 +193,7 @@ int main(int argc, char *argv[])
  *	NOTE: it is equivalent to the scattering grid, along R, used in cmatrix driver.
  */
 
-	const int scatt_grid_size
+	const int grid_size
 		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 500.0);
 
 	const double R_min
@@ -72,17 +202,10 @@ int main(int argc, char *argv[])
 	const double R_max
 		= file_get_key(stdin, "R_max", R_min, INF, R_min + 100.0);
 
-	const double R_step
-		= (R_max - R_min)/as_double(scatt_grid_size);
+	const double grid_step
+		= (R_max - R_min)/as_double(grid_size);
 
-	ASSERT(scatt_grid_size >= v_max + 1)
-
-/*
- *	Electronic spin multiplicity:
- */
-
-	const int spin_mult
-		= (int) file_get_key(stdin, "spin_mult", 1.0, 3.0, 1.0);
+	ASSERT(grid_size >= v_max + 1)
 
 /*
  *	Arrangement (1 == a, 2 == b, 3 == c) and atomic masses:
@@ -99,9 +222,9 @@ int main(int argc, char *argv[])
  */
 
 	printf("#\n");
-	printf("# J = %d, J-parity = %d, spin mult. = %d\n", J, J_parity, spin_mult);
-	printf("#   Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
-	printf("# -------------------------------------------------------------------------------------\n");
+	printf("# J = %d, J-parity = %d\n", J, J_parity);
+	printf("#   Ch.       v       j       l       p      Comp.      E (a.u.)       E (cm-1)        E (eV)   \n");
+	printf("# ----------------------------------------------------------------------------------------------\n");
 
 /*
  *	Step 1: loop over rotational states j of the triatom and solve a multichannel eigenvalue problem
@@ -113,9 +236,9 @@ int main(int argc, char *argv[])
 	for (int j = j_min; j <= j_max; j += j_step)
 	{
 		tensor *pot_energy
-			= allocate(scatt_grid_size, sizeof(tensor), true);
+			= allocate(grid_size, sizeof(tensor), true);
 
-		for (int n = 0; n < scatt_grid_size; ++n)
+		for (int n = 0; n < grid_size; ++n)
 		{
 			pot_energy[n].value = load_coupl(arrang, n, j);
 
@@ -134,9 +257,9 @@ int main(int argc, char *argv[])
 			= matrix_row(pot_energy[0].value);
 
 		matrix *eigenvec
-			= dvr_multich_fgh(max_state, scatt_grid_size, R_step, pot_energy, mass(m));
+			= fgh_multich_matrix(max_state, grid_size, grid_step, pot_energy, mass(m));
 
-		for (int n = 0; n < scatt_grid_size; ++n)
+		for (int n = 0; n < grid_size; ++n)
 		{
 			matrix_free(pot_energy[n].value);
 		}
@@ -155,8 +278,9 @@ int main(int argc, char *argv[])
 		{
 			if (eigenval[v] >= 0.0) continue;
 
-			dvr_multich_fgh_norm(eigenvec, max_state, v, R_step, false);
-			matrix *wavef = matrix_get_col(eigenvec, v, false);
+			double *wavef = matrix_raw_col(eigenvec, v, false);
+
+			norm(max_state, grid_size, grid_step, (grid_size >= 2000), wavef);
 
 /*
  *			Step 3: loop over all partial waves l of the atom around the triatom given by the
@@ -165,44 +289,48 @@ int main(int argc, char *argv[])
 
 			for (int l = abs(J - j); l <= (J + j); ++l)
 			{
-				if (phys_parity(j + l) != J_parity && J_parity != 0) continue;
+				if (parity(j + l) != J_parity && J_parity != 0) continue;
 
-				printf(FORMAT, max_ch, v, j, l, phys_parity(j + l),
-				       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
+				for (int n = 0; n < max_state; ++n)
+				{
+					printf(FORMAT, max_ch, v, j, l, parity(j + l), n,
+					       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
 
 /*
- *				Step 4: save each basis function |vjl> in the disk and increment the counter of
- *				atom-triatom channels.
+ *					Step 4: save each basis function |vjl> in the disk and increment the counter of
+ *					atom-triatom channels.
  */
 
-				char filename[MAX_LINE_LENGTH];
-				sprintf(filename, BASIS_BUFFER_FORMAT, arrang, max_ch, J);
+					FILE *output = open_basis_file("wb", arrang, max_ch, J);
 
-				matrix_save(wavef, filename);
+					fwrite(&v, sizeof(int), 1, output);
+					fwrite(&j, sizeof(int), 1, output);
+					fwrite(&l, sizeof(int), 1, output);
+					fwrite(&n, sizeof(int), 1, output);
 
-				file_write(filename, 1, sizeof(double), &R_min, true);
-				file_write(filename, 1, sizeof(double), &R_max, true);
-				file_write(filename, 1, sizeof(double), &R_step, true);
-				file_write(filename, 1, sizeof(double), &eigenval[v], true);
+					fwrite(&R_min, sizeof(double), 1, output);
+					fwrite(&R_max, sizeof(double), 1, output);
+					fwrite(&grid_step, sizeof(double), 1, output);
 
-				file_write(filename, 1, sizeof(int), &v, true);
-				file_write(filename, 1, sizeof(int), &j, true);
-				file_write(filename, 1, sizeof(int), &l, true);
-				file_write(filename, 1, sizeof(int), &spin_mult, true);
-				file_write(filename, 1, sizeof(int), &max_state, true);
+					fwrite(&eigenval[v], sizeof(double), 1, output);
 
-				++max_ch;
+					fwrite(&grid_size, sizeof(int), 1, output);
+					fwrite(wavef + n*grid_size, sizeof(double), grid_size, output);
+
+					fclose(output);
+					++max_ch;
+				}
 			}
 
-			matrix_free(wavef);
+			free(wavef);
 		}
 
 		matrix_free(eigenvec);
 		free(eigenval);
 	}
 
-	printf("\n# A total of %d multichannel basis functions are computed with %d grid "
-	       "points in R = [%f, %f)\n", max_ch, scatt_grid_size, R_min, R_max);
+	printf("\n#\n# A total of %d basis functions are computed with %d grid "
+	       "points in R = [%f, %f)\n", max_ch, grid_size, R_min, R_max);
 
 	return EXIT_SUCCESS;
 }
