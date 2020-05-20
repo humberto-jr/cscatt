@@ -205,6 +205,18 @@ int main(int argc, char *argv[])
 	const double grid_step
 		= (R_max - R_min)/as_double(grid_size);
 
+	const int n_min
+		= (int) file_get_key(stdin, "n_min", 0.0, as_double(grid_size), 0.0);
+
+	const int n_max
+		= (int) file_get_key(stdin, "n_max", as_double(n_min), as_double(grid_size), as_double(grid_size));
+
+	const double grid_start
+		= R_min + as_double(n_min)*grid_step;
+
+	const double grid_end
+		= R_min + as_double(n_max - 1)*grid_step;
+
 	ASSERT(grid_size >= v_max + 1)
 
 /*
@@ -227,39 +239,43 @@ int main(int argc, char *argv[])
 	printf("# ----------------------------------------------------------------------------------------------\n");
 
 /*
- *	Step 1: loop over rotational states j of the triatom and solve a multichannel eigenvalue problem
- *	using the Fourier grid Hamiltonian discrete variable representation (FGH-DVR) method.
+ *	Step 1: loop over rotational states j of the triatom and solve a multichannel
+ *	eigenvalue problem using the Fourier grid Hamiltonian discrete variable
+ *	representation (FGH-DVR) method.
  */
 
-	int max_ch = 0;
+	int ch_counter = 0;
 
 	for (int j = j_min; j <= j_max; j += j_step)
 	{
 		tensor *pot_energy
 			= allocate(grid_size, sizeof(tensor), true);
 
-		for (int n = 0; n < grid_size; ++n)
+		int n_counter = 0;
+		for (int n = n_min; n < n_max; ++n)
 		{
-			pot_energy[n].value = load_coupl(arrang, n, j);
+			pot_energy[n_counter].value = load_coupl(arrang, n, j);
 
-			if (n > 0)
+			if (n_counter > 0)
 			{
-				ASSERT(matrix_row(pot_energy[n - 1].value) == matrix_row(pot_energy[n].value))
+				ASSERT(matrix_row(pot_energy[n_counter - 1].value) == matrix_row(pot_energy[n_counter].value))
 			}
+
+			++n_counter;
 		}
 
 /*
- *		NOTE: the total number of diatomic states used to expand the triatomic eigenvectos is named
- *		max_state and it is equal max_ch from dbasis driver.
+ *		NOTE: the total number of diatomic states used to expand the triatomic
+ *		eigenvectos is named max_state and it is equal ch_counter from dbasis driver.
  */
 
 		const int max_state
 			= matrix_row(pot_energy[0].value);
 
 		matrix *eigenvec
-			= fgh_multich_matrix(max_state, grid_size, grid_step, pot_energy, mass(m));
+			= fgh_multich_matrix(max_state, n_counter, grid_step, pot_energy, mass(m));
 
-		for (int n = 0; n < grid_size; ++n)
+		for (int n = 0; n < n_counter; ++n)
 		{
 			matrix_free(pot_energy[n].value);
 		}
@@ -270,8 +286,8 @@ int main(int argc, char *argv[])
 			= matrix_symm_eigen(eigenvec, 'v');
 
 /*
- *		Step 2: loop over the vibrational states v of the triatom, solutions of step 2, and select
- *		only those of interest.
+ *		Step 2: loop over the vibrational states v of the triatom, solutions of
+ *		step 1, and select only those of interest.
  */
 
 		for (int v = v_min; v <= v_max; v += v_step)
@@ -280,45 +296,45 @@ int main(int argc, char *argv[])
 
 			double *wavef = matrix_raw_col(eigenvec, v, false);
 
-			norm(max_state, grid_size, grid_step, (grid_size >= 2000), wavef);
+			norm(max_state, n_counter, grid_step, (n_counter >= 2000), wavef);
 
 /*
- *			Step 3: loop over all partial waves l of the atom around the triatom given by the
- *			respective J and j.
+ *			Step 3: loop over all partial waves l of the atom around the triatom
+ *			given by the respective J and j.
  */
 
 			for (int l = abs(J - j); l <= (J + j); ++l)
 			{
 				if (parity(j + l) != J_parity && J_parity != 0) continue;
 
-				for (int n = 0; n < max_state; ++n)
+				for (int i = 0; i < max_state; ++i)
 				{
-					printf(FORMAT, max_ch, v, j, l, parity(j + l), n,
+					printf(FORMAT, ch_counter, v, j, l, parity(j + l), i,
 					       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
 
 /*
- *					Step 4: save each basis function |vjl> in the disk and increment the counter of
- *					atom-triatom channels.
+ *					Step 4: save each basis function |vjli> in the disk and increment
+ *					the counter of atom-triatom channels.
  */
 
-					FILE *output = open_basis_file("wb", arrang, max_ch, J);
+					FILE *output = open_basis_file("wb", arrang, ch_counter, J);
 
 					fwrite(&v, sizeof(int), 1, output);
 					fwrite(&j, sizeof(int), 1, output);
 					fwrite(&l, sizeof(int), 1, output);
-					fwrite(&n, sizeof(int), 1, output);
+					fwrite(&i, sizeof(int), 1, output);
 
-					fwrite(&R_min, sizeof(double), 1, output);
-					fwrite(&R_max, sizeof(double), 1, output);
+					fwrite(&grid_start, sizeof(double), 1, output);
+					fwrite(&grid_end, sizeof(double), 1, output);
 					fwrite(&grid_step, sizeof(double), 1, output);
 
 					fwrite(&eigenval[v], sizeof(double), 1, output);
 
-					fwrite(&grid_size, sizeof(int), 1, output);
-					fwrite(wavef + n*grid_size, sizeof(double), grid_size, output);
+					fwrite(&n_counter, sizeof(int), 1, output);
+					fwrite(wavef + i*n_counter, sizeof(double), n_counter, output);
 
 					fclose(output);
-					++max_ch;
+					++ch_counter;
 				}
 			}
 
@@ -330,7 +346,7 @@ int main(int argc, char *argv[])
 	}
 
 	printf("\n#\n# A total of %d basis functions are computed with %d grid "
-	       "points in R = [%f, %f)\n", max_ch, grid_size, R_min, R_max);
+	       "points in R = [%f, %f)\n", ch_counter, n_max - n_min, grid_start, grid_end);
 
 	return EXIT_SUCCESS;
 }
