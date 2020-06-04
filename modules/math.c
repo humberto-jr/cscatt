@@ -10,17 +10,7 @@
 ******************************************************************************/
 
 #include "math.h"
-
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_sf_bessel.h>
-#include <gsl/gsl_monte_plain.h>
-#include <gsl/gsl_monte_miser.h>
-#include <gsl/gsl_monte_vegas.h>
-#include <gsl/gsl_integration.h>
-#include <gsl/gsl_sf_coupling.h>
-#include <gsl/gsl_sf_legendre.h>
+#include "gsl_lib.h"
 
 static int workspace_size = 5000;
 static double abs_error = 1.0e-6;
