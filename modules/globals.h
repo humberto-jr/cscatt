@@ -145,13 +145,35 @@
 	}
 	/******************************************************************************
 
-	 Function wall_time(): return the wall time in units of seconds.
+	 Function wall_time(): returns the wall time in units of seconds.
 
 	******************************************************************************/
 
 	inline static double wall_time()
 	{
 		return omp_get_wtime();
+	}
+
+	/******************************************************************************
+
+	 Function thread_id(): returns the current OpenMP thread identification.
+
+	******************************************************************************/
+
+	inline static int thread_id()
+	{
+		return omp_get_thread_num();
+	}
+
+	/******************************************************************************
+
+	 Function max_threads(): returns the total OpenMP threads available.
+
+	******************************************************************************/
+
+	inline static int max_threads()
+	{
+		return omp_get_max_threads();
 	}
 
 	/******************************************************************************
