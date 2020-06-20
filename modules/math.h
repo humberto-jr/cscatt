@@ -20,6 +20,11 @@
 	double math_clebsch_gordan(const int j1, const int j2, const int j3,
 	                           const int m1, const int m2, const int m3);
 
+	double *math_wigner_d(const int k,
+	                      const int m,
+	                      const int j_max,
+	                      const double beta);
+
 	void math_set_workspace(const int size);
 
 	void math_set_error(const double error);

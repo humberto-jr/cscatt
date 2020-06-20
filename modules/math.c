@@ -115,6 +115,81 @@ double math_clebsch_gordan(const int j1, const int j2, const int j3,
 
 /******************************************************************************
 
+ Function math_wigner_d():
+
+******************************************************************************/
+
+double *math_wigner_d(const int k,
+                      const int m,
+                      const int j_max,
+                      const double beta)
+{
+	ASSERT(m >= 0)
+	ASSERT(k >= m)
+	ASSERT(j_max > -1)
+	ASSERT(j_max < 46340)
+
+	double dkm[3], *result = allocate(j_max + 1, sizeof(double), true);
+
+	/* NOTE: from degree to radian */
+	const double x = beta*M_PI/180.0;
+
+	/* Eq. (20) */
+	const double seed_c = pow(cos(x/2.0), k + m);
+
+	/* Eq. (20) */
+	const double seed_s = pow(sin(x/2.0), k - m);
+
+	/* Eq. (21) */
+	const double seed_e = sqrt(factorial(2*k)/(factorial(k + m)*factorial(k - m)));
+
+	const double t = 2.0*sin(x/2.0)*sin(x/2.0);
+
+	/* Eq. (18) */
+	dkm[0] = seed_c*seed_s*seed_e;
+
+	result[k/2] = dkm[0];
+
+	if (j_max <= k) return result;
+
+	int j = k + 2;
+
+	dkm[1] = dkm[0]*sqrt(as_double(j - 1)/as_double((j + m)*(j - m)))*(as_double(j - m) - as_double(j)*t);
+	result[j/2] = dkm[1];
+
+	const double i = as_double(k*m);
+
+	for (j = (k + 4); j <= j_max; j += 2)
+	{
+		const double h = as_double(j*(j - 2));
+
+		const double g = as_double(j + k);
+
+		const double f = as_double(j - k);
+
+		const double e = as_double(j + m);
+
+		const double d = as_double(j - m);
+
+		const double c = 1.0/((j - 2.0)*sqrt((g*f)*(e*d)));
+
+		const double b = c*as_double(j)*sqrt((g - 2.0)*(f - 2.0)*(e - 2.0)*(d - 2.0));
+
+		const double a = c*as_double(2*j - 2)*((h - i) - h*t);
+
+		dkm[2] = a*dkm[1] - b*dkm[0];
+
+		result[j/2] = dkm[2];
+
+		dkm[0] = dkm[1];
+		dkm[1] = dkm[2];
+	}
+
+	return result;
+}
+
+/******************************************************************************
+
  Function math_set_error(): sets the absolute error for the QAG kind of methods
  (1e-6 by default). If a given abs. error cannot be reached, an error message
  is printed in the C stderr.
