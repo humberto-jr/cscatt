@@ -1,6 +1,6 @@
 #if !defined(GLOBALS_HEADER)
 	#define GLOBALS_HEADER
-	#include "clib.h"
+	#include "c_lib.h"
 	#include <omp.h>
 
 	/******************************************************************************

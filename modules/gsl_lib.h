@@ -1,6 +1,6 @@
 #if !defined(GSL_LIB_HEADER)
 	#define GSL_LIB_HEADER
-	#include "clib.h"
+	#include "c_lib.h"
 
 	#if !defined(HAVE_INLINE)
 		#define HAVE_INLINE
