@@ -23,6 +23,13 @@
 
 	typedef struct jacobi_coor jacobi_coor;
 
+	struct jacobi_6d
+	{
+		double r1, r2, r3, theta12, theta3, phi3;
+	};
+
+	typedef struct jacobi_6d jacobi_6d;
+
 	/******************************************************************************
 
 	 Type internuc_coor: represent one set of internuclear distances for triatomic
@@ -37,15 +44,31 @@
 
 	typedef struct internuc_coor internuc_coor;
 
-	double pes(const jacobi_coor *x);
+	struct internuc
+	{
+		double ab, bc, ac;
+	};
 
-//	double pes_sf(const jacobi_sf *set);
+	typedef struct internuc internuc;
+
+	void pes_init_mass(FILE *input, const char atom);
+
+	double pes_mass(const char atom);
+
+	double pes_abc(const char arrang,
+	               const double r, const double R, const double theta);
+
+	double pes_bc(const int j, const double r);
+
+	double pes_ac(const int j, const double r);
+
+	double pes_ab(const int j, const double r);
+
+	double pes(const jacobi_coor *x);
 
 	void pes_init();
 
 	double pec(const char arrang, const double r);
-
-//	double pes_asymptotic_min(const char arrang, const double scan_step);
 
 	matrix *pes_olson_smith_model(const double x);
 
