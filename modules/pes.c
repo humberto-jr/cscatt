@@ -97,9 +97,7 @@ static double pes_read_mass(FILE *input, const char key[])
  atom_a = [symbol]
  atom_b = [symbol]
  atom_c = [symbol]
- .
- .
- .
+ (...)
 
  Where, [symbol] is expected as "1H", "2H", "4He", ..., "12C", etc.
 
@@ -115,10 +113,25 @@ void pes_init_mass(FILE *input, const char atom)
 
 	switch (atom)
 	{
-		case 'a': return mass_a = read_atomic_mass(input, "atom_a");
-		case 'b': return mass_b = read_atomic_mass(input, "atom_b");
-		case 'c': return mass_c = read_atomic_mass(input, "atom_c");
-		case 'd': return mass_d = read_atomic_mass(input, "atom_d");
+		case 'a':
+			mass_a = pes_read_mass(input, "atom_a");
+			ASSERT(mass_a != 0.0)
+		break;
+
+		case 'b':
+			mass_b = pes_read_mass(input, "atom_b");
+			ASSERT(mass_b != 0.0)
+		break;
+
+		case 'c':
+			mass_c = pes_read_mass(input, "atom_c");
+			ASSERT(mass_c != 0.0)
+		break;
+
+		case 'd':
+			mass_d = pes_read_mass(input, "atom_d");
+			ASSERT(mass_d != 0.0)
+		break;
 
 		default:
 			PRINT_ERROR("invalid atom %c\n", atom)
@@ -150,6 +163,60 @@ double pes_mass(const char atom)
 
 /******************************************************************************
 
+ Function pes_mass_bc(): return the reduced mass of BC.
+
+******************************************************************************/
+
+double pes_mass_bc()
+{
+	return mass_b*mass_c/(mass_b + mass_c);
+}
+
+/******************************************************************************
+
+ Function pes_mass_ac(): return the reduced mass of AC.
+
+******************************************************************************/
+
+double pes_mass_ac()
+{
+	return mass_a*mass_c/(mass_a + mass_c);
+}
+
+/******************************************************************************
+
+ Function pes_mass_ab(): return the reduced mass of AB.
+
+******************************************************************************/
+
+double pes_mass_ab()
+{
+	return mass_a*mass_b/(mass_a + mass_b);
+}
+
+/******************************************************************************
+
+ Function pes_mass_abc(): return the reduced mass of ABC for a given
+ arrangement.
+
+******************************************************************************/
+
+double pes_mass_abc(const char arrang)
+{
+	switch (arrang)
+	{
+		case 'a': return mass_a*(mass_b + mass_c)/(mass_a + mass_b + mass_c);
+		case 'b': return mass_b*(mass_a + mass_c)/(mass_a + mass_b + mass_c);
+		case 'c': return mass_c*(mass_a + mass_b)/(mass_a + mass_b + mass_c);
+
+		default:
+			PRINT_ERROR("invalid arrangement %c\n", arrang)
+			exit(EXIT_FAILURE);
+	}
+}
+
+/******************************************************************************
+
  Wrapper pes_abc(): an interface for the external user defined triatomic PES as
  function of a set of Jacobi coordinates (r, R, theta) for a given arrangement,
  which are translated to internuclear distances (ab, bc, ac).
@@ -169,7 +236,7 @@ double pes_abc(const char arrang,
 {
 	#if defined(USE_JACOBI_COORDINATES)
 	{
-		const double jacobi[3] = {r, R, theta};		
+		const double jacobi[3] = {r, R, theta};
 		return EXTERNAL_PES_NAME(jacobi);
 	}
 	#endif
@@ -254,9 +321,10 @@ double pes_abc(const char arrang,
 
 	#if defined(USE_CARTESIAN_COORDINATES)
 	{
-		const double xyz[9] = {a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z};		
+		const double xyz[9] = {a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z};
 		return EXTERNAL_PES_NAME(xyz);
 	}
+	#endif
 
 	return EXTERNAL_PES_NAME(internuc);
 }
@@ -270,10 +338,10 @@ double pes_abc(const char arrang,
 
 double pes_bc(const int j, const double r)
 {
-	const double mass_bc = mass_b*mass_c/(mass_b + mass_c);
-	ASSERT(mass_bc != 0.0)
+	const double mass = pes_mass_bc();
+	ASSERT(mass != 0.0)
 
-	return pes_abc('a', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass_bc*r*r);
+	return pes_abc('a', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
 }
 
 /******************************************************************************
@@ -285,10 +353,10 @@ double pes_bc(const int j, const double r)
 
 double pes_ac(const int j, const double r)
 {
-	const double mass_ac = mass_a*mass_c/(mass_a + mass_c);
-	ASSERT(mass_ac != 0.0)
+	const double mass = pes_mass_ac();
+	ASSERT(mass != 0.0)
 
-	return pes_abc('b', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass_ac*r*r);
+	return pes_abc('b', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
 }
 
 /******************************************************************************
@@ -300,10 +368,10 @@ double pes_ac(const int j, const double r)
 
 double pes_ab(const int j, const double r)
 {
-	const double mass_ab = mass_a*mass_b/(mass_a + mass_b);
-	ASSERT(mass_ab != 0.0)
+	const double mass = pes_mass_ab();
+	ASSERT(mass != 0.0)
 
-	return pes_abc('b', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass_ab*r*r);
+	return pes_abc('c', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
 }
 
 /******************************************************************************
@@ -321,7 +389,7 @@ double pes_ab(const int j, const double r)
  the interface given above.
 
 ******************************************************************************/
-
+/*
 double pes(const jacobi_coor *x)
 {
 	#if defined(USE_NON_REACTIVE_PES)
@@ -354,7 +422,7 @@ double pes(const jacobi_coor *x)
 	#endif
 
 	return EXTERNAL_PES_NAME(r);
-}
+}*/
 
 /******************************************************************************
 
@@ -376,11 +444,12 @@ static double pes_legendre_integrand(const double theta, void *params)
 {
 	struct legendre_params *p = (struct legendre_params *) params;
 
-	const double pot_energy = pes_abc(p->arrang, p->r, p->R,   theta*180.0/M_PI)
-	                        - pes_abc(p->arrang, p->r, 1000.0, theta*180.0/M_PI);
+	const double v = pes_abc(p->arrang, p->r, p->R, theta*180.0/M_PI);
+
+	const double v_inf = pes_abc(p->arrang, p->r, 1000.0, theta*180.0/M_PI);
 
 	/* Eq. (22) of Ref. [1], inner integrand */
-	return pot_energy*math_legendre_poly(p->lambda, cos(theta))*sin(theta);
+	return (v - v_inf)*math_legendre_poly(p->lambda, cos(theta))*sin(theta);
 }
 
 /******************************************************************************
@@ -436,7 +505,7 @@ double pes_legendre_multipole(const char arrang,
  [1] at a given (r, R) Jacobi coordinate.
 
 ******************************************************************************/
-
+/*
 struct _params
 {
 	double phi;
@@ -471,7 +540,7 @@ static double pes_theta_integrand(const double theta, void *params)
 	const double pot_energy = pes(&x) - pes(&x_inf);
 
 	return pot_energy*math_sphe_harmonics(p->l, p->m, theta, p->phi)*sin(theta);
-}
+}*/
 
 /******************************************************************************
 
@@ -480,7 +549,7 @@ static double pes_theta_integrand(const double theta, void *params)
  [1] at a given (r, R) Jacobi coordinate.
 
 ******************************************************************************/
-
+/*
 static double pes_phi_integrand(const double phi, void *params)
 {
 	struct _params *p = (struct _params *) params;
@@ -488,7 +557,7 @@ static double pes_phi_integrand(const double phi, void *params)
 	p->phi = phi;
 
 	return math_qags(0.0, M_PI, &p, pes_theta_integrand);
-}
+}*/
 
 /******************************************************************************
 
@@ -499,7 +568,7 @@ static double pes_phi_integrand(const double phi, void *params)
  NOTE: Integration over theta in [0, pi] performed by the QAG algorithm.
 
 ******************************************************************************/
-
+/*
 double pes_harmonic_multipole(const int l,
                               const int m,
                               const double r1,
@@ -518,23 +587,14 @@ double pes_harmonic_multipole(const int l,
 	};
 
 	return math_qags(0.0, 2.0*M_PI, &p, pes_phi_integrand);
-}
+}*/
 
 /******************************************************************************
 ******************************************************************************/
 
 void pes_init()
 {
-	const jacobi_coor x =
-	{
-		.r = 1000.0,
-		.R = 1000.0,
-		.theta = 90.0,
-		.arrang = 'a'
-	};
-
-	const bool is_nan = isnan(pes(&x));
-
+	const bool is_nan = isnan(pes_abc('a', 1000.0, 1000.0, 90.0));
 	ASSERT(is_nan == false)
 }
 
@@ -544,7 +604,7 @@ void pes_init()
  nuclear distance, r, asymptotically as R -> inf, for a given PES arrangement.
 
 ******************************************************************************/
-
+/*
 double pec(const char arrang, const double r)
 {
 	const jacobi_coor x =
@@ -556,7 +616,7 @@ double pec(const char arrang, const double r)
 	};
 
 	return pes(&x);
-}
+}*/
 
 /******************************************************************************
 
@@ -567,7 +627,7 @@ double pec(const char arrang, const double r)
  NOTE: a handy benchmark for the algorithms.
 
 ******************************************************************************/
-
+/*
 matrix *pes_olson_smith_model(const double x)
 {
 	matrix *m = matrix_alloc(2, 2, false);
@@ -578,7 +638,7 @@ matrix *pes_olson_smith_model(const double x)
 	matrix_set(m, 1, 1, (21.1/x - 12.1)*exp(-x/0.678) + 16.8/27.2113961);
 
 	return m;
-}
+}*/
 
 /******************************************************************************
 
@@ -587,7 +647,7 @@ matrix *pes_olson_smith_model(const double x)
  Ref. [2].
 
 ******************************************************************************/
-
+/*
 matrix *pes_tully_model(const int n, const double x)
 {
 	matrix *m = matrix_alloc(2, 2, false);
@@ -636,7 +696,7 @@ matrix *pes_tully_model(const int n, const double x)
 	}
 
 	return m;
-}
+}*/
 
 /******************************************************************************
 

@@ -55,6 +55,14 @@
 
 	double pes_mass(const char atom);
 
+	double pes_mass_bc();
+
+	double pes_mass_ac();
+
+	double pes_mass_ab();
+
+	double pes_mass_abc(const char arrang);
+
 	double pes_abc(const char arrang,
 	               const double r, const double R, const double theta);
 
@@ -64,15 +72,18 @@
 
 	double pes_ab(const int j, const double r);
 
+	double pes_legendre_multipole(const char arrang,
+	                              const int lambda,
+	                              const double r,
+	                              const double R);
+
 	double pes(const jacobi_coor *x);
 
 	void pes_init();
 
-	double pec(const char arrang, const double r);
+//	matrix *pes_olson_smith_model(const double x);
 
-	matrix *pes_olson_smith_model(const double x);
-
-	matrix *pes_tully_model(const int n, const double x);
+//	matrix *pes_tully_model(const int n, const double x);
 
 	void pes_about(FILE *output);
 #endif

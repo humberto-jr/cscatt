@@ -1,32 +1,35 @@
 #include "modules/pes.h"
-#include "modules/mass.h"
 #include "modules/file.h"
 #include "modules/globals.h"
-
-#include "mass_config.h"
 
 #if defined(USE_MPI)
 	#include <mpi.h>
 #endif
 
-#define FORMAT "%d    %d    %d    %f    %f\n"
+#define FORMAT "%d    %d    %d    %f    %f    %f    %f\n"
 
-static int cpu_id, max_cpu, max_task;
+int cpu_id, max_cpu, max_task;
 
-struct task
+struct tasks
 {
-	char arrang;
 	double r, R, result;
 	int lambda, grid_index;
 };
 
-void mpi_print(const int lambda, const double R, const double wall_time)
+/******************************************************************************
+
+ Function mpi_print(): writes a log from a given CPU n in the CPU 0 stdout.
+
+******************************************************************************/
+
+void mpi_print(const int lambda,
+               const double r, const double R, const double result, const double wall_time)
 {
 	static int counter = 0;
 
 	if (cpu_id == 0)
 	{
-		printf(FORMAT, cpu_id, thread_id(), lambda, R, wall_time);
+		printf(FORMAT, cpu_id, thread_id(), lambda, r, R, result, wall_time);
 		++counter;
 
 		#if defined(USE_MPI)
@@ -40,7 +43,7 @@ void mpi_print(const int lambda, const double R, const double wall_time)
 				MPI_Recv(&log, MAX_LINE_LENGTH, MPI_BYTE,
 				         id, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-				printf(log);
+				printf("%s", log);
 				++counter;
 			}
 		}
@@ -51,7 +54,7 @@ void mpi_print(const int lambda, const double R, const double wall_time)
 		#if defined(USE_MPI)
 		{
 			char log[MAX_LINE_LENGTH];
-			sprintf(log, FORMAT, cpu_id, thread_id(), lambda, R, wall_time);
+			sprintf(log, FORMAT, cpu_id, thread_id(), lambda, r, R, result, wall_time);
 
 			MPI_Request info;
 			MPI_Isend(&log, MAX_LINE_LENGTH, MPI_BYTE, 0, 666, MPI_COMM_WORLD, &info);
@@ -60,17 +63,26 @@ void mpi_print(const int lambda, const double R, const double wall_time)
 	}
 }
 
-void driver(struct task *job)
+void driver(const char arrang, struct tasks *job)
 {
 	const double start_time = wall_time();
 
 	job->result
-		= pes_legendre_multipole(job->arrang, job->lambda, job->r, job->R);
+		= pes_legendre_multipole(arrang, job->lambda, job->r, job->R);
 
 	const double end_time = wall_time();
 
-	mpi_print(job->lambda, job->R, end_time - start_time);
+	mpi_print(job->lambda, job->r, job->R, job->result, end_time - start_time);
 }
+
+/******************************************************************************
+
+ Function multipole_file(): opens the file for a given arrangement and grid
+ index. Where, mode is the file access mode of fopen() from the C library.
+
+ NOTE: mode = "wb" for write + binary format and "rb" for read + binary format.
+
+******************************************************************************/
 
 FILE *multipole_file(const char arrang, const int grid_index, const char mode[])
 {
@@ -80,37 +92,44 @@ FILE *multipole_file(const char arrang, const int grid_index, const char mode[])
 	return fopen(filename, mode);
 }
 
-void sort_results(const int grid_size,
+/******************************************************************************
+
+ Function sort_results():
+
+******************************************************************************/
+
+void sort_results(const char arrang,
+                  const int grid_size,
                   const double r_min,
                   const double r_max,
                   const double r_step,
-                  const struct task list[])
+                  const struct tasks list[])
 {
-	FILE *output = NULL;
-	int prev_index = -1, prev_lambda = -1;
+	FILE *output = multipole_file(arrang, list[0].grid_index, "wb");
 
-	for (int n = 0; n < max_task; ++n)
+	fwrite(&list[0].R, sizeof(double), 1, output);
+	fwrite(&r_min, sizeof(double), 1, output);
+	fwrite(&r_max, sizeof(double), 1, output);
+	fwrite(&r_step, sizeof(double), 1, output);
+	fwrite(&grid_size, sizeof(int), 1, output); // BUG: first multipoles are not written
+
+	for (int n = 1; n < max_task; ++n)
 	{
-		if (list[n].grid_index != prev_index)
+		if (list[n].grid_index != list[n - 1].grid_index)
 		{
-			if (output != NULL) fclose(output);
-
-			output = multipole_file(list[n].arrang, list[n].grid_index, "wb");
+			fclose(output);
+			output = multipole_file(arrang, list[n].grid_index, "wb");
 
 			fwrite(&list[n].R, sizeof(double), 1, output);
 			fwrite(&r_min, sizeof(double), 1, output);
 			fwrite(&r_max, sizeof(double), 1, output);
 			fwrite(&r_step, sizeof(double), 1, output);
 			fwrite(&grid_size, sizeof(int), 1, output);
-
-			prev_index = list[n].grid_index;
-			prev_lambda = -1;
 		}
 
-		if (list[n].lambda != prev_lambda)
+		if (list[n].lambda != list[n - 1].lambda)
 		{
 			fwrite(&list[n].lambda, sizeof(int), 1, output);
-			prev_lambda = list[n].lambda;
 		}
 
 		if (output != NULL)
@@ -118,10 +137,14 @@ void sort_results(const int grid_size,
 			fwrite(&list[n].result, sizeof(double), 1, output);
 		}
 	}
+
+	fclose(output);
 }
 
 int main(int argc, char *argv[])
 {
+	ASSERT(argc > 1)
+
 	cpu_id = 0;
 	max_cpu = 1;
 
@@ -132,10 +155,11 @@ int main(int argc, char *argv[])
 		MPI_Comm_size(MPI_COMM_WORLD, &max_cpu);
 	#endif
 
-	ASSERT(argc > 1)
 	file_init_stdin(argv[1]);
 
-	pes_init();
+/*
+ *	Vibrational grid:
+ */
 
 	const int rovib_grid_size
 		= (int) file_get_key(stdin, "rovib_grid_size", 1.0, INF, 500.0);
@@ -149,6 +173,10 @@ int main(int argc, char *argv[])
 	const double r_step
 		= (r_max - r_min)/as_double(rovib_grid_size);
 
+/*
+ *	Scattering grid:
+ */
+
 	const int scatt_grid_size
 		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 500.0);
 
@@ -161,6 +189,10 @@ int main(int argc, char *argv[])
 	const double R_step
 		= (R_max - R_min)/as_double(scatt_grid_size);
 
+/*
+ *	Multipoles:
+ */
+
 	const int lambda_min
 		= (int) file_get_key(stdin, "lambda_min", 0.0, INF, 0.0);
 
@@ -170,19 +202,35 @@ int main(int argc, char *argv[])
 	const int lambda_step
 		= (int) file_get_key(stdin, "lambda_step", 1.0, INF, 2.0);
 
+	const int lambda_grid_size
+		= (lambda_max - lambda_min)/lambda_step + 1;
+
+/*
+ *	Arrangement (a = 1, b = 2, c = 3), atomic masses and PES:
+ */
+
 	const char arrang
 		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
+
+	pes_init_mass(stdin, 'a');
+	pes_init_mass(stdin, 'b');
+	pes_init_mass(stdin, 'c');
+	pes_init();
+
+/*
+ *	OpenMP:
+ */
 
 	const bool use_omp
 		= (bool) file_get_key(stdin, "use_omp", 0.0, 1.0, 1.0);
 
-	const mass_case a
-		= init_atomic_masses(stdin, arrang, 'a', cpu_id);
+/*
+ *	Sort each task (r, R, lambda) in an ordered list:
+ */
 
-	max_task
-		= scatt_grid_size*rovib_grid_size*((lambda_max - lambda_min)/lambda_step + 1);
+	max_task = scatt_grid_size*rovib_grid_size*lambda_grid_size;
 
-	struct task *list = allocate(max_task, sizeof(struct task), true);
+	struct tasks *list = allocate(max_task, sizeof(struct tasks), true);
 
 	int counter = 0;
 	for (int n = 0; n < scatt_grid_size; ++n)
@@ -194,7 +242,6 @@ int main(int argc, char *argv[])
 				list[counter].r = r_min + as_double(m)*r_step;
 				list[counter].R = R_min + as_double(n)*R_step;
 				list[counter].lambda = lambda;
-				list[counter].arrang = arrang;
 				list[counter].grid_index = n;
 				++counter;
 			}
@@ -202,6 +249,10 @@ int main(int argc, char *argv[])
 	}
 
 	ASSERT(counter == max_task);
+
+/*
+ *	MPI:
+ */
 
 	const int mpi_chunk = max_task/max_cpu;
 
@@ -215,18 +266,22 @@ int main(int argc, char *argv[])
 
 	const int omp_chunk = max_threads()/(n_max - n_min + 1);
 
+/*
+ *	Resolve all tasks:
+ */
+
 	if (cpu_id == 0)
 	{
 		printf("\n");
-		printf("# CPU    thread    lambda    R (a.u.)    walltime (min)\n");
-		printf("#------------------------------------------------------\n");
+		printf("# CPU    thread    lambda    r (a.u.)    R (a.u.)    multipole (a.u.)    wall time (min)\n");
+		printf("#---------------------------------------------------------------------------------------\n");
 	}
 
-	#pragma omp parallel for default(none) shared(list) schedule(dynamic, omp_chunk) if(use_omp)
+	#pragma omp parallel for default(none) shared(list, cpu_id, max_task) schedule(dynamic, omp_chunk) if(use_omp)
 	for (int n = n_min; n <= n_max; ++n)
 	{
 		extra_step:
-		driver(&list[n]);
+		driver(arrang, &list[n]);
 
 		if (n == n_max && remainder > 0)
 		{
@@ -235,7 +290,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	sort_results(rovib_grid_size, r_min, r_max, r_step, list);
+	sort_results(arrang, rovib_grid_size, r_min, r_max, r_step, list);
 	free(list);
 
 	#if defined(USE_MPI)

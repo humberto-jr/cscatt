@@ -25,7 +25,7 @@
 	#include <unistd.h>
 
 	/* C99 */
-	#if (__STDC_VERSION__ == 199901L)
+	#if (__STDC_VERSION__ >= 199901L)
 		#include <fenv.h>
 		#include <iso646.h>
 		#include <stdint.h>

@@ -1,10 +1,8 @@
 #include "modules/pes.h"
-#include "modules/mass.h"
 #include "modules/file.h"
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-#include "mass_config.h"
 #include "basis_config.h"
 
 #define FORMAT "# %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
@@ -19,19 +17,6 @@
 inline static int parity(const int l)
 {
 	return (int) pow(-1.0, l);
-}
-
-/******************************************************************************
-
- Function centr_term(): returns the actual centrifugal potential term at x for
- a given angular momentum l, provided the mass under consideration.
-
-******************************************************************************/
-
-inline static double centr_term(const int l,
-                                const double mass, const double x)
-{
-	return as_double(l*(l + 1))/(2.0*mass*x*x);
 }
 
 /******************************************************************************
@@ -52,17 +37,13 @@ matrix *fgh_matrix(const int grid_size,
 {
 	ASSERT(pot_energy != NULL)
 
-	matrix *result
-		= matrix_alloc(grid_size, grid_size, false);
+	matrix *result = matrix_alloc(grid_size, grid_size, false);
 
-	const double box_length
-		= as_double(grid_size - 1)*grid_step;
+	const double box_length = as_double(grid_size - 1)*grid_step;
 
-	const double factor
-		= (M_PI*M_PI)/(mass*box_length*box_length);
+	const double factor = (M_PI*M_PI)/(mass*box_length*box_length);
 
-	const double nn_term
-		= factor*as_double(grid_size*grid_size + 2)/6.0;
+	const double nn_term = factor*as_double(grid_size*grid_size + 2)/6.0;
 
 	for (int n = 0; n < grid_size; ++n)
 	{
@@ -70,11 +51,9 @@ matrix *fgh_matrix(const int grid_size,
 
 		for (int m = (n + 1); m < grid_size; ++m)
 		{
-			const double nm
-				= as_double((n + 1) - (m + 1));
+			const double nm = as_double((n + 1) - (m + 1));
 
-			const double nm_term
-				= sin(nm*M_PI/as_double(grid_size));
+			const double nm_term = sin(nm*M_PI/as_double(grid_size));
 
 			matrix_symm_set(result, n, m, pow(-1.0, nm)*factor/pow(nm_term, 2));
 		}
@@ -177,23 +156,49 @@ int main(int argc, char *argv[])
 		= (r_max - r_min)/as_double(grid_size);
 
 /*
- *	Arrangement (1 == a, 2 == b, 3 == c) and atomic masses:
+ *	Arrangement (a = 1, b = 2, c = 3), atomic masses and PES:
  */
 
 	const char arrang
 		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
 
-	const enum mass_case m
-		= init_atomic_masses(stdin, arrang, 'p', 0);
-
+	pes_init_mass(stdin, 'a');
+	pes_init_mass(stdin, 'b');
+	pes_init_mass(stdin, 'c');
 	pes_init();
+
+	double (*pec)(const int, const double), mass = 0.0;
+
+	switch (arrang)
+	{
+		case 'a':
+			pec = pes_bc;
+			mass = pes_mass_bc();
+		break;
+
+		case 'b':
+			pec = pes_ac;
+			mass = pes_mass_ac();
+		break;
+
+		case 'c':
+			pec = pes_ab;
+			mass = pes_mass_ab();
+		break;
+
+		default:
+			PRINT_ERROR("invalid arrangement %c\n", arrang)
+			exit(EXIT_FAILURE);
+	}
+
+	ASSERT(mass != 0.0)
 
 /*
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
  */
 
 	printf("#\n");
-	printf("# J = %d, J-parity = %d\n", J, J_parity);
+	printf("# J = %d, J-parity = %d, reduced mass = %f a.u.\n", J, J_parity, mass);
 	printf("#   Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
 	printf("# -------------------------------------------------------------------------------------\n");
 
@@ -211,11 +216,10 @@ int main(int argc, char *argv[])
 
 		for (int n = 0; n < grid_size; ++n)
 		{
-			const double r = r_min + as_double(n)*grid_step;
-			pot_energy[n] = pec(arrang, r) + centr_term(j, mass(m), r);
+			pot_energy[n] = pec(j, r_min + as_double(n)*grid_step);
 		}
 
-		matrix *eigenvec = fgh_matrix(grid_size, grid_step, pot_energy, mass(m));
+		matrix *eigenvec = fgh_matrix(grid_size, grid_step, pot_energy, mass);
 
 		free(pot_energy);
 
@@ -275,9 +279,6 @@ int main(int argc, char *argv[])
 		matrix_free(eigenvec);
 		free(eigenval);
 	}
-
-	printf("\n#\n# A total of %d basis functions are computed with %d grid "
-	       "points in r = [%f, %f)\n", max_ch, grid_size, r_min, r_max);
 
 	return EXIT_SUCCESS;
 }

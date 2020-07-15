@@ -143,7 +143,7 @@ double *math_wigner_d(const int k,
 	/* Eq. (21) */
 	const double seed_e = sqrt(factorial(2*k)/(factorial(k + m)*factorial(k - m)));
 
-	const double t = 2.0*sin(x/2.0)*sin(x/2.0);
+	const double t = 2.0*pow(sin(x/2.0), 2);
 
 	/* Eq. (18) */
 	dkm[0] = seed_c*seed_s*seed_e;
@@ -153,8 +153,8 @@ double *math_wigner_d(const int k,
 	if (j_max <= k) return result;
 
 	int j = k + 2;
-
 	dkm[1] = dkm[0]*sqrt(as_double(j - 1)/as_double((j + m)*(j - m)))*(as_double(j - m) - as_double(j)*t);
+
 	result[j/2] = dkm[1];
 
 	const double i = as_double(k*m);
@@ -171,7 +171,7 @@ double *math_wigner_d(const int k,
 
 		const double d = as_double(j - m);
 
-		const double c = 1.0/((j - 2.0)*sqrt((g*f)*(e*d)));
+		const double c = 1.0/(as_double(j - 2)*sqrt(g*f*e*d));
 
 		const double b = c*as_double(j)*sqrt((g - 2.0)*(f - 2.0)*(e - 2.0)*(d - 2.0));
 
