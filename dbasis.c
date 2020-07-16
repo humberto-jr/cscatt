@@ -108,49 +108,49 @@ int main(int argc, char *argv[])
  */
 
 	const int J
-		= (int) file_get_key(stdin, "J", 0.0, INF, 0.0);
+		= (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
 
 	const int J_parity
-		= (int) file_get_key(stdin, "parity", -1.0, 1.0, 0.0);
+		= (int) file_keyword(stdin, "parity", -1.0, 1.0, 0.0);
 
 /*
  *	Vibrational quantum numbers, v:
  */
 
 	const int v_min
-		= (int) file_get_key(stdin, "v_min", 0.0, INF, 0.0);
+		= (int) file_keyword(stdin, "v_min", 0.0, INF, 0.0);
 
 	const int v_max
-		= (int) file_get_key(stdin, "v_max", as_double(v_min), INF, as_double(v_min));
+		= (int) file_keyword(stdin, "v_max", as_double(v_min), INF, as_double(v_min));
 
 	const int v_step
-		= (int) file_get_key(stdin, "v_step", 1.0, INF, 1.0);
+		= (int) file_keyword(stdin, "v_step", 1.0, INF, 1.0);
 
 /*
  *	Rotational quantum numbers, j:
  */
 
 	const int j_min
-		= (int) file_get_key(stdin, "j_min", 0.0, INF, 0.0);
+		= (int) file_keyword(stdin, "j_min", 0.0, INF, 0.0);
 
 	const int j_max
-		= (int) file_get_key(stdin, "j_max", as_double(j_min), INF, as_double(j_min));
+		= (int) file_keyword(stdin, "j_max", as_double(j_min), INF, as_double(j_min));
 
 	const int j_step
-		= (int) file_get_key(stdin, "j_step", 1.0, INF, 1.0);
+		= (int) file_keyword(stdin, "j_step", 1.0, INF, 1.0);
 
 /*
  *	Vibrational grid:
  */
 
 	const int grid_size
-		= (int) file_get_key(stdin, "rovib_grid_size", as_double(v_max + 1), INF, 500.0);
+		= (int) file_keyword(stdin, "rovib_grid_size", as_double(v_max + 1), INF, 500.0);
 
 	const double r_min
-		= file_get_key(stdin, "r_min", 0.0, INF, 0.5);
+		= file_keyword(stdin, "r_min", 0.0, INF, 0.5);
 
 	const double r_max
-		= file_get_key(stdin, "r_max", r_min, INF, r_min + 30.0);
+		= file_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
 
 	const double grid_step
 		= (r_max - r_min)/as_double(grid_size);
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
  */
 
 	const char arrang
-		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
+		= 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
 
 	pes_init_mass(stdin, 'a');
 	pes_init_mass(stdin, 'b');

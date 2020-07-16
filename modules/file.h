@@ -18,6 +18,9 @@
 	double file_get_key(FILE *input, const char key[], const double min,
 	                    const double max, const double default_value);
 
+	double file_keyword(FILE *input, const char key[], const double min,
+	                    const double max, const double default_value);
+
 	int file_row_count(FILE *input);
 
 	int file_col_count(FILE *input);

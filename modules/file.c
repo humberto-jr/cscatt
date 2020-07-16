@@ -168,6 +168,45 @@ double file_get_key(FILE *input, const char key[],
 
 /******************************************************************************
 
+ Function file_get_key(): scans a given input file searching for the first
+ occurrence of a keyword with format "[key] = [value]". If found, and if [min]
+ <= [value] <= [max], it shall return [value]. Otherwise, it returns a default
+ value.
+
+ NOTE: Lines starting by '#' are ignored.
+
+******************************************************************************/
+
+double file_keyword(FILE *input, const char key[],
+                    const double min, const double max, const double default_value)
+{
+	ASSERT(max > min)
+
+	char *line = file_find_string(input, key);
+	char *token = strtok(line, "=");
+
+	while (token != NULL)
+	{
+		if (strstr(line, key) != NULL)
+		{
+			token = strtok(NULL, "=");
+			const double value = atof(token);
+
+			if (line != NULL) free(line);
+			if (value < min) return min;
+			if (value > max) return max;
+
+			return value;
+		}
+
+		token = strtok(NULL, "=");
+	}
+
+	return default_value;
+}
+
+/******************************************************************************
+
  Function file_row_count(): counts the actual number of valid lines in a given
  input data file.
 

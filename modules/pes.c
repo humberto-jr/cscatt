@@ -339,7 +339,6 @@ double pes_abc(const char arrang,
 double pes_bc(const int j, const double r)
 {
 	const double mass = pes_mass_bc();
-	ASSERT(mass != 0.0)
 
 	return pes_abc('a', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
 }
@@ -354,7 +353,6 @@ double pes_bc(const int j, const double r)
 double pes_ac(const int j, const double r)
 {
 	const double mass = pes_mass_ac();
-	ASSERT(mass != 0.0)
 
 	return pes_abc('b', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
 }
@@ -369,7 +367,6 @@ double pes_ac(const int j, const double r)
 double pes_ab(const int j, const double r)
 {
 	const double mass = pes_mass_ab();
-	ASSERT(mass != 0.0)
 
 	return pes_abc('c', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
 }
@@ -594,7 +591,12 @@ double pes_harmonic_multipole(const int l,
 
 void pes_init()
 {
+	ASSERT(mass_a != 0.0)
+	ASSERT(mass_b != 0.0)
+	ASSERT(mass_c != 0.0)
+
 	const bool is_nan = isnan(pes_abc('a', 1000.0, 1000.0, 90.0));
+
 	ASSERT(is_nan == false)
 }
 
