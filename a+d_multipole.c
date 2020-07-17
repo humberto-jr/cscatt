@@ -17,7 +17,8 @@ struct tasks
 /******************************************************************************
 
  Function mpi_print(): writes a short log from a given CPU in the C stdout of
- CPU 0.
+ CPU 0. Notice, if OpenMP is used, only the thread 0 from each CPU sends data
+ whereas only the thread 0 from CPU 0 receives.
 
 ******************************************************************************/
 
@@ -27,31 +28,37 @@ void mpi_print(const int cpu_id,
                const struct tasks *job,
                const double wall_time)
 {
-	static int counter = 0;
+	ASSERT(max_cpu > 0)
+	ASSERT(max_task > 0)
+
+	#if defined(USE_MPI)
+		static int counter = 0;
+	#endif
 
 	if (cpu_id == 0)
 	{
 		printf(FORMAT, cpu_id, thread_id(),
 		       job->lambda, job->r, job->R, job->result, wall_time);
 
-		#pragma omp atomic update
-		++counter;
-
 		#if defined(USE_MPI)
 		{
-			for (int id = 1; id < max_cpu; ++id)
+			#pragma omp master
 			{
-				if (counter == max_task) break;
-
-				char log[MAX_LINE_LENGTH];
-
-				MPI_Recv(&log, MAX_LINE_LENGTH, MPI_BYTE,
-				         id, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-				printf("%s", log);
-
-				#pragma omp atomic update
 				++counter;
+
+				for (int id = 1; id < max_cpu; ++id)
+				{
+					if (counter == max_task) break;
+
+					char log[MAX_LINE_LENGTH];
+
+					MPI_Recv(&log, MAX_LINE_LENGTH, MPI_BYTE,
+					         id, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+					printf("%s", log);
+
+					++counter;
+				}
 			}
 		}
 		#endif
@@ -60,15 +67,18 @@ void mpi_print(const int cpu_id,
 	{
 		#if defined(USE_MPI)
 		{
-			char log[MAX_LINE_LENGTH];
+			#pragma omp master
+			{
+				char log[MAX_LINE_LENGTH];
 
-			sprintf(log, FORMAT, cpu_id, thread_id(),
-			        job->lambda, job->r, job->R, job->result, wall_time);
+				sprintf(log, FORMAT, cpu_id, thread_id(),
+				        job->lambda, job->r, job->R, job->result, wall_time);
 
-			MPI_Request info;
+				MPI_Request info;
 
-			MPI_Isend(&log, MAX_LINE_LENGTH,
-			          MPI_BYTE, 0, 666, MPI_COMM_WORLD, &info);
+				MPI_Isend(&log, MAX_LINE_LENGTH,
+				          MPI_BYTE, 0, 666, MPI_COMM_WORLD, &info);
+			}
 		}
 		#endif
 	}
@@ -77,7 +87,7 @@ void mpi_print(const int cpu_id,
 /******************************************************************************
 
  Function send_results(): send all results in [n_min, n_max] from a given CPU
- to the same interval in the list of tasks of CPU 0. 
+ to the same interval in the list of tasks of CPU 0.
 
 ******************************************************************************/
 
@@ -88,11 +98,18 @@ void send_results(const int cpu_id,
                   const int n_max,
                   struct tasks *list)
 {
+	ASSERT(cpu_id > -1)
+	ASSERT(max_cpu > 0)
+	ASSERT(max_task > 0)
+	ASSERT(list != NULL)
+	ASSERT(n_max >= n_min)
+
 	#if defined(USE_MPI)
 	{
 		if (cpu_id == 0)
 		{
 			ASSERT(n_min == 0)
+
 			int counter = n_max;
 
 			for (int id = 1; id < max_cpu; ++id)
@@ -107,7 +124,7 @@ void send_results(const int cpu_id,
 				MPI_Recv(&m_max, 1,
 				         MPI_INT, id, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-				ASSERT(m_min > n_max)
+				ASSERT(m_max >= m_min)
 
 				for (int m = m_min; m <= m_max; ++m)
 				{
@@ -347,8 +364,6 @@ int main(int argc, char *argv[])
 
 	const int max_task = scatt_grid_size*rovib_grid_size*lambda_grid_size;
 
-	ASSERT(max_task > 0)
-
 	struct tasks *list = allocate(max_task, sizeof(struct tasks), true);
 
 	int counter = 0;
@@ -383,21 +398,18 @@ int main(int argc, char *argv[])
 
 	const int remainder = (max_task - 1) - mpi_last_task;
 
-	const int omp_chunk = max_threads()/(n_max - n_min + 1);
-
 /*
  *	Resolve all tasks:
  */
 
 	if (cpu_id == 0)
 	{
-		printf("\n");
 		printf("# MPI CPUs = %d, OpenMP threads = %d, num. of tasks = %d\n", max_cpu, max_threads(), max_task);
 		printf("# CPU    thread    lambda    r (a.u.)    R (a.u.)    multipole (a.u.)    wall time (s)\n");
 		printf("#-------------------------------------------------------------------------------------\n");
 	}
 
-	#pragma omp parallel for default(none) shared(list) schedule(dynamic, omp_chunk) if(use_omp)
+	#pragma omp parallel for default(none) shared(list) schedule(static) if(use_omp)
 	for (int n = n_min; n <= n_max; ++n)
 	{
 		extra_step:

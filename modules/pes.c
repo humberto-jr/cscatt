@@ -116,22 +116,22 @@ void pes_init_mass(FILE *input, const char atom)
 		case 'a':
 			mass_a = pes_read_mass(input, "atom_a");
 			ASSERT(mass_a != 0.0)
-		break;
+			return;
 
 		case 'b':
 			mass_b = pes_read_mass(input, "atom_b");
 			ASSERT(mass_b != 0.0)
-		break;
+			return;
 
 		case 'c':
 			mass_c = pes_read_mass(input, "atom_c");
 			ASSERT(mass_c != 0.0)
-		break;
+			return;
 
 		case 'd':
 			mass_d = pes_read_mass(input, "atom_d");
 			ASSERT(mass_d != 0.0)
-		break;
+			return;
 
 		default:
 			PRINT_ERROR("invalid atom %c\n", atom)
@@ -141,8 +141,8 @@ void pes_init_mass(FILE *input, const char atom)
 
 /******************************************************************************
 
- Function pes_mass(): return the respective masses (in atomic units) of each
- atom a, b, c, ... etc previously initialized by pes_init_mass().
+ Function pes_mass(): return the respective masses of each atom a, b, c, etc.,
+ previously initialized by pes_init_mass().
 
 ******************************************************************************/
 
@@ -258,10 +258,10 @@ double pes_abc(const char arrang,
 			b.y = -c.y;
 			b.z =  0.0;
 
-			const double cb_com = (c.y*mass_c + b.y*mass_b)/(mass_c + mass_b);
+			const double cb = (c.y*mass_c + b.y*mass_b)/(mass_c + mass_b);
 
 			a.x = 0.0;
-			a.y = cb_com + R*sin(theta*M_PI/180.0);
+			a.y = cb + R*sin(theta*M_PI/180.0);
 			a.z = R*cos(theta*M_PI/180.0);
 
 			internuc[0] = r;
@@ -280,10 +280,10 @@ double pes_abc(const char arrang,
 			a.y = -c.y;
 			a.z =  0.0;
 
-			const double ca_com = (c.y*mass_c + a.y*mass_a)/(mass_c + mass_a);
+			const double ca = (c.y*mass_c + a.y*mass_a)/(mass_c + mass_a);
 
 			b.x = 0.0;
-			b.y = ca_com + R*sin(theta*M_PI/180.0);
+			b.y = ca + R*sin(theta*M_PI/180.0);
 			b.z = R*cos(theta*M_PI/180.0);
 
 			internuc[1] = r;
@@ -302,10 +302,10 @@ double pes_abc(const char arrang,
 			b.y = -a.y;
 			b.z =  0.0;
 
-			const double ab_com = (a.y*mass_a + b.y*mass_b)/(mass_a + mass_b);
+			const double ab = (a.y*mass_a + b.y*mass_b)/(mass_a + mass_b);
 
 			c.x = 0.0;
-			c.y = ab_com + R*sin(theta*M_PI/180.0);
+			c.y = ab + R*sin(theta*M_PI/180.0);
 			c.z = R*cos(theta*M_PI/180.0);
 
 			internuc[2] = r;
@@ -322,6 +322,84 @@ double pes_abc(const char arrang,
 	#if defined(USE_CARTESIAN_COORDINATES)
 	{
 		const double xyz[9] = {a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z};
+		return EXTERNAL_PES_NAME(xyz);
+	}
+	#endif
+
+	return EXTERNAL_PES_NAME(internuc);
+}
+
+/******************************************************************************
+
+ Wrapper pes_abcd(): an interface for the external user defined tetratomic PES
+ as function of a set of Jacobi coordinates (r1, r2, theta12, R, theta, phi)
+ for arrangement 'a' only (A + BC-D). Coordinates are translated to
+ internuclear distances (ab, ac, ad, bc, bd, cd).
+
+ NOTE: If the macro USE_NON_REACTIVE_PES is defined, the coordinate system is
+ not converted and Jacobi is used all along, assuming
+
+ EXTERNAL_PES_NAME(x) and x[0] = r1, x[1] = r2, x[2] = theta23, x[3] = R, x[4]
+ = theta, x[5] = phi.
+
+ Thus, make sure the order of each input parameter of EXTERNAL_PES_NAME follows
+ the interface given above.
+
+******************************************************************************/
+
+double pes_abcd(const double r1, const double r2, const double theta12,
+                const double R, const double theta, const double phi)
+{
+	#if defined(USE_JACOBI_COORDINATES)
+	{
+		const double jacobi[6] = {r1, r2, theta12, R, theta, phi};
+		return EXTERNAL_PES_NAME(jacobi);
+	}
+	#endif
+
+	/* NOTE: ab = 0, ac = 1, ad = 2, bc = 3, bd = 4, cd = 5. */
+	double internuc[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+	cartesian a, b, c, d, cb, cbd;
+
+	c.x = 0.0;
+	c.y = r1/2.0;
+	c.z = 0.0;
+
+	b.x =  0.0;
+	b.y = -c.y;
+	b.z =  0.0;
+
+	cb.x = 0.0;
+	cb.y = (c.y*mass_c + b.y*mass_b)/(mass_c + mass_b);
+	cb.z = 0.0;
+
+	d.x = cb.x;
+	d.y = cb.y + r2*sin(theta12*M_PI/180.0);
+	d.z = cb.z + r2*cos(theta12*M_PI/180.0);
+
+	const double mass_cb = mass_c + mass_b;
+
+	cbd.x = (d.x*mass_d + cb.x*mass_cb)/(mass_d + mass_cb);
+	cbd.y = (d.y*mass_d + cb.y*mass_cb)/(mass_d + mass_cb);
+	cbd.z = (d.z*mass_d + cb.z*mass_cb)/(mass_d + mass_cb);
+
+	a.x = cbd.x + R*sin(theta*M_PI/180.0)*cos(phi*M_PI/180.0);
+	a.y = cbd.y + R*sin(theta*M_PI/180.0)*sin(phi*M_PI/180.0);
+	a.z = cbd.z + R*cos(theta*M_PI/180.0);
+
+	internuc[0] = cartesian_distance(&a, &b);
+	internuc[1] = cartesian_distance(&a, &c);
+	internuc[2] = cartesian_distance(&a, &d);
+	internuc[3] = cartesian_distance(&b, &c);
+	internuc[4] = cartesian_distance(&b, &d);
+	internuc[5] = cartesian_distance(&c, &d);
+
+	#if defined(USE_CARTESIAN_COORDINATES)
+	{
+		const double xyz[12]
+			= {a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z, d.x, d.y, d.z};
+
 		return EXTERNAL_PES_NAME(xyz);
 	}
 	#endif

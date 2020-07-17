@@ -113,7 +113,7 @@
 
 		if (pointer == NULL)
 		{
-			PRINT_ERROR("unable to allocate resources for %d elements of %d bits\n", n, data_size)
+			PRINT_ERROR("unable to allocate resources for %d elements of %d bytes\n", n, data_size)
 			exit(EXIT_FAILURE);
 		}
 
