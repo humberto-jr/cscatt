@@ -43,4 +43,21 @@
 		#include <stdatomic.h>
 		#include <stdnoreturn.h>
 	#endif
+
+	/* NOTE: just a few types, to complete as needed. */
+	enum c_type
+	{
+		type_int,
+		type_char,
+		type_bool,
+		type_float,
+		type_double,
+		type_long_int,
+		type_long_double,
+		type_unsigned_int,
+		type_unsigned_char,
+		type_unknown
+	};
+
+	typedef enum c_type c_type;
 #endif

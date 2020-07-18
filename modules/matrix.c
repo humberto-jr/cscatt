@@ -65,7 +65,7 @@ struct matrix
 	int max_row, max_col;
 };
 
-#define DATA_OFFSET(name, p, q) name->data[(p)*(name->max_col) + (q)]
+#define DATA_OFFSET(pointer, p, q) pointer->data[(p)*(pointer->max_col) + (q)]
 
 /******************************************************************************
 
@@ -76,8 +76,8 @@ struct matrix
 
 #define ASSERT_ROW_INDEX(pointer, p) \
 {                                    \
-	ASSERT((p) > -1)                   \
-	ASSERT((p) < pointer->max_row)     \
+  ASSERT((p) > -1)                   \
+  ASSERT((p) < pointer->max_row)     \
 }
 
 /******************************************************************************
@@ -89,8 +89,8 @@ struct matrix
 
 #define ASSERT_COL_INDEX(pointer, q) \
 {                                    \
-	ASSERT((q) > -1)                   \
-	ASSERT((q) < pointer->max_col)     \
+  ASSERT((q) > -1)                   \
+  ASSERT((q) < pointer->max_col)     \
 }
 
 /******************************************************************************
