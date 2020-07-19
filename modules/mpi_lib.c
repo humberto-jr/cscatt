@@ -18,6 +18,7 @@
 	#include "mpi.h"
 #endif
 
+FILE *stream = NULL;
 static int rank = 0, size = 1, level = 0;
 
 /******************************************************************************
@@ -48,6 +49,30 @@ static int rank = 0, size = 1, level = 0;
 
 /******************************************************************************
 
+ Function mpi_sizeof(): an auxiliary routine that returns the output of sizeof
+ for a given C type.
+
+ NOTE: only few types implemented and should be completed as needed.
+
+******************************************************************************/
+
+static size_t mpi_sizeof(const c_type c)
+{
+	switch (c)
+	{
+		case type_int:    return sizeof(int);
+		case type_char:   return sizeof(char);
+		case type_float:  return sizeof(float);
+		case type_double: return sizeof(double);
+
+		default:
+			PRINT_ERROR("invalid C type %d\n", (int) c)
+			exit(EXIT_FAILURE);
+	}
+}
+
+/******************************************************************************
+
  Function mpi_init(): initializes the MPI library and should be invoked before
  any MPI call.
 
@@ -59,7 +84,7 @@ void mpi_init(int argc, char *argv[])
 	ASSERT(argv != NULL)
 
 	#if defined(USE_MPI)
-		MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &level);
+		MPI_Init_thread(&argc, &argv, MPI_THREAD_SERIALIZED, &level);
 
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 		MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -177,9 +202,8 @@ void mpi_send(const int to,
 
 /******************************************************************************
 
- Function mpi_print(): writes a short log from a given CPU in the C stdout of
- CPU 0. Notice, if OpenMP is used, only the thread 0 from each CPU sends data
- whereas only the thread 0 from CPU 0 receives.
+ Function mpi_print(): prints a formatted message from a given process (master
+ thread) in the C stdout of process 0 (master thread).
 
 ******************************************************************************/
 
@@ -187,28 +211,34 @@ void mpi_printf(const char line[])
 {
 	ASSERT(line != NULL)
 
-	#if defined(USE_MPI)
-		#pragma omp master
-		{
+	#pragma omp critical
+	{
+		#if defined(USE_MPI)
+			const int tag_a = 803 + thread_id();
+			const int tag_b = 997 + thread_id(); 
+
 			if (rank == 0)
 			{
 				printf("%s", line);
 
-				for (int from = 1; from < size; ++from)
+				for (int source = 1; source < size; ++source)
 				{
-					int length = 0;
+					int message_sent = (int) false;
 
-					MPI_Request info;
+					MPI_Iprobe(source, tag_a,
+					           MPI_COMM_WORLD, &message_sent, MPI_STATUS_IGNORE);
 
-					MPI_Irecv(&length, 1, MPI_INT,
-					          from, 998, MPI_COMM_WORLD, &info); // bug here
-
-					if (length > 0)
+					if (message_sent)
 					{
+						int length = 0;
+
+						MPI_Recv(&length, 1, MPI_INT,
+						         source, tag_a, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
 						char *new_line = allocate(length, sizeof(char), false);
 
 						MPI_Recv(new_line, length, MPI_CHAR,
-						         from, 999, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+						         source, tag_b, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 						printf("%s", new_line);
 
@@ -222,14 +252,103 @@ void mpi_printf(const char line[])
 
 				MPI_Request info;
 
-				MPI_Isend(&length, 1, MPI_INT, 0, 998, MPI_COMM_WORLD, &info);
+				MPI_Isend(&length, 1, MPI_INT, 0, tag_a, MPI_COMM_WORLD, &info);
 
-				MPI_Isend(line, length, MPI_CHAR, 0, 999, MPI_COMM_WORLD, &info);
+				MPI_Isend(line, length, MPI_CHAR, 0, tag_b, MPI_COMM_WORLD, &info);
 			}
-		}
-	#else
-		printf("%s", line);
-	#endif
+		#else
+			printf("%s", line);
+		#endif
+	}
+
+	return;
+}
+
+/******************************************************************************
+
+ Function mpi_set_stream(): to set a disk stream for readings and writings done
+ by process 0 (master thread) on behalf of all other processes.
+
+******************************************************************************/
+
+void mpi_set_stream(FILE *new_stream)
+{
+	ASSERT(new_stream != NULL);
+	stream = new_stream;
+}
+
+/******************************************************************************
+
+ Function mpi_fwrite(): process 0 (master thread) writes in the disk stream
+ provided to mpi_set_stream() an array of data with a given lenght from all
+ other processes, in ascending order of ranks.
+
+******************************************************************************/
+
+void mpi_fwrite(const int length,
+                const c_type c, const void *array)
+{
+	ASSERT(length > 0)
+	ASSERT(array != NULL)
+	ASSERT(stream != NULL)
+
+	const int data_size = mpi_sizeof(c);
+
+	#pragma omp critical
+	{
+		#if defined(USE_MPI)
+			const MPI_Datatype type_name = mpi_type(c);
+
+			if (rank == 0)
+			{
+				if(fwrite(array, length, data_size, stream) != (size_t) length)
+				{
+					PRINT_ERROR("unable to write %d elements from process 0\n", length)
+				}
+
+				for (int source = 1; source < size; ++source)
+				{
+					int message_sent = (int) false;
+
+					MPI_Iprobe(source, 731,
+					           MPI_COMM_WORLD, &message_sent, MPI_STATUS_IGNORE);
+
+					if (message_sent)
+					{
+						int length = 0;
+
+						MPI_Recv(&length, 1, MPI_INT,
+						         source, 731, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+						void *new_array = allocate(length, data_size, false);
+
+						MPI_Recv(new_array, length, type_name,
+						         source, 732, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+						if(fwrite(array, length, data_size, stream) != (size_t) length)
+						{
+							PRINT_ERROR("unable to write %d elements from process %d\n", length, source)
+						}
+
+						free(new_array);
+					}
+				}
+			}
+			else
+			{
+				MPI_Request info;
+
+				MPI_Isend(&length, 1, MPI_INT, 0, 731, MPI_COMM_WORLD, &info);
+
+				MPI_Isend(array, length, type_name, 0, 732, MPI_COMM_WORLD, &info);
+			}
+		#else
+			if(fwrite(array, length, data_size, stream) != (size_t) length)
+			{
+				PRINT_ERROR("unable to write %d elements from process 0\n", length)
+			}
+		#endif
+	}
 
 	return;
 }

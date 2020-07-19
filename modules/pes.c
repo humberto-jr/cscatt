@@ -676,6 +676,9 @@ void pes_init()
 	const bool is_nan = isnan(pes_abc('a', 1000.0, 1000.0, 90.0));
 
 	ASSERT(is_nan == false)
+
+	math_no_gsl_handler();
+	math_set_error(1.0e-2);
 }
 
 /******************************************************************************

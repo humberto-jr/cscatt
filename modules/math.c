@@ -217,6 +217,17 @@ void math_set_workspace(const int size)
 
 /******************************************************************************
 
+ Function math_no_gsl_handler(): sets the GSL error handler off.
+
+******************************************************************************/
+
+void math_no_gsl_handler()
+{
+	gsl_set_error_handler_off();
+}
+
+/******************************************************************************
+
  Function math_simpson(): return the integral of f(x) from a to b, using the
  1/3-Simpson quadrature rule. Where, values of f are evaluated in a grid of n
  points and params points to a struct of parameters that f may depend on (NULL

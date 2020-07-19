@@ -29,6 +29,8 @@
 
 	void math_set_error(const double error);
 
+	void math_no_gsl_handler();
+
 	double math_simpson(const int n,
 	                    const double a,
 	                    const double b,

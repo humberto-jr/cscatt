@@ -20,6 +20,10 @@
 
 	void mpi_printf(const char line[]);
 
+	void mpi_set_stream(FILE *new_stream);
+
+	void mpi_fwrite(const int length, const c_type c, const void *array);
+
 	/******************************************************************************
 
 	 Macro MPI_PRINTF(): prints a formatted message from a given process (master
