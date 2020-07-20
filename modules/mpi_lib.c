@@ -19,7 +19,22 @@
 #endif
 
 FILE *stream = NULL;
-static int rank = 0, size = 1, level = 0;
+
+static int rank = 0, size = 1, level = 0, chunk_size = 1, tasks = 1, extra_tasks = 0;
+static int *index_min = NULL, *index_max = NULL;
+
+/******************************************************************************
+
+ Macro ASSERT_RANK(): check if the n-th process is among those in the MPI
+ communicator.
+
+******************************************************************************/
+
+#define ASSERT_RANK(n) \
+{                      \
+  ASSERT((n) > -1)     \
+  ASSERT((n) < size)   \
+}
 
 /******************************************************************************
 
@@ -110,6 +125,9 @@ void mpi_end()
 		}
 	#endif
 
+	if (index_min != NULL) free(index_min);
+	if (index_max != NULL) free(index_max);
+
 	return;
 }
 
@@ -149,53 +167,157 @@ int mpi_thread_level()
 
 /******************************************************************************
 
- Function mpi_send(): sends n elements, up to n_max, of a given array, from one
- process to that same interval in the array of another process.
+ Function mpi_barrier(): blocks until all processes and all its threads in the
+ communicator have reached this routine.
 
 ******************************************************************************/
 
-void mpi_send(const int to,
-              const int from,
-              const int n_max,
-              const c_type c,
-              void *array)
+void mpi_barrier()
 {
-	ASSERT(to > -1)
-	ASSERT(from > -1)
-	ASSERT(n_max > 0)
-	ASSERT(array != NULL)
-	ASSERT(c != type_unknown)
+	#if defined(USE_MPI)
+		#pragma omp critical
+		MPI_Barrier(MPI_COMM_WORLD);
+	#endif
+}
 
-	if (to == from) return;
+/******************************************************************************
+
+ Function mpi_set_tasks(): divides a number of tasks among all processes by
+ setting a minimum and maximum task index later returned by mpi_first_task()
+ and mpi_last_task().
+
+******************************************************************************/
+
+void mpi_set_tasks(const int max_task)
+{
+	ASSERT(max_task > 0)
+
+	tasks = max_task;
+	chunk_size = max_task/size;
+
+	index_min = allocate(size, sizeof(int), false);
+	index_max = allocate(size, sizeof(int), false);
+
+	for (int cpu_rank = 0; cpu_rank < size; ++cpu_rank)
+	{
+		index_min[cpu_rank] = cpu_rank*chunk_size;
+		index_max[cpu_rank] = index_min[cpu_rank] + chunk_size - 1;
+	}
+
+	extra_tasks = (max_task - 1) - index_max[size - 1];
+
+	ASSERT(extra_tasks >= 0)
+}
+
+/******************************************************************************
+
+ Function mpi_first_task(): returns the index of a first task for this process.
+
+******************************************************************************/
+
+int mpi_first_task()
+{
+	return index_min[rank];
+}
+
+/******************************************************************************
+
+ Function mpi_first_task(): returns the index of a last task for this process.
+
+******************************************************************************/
+
+int mpi_last_task()
+{
+	return index_max[rank];
+}
+
+/******************************************************************************
+
+ Function mpi_first_task(): returns the index of an extra task for this process
+ or zero if no extra tasks are scheduled.
+
+******************************************************************************/
+
+int mpi_extra_task()
+{
+	const int index = (extra_tasks > 0? index_max[size - 1] + rank + 1 : 0);
+
+	return (index < tasks? index : 0);
+}
+
+/******************************************************************************
+
+ Function mpi_check(): returns true if there is a message from a given source
+ process and tag.
+
+******************************************************************************/
+
+bool mpi_check(const int from)
+{
+	ASSERT_RANK(from)
+
+	int message_sent = (int) false;
 
 	#if defined(USE_MPI)
-		#pragma omp master
+		#pragma omp critical
+		MPI_Iprobe(from, 666, MPI_COMM_WORLD, &message_sent, MPI_STATUS_IGNORE);
+	#endif
+
+	return (bool) message_sent;
+}
+
+/******************************************************************************
+
+ Function mpi_send(): sends n elements, up to n_max, from the current process
+ to another.
+
+******************************************************************************/
+
+void mpi_send(const int to, const int n_max, const c_type c, void *data)
+{
+	ASSERT_RANK(to)
+	ASSERT(n_max > 0)
+	ASSERT(data != NULL)
+	ASSERT(c != type_unknown)
+
+	#if defined(USE_MPI)
+		#pragma omp critical
 		{
-			const MPI_Datatype typename = mpi_type(c);
+			const MPI_Datatype type_name = mpi_type(c);
 
-			if (from == rank)
-			{
-				MPI_Request info;
+			MPI_Send(&n_max, 1, MPI_INT, to, 666, MPI_COMM_WORLD);
+			MPI_Send(data, n_max, type_name, to, 667, MPI_COMM_WORLD);
+		}
+	#endif
+}
 
-				MPI_Isend(&n_max, 1,
-				          MPI_INT, to, 666, MPI_COMM_WORLD, &info);
+/******************************************************************************
 
-				MPI_Isend(array, n_max,
-				          typename, to, 667, MPI_COMM_WORLD, &info);
-			}
+ Function mpi_receive(): receives n elements, up to n_max, from other process.
 
-			if (to == rank)
-			{
-				int m_max = 0;
+******************************************************************************/
 
-				MPI_Recv(&m_max, 1,
-				         MPI_INT, from, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+void mpi_receive(const int from, const int n_max, const c_type c, void *data)
+{
+	ASSERT_RANK(from)
+	ASSERT(n_max > 0)
+	ASSERT(data != NULL)
+	ASSERT(c != type_unknown)
 
-				m_max = min(n_max, m_max);
+	#if defined(USE_MPI)
+		#pragma omp critical
+		{
+			const MPI_Datatype type_name = mpi_type(c);
 
-				MPI_Recv(array, m_max,
-				         typename, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			}
+			int m_max = 0;
+
+			MPI_Recv(&m_max, 1,
+			         MPI_INT, from, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+			m_max = min(n_max, m_max);
+
+			MPI_Recv(data, m_max,
+			         type_name, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
 	#endif
 }
@@ -215,7 +337,7 @@ void mpi_printf(const char line[])
 	{
 		#if defined(USE_MPI)
 			const int tag_a = 803 + thread_id();
-			const int tag_b = 997 + thread_id(); 
+			const int tag_b = 997 + thread_id();
 
 			if (rank == 0)
 			{
@@ -285,8 +407,7 @@ void mpi_set_stream(FILE *new_stream)
 
 ******************************************************************************/
 
-void mpi_fwrite(const int length,
-                const c_type c, const void *array)
+void mpi_fwrite(const int length, const c_type c, const void *array)
 {
 	ASSERT(length > 0)
 	ASSERT(array != NULL)

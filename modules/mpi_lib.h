@@ -12,11 +12,21 @@
 
 	int mpi_thread_level();
 
-	void mpi_send(const int to,
-	              const int from,
-	              const int n_max,
-	              const c_type c,
-	              void *array);
+	void mpi_barrier();
+
+	void mpi_set_tasks(const int max_task);
+
+	int mpi_first_task();
+
+	int mpi_last_task();
+
+	int mpi_extra_task();
+
+	bool mpi_check(const int from);
+
+	void mpi_send(const int to, const int n_max, const c_type c, void *data);
+
+	void mpi_receive(const int from, const int n_max, const c_type c, void *data);
 
 	void mpi_printf(const char line[]);
 

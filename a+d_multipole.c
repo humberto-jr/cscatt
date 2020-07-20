@@ -1,9 +1,10 @@
 #include "modules/pes.h"
 #include "modules/file.h"
+#include "modules/mpi_lib.h"
 #include "modules/globals.h"
 
 #if defined(USE_MPI)
-	#include <mpi.h>
+	#include "mpi.h"
 #endif
 
 #define FORMAT "  %3d       %3d       %3d    %06f    %06f       % -8e         %f\n"
@@ -16,158 +17,57 @@ struct tasks
 
 /******************************************************************************
 
- Function mpi_print(): writes a short log from a given CPU in the C stdout of
- CPU 0. Notice, if OpenMP is used, only the thread 0 from each CPU sends data
- whereas only the thread 0 from CPU 0 receives.
+ Function send_results(): send all results from a given CPU to that same
+ interval in the list of tasks of CPU 0.
 
 ******************************************************************************/
 
-void mpi_print(const int cpu_id,
-               const int max_cpu,
-               const int max_task,
-               const struct tasks *job,
-               const double wall_time)
+void send_results(const int max_task, struct tasks *list)
 {
-	ASSERT(max_cpu > 0)
+	if (mpi_comm_size() == 1) return;
+
 	ASSERT(max_task > 0)
+	ASSERT(list != NULL)
 
-	#if defined(USE_MPI)
-		static int counter = 0;
-	#endif
+	mpi_barrier();
 
-	if (cpu_id == 0)
+	if (mpi_rank() == 0)
 	{
-		printf(FORMAT, cpu_id, thread_id(),
-		       job->lambda, job->r, job->R, job->result, wall_time);
-
-		#if defined(USE_MPI)
+		for (int rank = 1; rank < mpi_comm_size(); ++rank)
 		{
-			#pragma omp master
+			do
 			{
-				++counter;
-
-				for (int id = 1; id < max_cpu; ++id)
-				{
-					if (counter == max_task) break;
-
-					char log[MAX_LINE_LENGTH];
-
-					MPI_Recv(&log, MAX_LINE_LENGTH, MPI_BYTE,
-					         id, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-					printf("%s", log);
-
-					++counter;
-				}
+				int n = max_task - 1;
+				mpi_receive(rank, 1, type_int, &n);
+				mpi_receive(rank, 1, type_double, &list[n].result);
 			}
+			while (mpi_check(rank));
 		}
-		#endif
 	}
 	else
 	{
-		#if defined(USE_MPI)
+		for (int n = mpi_first_task(); n <= mpi_last_task(); ++n)
 		{
-			#pragma omp master
+			extra_step:
+			mpi_send(0, 1, type_int, &n);
+			mpi_send(0, 1, type_double, &list[n].result);
+
+			if (n == mpi_last_task() && mpi_extra_task() > 0)
 			{
-				char log[MAX_LINE_LENGTH];
-
-				sprintf(log, FORMAT, cpu_id, thread_id(),
-				        job->lambda, job->r, job->R, job->result, wall_time);
-
-				MPI_Request info;
-
-				MPI_Isend(&log, MAX_LINE_LENGTH,
-				          MPI_BYTE, 0, 666, MPI_COMM_WORLD, &info);
+				n = mpi_extra_task();
+				if (n > 0) goto extra_step;
 			}
 		}
-		#endif
 	}
 }
 
 /******************************************************************************
 
- Function send_results(): send all results in [n_min, n_max] from a given CPU
- to the same interval in the list of tasks of CPU 0.
+ Function driver(): performs the calculation of a single task.
 
 ******************************************************************************/
 
-void send_results(const int cpu_id,
-                  const int max_cpu,
-                  const int max_task,
-                  const int n_min,
-                  const int n_max,
-                  struct tasks *list)
-{
-	ASSERT(cpu_id > -1)
-	ASSERT(max_cpu > 0)
-	ASSERT(max_task > 0)
-	ASSERT(list != NULL)
-	ASSERT(n_max >= n_min)
-
-	#if defined(USE_MPI)
-	{
-		if (cpu_id == 0)
-		{
-			ASSERT(n_min == 0)
-
-			int counter = n_max;
-
-			for (int id = 1; id < max_cpu; ++id)
-			{
-				if (counter == max_task) break;
-
-				int m_min = 0, m_max = 0;
-
-				MPI_Recv(&m_min, 1,
-				         MPI_INT, id, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-				MPI_Recv(&m_max, 1,
-				         MPI_INT, id, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-				ASSERT(m_max >= m_min)
-
-				for (int m = m_min; m <= m_max; ++m)
-				{
-					MPI_Recv(&list[m].result, 1,
-					         MPI_DOUBLE, id, m, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-					++counter;
-				}
-			}
-		}
-		else
-		{
-			MPI_Request info;
-
-			MPI_Isend(&n_min, 1,
-			          MPI_INT, 0, 666, MPI_COMM_WORLD, &info);
-
-			MPI_Isend(&n_max, 1,
-			          MPI_INT, 0, 667, MPI_COMM_WORLD, &info);
-
-			for (int n = n_min; n <= n_max; ++n)
-			{
-				MPI_Isend(&list[n].result, 1,
-				          MPI_DOUBLE, 0, n, MPI_COMM_WORLD, &info);
-			}
-		}
-	}
-	#endif
-
-	return;
-}
-
-/******************************************************************************
-
- Function driver(): performs the calculation of a single task and prints a log
- in the C stdout of CPU 0.
-
-******************************************************************************/
-
-void driver(const char arrang,
-            const int cpu_id,
-            const int max_cpu,
-            const int max_task,
-            struct tasks *job)
+void driver(const char arrang, struct tasks *job)
 {
 	const double start_time = wall_time();
 
@@ -176,7 +76,11 @@ void driver(const char arrang,
 
 	const double end_time = wall_time();
 
-	mpi_print(cpu_id, max_cpu, max_task, job, end_time - start_time);
+	#pragma omp critical
+	{
+		printf(FORMAT, mpi_rank(), thread_id(),
+		       job->lambda, job->r, job->R, job->result, end_time - start_time);
+	}
 }
 
 /******************************************************************************
@@ -192,6 +96,7 @@ FILE *multipole_file(const char arrang,
                      const int grid_index, const char mode[])
 {
 	char filename[MAX_LINE_LENGTH];
+
 	sprintf(filename, "multipole_arrang=%c_n=%d.bin", arrang, grid_index);
 
 	return fopen(filename, mode);
@@ -236,11 +141,15 @@ void sort_results(const char arrang,
 	ASSERT(output != NULL)
 
 	fwrite(&list[0].R, sizeof(double), 1, output);
+
 	fwrite(&r_min, sizeof(double), 1, output);
 	fwrite(&r_max, sizeof(double), 1, output);
 	fwrite(&r_step, sizeof(double), 1, output);
+
 	fwrite(&lambda_max, sizeof(int), 1, output);
 	fwrite(&grid_size, sizeof(int), 1, output);
+
+	fwrite(&list[0].lambda, sizeof(int), 1, output);
 
 	for (int n = 0; n < max_task; ++n)
 	{
@@ -252,9 +161,11 @@ void sort_results(const char arrang,
 			ASSERT(output != NULL)
 
 			fwrite(&list[n].R, sizeof(double), 1, output);
+
 			fwrite(&r_min, sizeof(double), 1, output);
 			fwrite(&r_max, sizeof(double), 1, output);
 			fwrite(&r_step, sizeof(double), 1, output);
+
 			fwrite(&lambda_max, sizeof(int), 1, output);
 			fwrite(&grid_size, sizeof(int), 1, output);
 		}
@@ -276,20 +187,21 @@ void sort_results(const char arrang,
 
 int main(int argc, char *argv[])
 {
-	ASSERT(argc > 1)
-
-	int id = 0, mpi_size = 1;
-
-	#if defined(USE_MPI)
-		int thread_level = 0;
-		MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &thread_level);
-		MPI_Comm_rank(MPI_COMM_WORLD, &id);
-		MPI_Comm_size(MPI_COMM_WORLD, &mpi_size);
-	#endif
-
-	const int cpu_id = id, max_cpu = mpi_size;
+	mpi_init(argc, argv);
 
 	file_init_stdin(argv[1]);
+
+/*
+ *	Arrangement (a = 1, b = 2, c = 3), atomic masses and PES:
+ */
+
+	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
+
+	pes_init_mass(stdin, 'a');
+	pes_init_mass(stdin, 'b');
+	pes_init_mass(stdin, 'c');
+
+	pes_init();
 
 /*
  *	Vibrational grid:
@@ -340,23 +252,10 @@ int main(int argc, char *argv[])
 		= (lambda_max - lambda_min)/lambda_step + 1;
 
 /*
- *	Arrangement (a = 1, b = 2, c = 3), atomic masses and PES:
- */
-
-	const char arrang
-		= 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
-
-	pes_init_mass(stdin, 'a');
-	pes_init_mass(stdin, 'b');
-	pes_init_mass(stdin, 'c');
-	pes_init();
-
-/*
  *	OpenMP:
  */
 
-	const bool use_omp
-		= (bool) file_keyword(stdin, "use_omp", 0.0, 1.0, 1.0);
+	const bool use_omp = (bool) file_keyword(stdin, "use_omp", 0.0, 1.0, 1.0);
 
 /*
  *	Sort each task (r, R, lambda) in an ordered list:
@@ -388,43 +287,35 @@ int main(int argc, char *argv[])
  *	MPI:
  */
 
-	const int mpi_chunk = max_task/max_cpu;
-
-	const int n_min = cpu_id*mpi_chunk;
-
-	const int n_max = n_min + (mpi_chunk - 1);
-
-	const int mpi_last_task = (max_cpu - 1)*mpi_chunk + (mpi_chunk - 1);
-
-	const int remainder = (max_task - 1) - mpi_last_task;
+	mpi_set_tasks(max_task);
 
 /*
  *	Resolve all tasks:
  */
 
-	if (cpu_id == 0)
+	if (mpi_rank() == 0)
 	{
-		printf("# MPI CPUs = %d, OpenMP threads = %d, num. of tasks = %d\n", max_cpu, max_threads(), max_task);
+		printf("# MPI CPUs = %d, OpenMP threads = %d, num. of tasks = %d\n", mpi_comm_size(), max_threads(), max_task);
 		printf("# CPU    thread    lambda    r (a.u.)    R (a.u.)    multipole (a.u.)    wall time (s)\n");
-		printf("#-------------------------------------------------------------------------------------\n");
+		printf("# ------------------------------------------------------------------------------------\n");
 	}
 
 	#pragma omp parallel for default(none) shared(list) schedule(static) if(use_omp)
-	for (int n = n_min; n <= n_max; ++n)
+	for (int n = mpi_first_task(); n <= mpi_last_task(); ++n)
 	{
 		extra_step:
-		driver(arrang, cpu_id, max_cpu, max_task, &list[n]);
+		driver(arrang, &list[n]);
 
-		if (n == n_max && remainder > 0)
+		if (n == mpi_last_task() && mpi_extra_task() > 0)
 		{
-			n = mpi_last_task + cpu_id + 1;
-			if (n < max_task) goto extra_step;
+			n = mpi_extra_task();
+			if (n > 0) goto extra_step;
 		}
 	}
 
-	send_results(cpu_id, max_cpu, max_task, n_min, n_max, list);
+	send_results(max_task, list);
 
-	if (cpu_id == 0)
+	if (mpi_rank() == 0)
 	{
 		sort_results(arrang, max_task, lambda_max,
 	                rovib_grid_size, r_min, r_max, r_step, list);
@@ -432,10 +323,6 @@ int main(int argc, char *argv[])
 
 	free(list);
 
-	#if defined(USE_MPI)
-		MPI_Barrier(MPI_COMM_WORLD);
-		MPI_Finalize();
-	#endif
-
+	mpi_end();
 	return EXIT_SUCCESS;
 }
