@@ -209,11 +209,12 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix nist johnson pes mass dvr file miller math
+modules: matrix nist johnson pes mass dvr file miller math mpi_lib
 drivers: dbasis cmatrix test_suit about pes_print bprint cprint tbasis a+d_multipole
 
 #
 # Rules for modules:
+# TODO: few modules are not checking if c_lib.h exists before compiling.
 #
 
 MODULES_DIR = modules
@@ -238,11 +239,6 @@ pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/math.h $(MODULES_D
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $(PES_MACRO) -c $<
 	@echo
 
-#mass: $(MODULES_DIR)/mass.c $(MODULES_DIR)/mass.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/nist.h
-#	@echo "\033[31m$<\033[0m"
-#	$(CC) $(CFLAGS) -c $<
-#	@echo
-
 dvr: $(MODULES_DIR)/dvr.c $(MODULES_DIR)/dvr.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
@@ -253,12 +249,17 @@ file: $(MODULES_DIR)/file.c $(MODULES_DIR)/file.h $(MODULES_DIR)/globals.h
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
-miller: $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/clib.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/pes.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/matrix.h
+miller: $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/c_lib.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/pes.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/matrix.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
 math: $(MODULES_DIR)/math.c $(MODULES_DIR)/math.h $(MODULES_DIR)/globals.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -c $<
+	@echo
+
+mpi_lib: $(MODULES_DIR)/mpi_lib.c $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/c_lib.h $(MODULES_DIR)/globals.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo
@@ -317,11 +318,15 @@ test_suit: test_suit.c $(MODULES_DIR)/matrix.h
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o math.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
-a+d_multipole: a+d_multipole.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
+a+d_multipole: a+d_multipole.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
+m_print: m_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	@echo
 #
 # Rules to build/install of external libraries (using default locations):
 #

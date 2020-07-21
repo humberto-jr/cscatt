@@ -3,10 +3,6 @@
 #include "modules/mpi_lib.h"
 #include "modules/globals.h"
 
-#if defined(USE_MPI)
-	#include "mpi.h"
-#endif
-
 #define FORMAT "  %3d       %3d       %3d    %06f    %06f       % -8e         %f\n"
 
 struct tasks
@@ -55,7 +51,7 @@ void send_results(const int max_task, struct tasks *list)
 			if (n == mpi_last_task() && mpi_extra_task() > 0)
 			{
 				n = mpi_extra_task();
-				if (n > 0) goto extra_step;
+				goto extra_step;
 			}
 		}
 	}
@@ -63,7 +59,8 @@ void send_results(const int max_task, struct tasks *list)
 
 /******************************************************************************
 
- Function driver(): performs the calculation of a single task.
+ Function driver(): performs the calculation of a single task using one thread
+ from one process.
 
 ******************************************************************************/
 
@@ -106,24 +103,7 @@ FILE *multipole_file(const char arrang,
 
  Function sort_results(): writes the respective multipoles as function of r per
  lambda using binary format and filename labeled by the grid index, n, of R and
- arrangement. The data format used is as follows:
-
- [R]
- [r_min]
- [r_max]
- [r_step]
- [max. lambda]
- [rovib_grid_size]
- [1st lambda]
- [1st multipole]
- [2nd multipole]
- [3rd multipole]
- (...)
- [2nd lambda]
- [1st multipole]
- [2nd multipole]
- [3rd multipole]
- (...)
+ arrangement.
 
 ******************************************************************************/
 
@@ -136,26 +116,14 @@ void sort_results(const char arrang,
                   const double r_step,
                   const struct tasks list[])
 {
-	FILE *output = multipole_file(arrang, list[0].grid_index, "wb");
-
-	ASSERT(output != NULL)
-
-	fwrite(&list[0].R, sizeof(double), 1, output);
-
-	fwrite(&r_min, sizeof(double), 1, output);
-	fwrite(&r_max, sizeof(double), 1, output);
-	fwrite(&r_step, sizeof(double), 1, output);
-
-	fwrite(&lambda_max, sizeof(int), 1, output);
-	fwrite(&grid_size, sizeof(int), 1, output);
-
-	fwrite(&list[0].lambda, sizeof(int), 1, output);
+	FILE *output = NULL;
+	int last_index = -1, last_lambda = -1;
 
 	for (int n = 0; n < max_task; ++n)
 	{
-		if (n > 0 && list[n].grid_index != list[n - 1].grid_index)
+		if (list[n].grid_index != last_index)
 		{
-			fclose(output);
+			if (output != NULL) fclose(output);
 			output = multipole_file(arrang, list[n].grid_index, "wb");
 
 			ASSERT(output != NULL)
@@ -168,17 +136,22 @@ void sort_results(const char arrang,
 
 			fwrite(&lambda_max, sizeof(int), 1, output);
 			fwrite(&grid_size, sizeof(int), 1, output);
+
+			last_lambda = -1;
 		}
 
-		if (n > 0 && list[n].lambda != list[n - 1].lambda)
+		if (list[n].lambda != last_lambda)
 		{
 			fwrite(&list[n].lambda, sizeof(int), 1, output);
 		}
 
 		fwrite(&list[n].result, sizeof(double), 1, output);
+
+		last_index = list[n].grid_index;
+		last_lambda = list[n].lambda;
 	}
 
-	fclose(output);
+	if (output != NULL) fclose(output);
 }
 
 /******************************************************************************
@@ -309,7 +282,7 @@ int main(int argc, char *argv[])
 		if (n == mpi_last_task() && mpi_extra_task() > 0)
 		{
 			n = mpi_extra_task();
-			if (n > 0) goto extra_step;
+			goto extra_step;
 		}
 	}
 

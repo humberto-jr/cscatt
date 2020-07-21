@@ -269,69 +269,57 @@ int file_col_count(FILE *input)
 
 ******************************************************************************/
 
-bool file_end(FILE *input)
+bool file_end(FILE *stream)
 {
-	return (feof(input) != 0);
+	ASSERT(stream != NULL)
+	return (feof(stream) != 0);
 }
 
 /******************************************************************************
 
- Function file_write(): write n data elements with a given data size to a file
- using binary format.
+ Wrapper file_write(): is an interface for fwrite() that check inputs and the
+ output for errors, if any.
 
- NOTE: data_size is often the output of sizeof().
+ NOTE: data_size is often the output of sizeof() for the type of data.
 
 ******************************************************************************/
 
-void file_write(const char filename[], const int n,
-                const int data_size, const void *data, const bool to_append)
+void file_write(void *data, const int data_size, const int n, FILE *stream)
 {
 	ASSERT(n > 0)
-	ASSERT(data != NULL)
 	ASSERT(data_size > 0)
 
-	FILE *output = file_open_output(filename, true, to_append);
+	ASSERT(data != NULL)
+	ASSERT(stream != NULL)
 
-	const int info = fwrite(data, data_size, n, output);
+	const int info = fwrite(data, data_size, n, stream);
 
-	fclose(output);
-
-	if (info < n)
-	{
-		PRINT_ERROR("only %d elements written to %s\n", info, filename)
-		exit(EXIT_FAILURE);
-	}
+	if (info < n) PRINT_ERROR("only %d/%d elements written\n", info, n)
 }
 
 /******************************************************************************
 
- Function file_read(): read n data elements with a given data size from a file
- using binary format.
+ Wrapper file_read(): is an interface for fread() which not only check inputs,
+ but apply a byte offset before reading, if desired, and check the output for
+ errors, if any.
 
- NOTE: data_size is often the output of sizeof().
+ NOTE: data_size is often the output of sizeof() for the type of data and if
+ offset is zero the reading is performed from the beginning of the file.
 
 ******************************************************************************/
 
-void file_read(const char filename[], const int n,
-               const int data_size, void *data, const int offset)
+void file_read(void *data,
+               const int data_size, const int n, FILE *stream, const int offset)
 {
 	ASSERT(n > 0)
-	ASSERT(data != NULL)
 	ASSERT(data_size > 0)
 
-	FILE *input = file_open_input(filename, true);
+	ASSERT(data != NULL)
+	ASSERT(stream != NULL)
 
-	if (offset > 0)
-	{
-		fseek(input, offset, SEEK_SET);
-	}
+	if (offset > 0) fseek(stream, offset, SEEK_SET);
 
-	const int info = fread(data, data_size, n, input);
-	fclose(input);
+	const int info = fread(data, data_size, n, stream);
 
-	if (info < n)
-	{
-		PRINT_ERROR("only %d elements read from %s\n", info, filename);
-		exit(EXIT_FAILURE);
-	}
+	if (info < n) PRINT_ERROR("only %d/%d elements read\n", info, n)
 }

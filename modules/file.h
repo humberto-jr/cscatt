@@ -25,11 +25,10 @@
 
 	int file_col_count(FILE *input);
 
-	bool file_end(FILE *input);
+	bool file_end(FILE *stream);
 
-	void file_write(const char filename[], const int n,
-	                const int data_size, const void *data, const bool to_append);
+	void file_write(void *data, const int data_size, const int n, FILE *stream);
 
-	void file_read(const char filename[], const int n,
-	               const int data_size, void *data, const int offset);
+	void file_read(void *data, const int data_size,
+	               const int n, FILE *stream, const int offset);
 #endif

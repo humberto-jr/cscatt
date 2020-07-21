@@ -347,8 +347,12 @@ double pes_abc(const char arrang,
 
 ******************************************************************************/
 
-double pes_abcd(const double r1, const double r2, const double theta12,
-                const double R, const double theta, const double phi)
+double pes_abcd(const double r1,
+                const double r2,
+                const double theta12,
+                const double R,
+                const double theta,
+                const double phi)
 {
 	#if defined(USE_JACOBI_COORDINATES)
 	{
@@ -410,7 +414,7 @@ double pes_abcd(const double r1, const double r2, const double theta12,
 /******************************************************************************
 
  Function pes_bc(): returns the asymptotic external user defined triatomic PES
- for arrangement a and angular momentum j, i.e. the BC diatomic interaction.
+ for arrangement 'a' and angular momentum j, i.e. the BC diatomic interaction.
 
 ******************************************************************************/
 
@@ -424,7 +428,7 @@ double pes_bc(const int j, const double r)
 /******************************************************************************
 
  Function pes_ac(): returns the asymptotic external user defined triatomic PES
- for arrangement b and angular momentum j, i.e. the AC diatomic interaction.
+ for arrangement 'b' and angular momentum j, i.e. the AC diatomic interaction.
 
 ******************************************************************************/
 
@@ -438,7 +442,7 @@ double pes_ac(const int j, const double r)
 /******************************************************************************
 
  Function pes_ab(): returns the asymptotic external user defined triatomic PES
- for arrangement c and angular momentum j, i.e. the AB diatomic interaction.
+ for arrangement 'c' and angular momentum j, i.e. the AB diatomic interaction.
 
 ******************************************************************************/
 
@@ -448,56 +452,6 @@ double pes_ab(const int j, const double r)
 
 	return pes_abc('c', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
 }
-
-/******************************************************************************
-
- Wrapper pes(): is an interface for the external user defined PES as function
- of a set of Jacobi coordinates, x = (r, R, theta), which are translated to
- internuclear distances, y = (r_ab, r_bc, r_ac).
-
- NOTE: If the macro USE_NON_REACTIVE_PES is defined, the coordinate system is
- not converted and Jacobi is used all along, assuming
-
- EXTERNAL_PES_NAME(r, R, theta)
-
- Thus, make sure the order of each input parameter of EXTERNAL_PES_NAME follows
- the interface given above.
-
-******************************************************************************/
-/*
-double pes(const jacobi_coor *x)
-{
-	#if defined(USE_NON_REACTIVE_PES)
-		double r[3];
-		r[0] = x->r;
-		r[1] = x->R;
-		r[2] = x->theta;
-	#elif defined(USE_CARTESIAN_COORDINATES)
-		cartesian a, b, c;
-		jacobi_to_cartesian(x, &a, &b, &c);
-
-		double r[3*MAX_ATOM];
-		r[0] = a.x;
-		r[1] = a.y;
-		r[2] = a.z;
-		r[3] = b.x;
-		r[4] = b.y;
-		r[5] = b.z;
-		r[6] = c.x;
-		r[7] = c.y;
-		r[8] = c.z;
-	#else
-		internuc_coor y;
-		jacobi_to_internuc(x, &y);
-
-		double r[MAX_INTERNUC_DISTANCE];
-		r[0] = y.r_ab;
-		r[1] = y.r_bc;
-		r[2] = y.r_ac;
-	#endif
-
-	return EXTERNAL_PES_NAME(r);
-}*/
 
 /******************************************************************************
 
