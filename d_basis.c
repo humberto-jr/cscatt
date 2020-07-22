@@ -107,64 +107,58 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J
-		= (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
+	const int J = (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
 
-	const int J_parity
-		= (int) file_keyword(stdin, "parity", -1.0, 1.0, 0.0);
+	const int J_parity = (int) file_keyword(stdin, "parity", -1.0, 1.0, 0.0);
 
 /*
  *	Vibrational quantum numbers, v:
  */
 
-	const int v_min
-		= (int) file_keyword(stdin, "v_min", 0.0, INF, 0.0);
+	const int v_min = (int) file_keyword(stdin, "v_min", 0.0, INF, 0.0);
 
-	const int v_max
-		= (int) file_keyword(stdin, "v_max", as_double(v_min), INF, as_double(v_min));
+	const int v_max = (int) file_keyword(stdin, "v_max", 0.0, INF, 0.0);
 
-	const int v_step
-		= (int) file_keyword(stdin, "v_step", 1.0, INF, 1.0);
+	const int v_step = (int) file_keyword(stdin, "v_step", 1.0, INF, 1.0);
+
+	ASSERT(v_max >= v_min)
 
 /*
  *	Rotational quantum numbers, j:
  */
 
-	const int j_min
-		= (int) file_keyword(stdin, "j_min", 0.0, INF, 0.0);
+	const int j_min = (int) file_keyword(stdin, "j_min", 0.0, INF, 0.0);
 
-	const int j_max
-		= (int) file_keyword(stdin, "j_max", as_double(j_min), INF, as_double(j_min));
+	const int j_max = (int) file_keyword(stdin, "j_max", 0.0, INF, 0.0);
 
-	const int j_step
-		= (int) file_keyword(stdin, "j_step", 1.0, INF, 1.0);
+	const int j_step = (int) file_keyword(stdin, "j_step", 1.0, INF, 1.0);
+
+	ASSERT(j_max >= j_min)
 
 /*
  *	Vibrational grid:
  */
 
-	const int grid_size
-		= (int) file_keyword(stdin, "rovib_grid_size", as_double(v_max + 1), INF, 500.0);
+	const int n_max = (int) file_keyword(stdin, "rovib_grid_size", 1.0, INF, 500.0);
 
-	const double r_min
-		= file_keyword(stdin, "r_min", 0.0, INF, 0.5);
+	const double r_min = file_keyword(stdin, "r_min", 0.0, INF, 0.5);
 
-	const double r_max
-		= file_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
+	const double r_max = file_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
 
-	const double grid_step
-		= (r_max - r_min)/as_double(grid_size);
+	const double r_step = (r_max - r_min)/as_double(n_max);
+
+	ASSERT(n_max >= v_max + 1)
 
 /*
  *	Arrangement (a = 1, b = 2, c = 3), atomic masses and PES:
  */
 
-	const char arrang
-		= 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
+	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
 
 	pes_init_mass(stdin, 'a');
 	pes_init_mass(stdin, 'b');
 	pes_init_mass(stdin, 'c');
+
 	pes_init();
 
 	double (*pec)(const int, const double), mass = 0.0;
@@ -208,18 +202,18 @@ int main(int argc, char *argv[])
  */
 
 	int max_ch = 0;
-	const int max_state = -666;
+	const int i = 0;
 
 	for (int j = j_min; j <= j_max; j += j_step)
 	{
-		double *pot_energy = allocate(grid_size, sizeof(double), false);
+		double *pot_energy = allocate(n_max, sizeof(double), false);
 
-		for (int n = 0; n < grid_size; ++n)
+		for (int n = 0; n < n_max; ++n)
 		{
-			pot_energy[n] = pec(j, r_min + as_double(n)*grid_step);
+			pot_energy[n] = pec(j, r_min + as_double(n)*r_step);
 		}
 
-		matrix *eigenvec = fgh_matrix(grid_size, grid_step, pot_energy, mass);
+		matrix *eigenvec = fgh_matrix(n_max, r_step, pot_energy, mass);
 
 		free(pot_energy);
 
@@ -234,7 +228,7 @@ int main(int argc, char *argv[])
 		{
 			double *wavef = matrix_raw_col(eigenvec, v, false);
 
-			norm(grid_size, grid_step, (grid_size >= 3000), wavef);
+			norm(n_max, r_step, (n_max >= 3000), wavef);
 
 /*
  *			Step 3: loop over all partial waves l of the atom around the diatom given by the
@@ -258,16 +252,16 @@ int main(int argc, char *argv[])
 				fwrite(&v, sizeof(int), 1, output);
 				fwrite(&j, sizeof(int), 1, output);
 				fwrite(&l, sizeof(int), 1, output);
-				fwrite(&max_state, sizeof(int), 1, output);
+				fwrite(&i, sizeof(int), 1, output);
 
 				fwrite(&r_min, sizeof(double), 1, output);
 				fwrite(&r_max, sizeof(double), 1, output);
-				fwrite(&grid_step, sizeof(double), 1, output);
+				fwrite(&r_step, sizeof(double), 1, output);
 
 				fwrite(&eigenval[v], sizeof(double), 1, output);
 
-				fwrite(&grid_size, sizeof(int), 1, output);
-				fwrite(wavef, sizeof(double), grid_size, output);
+				fwrite(&n_max, sizeof(int), 1, output);
+				fwrite(wavef, sizeof(double), n_max, output);
 
 				fclose(output);
 				++max_ch;

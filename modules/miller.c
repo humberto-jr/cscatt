@@ -17,7 +17,6 @@
 
 #include "pes.h"
 #include "dvr.h"
-#include "mass.h"
 #include "matrix.h"
 #include "miller.h"
 
@@ -37,8 +36,10 @@ struct vib_params
 
 struct rot_params
 {
+	const char arrang;
 	const int lambda;
-	jacobi_coor x;
+	const double r;
+	const double R;
 };
 
 /******************************************************************************
@@ -53,11 +54,12 @@ static inline double rot_integrand(const double theta, void *params)
 {
 	struct rot_params *p = (struct rot_params *) params;
 
-	p->x.theta = theta*180.0/M_PI;
-	const double pot_energy = pes(&p->x) - pec(p->x.arrang, p->x.r);
+	const double v = pes_abc(p->arrang, p->r, p->R, theta*180.0/M_PI);
+
+	const double v_inf = pes_abc(p->arrang, p->r, 1000.0, theta*180.0/M_PI);
 
 	/* Eq. (22) of Ref. [1], inner integrand */
-	return pot_energy*gsl_sf_legendre_Pl(p->lambda, cos(theta))*sin(theta);
+	return (v - v_inf)*gsl_sf_legendre_Pl(p->lambda, cos(theta))*sin(theta);
 }
 
 /******************************************************************************
@@ -75,9 +77,9 @@ double miller_jcp69_rot_integral(const char arrang,
 	struct rot_params p =
 	{
 		.lambda = lambda,
-		.x.arrang = arrang,
-		.x.r = r,
-		.x.R = R
+		.arrang = arrang,
+		.r = r,
+		.R = R
 	};
 
 	gsl_function f =
@@ -88,19 +90,19 @@ double miller_jcp69_rot_integral(const char arrang,
 
 	double error = 0.0, result = 0.0, factor = 1.0, theta_max = M_PI;
 
-	if (arrang == 'a' && mass(atom_b) == mass(atom_c))
+	if (arrang == 'a' && pes_mass('b') == pes_mass('c'))
 	{
 		 factor = 2.0;
 		 theta_max = M_PI/2.0;
 	}
 
-	if (arrang == 'b' && mass(atom_c) == mass(atom_a))
+	if (arrang == 'b' && pes_mass('c') == pes_mass('a'))
 	{
 		 factor = 2.0;
 		 theta_max = M_PI/2.0;
 	}
 
-	if (arrang == 'c' && mass(atom_a) == mass(atom_b))
+	if (arrang == 'c' && pes_mass('a') == pes_mass('b'))
 	{
 		 factor = 2.0;
 		 theta_max = M_PI/2.0;

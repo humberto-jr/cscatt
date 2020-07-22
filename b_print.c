@@ -8,11 +8,9 @@ int main(int argc, char *argv[])
 	ASSERT(argc > 1)
 	file_init_stdin(argv[1]);
 
-	const int J
-		= (int) file_get_key(stdin, "J", 0.0, INF, 0.0);
+	const int J = (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
 
-	const char arrang
-		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
+	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
 
 	int ch = 0;
 	while (check_basis_file(arrang, ch, J) == true)
@@ -31,12 +29,10 @@ int main(int argc, char *argv[])
 		fprintf(output, "# j = %d\n", basis.j);
 		fprintf(output, "# l = %d\n", basis.l);
 
-		if (basis.state > 0)
-			fprintf(output, "# Component  = %d\n", basis.state);
-
+		fprintf(output, "# Component  = %d\n", basis.state);
 		fprintf(output, "# Eigenvalue = % -8e\n", basis.energy);
-
 		fprintf(output, "# File created on %s\n", time_stamp());
+
 		fprintf(output, "#\n");
 
 		for (int n = 0; n < basis.grid_size; ++n)

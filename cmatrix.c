@@ -1,13 +1,13 @@
 #include "modules/pes.h"
-#include "modules/phys.h"
-#include "modules/mass.h"
+#include "modules/math.h"
+//#include "modules/mass.h"
 #include "modules/file.h"
 #include "modules/miller.h"
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
 #include "mpi_config.h"
-#include "mass_config.h"
+//#include "mass_config.h"
 #include "basis_config.h"
 #include "coupl_config.h"
 
@@ -18,6 +18,51 @@ struct task
 };
 
 typedef struct task task;
+
+/******************************************************************************
+
+ Function centr_term(): returns the actual centrifugal potential term at x for
+ a given angular momentum l, provided the mass under consideration.
+
+******************************************************************************/
+
+inline static double centr_term(const int l,
+                                const double mass, const double x)
+{
+	return as_double(l*(l + 1))/(2.0*mass*x*x);
+}
+
+/******************************************************************************
+
+ Function percival_seaton(): return the so-called Percival & Seaton term often
+ used in the definition of the atom-diatom collisional coupling matrix. Where,
+
+ j1     = diatomic rotational angular momentum quantum number for channel 1
+ j2     = diatomic rotational angular momentum quantum number for channel 2
+ l1     = atom-diatom orbital angular momentum quantum number for channel 1
+ l2     = atom-diatom orbital angular momentum quantum number for channel 2
+ J      = total angular momentum of the problem
+ lambda = an integer parameter (0, 1, 2, ...)
+
+ and also depends parametrically on the electronic spin multiplicity (1 for
+ singlet, 2 for doublet and 3 for triplet).
+
+ See Ref. [1] for more, in particular, Eq. (A1).
+
+******************************************************************************/
+
+double percival_seaton(const int j1, const int j2,
+                       const int l1, const int l2, const int lambda, const int J)
+{
+	double result = pow(-1.0, j1 + j2 - J);
+
+	result *= math_wigner_3j(l1, l2, lambda, 0, 0, 0);
+	result *= math_wigner_3j(j1, j2, lambda, 0, 0, 0);
+	result *= math_wigner_6j(j1, j2, lambda, l2, l1, J);
+	result *= sqrt(as_double(2*j1 + 1)*as_double(2*j2 + 1)*as_double(2*l1 + 1)*as_double(2*l2 + 1));
+
+	return result;
+}
 
 double integral(const int J,
                 const char arrang,
@@ -31,12 +76,12 @@ double integral(const int J,
 	for (int lambda = 0; lambda <= lambda_max; lambda += lambda_step)
 	{
 		const double f
-		= phys_percival_seaton(a->spin_mult, a->j, b->j, a->l, b->l, lambda, J);
+			= percival_seaton(a->j, b->j, a->l, b->l, lambda, J);
 
 		if (f == 0.0) continue;
 
 		const double v
-		= miller_jcp69_vib_integral(lambda, arrang, a->wavef, b->wavef, a->r_min, a->r_max, R);
+			= miller_jcp69_vib_integral(lambda, arrang, a->wavef, b->wavef, a->r_min, a->r_max, R);
 
 		result += v*f;
 	}
@@ -63,20 +108,20 @@ int main(int argc, char *argv[])
  */
 
 	const int J
-		= (int) file_get_key(stdin, "J", 0.0, INF, 0.0);
+		= (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
 
 /*
  *	Scattering grid, R:
  */
 
 	const int scatt_grid_size
-		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 500.0);
+		= (int) file_keyword(stdin, "scatt_grid_size", 1.0, INF, 500.0);
 
 	const double R_min
-		= file_get_key(stdin, "R_min", 0.0, INF, 0.5);
+		= file_keyword(stdin, "R_min", 0.0, INF, 0.5);
 
 	const double R_max
-		= file_get_key(stdin, "R_max", R_min, INF, R_min + 100.0);
+		= file_keyword(stdin, "R_max", R_min, INF, R_min + 100.0);
 
 	const double R_step
 		= (R_max - R_min)/as_double(scatt_grid_size);
@@ -85,8 +130,17 @@ int main(int argc, char *argv[])
  *	Arrangement (1 == a, 2 == b, 3 == c) and scatt. channels:
  */
 
-	const char arrang
-		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
+	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
+
+	pes_init_mass(stdin, 'a');
+	pes_init_mass(stdin, 'b');
+	pes_init_mass(stdin, 'c');
+
+	const double mass = pes_mass_abc(arrang);
+
+	pes_init();
+
+	ASSERT(mass != 0.0)
 
 	const int max_ch
 		= count_basis(arrang, J);
@@ -96,7 +150,7 @@ int main(int argc, char *argv[])
  */
 
 	const bool use_omp
-		= (bool) file_get_key(stdin, "use_omp", 0.0, 1.0, 1.0);
+		= (bool) file_keyword(stdin, "use_omp", 0.0, 1.0, 1.0);
 
 	const int max_thread
 		= (use_omp? omp_get_max_threads() : 1);
@@ -130,8 +184,8 @@ int main(int argc, char *argv[])
  *	Atomic masses and arrang. reduced mass:
  */
 
-	const mass_case a
-		= init_atomic_masses(stdin, arrang, 'a', cpu_id);
+//	const mass_case a
+//		= init_atomic_masses(stdin, arrang, 'a', cpu_id);
 
 /*
  *	Multipolar expansion coefficients, lambda:
@@ -141,9 +195,7 @@ int main(int argc, char *argv[])
 		= (int) file_get_key(stdin, "lambda_max", 0.0, INF, 20.0);
 
 	const int lambda_step
-		= init_lambda_step(arrang);
-
-	pes_init();
+		= (int) file_get_key(stdin, "lambda_step", 0.0, INF, 20.0);
 
 	if (cpu_id == 0)
 	{
@@ -166,7 +218,7 @@ int main(int argc, char *argv[])
 
 	for (int n = 0; n < max_ch; ++n)
 	{
-		load_basis(arrang, n, J, &basis[n]);
+		read_basis_file(arrang, n, J, &basis[n]);
 	}
 
 /*
@@ -218,7 +270,7 @@ int main(int argc, char *argv[])
 			if (list[m].ch_a == list[m].ch_b)
 			{
 				result += list[m].basis_a->energy
-				        + phys_centr_term(list[m].basis_a->l, mass(a), R);
+				        + centr_term(list[m].basis_a->l, mass, R);
 
 				matrix_diag_set(c, list[m].ch_a, result);
 			}

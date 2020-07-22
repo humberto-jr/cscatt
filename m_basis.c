@@ -1,10 +1,8 @@
 #include "modules/pes.h"
-#include "modules/mass.h"
 #include "modules/file.h"
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-#include "mass_config.h"
 #include "coupl_config.h"
 #include "basis_config.h"
 
@@ -151,90 +149,81 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J
-		= (int) file_get_key(stdin, "J", 0.0, INF, 0.0);
+	const int J = (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
 
-	const int J_parity
-		= (int) file_get_key(stdin, "parity", -1.0, 1.0, 0.0);
+	const int J_parity = (int) file_keyword(stdin, "parity", -1.0, 1.0, 0.0);
 
 /*
  *	Vibrational quantum numbers, v:
- *
- *	NOTE: shall not be necessarily the same values used in dbasis driver.
  */
 
-	const int v_min
-		= (int) file_get_key(stdin, "v_min", 0.0, INF, 0.0);
+	const int v_min = (int) file_keyword(stdin, "v_min", 0.0, INF, 0.0);
 
-	const int v_max
-		= (int) file_get_key(stdin, "v_max", as_double(v_min), INF, as_double(v_min));
+	const int v_max = (int) file_keyword(stdin, "v_max", 0.0, INF, 0.0);
 
-	const int v_step
-		= (int) file_get_key(stdin, "v_step", 1.0, INF, 1.0);
+	const int v_step = (int) file_keyword(stdin, "v_step", 1.0, INF, 1.0);
+
+	ASSERT(v_max >= v_min)
 
 /*
  *	Rotational quantum numbers, j:
- *
- *	NOTE: it is equivalent to all J values used in dbasis and cmatrix drivers.
  */
 
-	const int j_min
-		= (int) file_get_key(stdin, "j_min", 0.0, INF, 0.0);
+	const int j_min = (int) file_keyword(stdin, "j_min", 0.0, INF, 0.0);
 
-	const int j_max
-		= (int) file_get_key(stdin, "j_max", as_double(j_min), INF, as_double(j_min));
+	const int j_max = (int) file_keyword(stdin, "j_max", 0.0, INF, 0.0);
 
-	const int j_step
-		= (int) file_get_key(stdin, "j_step", 1.0, INF, 1.0);
+	const int j_step = (int) file_keyword(stdin, "j_step", 1.0, INF, 1.0);
+
+	ASSERT(j_max >= j_min)
 
 /*
  *	Vibrational grid:
- *
- *	NOTE: it is equivalent to the scattering grid, along R, used in cmatrix driver.
  */
 
-	const int grid_size
-		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 500.0);
+	int n_max = (int) file_keyword(stdin, "scatt_grid_size", 1.0, INF, 500.0);
 
-	const double R_min
-		= file_get_key(stdin, "R_min", 0.0, INF, 0.5);
+	double R_min = file_keyword(stdin, "R_min", 0.0, INF, 0.5);
 
-	const double R_max
-		= file_get_key(stdin, "R_max", R_min, INF, R_min + 100.0);
+	double R_max = file_keyword(stdin, "R_max", R_min, INF, R_min + 100.0);
 
-	const double grid_step
-		= (R_max - R_min)/as_double(grid_size);
-
-	const int n_min
-		= (int) file_get_key(stdin, "n_min", 0.0, as_double(grid_size), 0.0);
-
-	const int n_max
-		= (int) file_get_key(stdin, "n_max", as_double(n_min), as_double(grid_size), as_double(grid_size));
-
-	const double grid_start
-		= R_min + as_double(n_min)*grid_step;
-
-	const double grid_end
-		= R_min + as_double(n_max - 1)*grid_step;
-
-	ASSERT(grid_size >= v_max + 1)
+	const double R_step = (R_max - R_min)/as_double(n_max);
 
 /*
- *	Arrangement (1 == a, 2 == b, 3 == c) and atomic masses:
+ *	Redefine the vibrational grid if working on a smaller range of pre-computed
+ *	data:
  */
 
-	const char arrang
-		= 96 + (int) file_get_key(stdin, "arrang", 1.0, 3.0, 1.0);
+	const int n_min = (int) file_keyword(stdin, "n_min", 0.0, as_double(n_max), 0.0);
 
-	const enum mass_case m
-		= init_atomic_masses(stdin, arrang, 'a', 0);
+	n_max = (int) file_keyword(stdin, "n_max", as_double(n_min), as_double(n_max), as_double(n_max));
+
+	R_min = R_min + as_double(n_min)*R_step;
+
+	R_max = R_min + as_double(n_max - 1)*R_step;
+
+	ASSERT(n_max >= v_max + 1)
+
+/*
+ *	Arrangement (a = 1, b = 2, c = 3), atomic masses:
+ */
+
+	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
+
+	pes_init_mass(stdin, 'a');
+	pes_init_mass(stdin, 'b');
+	pes_init_mass(stdin, 'c');
+
+	const double mass = pes_mass_abc(arrang);
+
+	ASSERT(mass != 0.0)
 
 /*
  *	Resolve the triatomic eigenvalues for each j-case and sort results as scatt. channels:
  */
 
 	printf("#\n");
-	printf("# J = %d, J-parity = %d\n", J, J_parity);
+	printf("# J = %d, J-parity = %d, reduced mass = %f a.u., n = [%d, %d]\n", J, J_parity, mass, n_min, n_max);
 	printf("#   Ch.       v       j       l       p      Comp.      E (a.u.)       E (cm-1)        E (eV)   \n");
 	printf("# ----------------------------------------------------------------------------------------------\n");
 
@@ -248,8 +237,7 @@ int main(int argc, char *argv[])
 
 	for (int j = j_min; j <= j_max; j += j_step)
 	{
-		tensor *pot_energy
-			= allocate(grid_size, sizeof(tensor), true);
+		tensor *pot_energy = allocate(n_max, sizeof(tensor), true);
 
 		int n_counter = 0;
 		for (int n = n_min; n < n_max; ++n)
@@ -269,11 +257,10 @@ int main(int argc, char *argv[])
  *		eigenvectos is named max_state and it is equal ch_counter from dbasis driver.
  */
 
-		const int max_state
-			= matrix_row(pot_energy[0].value);
+		const int max_state = matrix_row(pot_energy[0].value);
 
 		matrix *eigenvec
-			= fgh_multich_matrix(max_state, n_counter, grid_step, pot_energy, mass(m));
+			= fgh_multich_matrix(max_state, n_counter, R_step, pot_energy, mass);
 
 		for (int n = 0; n < n_counter; ++n)
 		{
@@ -282,8 +269,7 @@ int main(int argc, char *argv[])
 
 		free(pot_energy);
 
-		double *eigenval
-			= matrix_symm_eigen(eigenvec, 'v');
+		double *eigenval = matrix_symm_eigen(eigenvec, 'v');
 
 /*
  *		Step 2: loop over the vibrational states v of the triatom, solutions of
@@ -296,7 +282,7 @@ int main(int argc, char *argv[])
 
 			double *wavef = matrix_raw_col(eigenvec, v, false);
 
-			norm(max_state, n_counter, grid_step, (n_counter >= 2000), wavef);
+			norm(max_state, n_counter, R_step, (n_counter >= 2000), wavef);
 
 /*
  *			Step 3: loop over all partial waves l of the atom around the triatom
@@ -324,9 +310,9 @@ int main(int argc, char *argv[])
 					fwrite(&l, sizeof(int), 1, output);
 					fwrite(&i, sizeof(int), 1, output);
 
-					fwrite(&grid_start, sizeof(double), 1, output);
-					fwrite(&grid_end, sizeof(double), 1, output);
-					fwrite(&grid_step, sizeof(double), 1, output);
+					fwrite(&R_min, sizeof(double), 1, output);
+					fwrite(&R_max, sizeof(double), 1, output);
+					fwrite(&R_step, sizeof(double), 1, output);
 
 					fwrite(&eigenval[v], sizeof(double), 1, output);
 
@@ -344,9 +330,6 @@ int main(int argc, char *argv[])
 		matrix_free(eigenvec);
 		free(eigenval);
 	}
-
-	printf("\n#\n# A total of %d basis functions are computed with %d grid "
-	       "points in R = [%f, %f)\n", ch_counter, n_max - n_min, grid_start, grid_end);
 
 	return EXIT_SUCCESS;
 }
