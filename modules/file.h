@@ -13,7 +13,7 @@
 
 	void file_init_stdout(const char filename[], const bool to_append);
 
-	char *file_find_string(FILE *input, const char pattern[]);
+	char *file_find(FILE *input, const char pattern[]);
 
 	double file_get_key(FILE *input, const char key[], const double min,
 	                    const double max, const double default_value);

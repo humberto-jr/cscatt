@@ -85,18 +85,29 @@ void driver(const char arrang, struct tasks *job)
  Function multipole_file(): opens the file for a given arrangement and grid
  index. Where, mode is the file access mode of fopen() from the C library.
 
- NOTE: mode = "wb" for write + binary format and "rb" for read + binary format.
+ NOTE: mode = "wb" for write + binary format and "rb" for read + binary format,
+ extension used is .bin, otherwise .dat is used assuming text mode ("w" or "r").
 
 ******************************************************************************/
 
 FILE *multipole_file(const char arrang,
                      const int grid_index, const char mode[])
 {
-	char filename[MAX_LINE_LENGTH];
+	char filename[MAX_LINE_LENGTH], ext[4];
 
-	sprintf(filename, "multipole_arrang=%c_n=%d.bin", arrang, grid_index);
+	if (strlen(mode) > 1 && mode[1] == 'b')
+		sprintf(ext, "%s", "bin");
+	else
+		sprintf(ext, "%s", "dat");
 
-	return fopen(filename, mode);
+	sprintf(filename, "multipole_arrang=%c_n=%d.%s", arrang, grid_index, ext);
+
+	FILE *stream = fopen(filename, mode);
+
+	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
+	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
+
+	return stream;
 }
 
 /******************************************************************************
@@ -180,49 +191,39 @@ int main(int argc, char *argv[])
  *	Vibrational grid:
  */
 
-	const int rovib_grid_size
-		= (int) file_keyword(stdin, "rovib_grid_size", 1.0, INF, 500.0);
+	const int rovib_grid_size = (int) file_keyword(stdin, "rovib_grid_size", 1.0, INF, 500.0);
 
-	const double r_min
-		= file_keyword(stdin, "r_min", 0.0, INF, 0.5);
+	const double r_min = file_keyword(stdin, "r_min", 0.0, INF, 0.5);
 
-	const double r_max
-		= file_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
+	const double r_max = file_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
 
-	const double r_step
-		= (r_max - r_min)/as_double(rovib_grid_size);
+	const double r_step = (r_max - r_min)/as_double(rovib_grid_size);
 
 /*
  *	Scattering grid:
  */
 
-	const int scatt_grid_size
-		= (int) file_keyword(stdin, "scatt_grid_size", 1.0, INF, 500.0);
+	const int scatt_grid_size = (int) file_keyword(stdin, "scatt_grid_size", 1.0, INF, 500.0);
 
-	const double R_min
-		= file_keyword(stdin, "R_min", 0.0, INF, 0.5);
+	const double R_min = file_keyword(stdin, "R_min", 0.0, INF, 0.5);
 
-	const double R_max
-		= file_keyword(stdin, "R_max", R_min, INF, R_min + 30.0);
+	const double R_max = file_keyword(stdin, "R_max", R_min, INF, R_min + 30.0);
 
-	const double R_step
-		= (R_max - R_min)/as_double(scatt_grid_size);
+	const double R_step = (R_max - R_min)/as_double(scatt_grid_size);
 
 /*
  *	Multipoles:
  */
 
-	const int lambda_min
-		= (int) file_keyword(stdin, "lambda_min", 0.0, INF, 0.0);
+	const int lambda_min = (int) file_keyword(stdin, "lambda_min", 0.0, INF, 0.0);
 
-	const int lambda_max
-		= (int) file_keyword(stdin, "lambda_max", as_double(lambda_min), INF, 20.0);
+	const int lambda_max = (int) file_keyword(stdin, "lambda_max", 0.0, INF, 20.0);
 
-	const int lambda_step
-		= (int) file_keyword(stdin, "lambda_step", 1.0, INF, 2.0);
+	const int lambda_step = (int) file_keyword(stdin, "lambda_step", 1.0, INF, 2.0);
 
-	const int lambda_grid_size
-		= (lambda_max - lambda_min)/lambda_step + 1;
+	const int lambda_grid_size = (lambda_max - lambda_min)/lambda_step + 1;
+
+	ASSERT(lambda_max >= lambda_min)
 
 /*
  *	OpenMP:

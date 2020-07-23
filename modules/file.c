@@ -102,15 +102,15 @@ void file_init_stdout(const char filename[], const bool to_append)
 
 /******************************************************************************
 
- Function file_find_string(): scans a given input file searching for the first
- occurrence of a given pattern. If found it shall return the whole line or an
- empty string otherwise.
+ Function file_find(): scans a given input file searching for the first
+ occurrence of a given pattern. It shall return the whole line, if found, or
+ an empty string otherwise.
 
  NOTE: Lines starting by '#' are ignored.
 
 ******************************************************************************/
 
-char *file_find_string(FILE *input, const char pattern[])
+char *file_find(FILE *input, const char pattern[])
 {
 	char *line = malloc(sizeof(char)*MAX_LINE_LENGTH);
 
@@ -143,7 +143,7 @@ double file_get_key(FILE *input, const char key[],
 {
 	ASSERT(max > min)
 
-	char *line = file_find_string(input, key);
+	char *line = file_find(input, key);
 	char *token = strtok(line, "=");
 
 	while (token != NULL)
@@ -182,7 +182,7 @@ double file_keyword(FILE *input, const char key[],
 {
 	ASSERT(max > min)
 
-	char *line = file_find_string(input, key);
+	char *line = file_find(input, key);
 	char *token = strtok(line, "=");
 
 	while (token != NULL)

@@ -293,7 +293,7 @@ pes_print: pes_print.c mass_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/fil
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out pes.o file.o nist.o matrix.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-b_print: b_print.c basis_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
+b_print: b_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo

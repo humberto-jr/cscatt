@@ -6,18 +6,29 @@
  Function multipole_file(): opens the file for a given arrangement and grid
  index. Where, mode is the file access mode of fopen() from the C library.
 
- NOTE: mode = "wb" for write + binary format and "rb" for read + binary format.
+ NOTE: mode = "wb" for write + binary format and "rb" for read + binary format,
+ extension used is .bin, otherwise .dat is used assuming text mode ("w" or "r").
 
 ******************************************************************************/
 
 FILE *multipole_file(const char arrang,
                      const int grid_index, const char mode[])
 {
-	char filename[MAX_LINE_LENGTH];
+	char filename[MAX_LINE_LENGTH], ext[4];
 
-	sprintf(filename, "multipole_arrang=%c_n=%d.bin", arrang, grid_index);
+	if (strlen(mode) > 1 && mode[1] == 'b')
+		sprintf(ext, "%s", "bin");
+	else
+		sprintf(ext, "%s", "dat");
 
-	return fopen(filename, mode);
+	sprintf(filename, "multipole_arrang=%c_n=%d.%s", arrang, grid_index, ext);
+
+	FILE *stream = fopen(filename, mode);
+
+	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
+	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
+
+	return stream;
 }
 
 /******************************************************************************
