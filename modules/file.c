@@ -284,7 +284,7 @@ bool file_end(FILE *stream)
 
 ******************************************************************************/
 
-void file_write(void *data, const int data_size, const int n, FILE *stream)
+void file_write(const void *data, const int data_size, const int n, FILE *stream)
 {
 	ASSERT(n > 0)
 	ASSERT(data_size > 0)

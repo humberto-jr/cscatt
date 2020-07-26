@@ -209,7 +209,7 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: matrix nist johnson pes dvr file miller math mpi_lib
+modules: utils matrix nist johnson pes dvr file miller math mpi_lib
 drivers: d_basis cmatrix test_suit about pes_print b_print cprint m_basis a+d_multipole
 
 #
@@ -273,9 +273,9 @@ mpi_lib: $(MODULES_DIR)/mpi_lib.c $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/c_lib.
 # Rules for drivers:
 #
 
-d_basis: d_basis.c basis_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
+d_basis: d_basis.c basis_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/pes.h $(PES_OBJECT) math.o nist.o
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o math.o pes.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o math.o pes.o nist.o utils.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 cmatrix: cmatrix.c mpi_config.h basis_config.h coupl_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/miller.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h
@@ -327,6 +327,12 @@ m_print: m_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
+
+utils: utils.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -c
+	@echo
+
 #
 # Rules to build/install of external libraries (using default locations):
 #

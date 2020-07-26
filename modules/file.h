@@ -27,7 +27,7 @@
 
 	bool file_end(FILE *stream);
 
-	void file_write(void *data, const int data_size, const int n, FILE *stream);
+	void file_write(const void *data, const int data_size, const int n, FILE *stream);
 
 	void file_read(void *data, const int data_size,
 	               const int n, FILE *stream, const int offset);

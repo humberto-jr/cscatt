@@ -3,7 +3,7 @@
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-#include "basis_config.h"
+#include "utils.h"
 
 #define FORMAT "# %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
 
@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
  *	using the Fourier grid Hamiltonian discrete variable representation (FGH-DVR) method.
  */
 
-	int max_ch = 0;
+	int ch_counter = 0;
 	const int i = 0;
 
 	for (int j = j_min; j <= j_max; j += j_step)
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 			{
 				if (parity(j + l) != J_parity && J_parity != 0) continue;
 
-				printf(FORMAT, max_ch, v, j, l, parity(j + l),
+				printf(FORMAT, ch_counter, v, j, l, parity(j + l),
 				       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
 
 /*
@@ -247,24 +247,24 @@ int main(int argc, char *argv[])
  *				channels.
  */
 
-				FILE *output = open_basis_file("wb", arrang, max_ch, J);
+				FILE *output = basis_file(arrang, ch_counter, J, "wb");
 
-				fwrite(&v, sizeof(int), 1, output);
-				fwrite(&j, sizeof(int), 1, output);
-				fwrite(&l, sizeof(int), 1, output);
-				fwrite(&i, sizeof(int), 1, output);
+				file_write(&v, sizeof(int), 1, output);
+				file_write(&j, sizeof(int), 1, output);
+				file_write(&l, sizeof(int), 1, output);
+				file_write(&i, sizeof(int), 1, output);
 
-				fwrite(&r_min, sizeof(double), 1, output);
-				fwrite(&r_max, sizeof(double), 1, output);
-				fwrite(&r_step, sizeof(double), 1, output);
+				file_write(&r_min, sizeof(double), 1, output);
+				file_write(&r_max, sizeof(double), 1, output);
+				file_write(&r_step, sizeof(double), 1, output);
 
-				fwrite(&eigenval[v], sizeof(double), 1, output);
+				file_write(&eigenval[v], sizeof(double), 1, output);
 
-				fwrite(&n_max, sizeof(int), 1, output);
-				fwrite(wavef, sizeof(double), n_max, output);
+				file_write(&n_max, sizeof(int), 1, output);
+				file_write(wavef, sizeof(double), n_max, output);
 
 				fclose(output);
-				++max_ch;
+				++ch_counter;
 			}
 
 			free(wavef);

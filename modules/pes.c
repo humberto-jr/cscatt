@@ -66,7 +66,7 @@ static double pes_read_mass(FILE *input, const char key[])
 {
 	ASSERT(input != NULL)
 
-	char *line = file_find_string(input, key);
+	char *line = file_find(input, key);
 	char *token = strtok(line, "=");
 
 	while (token != NULL)
