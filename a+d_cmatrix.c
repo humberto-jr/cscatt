@@ -6,7 +6,7 @@
 
 #include "utils.h"
 
-#define FORMAT "  %3d       %3d       %3d    %06f    %06f       % -8e         %f\n"
+#define FORMAT "  %3d       %3d       %06f    %f\n"
 
 struct tasks
 {
@@ -96,21 +96,38 @@ double percival_seaton(const int j1, const int j2,
 
 /******************************************************************************
 
- Function driver(): performs the calculation of a single task using one thread
- from one process.
+ Function centr_term(): returns the centrifugal potential term at x for a given
+ angular momentum l and mass.
+
+******************************************************************************/
+
+inline static double centr_term(const int l, const double mass, const double x)
+{
+	return as_double(l*(l + 1))/(2.0*mass*x*x);
+}
+
+/******************************************************************************
+
+ Function simpson(): performs a 3/8-Simpson quadrature rule in the product of 
+ wavefunctions |a>, |b> and the respective interaction potential V, <a|V|b>.
 
 ******************************************************************************/
 
 double simpson(const int grid_size,
                const double grid_step,
                const double potential[],
-               const double wavef_b[],
-               const double wavef_a[])
+               const double wavef_a[],
+               const double wavef_b[])
 {
-	const int n_max = ((grid_size - 2)%3 == 0? grid_size : grid_size - 1); // TODO
+	int n_max = 0;
+
+	if ((grid_size - 1)%3 != 0 && (grid_size - 2)%3 == 0) n_max = grid_size - 1;
+	if ((grid_size - 1)%3 != 0 && (grid_size - 2)%3 != 0) n_max = grid_size - 2;
+
+	ASSERT(n_max > 0)
 
 	double sum = potential[0]*wavef_a[0]*wavef_b[0]
-	           + potential[n_max - 1]*wavef_a[n_max - 1]*wavef_b[n_max - 1];
+	           + potential[n_max]*wavef_a[n_max]*wavef_b[n_max];
 
 	for (int n = 1; n < n_max; n += 3)
 	{
@@ -126,29 +143,27 @@ double simpson(const int grid_size,
 
 /******************************************************************************
 
- Function driver(): performs the calculation of a single task using one thread
- from one process.
+ Function ab_integral(): performs the integral on the product of wavefunctions
+ |a>, |b> and the respective interaction potential V, i.e. <a|V|b>, for all
+ lambda values upon which the potential depends.
 
 ******************************************************************************/
 
 double ab_integral(const int J,
-                   const multipole_set *m, const basis *a, const basis *b)
+                   const multipole_set *potential, const basis *a, const basis *b)
 {
-	ASSERT(m != NULL)
-	ASSERT(a != NULL)
-	ASSERT(b != NULL)
-
 	double result = 0.0;
 	for (int lambda = 0; lambda <= m->lambda_max; ++lambda)
 	{
-		if (m->set[lambda].value == NULL) continue;
+		if (potential->set[lambda].value == NULL) continue;
 
 		const double f = percival_seaton(a->j, b->j, a->l, b->l, lambda, J);
 
 		if (f == 0.0) continue;
 
-		const double v = simpson(m->grid_size, m->r_step,
-		                         m->set[lambda].value, a->eigenvec, b->eigenvec);
+		const double v = simpson(potential->grid_size, potential->r_step,
+		                         potential->set[lambda].value, a->eigenvec, b->eigenvec);
+
 		result += v*f;
 	}
 
@@ -157,35 +172,20 @@ double ab_integral(const int J,
 
 /******************************************************************************
 
- Function driver(): performs the calculation of a single task using one thread
- from one process.
+ Function solve(): compute one task corresponding to one element of the coupling
 
 ******************************************************************************/
 
-void solve(const char arrang, const int J,
-           const multipole_set *m, const struct tasks *t, matrix *c)
+void solve(const char arrang,
+           const int J, const multipole_set *m, const tasks *t, matrix *c)
 {
-	const double start_time = wall_time();
-
-	double result = 0.0;
-	for (int lambda = 0; lambda <= m->lambda_max; ++lambda)
-	{
-		if (m->set[lambda].value == NULL) continue;
-
-		const double f = percival_seaton(a->j, b->j, a->l, b->l, lambda, J);
-
-		if (f == 0.0) continue;
-
-		result += f*integral(J, arrang, lambda_max, lambda_step,
-		                         t->basis_a, t->basis_b, m->R);
-	}
-
-	const double end_time = wall_time();
+	double result = ab_integral(J, m, t->basis_a, t->basis_b);
 
 	if (t->a == t->b)
 	{
-		result += t->basis_a->eigenval + centr_term(t->basis_a->l, mass, m->R);
+		const double mass = pes_mass_abc(arrang); 
 
+		result += t->basis_a->eigenval + centr_term(t->basis_a->l, mass, m->R);
 		matrix_diag_set(c, t->a, result);
 	}
 	else
@@ -215,13 +215,25 @@ void driver(const char arrang,
 
 	matrix *c = matrix_alloc(max_channel, max_channel, true);
 
+	const double start_time = wall_time();
+
 	#pragma omp parallel for default(none) shared(list, m, c) schedule(static) if(use_omp)
 	for (int n = 0; n < max_task; ++n)
 	{
 		solve(arrang, J, &m, &list[n], c);
 	}
 
+	const double end_time = wall_time();
+
+	matrix_save(c, filename);
+	matrix_free(c);
+
 	multipole_free(&m);
+
+	#pragma omp critical
+	{
+		printf(FORMAT, mpi_rank(), thread_id(), m->R, end_time - start_time);
+	}
 }
 
 /******************************************************************************
@@ -385,15 +397,15 @@ int main(int argc, char *argv[])
 
 	if (mpi_rank() == 0)
 	{
-		printf("# MPI CPUs = %d, OpenMP threads = %d, num. of tasks = %d\n", mpi_comm_size(), max_threads(), max_task);
-		printf("# CPU    thread    lambda    r (a.u.)    R (a.u.)    multipole (a.u.)    wall time (s)\n");
-		printf("# ------------------------------------------------------------------------------------\n");
+		printf("# MPI CPUs = %d, OpenMP threads = %d\n", mpi_comm_size(), max_threads());
+		printf("# CPU    thread    R (a.u.)    wall time (s)\n");
+		printf("# ------------------------------------------\n");
 	}
 
 	for (int n = mpi_first_task(); n <= mpi_last_task(); ++n)
 	{
 		extra_step:
-		driver(arrang, n, J, max_task, list);
+		driver(arrang, n, J, max_task, list, use_omp);
 
 		if (n == mpi_last_task() && mpi_extra_task() > 0)
 		{
