@@ -52,4 +52,8 @@
 	void multipole_read(const char arrang, const int n, multipole_set *m);
 
 	void multipole_free(multipole_set *m);
+
+	int coupling_count(const char arrang, const int J);
+
+	matrix *coupling_read(const char arrang, const int n, const int J);
 #endif

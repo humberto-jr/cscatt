@@ -1,4 +1,5 @@
 #include "modules/file.h"
+#include "modules/matrix.h"
 #include "modules/globals.h"
 
 #include "utils.h"
@@ -9,6 +10,10 @@
 
 #if !defined(MULTIPOLE_FORMAT)
 	#define MULTIPOLE_FORMAT "multipole_arrang=%c_n=%d.%s"
+#endif
+
+#if !defined(COUPLING_MATRIX_FORMAT)
+	#define COUPLING_MATRIX_FORMAT "cmatrix_arrang=%c_n=%d_J=%d.bin"
 #endif
 
 /******************************************************************************
@@ -58,8 +63,8 @@ FILE *basis_file(const char arrang, const int n, const int J, const char mode[])
 
 	FILE *stream = fopen(filename, mode);
 
-	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
-	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
+//	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
+//	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
 
 	return stream;
 }
@@ -96,7 +101,7 @@ void basis_read(const char arrang, const int n, const int J, basis *b)
 
 	b->eigenvec = allocate(b->grid_size, sizeof(double), false);
 
-	file_read(&b->eigenvec, sizeof(double), b->grid_size, input, 0);
+	file_read(b->eigenvec, sizeof(double), b->grid_size, input, 0);
 
 	fclose(input);
 }
@@ -124,8 +129,8 @@ FILE *multipole_file(const char arrang, const int grid_index, const char mode[])
 
 	FILE *stream = fopen(filename, mode);
 
-	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
-	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
+//	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
+//	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
 
 	return stream;
 }
@@ -179,4 +184,42 @@ void multipole_free(multipole_set *m)
 	}
 
 	free(m->set);
+}
+
+/******************************************************************************
+
+ Function coupling_count(): counts how many basis functions are available in the
+ disk for a given arrangement and total angular momentum, J.
+
+******************************************************************************/
+
+int coupling_count(const char arrang, const int J)
+{
+	char filename[MAX_LINE_LENGTH];
+
+	int counter = 0;
+	sprintf(filename, COUPLING_MATRIX_FORMAT, arrang, counter, J);
+
+	while (file_exist(filename))
+	{
+		++counter;
+		sprintf(filename, COUPLING_MATRIX_FORMAT, arrang, counter, J);
+	}
+
+	return counter;
+}
+
+/******************************************************************************
+
+ Function coupling_read(): load from the disk the n-th coupling matrix for a given
+ arrangement and J.
+
+******************************************************************************/
+
+matrix *coupling_read(const char arrang, const int n, const int J)
+{
+	char filename[MAX_LINE_LENGTH];
+	sprintf(filename, COUPLING_MATRIX_FORMAT, arrang, n, J);
+
+	return matrix_load(filename);
 }

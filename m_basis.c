@@ -3,8 +3,7 @@
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-#include "coupl_config.h"
-#include "basis_config.h"
+#include "utils.h"
 
 #define FORMAT "# %5d   %5d   %5d   %5d   %+5d   %5d     % -8e  % -8e  % -8e\n"
 
@@ -242,7 +241,7 @@ int main(int argc, char *argv[])
 		int n_counter = 0;
 		for (int n = n_min; n < n_max; ++n)
 		{
-			pot_energy[n_counter].value = load_coupl(arrang, n, j);
+			pot_energy[n_counter].value = coupling_read(arrang, n, j);
 
 			if (n_counter > 0)
 			{
@@ -303,21 +302,21 @@ int main(int argc, char *argv[])
  *					the counter of atom-triatom channels.
  */
 
-					FILE *output = open_basis_file("wb", arrang, ch_counter, J);
+					FILE *output = basis_file(arrang, ch_counter, J, "wb");
 
-					fwrite(&v, sizeof(int), 1, output);
-					fwrite(&j, sizeof(int), 1, output);
-					fwrite(&l, sizeof(int), 1, output);
-					fwrite(&i, sizeof(int), 1, output);
+					file_write(&v, sizeof(int), 1, output);
+					file_write(&j, sizeof(int), 1, output);
+					file_write(&l, sizeof(int), 1, output);
+					file_write(&i, sizeof(int), 1, output);
 
-					fwrite(&R_min, sizeof(double), 1, output);
-					fwrite(&R_max, sizeof(double), 1, output);
-					fwrite(&R_step, sizeof(double), 1, output);
+					file_write(&R_min, sizeof(double), 1, output);
+					file_write(&R_max, sizeof(double), 1, output);
+					file_write(&R_step, sizeof(double), 1, output);
 
-					fwrite(&eigenval[v], sizeof(double), 1, output);
+					file_write(&eigenval[v], sizeof(double), 1, output);
 
-					fwrite(&n_counter, sizeof(int), 1, output);
-					fwrite(wavef + i*n_counter, sizeof(double), n_counter, output);
+					file_write(&n_counter, sizeof(int), 1, output);
+					file_write(wavef + i*n_counter, sizeof(double), n_counter, output);
 
 					fclose(output);
 					++ch_counter;
