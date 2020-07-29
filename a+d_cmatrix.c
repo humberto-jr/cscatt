@@ -1,12 +1,13 @@
 #include "modules/pes.h"
 #include "modules/file.h"
+#include "modules/math.h"
 #include "modules/matrix.h"
 #include "modules/mpi_lib.h"
 #include "modules/globals.h"
 
 #include "utils.h"
 
-#define FORMAT "  %3d       %3d       %06f    %f\n"
+#define FORMAT "  %3d       %3d       %5d       %5d       %06f    %f\n"
 
 struct tasks
 {
@@ -15,52 +16,6 @@ struct tasks
 };
 
 typedef struct tasks tasks;
-
-/******************************************************************************
-
- Function send_results(): send all results from a given CPU to that same
- interval in the list of tasks of CPU 0.
-
-******************************************************************************/
-
-void send_results(const int max_task, struct tasks *list)
-{
-	if (mpi_comm_size() == 1) return;
-
-	ASSERT(max_task > 0)
-	ASSERT(list != NULL)
-
-	mpi_barrier();
-
-	if (mpi_rank() == 0)
-	{
-		for (int rank = 1; rank < mpi_comm_size(); ++rank)
-		{
-			do
-			{
-				int n = max_task - 1;
-				mpi_receive(rank, 1, type_int, &n);
-				mpi_receive(rank, 1, type_double, &list[n].result);
-			}
-			while (mpi_check(rank));
-		}
-	}
-	else
-	{
-		for (int n = mpi_first_task(); n <= mpi_last_task(); ++n)
-		{
-			extra_step:
-			mpi_send(0, 1, type_int, &n);
-			mpi_send(0, 1, type_double, &list[n].result);
-
-			if (n == mpi_last_task() && mpi_extra_task() > 0)
-			{
-				n = mpi_extra_task();
-				goto extra_step;
-			}
-		}
-	}
-}
 
 /******************************************************************************
 
@@ -81,8 +36,11 @@ void send_results(const int max_task, struct tasks *list)
 
 ******************************************************************************/
 
-double percival_seaton(const int j1, const int j2,
-                       const int l1, const int l2, const int lambda, const int J)
+double percival_seaton(const int j1,
+                       const int j2,
+                       const int l1,
+                       const int l2,
+                       const int lambda, const int J)
 {
 	double result = pow(-1.0, j1 + j2 - J);
 
@@ -108,7 +66,7 @@ inline static double centr_term(const int l, const double mass, const double x)
 
 /******************************************************************************
 
- Function simpson(): performs a 3/8-Simpson quadrature rule in the product of 
+ Function simpson(): performs a 3/8-Simpson quadrature rule in the product of
  wavefunctions |a>, |b> and the respective interaction potential V, <a|V|b>.
 
 ******************************************************************************/
@@ -123,6 +81,7 @@ double simpson(const int grid_size,
 
 	if ((grid_size - 1)%3 != 0 && (grid_size - 2)%3 == 0) n_max = grid_size - 1;
 	if ((grid_size - 1)%3 != 0 && (grid_size - 2)%3 != 0) n_max = grid_size - 2;
+	if ((grid_size - 1)%3 == 0) n_max = grid_size - 3;
 
 	ASSERT(n_max > 0)
 
@@ -150,20 +109,25 @@ double simpson(const int grid_size,
 ******************************************************************************/
 
 double ab_integral(const int J,
-                   const multipole_set *potential, const basis *a, const basis *b)
+                   const multipole_set *m, const basis *a, const basis *b)
 {
+	ASSERT(a->r_step == b->r_step)
+	ASSERT(b->r_step == m->r_step)
+
+	ASSERT(a->grid_size == b->grid_size)
+	ASSERT(b->grid_size == m->grid_size)
+
 	double result = 0.0;
 	for (int lambda = 0; lambda <= m->lambda_max; ++lambda)
 	{
-		if (potential->set[lambda].value == NULL) continue;
+		if (m->set[lambda].value == NULL) continue;
 
 		const double f = percival_seaton(a->j, b->j, a->l, b->l, lambda, J);
 
 		if (f == 0.0) continue;
 
-		const double v = simpson(potential->grid_size, potential->r_step,
-		                         potential->set[lambda].value, a->eigenvec, b->eigenvec);
-
+		const double v = simpson(m->grid_size, m->r_step,
+		                         m->set[lambda].value, a->eigenvec, b->eigenvec);
 		result += v*f;
 	}
 
@@ -172,123 +136,31 @@ double ab_integral(const int J,
 
 /******************************************************************************
 
- Function solve(): compute one task corresponding to one element of the coupling
+ Function driver(): compute one task corresponding to one element of the coupling
 
 ******************************************************************************/
 
-void solve(const char arrang,
-           const int J, const multipole_set *m, const tasks *t, matrix *c)
+void driver(const int J, const double mass,
+            const multipole_set *m_list, const tasks *t, matrix *c)
 {
-	double result = ab_integral(J, m, t->basis_a, t->basis_b);
+	const double start_time = wall_time();
+
+	double result = ab_integral(J, m_list, t->basis_a, t->basis_b);
+
+	const double end_time = wall_time();
 
 	if (t->a == t->b)
 	{
-		const double mass = pes_mass_abc(arrang); 
-
-		result += t->basis_a->eigenval + centr_term(t->basis_a->l, mass, m->R);
+		result += t->basis_a->eigenval + centr_term(t->basis_a->l, mass, m_list->R);
 		matrix_diag_set(c, t->a, result);
 	}
 	else
 	{
 		matrix_symm_set(c, t->a, t->b, result);
 	}
-}
-
-/******************************************************************************
-
- Function driver(): performs the calculation of a single task using one thread
- from one process.
-
-******************************************************************************/
-
-void driver(const char arrang,
-            const int grid_index,
-            const int J,
-            const int max_channel,
-            const tasks list,
-            const bool use_omp)
-{
-	multipole_set m;
-	multipole_read(arrang, grid_index, &m);
-
-	const int max_task = max_channel*(max_channel + 1)/2;
-
-	matrix *c = matrix_alloc(max_channel, max_channel, true);
-
-	const double start_time = wall_time();
-
-	#pragma omp parallel for default(none) shared(list, m, c) schedule(static) if(use_omp)
-	for (int n = 0; n < max_task; ++n)
-	{
-		solve(arrang, J, &m, &list[n], c);
-	}
-
-	const double end_time = wall_time();
-
-	matrix_save(c, filename);
-	matrix_free(c);
-
-	multipole_free(&m);
 
 	#pragma omp critical
-	{
-		printf(FORMAT, mpi_rank(), thread_id(), m->R, end_time - start_time);
-	}
-}
-
-/******************************************************************************
-
- Function sort_results(): writes the respective multipoles as function of r per
- lambda using binary format and filename labeled by the grid index, n, of R and
- arrangement.
-
-******************************************************************************/
-
-void sort_results(const char arrang,
-                  const int max_task,
-                  const int lambda_max,
-                  const int grid_size,
-                  const double r_min,
-                  const double r_max,
-                  const double r_step,
-                  const struct tasks list[])
-{
-	FILE *output = NULL;
-	int last_index = -1, last_lambda = -1;
-
-	for (int n = 0; n < max_task; ++n)
-	{
-		if (list[n].grid_index != last_index)
-		{
-			if (output != NULL) fclose(output);
-			output = multipole_file(arrang, list[n].grid_index, "wb");
-
-			ASSERT(output != NULL)
-
-			fwrite(&list[n].R, sizeof(double), 1, output);
-
-			fwrite(&r_min, sizeof(double), 1, output);
-			fwrite(&r_max, sizeof(double), 1, output);
-			fwrite(&r_step, sizeof(double), 1, output);
-
-			fwrite(&lambda_max, sizeof(int), 1, output);
-			fwrite(&grid_size, sizeof(int), 1, output);
-
-			last_lambda = -1;
-		}
-
-		if (list[n].lambda != last_lambda)
-		{
-			fwrite(&list[n].lambda, sizeof(int), 1, output);
-		}
-
-		fwrite(&list[n].result, sizeof(double), 1, output);
-
-		last_index = list[n].grid_index;
-		last_lambda = list[n].lambda;
-	}
-
-	if (output != NULL) fclose(output);
+	printf(FORMAT, mpi_rank(), thread_id(), t->a, t->b, m_list->R, end_time - start_time);
 }
 
 /******************************************************************************
@@ -311,6 +183,8 @@ int main(int argc, char *argv[])
 	pes_init_mass(stdin, 'b');
 	pes_init_mass(stdin, 'c');
 
+	const double mass = pes_mass_abc(arrang);
+
 /*
  *	Total angular momentum, J:
  */
@@ -318,28 +192,10 @@ int main(int argc, char *argv[])
 	const int J = (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
 
 /*
- *	Vibrational grid:
- */
-
-	const int rovib_grid_size = (int) file_keyword(stdin, "rovib_grid_size", 1.0, INF, 500.0);
-
-	const double r_min = file_keyword(stdin, "r_min", 0.0, INF, 0.5);
-
-	const double r_max = file_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
-
-	const double r_step = (r_max - r_min)/as_double(rovib_grid_size);
-
-/*
  *	Scattering grid:
  */
 
-	const int scatt_grid_size = (int) file_keyword(stdin, "scatt_grid_size", 1.0, INF, 500.0);
-
-	const double R_min = file_keyword(stdin, "R_min", 0.0, INF, 0.5);
-
-	const double R_max = file_keyword(stdin, "R_max", R_min, INF, R_min + 30.0);
-
-	const double R_step = (R_max - R_min)/as_double(scatt_grid_size);
+	const int grid_size = multipole_count(arrang);
 
 /*
  *	OpenMP:
@@ -386,10 +242,10 @@ int main(int argc, char *argv[])
 
 /*
  *	Whereas each OpenMP thread handle the integration of each matrix element, MPI
- *	processes are used to handle each scattering grid point from R_min to R_max. 
+ *	processes are used to handle each scattering grid point from R_min to R_max.
  */
 
-	mpi_set_tasks(scatt_grid_size);
+	mpi_set_tasks(grid_size);
 
 /*
  *	Resolve all tasks:
@@ -397,15 +253,34 @@ int main(int argc, char *argv[])
 
 	if (mpi_rank() == 0)
 	{
-		printf("# MPI CPUs = %d, OpenMP threads = %d\n", mpi_comm_size(), max_threads());
-		printf("# CPU    thread    R (a.u.)    wall time (s)\n");
-		printf("# ------------------------------------------\n");
+		printf("# MPI CPUs = %d", mpi_comm_size());
+		printf(", OMP threads = %d", max_threads());
+		printf(", channels = %d", max_channel);
+		printf(", grid points = %d\n", grid_size);
+
+		printf("# CPU    thread           n           n'      R (a.u.)    wall time (s)\n");
+		printf("# ---------------------------------------------------------------------\n");
 	}
 
 	for (int n = mpi_first_task(); n <= mpi_last_task(); ++n)
 	{
-		extra_step:
-		driver(arrang, n, J, max_task, list, use_omp);
+		extra_step: /* This is an empty statement */;
+
+		multipole_set m_list;
+		multipole_read(arrang, n, &m_list);
+
+		matrix *c = matrix_alloc(max_channel, max_channel, true);
+
+		#pragma omp parallel for default(none) shared(list, m_list, c) schedule(static) if(use_omp)
+		for (int n = 0; n < max_task; ++n)
+		{
+			driver(J, mass, &m_list, &list[n], c);
+		}
+
+		coupling_write(arrang, n, J, c);
+
+		matrix_free(c);
+		multipole_free(&m_list);
 
 		if (n == mpi_last_task() && mpi_extra_task() > 0)
 		{

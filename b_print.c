@@ -1,8 +1,6 @@
 #include "modules/file.h"
 #include "modules/globals.h"
 
-//#include "basis_config.h"
-
 /******************************************************************************
 
  Function basis_file(): opens the file for the n-th channel, arrangement and

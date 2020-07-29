@@ -221,9 +221,8 @@ int main(int argc, char *argv[])
  *	Resolve the triatomic eigenvalues for each j-case and sort results as scatt. channels:
  */
 
-	printf("#\n");
 	printf("# J = %d, J-parity = %d, reduced mass = %f a.u., n = [%d, %d]\n", J, J_parity, mass, n_min, n_max);
-	printf("#   Ch.       v       j       l       p      Comp.      E (a.u.)       E (cm-1)        E (eV)   \n");
+	printf("#    Ch.      v       j       l       p    Comp.       E (a.u.)       E (cm-1)         E (eV)   \n");
 	printf("# ----------------------------------------------------------------------------------------------\n");
 
 /*
@@ -277,8 +276,6 @@ int main(int argc, char *argv[])
 
 		for (int v = v_min; v <= v_max; v += v_step)
 		{
-			if (eigenval[v] >= 0.0) continue;
-
 			double *wavef = matrix_raw_col(eigenvec, v, false);
 
 			norm(max_state, n_counter, R_step, (n_counter >= 2000), wavef);

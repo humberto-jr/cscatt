@@ -46,7 +46,7 @@ int basis_count(const char arrang, const int J)
  from the C library.
 
  NOTE: mode = "wb" for write + binary format and "rb" for read + binary format,
- extension used is .bin, otherwise .dat is used assuming text mode ("w" or "r").
+ extension used is .bin otherwise .dat is used assuming text mode ("w" or "r").
 
 ******************************************************************************/
 
@@ -63,6 +63,8 @@ FILE *basis_file(const char arrang, const int n, const int J, const char mode[])
 
 	FILE *stream = fopen(filename, mode);
 
+	ASSERT(stream != NULL)
+
 //	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
 //	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
 
@@ -71,7 +73,8 @@ FILE *basis_file(const char arrang, const int n, const int J, const char mode[])
 
 /******************************************************************************
 
- Function basis_read():
+ Function basis_read(): loads from the disk the basis function for the n-th
+ channel for a given arrangement and total angular momentum, J.
 
 ******************************************************************************/
 
@@ -108,11 +111,35 @@ void basis_read(const char arrang, const int n, const int J, basis *b)
 
 /******************************************************************************
 
- Function multipole_file(): opens the file for a given arrangement and grid
- index. Where, mode is the file access mode of fopen() from the C library.
+ Function multipole_count(): counts how many multipole files (one per grid
+ point) are available in the disk for a given arrangement.
+
+******************************************************************************/
+
+int multipole_count(const char arrang)
+{
+	char filename[MAX_LINE_LENGTH];
+
+	int counter = 0;
+	sprintf(filename, MULTIPOLE_FORMAT, arrang, counter, "bin");
+
+	while (file_exist(filename))
+	{
+		++counter;
+		sprintf(filename, MULTIPOLE_FORMAT, arrang, counter, "bin");
+	}
+
+	return counter;
+}
+
+/******************************************************************************
+
+ Function multipole_file(): opens the multipole file for a given grid point
+ index, arrangement and total angular momentum, J. Where, mode is the file
+ access mode of fopen() from the C library.
 
  NOTE: mode = "wb" for write + binary format and "rb" for read + binary format,
- extension used is .bin, otherwise .dat is used assuming text mode ("w" or "r").
+ extension used is .bin otherwise .dat is used assuming text mode ("w" or "r").
 
 ******************************************************************************/
 
@@ -129,6 +156,8 @@ FILE *multipole_file(const char arrang, const int grid_index, const char mode[])
 
 	FILE *stream = fopen(filename, mode);
 
+	ASSERT(stream != NULL)
+
 //	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
 //	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
 
@@ -137,7 +166,8 @@ FILE *multipole_file(const char arrang, const int grid_index, const char mode[])
 
 /******************************************************************************
 
- Function multipole_read():
+ Function multipole_read(): loads from the disk a set of multipole terms for a
+ given grid point index, arrangement and total angular momentum, J.
 
 ******************************************************************************/
 
@@ -188,8 +218,8 @@ void multipole_free(multipole_set *m)
 
 /******************************************************************************
 
- Function coupling_count(): counts how many basis functions are available in the
- disk for a given arrangement and total angular momentum, J.
+ Function coupling_count(): counts how many coupling matrices are available in
+ the disk for a given arrangement and total angular momentum, J.
 
 ******************************************************************************/
 
@@ -211,15 +241,31 @@ int coupling_count(const char arrang, const int J)
 
 /******************************************************************************
 
- Function coupling_read(): load from the disk the n-th coupling matrix for a given
- arrangement and J.
+ Function coupling_write(): save in the disk a set of multipole terms for a
+ given grid point index, arrangement and total angular momentum, J.
 
 ******************************************************************************/
 
-matrix *coupling_read(const char arrang, const int n, const int J)
+void coupling_write(const char arrang,
+                    const int grid_index, const int J, const matrix *c)
 {
 	char filename[MAX_LINE_LENGTH];
-	sprintf(filename, COUPLING_MATRIX_FORMAT, arrang, n, J);
+	sprintf(filename, COUPLING_MATRIX_FORMAT, arrang, grid_index, J);
+
+	matrix_save(c, filename);
+}
+
+/******************************************************************************
+
+ Function coupling_read(): load from the disk a set of multipole terms for a
+ given grid point index, arrangement and total angular momentum, J.
+
+******************************************************************************/
+
+matrix *coupling_read(const char arrang, const int grid_index, const int J)
+{
+	char filename[MAX_LINE_LENGTH];
+	sprintf(filename, COUPLING_MATRIX_FORMAT, arrang, grid_index, J);
 
 	return matrix_load(filename);
 }

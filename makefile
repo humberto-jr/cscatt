@@ -210,7 +210,7 @@ USE_MACRO = DUMMY_MACRO
 
 all: modules drivers
 modules: utils matrix nist johnson pes dvr file miller math mpi_lib
-drivers: d_basis cmatrix test_suit about pes_print b_print cprint m_basis a+d_multipole
+drivers: d_basis pes_print b_print m_print m_basis a+d_multipole a+d_cmatrix
 
 #
 # Rules for modules:
@@ -288,9 +288,9 @@ about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/p
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o pes.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-pes_print: pes_print.c mass_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h
+pes_print: pes_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out pes.o file.o nist.o matrix.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 b_print: b_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
@@ -331,6 +331,11 @@ m_print: m_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
 utils: utils.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) $< -c
+	@echo
+
+a+d_cmatrix: a+d_cmatrix.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h nist.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o mpi_lib.o matrix.o math.o file.o pes.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 #

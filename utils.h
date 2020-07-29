@@ -46,6 +46,8 @@
 
 	void basis_read(const char arrang, const int n, const int J, basis *b);
 
+	int multipole_count(const char arrang);
+
 	FILE *multipole_file(const char arrang,
 	                     const int grid_index, const char mode[]);
 
@@ -55,5 +57,8 @@
 
 	int coupling_count(const char arrang, const int J);
 
-	matrix *coupling_read(const char arrang, const int n, const int J);
+	void coupling_write(const char arrang,
+	                    const int grid_index, const int J, const matrix *c);
+
+	matrix *coupling_read(const char arrang, const int grid_index, const int J);
 #endif
