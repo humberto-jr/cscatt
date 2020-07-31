@@ -4,7 +4,8 @@
  -----
 
  This module is an interface to an external user defined potential energy
- surface routine provided during compilation by the macro EXTERNAL_PES_NAME.
+ surface routine provided during compilation by the macro EXTERNAL_PES_NAME for
+ systems with either three or four atoms.
 
 
  References
@@ -25,7 +26,7 @@
 #include "file.h"
 #include "pes.h"
 
-static double mass_a = 0.0, mass_b = 0.0, mass_c = 0.0, mass_d = 0.0;
+static double mass_a = 0.0, mass_b = 0.0, mass_c = 0.0, mass_d = 0.0, inf = 1000.0;
 
 /******************************************************************************
 
@@ -50,6 +51,18 @@ static double mass_a = 0.0, mass_b = 0.0, mass_c = 0.0, mass_d = 0.0;
 #endif
 
 extern double EXTERNAL_PES_NAME(const double r[]);
+
+/******************************************************************************
+
+ Function pes_set_inf(): to define an asymptotic limit used internally. Default
+ value is r_inf = 1000.
+
+******************************************************************************/
+
+void pes_set_inf(const double x_inf)
+{
+	inf = x_inf;
+}
 
 /******************************************************************************
 
@@ -92,18 +105,19 @@ static double pes_read_mass(FILE *input, const char key[])
 /******************************************************************************
 
  Function pes_init_mass(): reads from a given input the atomic symbols for
- atoms A, B, C, etc using the following format:
+ atoms A, B, C, etc. using the following format:
 
  atom_a = [symbol]
  atom_b = [symbol]
  atom_c = [symbol]
  (...)
 
- Where, [symbol] is expected as "1H", "2H", "4He", ..., "12C", etc.
-
- The routine will store the actual masses for a later use by pes_mass().
+ Where, [symbol] is expected as "1H", "2H", "4He", ..., "12C", etc. The routine
+ will store the actual masses for a later use by pes_mass(), pes_mass_bc() etc.
 
  NOTE: Lines starting by '#' are ignored.
+
+ NOTE: On entry, atom is given in lowercase, i.e. atom = 'a', 'b' or 'c'.
 
 ******************************************************************************/
 
@@ -137,6 +151,28 @@ void pes_init_mass(FILE *input, const char atom)
 			PRINT_ERROR("invalid atom %c\n", atom)
 			exit(EXIT_FAILURE);
 	}
+}
+
+/******************************************************************************
+
+ Function pes_init(): a dummy call to the user defined PES such that it can
+ initialize its own internal data, if any. Should be called before any other
+ function from this module but after pes_init_mass().
+
+******************************************************************************/
+
+void pes_init()
+{
+	ASSERT(mass_a != 0.0)
+	ASSERT(mass_b != 0.0)
+	ASSERT(mass_c != 0.0)
+
+	const bool is_nan = isnan(pes_abc('a', inf, inf, 90.0));
+
+	ASSERT(is_nan == false)
+
+	math_no_gsl_handler();
+	math_set_error(1.0e-2);
 }
 
 /******************************************************************************
@@ -347,16 +383,16 @@ double pes_abc(const char arrang,
 
 ******************************************************************************/
 
-double pes_abcd(const double r1,
-                const double r2,
-                const double theta12,
-                const double R,
-                const double theta,
-                const double phi)
+double pes_abcd(const double r_bc,
+                const double r_bcd,
+                const double r_abcd,
+                const double theta_bc,
+                const double theta_a,
+                const double phi_a)
 {
 	#if defined(USE_JACOBI_COORDINATES)
 	{
-		const double jacobi[6] = {r1, r2, theta12, R, theta, phi};
+		const double jacobi[6] = {r_bc, r_bcd, theta_bc, r_abcd, theta_a, phi_a};
 		return EXTERNAL_PES_NAME(jacobi);
 	}
 	#endif
@@ -367,7 +403,7 @@ double pes_abcd(const double r1,
 	cartesian a, b, c, d, cb, cbd;
 
 	c.x = 0.0;
-	c.y = r1/2.0;
+	c.y = r_bc/2.0;
 	c.z = 0.0;
 
 	b.x =  0.0;
@@ -379,8 +415,8 @@ double pes_abcd(const double r1,
 	cb.z = 0.0;
 
 	d.x = cb.x;
-	d.y = cb.y + r2*sin(theta12*M_PI/180.0);
-	d.z = cb.z + r2*cos(theta12*M_PI/180.0);
+	d.y = cb.y + r_bcd*sin(theta_bc*M_PI/180.0);
+	d.z = cb.z + r_bcd*cos(theta_bc*M_PI/180.0);
 
 	const double mass_cb = mass_c + mass_b;
 
@@ -388,9 +424,9 @@ double pes_abcd(const double r1,
 	cbd.y = (d.y*mass_d + cb.y*mass_cb)/(mass_d + mass_cb);
 	cbd.z = (d.z*mass_d + cb.z*mass_cb)/(mass_d + mass_cb);
 
-	a.x = cbd.x + R*sin(theta*M_PI/180.0)*cos(phi*M_PI/180.0);
-	a.y = cbd.y + R*sin(theta*M_PI/180.0)*sin(phi*M_PI/180.0);
-	a.z = cbd.z + R*cos(theta*M_PI/180.0);
+	a.x = cbd.x + r_abcd*sin(theta_a*M_PI/180.0)*cos(phi_a*M_PI/180.0);
+	a.y = cbd.y + r_abcd*sin(theta_a*M_PI/180.0)*sin(phi_a*M_PI/180.0);
+	a.z = cbd.z + r_abcd*cos(theta_a*M_PI/180.0);
 
 	internuc[0] = cartesian_distance(&a, &b);
 	internuc[1] = cartesian_distance(&a, &c);
@@ -422,7 +458,7 @@ double pes_bc(const int j, const double r)
 {
 	const double mass = pes_mass_bc();
 
-	return pes_abc('a', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
+	return pes_abc('a', r, inf, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
 }
 
 /******************************************************************************
@@ -436,7 +472,7 @@ double pes_ac(const int j, const double r)
 {
 	const double mass = pes_mass_ac();
 
-	return pes_abc('b', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
+	return pes_abc('b', r, inf, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
 }
 
 /******************************************************************************
@@ -450,7 +486,7 @@ double pes_ab(const int j, const double r)
 {
 	const double mass = pes_mass_ab();
 
-	return pes_abc('c', r, 1000.0, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
+	return pes_abc('c', r, inf, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
 }
 
 /******************************************************************************
@@ -475,7 +511,7 @@ static double pes_legendre_integrand(const double theta, void *params)
 
 	const double v = pes_abc(p->arrang, p->r, p->R, theta*180.0/M_PI);
 
-	const double v_inf = pes_abc(p->arrang, p->r, 1000.0, theta*180.0/M_PI);
+	const double v_inf = pes_abc(p->arrang, p->r, inf, theta*180.0/M_PI);
 
 	/* Eq. (22) of Ref. [1], inner integrand */
 	return (v - v_inf)*math_legendre_poly(p->lambda, cos(theta))*sin(theta);
@@ -534,42 +570,31 @@ double pes_legendre_multipole(const char arrang,
  [1] at a given (r, R) Jacobi coordinate.
 
 ******************************************************************************/
-/*
-struct _params
+
+struct harmonics_params
 {
-	double phi;
-	const int l, m;
-	const double r1, r2, r3, theta12;
+	double phi_a;
+	const int eta, m_eta;
+	const double r_bc, r_bcd, r_abcd, theta_bc;
 };
 
 static double pes_theta_integrand(const double theta, void *params)
 {
-	struct _params *p = (struct _params *) params;
+	struct harmonics_params *p = (struct harmonics_params *) params;
 
-	const jacobi_6d x =
-	{
-		.r1 = p->r1,
-		.r2 = p->r2,
-		.r3 = p->r3,
-		.theta12 = p->theta12,
-		.theta3 = theta*180.0/M_PI,
-		.phi3 = p->phi*180.0/M_PI
-	};
+	const double theta_a = theta*180.0/M_PI;
 
-	const jacobi_6d x_inf =
-	{
-		.r1 = p->r1,
-		.r2 = p->r2,
-		.r3 = 1000.0,
-		.theta12 = p->theta12,
-		.theta3 = theta*180.0/M_PI,
-		.phi3 = p->phi*180.0/M_PI
-	};
+	const double v
+		= pes_abcd(p->r_bc, p->r_bcd, p->r_abcd, p->theta_bc, theta_a, p->phi_a);
 
-	const double pot_energy = pes(&x) - pes(&x_inf);
+	const double v_inf
+		= pes_abcd(p->r_bc, p->r_bcd, inf, p->theta_bc, theta_a, p->phi_a);
 
-	return pot_energy*math_sphe_harmonics(p->l, p->m, theta, p->phi)*sin(theta);
-}*/
+	const double y
+		= math_sphe_harmonics(p->eta, p->m_eta, theta_a, p->phi_a);
+
+	return (v - v_inf)*y*sin(theta);
+}
 
 /******************************************************************************
 
@@ -578,15 +603,15 @@ static double pes_theta_integrand(const double theta, void *params)
  [1] at a given (r, R) Jacobi coordinate.
 
 ******************************************************************************/
-/*
+
 static double pes_phi_integrand(const double phi, void *params)
 {
-	struct _params *p = (struct _params *) params;
+	struct harmonics_params *p = (struct harmonics_params *) params;
 
-	p->phi = phi;
+	p->phi_a = phi*180.0/M_PI;
 
 	return math_qags(0.0, M_PI, &p, pes_theta_integrand);
-}*/
+}
 
 /******************************************************************************
 
@@ -597,63 +622,29 @@ static double pes_phi_integrand(const double phi, void *params)
  NOTE: Integration over theta in [0, pi] performed by the QAG algorithm.
 
 ******************************************************************************/
-/*
-double pes_harmonic_multipole(const int l,
-                              const int m,
-                              const double r1,
-                              const double r2,
-                              const double r3,
-                              const double theta)
+
+double pes_harmonics_multipole(const int eta,
+                               const int m_eta,
+                               const double r_bc,
+                               const double r_bcd,
+                               const double r_abcd,
+                               const double theta_bc)
 {
-	struct _params p =
+	struct harmonics_params p =
 	{
-		.r1 = r1,
-		.r2 = r2,
-		.r3 = r3,
-		.theta12 = theta,
-		.l = l,
-		.m = m
+		.r_bc = r_bc,
+		.r_bcd = r_bcd,
+		.r_abcd = r_abcd,
+		.theta_bc = theta_bc,
+
+		.eta = eta,
+		.m_eta = abs(m_eta)
 	};
 
-	return math_qags(0.0, 2.0*M_PI, &p, pes_phi_integrand);
-}*/
+	const double phase = (m_eta < 0? pow(-1.0, m_eta) : 1.0);
 
-/******************************************************************************
-******************************************************************************/
-
-void pes_init()
-{
-	ASSERT(mass_a != 0.0)
-	ASSERT(mass_b != 0.0)
-	ASSERT(mass_c != 0.0)
-
-	const bool is_nan = isnan(pes_abc('a', 1000.0, 1000.0, 90.0));
-
-	ASSERT(is_nan == false)
-
-	math_no_gsl_handler();
-	math_set_error(1.0e-2);
+	return phase*math_qags(0.0, 2.0*M_PI, &p, pes_phi_integrand);
 }
-
-/******************************************************************************
-
- Function pec(): returns the diatomic potential, V(r) as function of the inter
- nuclear distance, r, asymptotically as R -> inf, for a given PES arrangement.
-
-******************************************************************************/
-/*
-double pec(const char arrang, const double r)
-{
-	const jacobi_coor x =
-	{
-		.r = r,
-		.R = 1000.0,
-		.theta = 90.0,
-		.arrang = arrang
-	};
-
-	return pes(&x);
-}*/
 
 /******************************************************************************
 

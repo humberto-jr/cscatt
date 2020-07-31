@@ -54,7 +54,7 @@ double math_sphe_harmonics(const int l, const int m,
 	const double phi_wavef
 		= exp(as_double(m)*phi*M_PI/180.0)/sqrt(2.0*M_PI);
 
-	/* NOTE: see equation 1.43 (pag. 8) of Angular Momentum by Richard N. Zare. */
+	/* NOTE: see Eq. 1.43 (pag. 8) of Angular Momentum by Richard N. Zare. */
 	return m_phase*theta_wavef*phi_wavef;
 }
 
