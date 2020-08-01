@@ -75,4 +75,30 @@
 	                         const double b[],
 	                         void *params,
 	                         double (*f)(double x[], size_t n, void *params));
+
+	/******************************************************************************
+
+	 Function math_side_c() uses the law of cosines to resolve the side c opposite
+	 to the interior angle C (in degrees) of a triangle with sides a, b and c.
+
+	******************************************************************************/
+
+	inline static double math_side_c(const double side_a,
+	                                 const double side_b, const double angle_c)
+	{
+		return sqrt(side_a*side_a + side_b*side_b - 2.0*side_a*side_b*cos(angle_c*M_PI/180.0));
+	}
+
+	/******************************************************************************
+
+	 Function math_angle_c() uses the law of cosines to resolve the angle C (in
+	 degrees) opposite to the side c of a triangle with sides a, b and c.
+
+	******************************************************************************/
+
+	inline static double math_angle_c(const double side_a,
+	                                  const double side_b, const double side_c)
+	{
+		return acos((side_c*side_c - side_a*side_a - side_b*side_b)/(-2.0*side_a*side_b))*180.0/M_PI;
+	}
 #endif

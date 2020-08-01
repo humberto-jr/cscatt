@@ -2,9 +2,29 @@
 	#define NIST_HEADER
 	#include "globals.h"
 
-	static const double nist_bohr_radius = 5.29177210903E-11; // m
-	static const double nist_hartree = 27.211386245988;       // eV
-	static const double nist_inv_fine_struct = 137.035999084;
+	#if defined(NIST_PROTON_ELECTRON_RATIO)
+		#define NIST_PROTON_ELECTRON_RATIO 1836.15267343
+	#define
+
+	#if !defined(NIST_BOHR_TO_METER)
+		#define NIST_BOHR_TO_METER 5.29177210903E-11
+	#endif
+
+	#if !defined(NIST_HARTREE_TO_EV)
+		#define NIST_HARTREE_TO_EV 27.211386245988
+	#endif
+
+	#if !defined(NIST_HARTREE_TO_WAVENUM)
+		#define NIST_HARTREE_TO_WAVENUM 219474.63137054
+	#endif
+
+	#if !defined(NIST_HARTREE_TO_JOULE)
+		#define NIST_HARTREE_TO_JOULE 4.3597447222071E-18
+	#endif
+
+	#if !defined(NIST_INV_FINE_STRUCT)
+		#define NIST_INV_FINE_STRUCT 137.035999084
+	#endif
 
 	/******************************************************************************
 
