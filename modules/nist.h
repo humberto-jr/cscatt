@@ -2,7 +2,7 @@
 	#define NIST_HEADER
 	#include "globals.h"
 
-	#if defined(NIST_PROTON_ELECTRON_RATIO)
+	#if !defined(NIST_PROTON_ELECTRON_RATIO)
 		#define NIST_PROTON_ELECTRON_RATIO 1836.15267343
 	#define
 
