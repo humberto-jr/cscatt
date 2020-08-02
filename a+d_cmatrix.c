@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
 			driver(J, mass, &m_list, &list[n], c);
 		}
 
-		coupling_write(arrang, n, J, c);
+		coupling_write(arrang, n, J, false, c);
 
 		matrix_free(c);
 		multipole_free(&m_list);

@@ -191,7 +191,6 @@ int main(int argc, char *argv[])
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
  */
 
-	printf("#\n");
 	printf("# J = %d, J-parity = %d, reduced mass = %f a.u.\n", J, J_parity, mass);
 	printf("#   Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
 	printf("# -------------------------------------------------------------------------------------\n");

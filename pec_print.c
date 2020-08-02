@@ -68,6 +68,10 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 	}
 
+/*
+ *	Print output:
+ */
+
 	printf("# Arrangement = %c\n", arrang);
 	printf("# j = (%d, %d, %d)\n", j_min, j_max, j_step);
 	printf("# r = (%f, %f, %f)\n", r_min, r_max, r_step);

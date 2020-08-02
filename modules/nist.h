@@ -4,7 +4,7 @@
 
 	#if !defined(NIST_PROTON_ELECTRON_RATIO)
 		#define NIST_PROTON_ELECTRON_RATIO 1836.15267343
-	#define
+	#endif
 
 	#if !defined(NIST_BOHR_TO_METER)
 		#define NIST_BOHR_TO_METER 5.29177210903E-11

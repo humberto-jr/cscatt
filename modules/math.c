@@ -13,7 +13,7 @@
 #include "gsl_lib.h"
 
 static int workspace_size = 5000;
-static double abs_error = 1.0e-6;
+static double abs_error = 1.0E-6;
 
 /******************************************************************************
 

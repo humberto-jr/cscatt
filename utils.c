@@ -16,6 +16,10 @@
 	#define COUPLING_MATRIX_FORMAT "cmatrix_arrang=%c_n=%d_J=%d.bin"
 #endif
 
+#if !defined(COUPLING_DATAFILE_FORMAT)
+	#define COUPLING_DATAFILE_FORMAT "cmatrix_arrang=%c_n=%d_J=%d.dat"
+#endif
+
 /******************************************************************************
 
  Function basis_count(): counts how many basis functions are available in the
@@ -246,11 +250,13 @@ int coupling_count(const char arrang, const int J)
 
 ******************************************************************************/
 
-void coupling_write(const char arrang,
-                    const int grid_index, const int J, const matrix *c)
+void coupling_write(const char arrang, const int grid_index,
+                    const int J, const bool verbose, const matrix *c)
 {
 	char filename[MAX_LINE_LENGTH];
 	sprintf(filename, COUPLING_MATRIX_FORMAT, arrang, grid_index, J);
+
+	if (verbose) printf("# Reading %s\n", filename);
 
 	matrix_save(c, filename);
 }
@@ -262,10 +268,38 @@ void coupling_write(const char arrang,
 
 ******************************************************************************/
 
-matrix *coupling_read(const char arrang, const int grid_index, const int J)
+matrix *coupling_read(const char arrang,
+                      const int grid_index, const int J, const bool verbose)
 {
 	char filename[MAX_LINE_LENGTH];
 	sprintf(filename, COUPLING_MATRIX_FORMAT, arrang, grid_index, J);
 
+	if (verbose) printf("# Writing %s\n", filename);
+
 	return matrix_load(filename);
+}
+
+/******************************************************************************
+
+ Function coupling_datafile(): opens a datafile in the disk for the n-th scatt.
+ channel's coupling matrix element, arrangement and total angular momentum, J.
+
+ NOTE: mode = "w" for write + text format and "r" for read + text format, with
+ extension .dat used.
+
+******************************************************************************/
+
+FILE *coupling_datafile(const char arrang, const int n,
+                        const int J, const bool verbose, const char mode[])
+{
+	char filename[MAX_LINE_LENGTH];
+	sprintf(filename, COUPLING_DATAFILE_FORMAT, arrang, n, J);
+
+	if (verbose) printf("# Creating %s\n", filename);
+
+	FILE *stream = fopen(filename, mode);
+
+	ASSERT(stream != NULL)
+
+	return stream;
 }

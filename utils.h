@@ -57,8 +57,12 @@
 
 	int coupling_count(const char arrang, const int J);
 
-	void coupling_write(const char arrang,
-	                    const int grid_index, const int J, const matrix *c);
+	void coupling_write(const char arrang, const int grid_index,
+	                    const int J, const bool verbose, const matrix *c);
 
-	matrix *coupling_read(const char arrang, const int grid_index, const int J);
+	matrix *coupling_read(const char arrang,
+	                      const int grid_index, const int J, const bool verbose);
+
+	FILE *coupling_datafile(const char arrang, const int n,
+	                        const int J, const bool verbose, const char mode[]);
 #endif

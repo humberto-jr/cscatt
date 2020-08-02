@@ -209,8 +209,8 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: utils matrix nist johnson pes dvr file miller math mpi_lib
-drivers: d_basis pes_print b_print m_print m_basis a+d_multipole a+d_cmatrix pec_print
+modules: utils matrix nist johnson pes file math mpi_lib
+drivers: d_basis pes_print b_print c_print m_print m_basis a+d_multipole a+d_cmatrix pec_print
 
 #
 # Rules for modules:
@@ -239,17 +239,7 @@ pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/math.h $(MODULES_D
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $(PES_MACRO) -c $<
 	@echo
 
-dvr: $(MODULES_DIR)/dvr.c $(MODULES_DIR)/dvr.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
-	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -c $<
-	@echo
-
 file: $(MODULES_DIR)/file.c $(MODULES_DIR)/file.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -c $<
-	@echo
-
-miller: $(MODULES_DIR)/miller.c $(MODULES_DIR)/miller.h $(MODULES_DIR)/c_lib.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/pes.h $(MODULES_DIR)/dvr.h $(MODULES_DIR)/matrix.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -c $<
 	@echo
@@ -278,11 +268,6 @@ d_basis: d_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MO
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o matrix.o file.o math.o pes.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-#cmatrix: cmatrix.c mpi_config.h basis_config.h coupl_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/miller.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h
-#	@echo "\033[31m$<\033[0m"
-#	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o miller.o file.o pes.o dvr.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
-#	@echo
-
 about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/pes.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o pes.o file.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
@@ -298,10 +283,10 @@ b_print: b_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
-#cprint: cprint.c coupl_config.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
-#	@echo "\033[31m$<\033[0m"
-#	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
-#	@echo
+c_print: c_print.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	@echo
 
 m_basis: m_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
 	@echo "\033[31m$<\033[0m"

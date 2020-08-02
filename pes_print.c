@@ -63,7 +63,9 @@ int main(int argc, char *argv[])
 
 	pes_init();
 
-	printf("#\n");
+/*
+ *	Print output:
+ */
 
 	printf("# r     = (%f, %f, %f)\n", r_min, r_max, r_step);
 	printf("# R     = (%f, %f, %f)\n", R_min, R_max, R_step);

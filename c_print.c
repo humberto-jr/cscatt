@@ -2,72 +2,71 @@
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-#include "coupl_config.h"
+#include "utils.h"
 
 int main(int argc, char *argv[])
 {
 	ASSERT(argc > 1)
 	file_init_stdin(argv[1]);
 
-	const int J
-		= (int) file_get_key(stdin, "J", 0.0, INF, 0.0);
+/*
+ *	Total angular momentum, J:
+ */
 
-	const int scatt_grid_size
-		= (int) file_get_key(stdin, "scatt_grid_size", 1.0, INF, 500.0);
+	const int J = (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
 
-	const double R_min
-		= file_get_key(stdin, "R_min", 0.0, INF, 0.5);
+/*
+ *	Scattering grid:
+ */
 
-	const double R_max
-		= file_get_key(stdin, "R_max", R_min, INF, R_min + 100.0);
+	const int n_max = (int) file_keyword(stdin, "scatt_grid_size", 1.0, INF, 500.0);
 
-	const double R_step
-		= (R_max - R_min)/as_double(scatt_grid_size);
+	const double R_min = file_keyword(stdin, "R_min", 0.0, INF, 0.5);
 
-	const double shift
-		= file_get_key(stdin, "energy_shift", -INF, INF, 0.0);
+	const double R_max = file_keyword(stdin, "R_max", R_min, INF, R_min + 30.0);
 
-	const double scale
-		= file_get_key(stdin, "energy_scale", -INF, INF, 1.0);
+	const double R_step = (R_max - R_min)/as_double(n_max);
 
-	const char arrang
-		= 96 + (int) file_get_key(stdin, "arrangement", 1.0, 3.0, 1.0);
+/*
+ *	Energy scale and shifts:
+ */
 
-	const bool adiabatic
-		= (bool) file_get_key(stdin, "print_adiabatic", 0.0, 1.0, 0.0);
+	const double shift = file_keyword(stdin, "energy_shift", -INF, INF, 0.0);
 
-	printf("# J                 = %d\n", J);
-	printf("# Arrangement       = %c\n", arrang);
-	printf("# Energy shift      = %f\n", shift);
-	printf("# Energy scale      = %f\n", scale);
-	printf("# Grid points       = %d\n", scatt_grid_size);
-	printf("# Representation    = %s\n", (adiabatic? "adiabatic" : "diabatic"));
-	printf("#\n");
+	const double scale = file_keyword(stdin, "energy_scale", -INF, INF, 1.0);
 
-	int n = 0;
+/*
+ *	Arrangement (a = 1, b = 2, c = 3) and representation:
+ */
 
-	char filename[MAX_LINE_LENGTH];
-	sprintf(filename, CMATRIX_BUFFER_FORMAT, arrang, n, J);
+	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
 
-	while (file_exist(filename))
+	const bool adiabatic = (bool) file_keyword(stdin, "print_adiabatic", 0.0, 1.0, 0.0);
+
+/*
+ *	Print output:
+ */
+
+	for (int n = 0; n < n_max; ++n)
 	{
-		matrix *c = matrix_load(filename);
-
-		printf("# %5d: reading %s, size = %dx%d\n",
-		       n, filename, matrix_row(c), matrix_col(c));
+		matrix *c = coupling_read(arrang, n, true, J);
 
 		double *eigenval = NULL;
 		if (adiabatic) eigenval = matrix_symm_eigen(c, 'n');
 
-		for (int ch_a = 0; ch_a < matrix_row(c); ++ch_a)
+		for (int a = 0; a < matrix_row(c); ++a)
 		{
-			memset(filename, 0, sizeof(filename));
-			sprintf(filename, CMATRIX_DATAFILE_FORMAT, arrang, ch_a, J);
+			FILE *output = coupling_datafile(arrang, a, J, false, "w");
 
-			if (file_exist(filename) && n == 0) remove(filename);
-			FILE *output = file_open_output(filename, false, true);
+			if (n == 0)
+			{
+				fprintf(output, "# Energy shift = %f\n", shift);
+				fprintf(output, "# Energy scale = %f\n", scale);
+				fprintf(output, "# Representation = %s\n", (adiabatic? "adiabatic" : "diabatic"));
+				fprintf(output, "# File created on %s\n", time_stamp());
+			}
 
-			fprintf(output, "% -8e\t", R_min + as_double(n)*R_step);
+			fprintf(output, "%06f\t ", R_min + as_double(n)*R_step);
 
 /*
  *			NOTE: "% -8e\t" print numbers left-justified with an invisible
@@ -76,15 +75,15 @@ int main(int argc, char *argv[])
 
 			if (eigenval != NULL)
 			{
-				fprintf(output, "% -8e\n", (eigenval[ch_a] + shift)*scale);
+				fprintf(output, "% -8e\n", (eigenval[a] + shift)*scale);
 			}
 			else
 			{
-				fprintf(output, "% -8e\t", (matrix_get(c, ch_a, ch_a) + shift)*scale);
+				fprintf(output, "% -8e\t", (matrix_get(c, a, a) + shift)*scale);
 
-				for (int ch_b = (ch_a + 1); ch_b < matrix_col(c); ++ch_b)
+				for (int b = (a + 1); b < matrix_col(c); ++b)
 				{
-					fprintf(output, "% -8e\t", matrix_get(c, ch_a, ch_b)*scale);
+					fprintf(output, "% -8e\t", matrix_get(c, a, b)*scale);
 				}
 
 				fprintf(output, "\n");
@@ -95,10 +94,6 @@ int main(int argc, char *argv[])
 
 		matrix_free(c);
 		if (eigenval != NULL) free(eigenval);
-
-		++n;
-		memset(filename, 0, sizeof(filename));
-		sprintf(filename, CMATRIX_BUFFER_FORMAT, arrang, n, J);
 	}
 
 	return EXIT_SUCCESS;
