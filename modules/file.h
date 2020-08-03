@@ -9,6 +9,8 @@
 	FILE *file_open_output(const char filename[],
 	                       const bool bin_format, const bool to_append);
 
+	void file_close(FILE **stream);
+
 	void file_init_stdin(const char filename[]);
 
 	void file_init_stdout(const char filename[], const bool to_append);

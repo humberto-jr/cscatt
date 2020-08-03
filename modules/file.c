@@ -72,6 +72,22 @@ FILE *file_open_output(const char filename[],
 
 /******************************************************************************
 
+ Wrapper file_close(): an interface to fclose() that also sets the FILE pointer
+ to NULL.
+
+******************************************************************************/
+
+void file_close(FILE **stream)
+{
+	if (*stream != NULL)
+	{
+		fclose(*stream);
+		*stream = NULL;
+	}
+}
+
+/******************************************************************************
+
  Function file_init_stdin(): set a file named filename as the C stdin.
 
 ******************************************************************************/

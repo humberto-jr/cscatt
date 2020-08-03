@@ -49,14 +49,14 @@ int main(int argc, char *argv[])
 
 	for (int n = 0; n < n_max; ++n)
 	{
-		matrix *c = coupling_read(arrang, n, true, J);
+		matrix *c = coupling_read(arrang, n, J, true);
 
 		double *eigenval = NULL;
 		if (adiabatic) eigenval = matrix_symm_eigen(c, 'n');
 
 		for (int a = 0; a < matrix_row(c); ++a)
 		{
-			FILE *output = coupling_datafile(arrang, a, J, false, "w");
+			FILE *output = coupling_datafile(arrang, a, J, false, "a");
 
 			if (n == 0)
 			{

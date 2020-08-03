@@ -240,7 +240,7 @@ int main(int argc, char *argv[])
 		int n_counter = 0;
 		for (int n = n_min; n < n_max; ++n)
 		{
-			pot_energy[n_counter].value = coupling_read(arrang, n, j);
+			pot_energy[n_counter].value = coupling_read(arrang, n, false, j);
 
 			if (n_counter > 0)
 			{

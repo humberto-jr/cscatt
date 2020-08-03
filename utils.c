@@ -256,7 +256,7 @@ void coupling_write(const char arrang, const int grid_index,
 	char filename[MAX_LINE_LENGTH];
 	sprintf(filename, COUPLING_MATRIX_FORMAT, arrang, grid_index, J);
 
-	if (verbose) printf("# Reading %s\n", filename);
+	if (verbose) printf("# Writing %s\n", filename);
 
 	matrix_save(c, filename);
 }
@@ -274,7 +274,7 @@ matrix *coupling_read(const char arrang,
 	char filename[MAX_LINE_LENGTH];
 	sprintf(filename, COUPLING_MATRIX_FORMAT, arrang, grid_index, J);
 
-	if (verbose) printf("# Writing %s\n", filename);
+	if (verbose) printf("# Reading %s\n", filename);
 
 	return matrix_load(filename);
 }

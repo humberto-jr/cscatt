@@ -328,6 +328,11 @@ pec_print: pec_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
+b_resize: b_resize.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
