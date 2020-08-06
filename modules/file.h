@@ -4,16 +4,17 @@
 
 	bool file_exist(const char filename[]);
 
-	FILE *file_open_input(const char filename[], const bool bin_format);
-
-	FILE *file_open_output(const char filename[],
-	                       const bool bin_format, const bool to_append);
+	FILE *file_open(const char filename[], const char mode[]);
 
 	void file_close(FILE **stream);
 
+	void file_delete(const char filename[]);
+
+	void file_rename(const char old_filename[], const char new_filename[]);
+
 	void file_init_stdin(const char filename[]);
 
-	void file_init_stdout(const char filename[], const bool to_append);
+	void file_init_stdout(const char filename[]);
 
 	char *file_find(FILE *input, const char pattern[]);
 

@@ -12,7 +12,7 @@
 
 /******************************************************************************
 
- Function file_exist(): check if a file named filename exist.
+ Wrapper file_exist(): checks if a file named filename exists using access().
 
 ******************************************************************************/
 
@@ -23,57 +23,28 @@ bool file_exist(const char filename[])
 
 /******************************************************************************
 
- Function file_open_input(): open a file named filename in read-only mode.
-
- NOTE: binary format is used if bin_format = true.
+ Wrapper file_open(): a safe interface to fopen() that halt the execution in
+ the case of error and prints a formatted message in the C stderr.
 
 ******************************************************************************/
 
-FILE *file_open_input(const char filename[], const bool bin_format)
+FILE *file_open(const char filename[], const char mode[])
 {
-	FILE *input
-		= (bin_format? fopen(filename, "rb") : fopen(filename, "r"));
+	FILE *stream = fopen(filename, mode);
 
-	if (input == NULL)
+	if (stream == NULL)
 	{
-		PRINT_ERROR("unable to open %s\n", filename)
+		PRINT_ERROR("unable to open %s with mode %s\n", filename, mode)
 		exit(EXIT_FAILURE);
 	}
 
-	return input;
+	return stream;
 }
 
 /******************************************************************************
 
- Function file_open_input(): open a file named filename in write-only mode.
-
- NOTE: binary format is used if bin_format = true.
-
-******************************************************************************/
-
-FILE *file_open_output(const char filename[],
-                       const bool bin_format, const bool to_append)
-{
-	FILE *output = NULL;
-
-	if (to_append)
-		output = (bin_format? fopen(filename, "ab") : fopen(filename, "a"));
-	else
-		output = (bin_format? fopen(filename, "wb") : fopen(filename, "w"));
-
-	if (output == NULL)
-	{
-		PRINT_ERROR("unable to open %s\n", filename)
-		exit(EXIT_FAILURE);
-	}
-
-	return output;
-}
-
-/******************************************************************************
-
- Wrapper file_close(): an interface to fclose() that also sets the FILE pointer
- to NULL.
+ Wrapper file_close(): a safe interface to fclose() that halt the execution in
+ the case of error and prints a formatted message in the C stderr.
 
 ******************************************************************************/
 
@@ -88,13 +59,45 @@ void file_close(FILE **stream)
 
 /******************************************************************************
 
+ Wrapper file_delete(): a safe interface to remove() that halt the execution in
+ the case of error and prints a formatted message in the C stderr.
+
+******************************************************************************/
+
+void file_delete(const char filename[])
+{
+	if (remove(filename) == -1)
+	{
+		PRINT_ERROR("unable to delete %s\n", filename)
+		exit(EXIT_FAILURE);
+	}
+}
+
+/******************************************************************************
+
+ Wrapper file_rename(): a safe interface to rename() that halt the execution in
+ the case of error and prints a formatted message in the C stderr.
+
+******************************************************************************/
+
+void file_rename(const char old_filename[], const char new_filename[])
+{
+	if (rename(old_filename, new_filename) == -1)
+	{
+		PRINT_ERROR("unable to rename %s to %s\n", old_filename, new_filename)
+		exit(EXIT_FAILURE);
+	}
+}
+
+/******************************************************************************
+
  Function file_init_stdin(): set a file named filename as the C stdin.
 
 ******************************************************************************/
 
 void file_init_stdin(const char filename[])
 {
-	FILE *input = file_open_input(filename, false);
+	FILE *input = file_open(filename, "r");
 
 	fclose(stdin);
 	stdin = input;
@@ -107,9 +110,9 @@ void file_init_stdin(const char filename[])
 
 ******************************************************************************/
 
-void file_init_stdout(const char filename[], const bool to_append)
+void file_init_stdout(const char filename[])
 {
-	FILE *output = file_open_output(filename, false, to_append);
+	FILE *output = file_open(filename, "w");
 
 	fclose(stdout);
 	stdout = output;
@@ -141,45 +144,6 @@ char *file_find(FILE *input, const char pattern[])
 
 	free(line);
 	return "\n";
-}
-
-/******************************************************************************
-
- Function file_get_key(): scans a given input file searching for the first
- occurrence of a keyword with format "[key] = [value]". If found, and if [min]
- <= [value] <= [max], it shall return [value]. Otherwise, it returns a default
- value.
-
- NOTE: Lines starting by '#' are ignored.
-
-******************************************************************************/
-
-double file_get_key(FILE *input, const char key[],
-                    const double min, const double max, const double default_value)
-{
-	ASSERT(max > min)
-
-	char *line = file_find(input, key);
-	char *token = strtok(line, "=");
-
-	while (token != NULL)
-	{
-		if (strstr(line, key) != NULL)
-		{
-			token = strtok(NULL, "=");
-			const double value = atof(token);
-
-			if (line != NULL) free(line);
-			if (value < min) return min;
-			if (value > max) return max;
-
-			return value;
-		}
-
-		token = strtok(NULL, "=");
-	}
-
-	return default_value;
 }
 
 /******************************************************************************
