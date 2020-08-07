@@ -12,17 +12,6 @@
 
 /******************************************************************************
 
- Wrapper file_exist(): checks if a file named filename exists using access().
-
-******************************************************************************/
-
-bool file_exist(const char filename[])
-{
-	return (access(filename, F_OK) == 0);
-}
-
-/******************************************************************************
-
  Wrapper file_open(): a safe interface to fopen() that halt the execution in
  the case of error and prints a formatted message in the C stderr.
 
@@ -43,8 +32,8 @@ FILE *file_open(const char filename[], const char mode[])
 
 /******************************************************************************
 
- Wrapper file_close(): a safe interface to fclose() that halt the execution in
- the case of error and prints a formatted message in the C stderr.
+ Wrapper file_close(): a safe interface to fclose() that closes a file stream
+ and sets the unused pointer to NULL.
 
 ******************************************************************************/
 
@@ -55,6 +44,30 @@ void file_close(FILE **stream)
 		fclose(*stream);
 		*stream = NULL;
 	}
+}
+
+/******************************************************************************
+
+ Wrapper file_exist(): uses access() to check if a file named filename exists.
+
+******************************************************************************/
+
+bool file_exist(const char filename[])
+{
+	return (access(filename, F_OK) == 0);
+}
+
+/******************************************************************************
+
+ Wrapper file_end(): an interface to feof() that checks if a given file stream
+ is at the end.
+
+******************************************************************************/
+
+bool file_end(FILE *stream)
+{
+	ASSERT(stream != NULL)
+	return (feof(stream) != 0);
 }
 
 /******************************************************************************
@@ -131,10 +144,9 @@ void file_init_stdout(const char filename[])
 
 char *file_find(FILE *input, const char pattern[])
 {
-	char *line = malloc(sizeof(char)*MAX_LINE_LENGTH);
-
-	ASSERT(line != NULL)
 	ASSERT(input != NULL)
+
+	char *line = allocate(MAX_LINE_LENGTH, sizeof(char), false);
 
 	rewind(input);
 	while (fgets(line, MAX_LINE_LENGTH, input) != NULL)
@@ -148,7 +160,7 @@ char *file_find(FILE *input, const char pattern[])
 
 /******************************************************************************
 
- Function file_get_key(): scans a given input file searching for the first
+ Function file_keyword(): scans a given input file searching for the first
  occurrence of a keyword with format "[key] = [value]". If found, and if [min]
  <= [value] <= [max], it shall return [value]. Otherwise, it returns a default
  value.
@@ -245,20 +257,9 @@ int file_col_count(FILE *input)
 
 /******************************************************************************
 
- Function file_end(): check if a file has reached the end.
-
-******************************************************************************/
-
-bool file_end(FILE *stream)
-{
-	ASSERT(stream != NULL)
-	return (feof(stream) != 0);
-}
-
-/******************************************************************************
-
- Wrapper file_write(): is an interface for fwrite() that check inputs and the
- output for errors, if any.
+ Wrapper file_write(): is an interface to fwrite() that checks both inputs and
+ outputs and halt the execution in the case of errors, printing a formatted
+ message in the C stderr.
 
  NOTE: data_size is often the output of sizeof() for the type of data.
 
@@ -279,9 +280,9 @@ void file_write(const void *data, const int data_size, const int n, FILE *stream
 
 /******************************************************************************
 
- Wrapper file_read(): is an interface for fread() which not only check inputs,
- but apply a byte offset before reading, if desired, and check the output for
- errors, if any.
+ Wrapper file_read(): is an interface to fread() that checks both inputs and
+ outputs and halt the execution in the case of errors, printing a formatted
+ message in the C stderr.
 
  NOTE: data_size is often the output of sizeof() for the type of data and if
  offset is zero the reading is performed from the beginning of the file.

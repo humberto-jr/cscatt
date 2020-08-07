@@ -210,7 +210,7 @@ USE_MACRO = DUMMY_MACRO
 
 all: modules drivers
 modules: utils matrix nist johnson pes file math mpi_lib
-drivers: d_basis pes_print b_print c_print m_print m_basis a+d_multipole a+d_cmatrix pec_print
+drivers: d_basis pes_print b_print c_print m_print m_basis a+d_multipole a+d_cmatrix pec_print b_resize
 
 #
 # Rules for modules:

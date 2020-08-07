@@ -2,11 +2,13 @@
 	#define FILE_HEADER
 	#include "globals.h"
 
-	bool file_exist(const char filename[]);
-
 	FILE *file_open(const char filename[], const char mode[]);
 
 	void file_close(FILE **stream);
+
+	bool file_exist(const char filename[]);
+
+	bool file_end(FILE *stream);
 
 	void file_delete(const char filename[]);
 
@@ -18,9 +20,6 @@
 
 	char *file_find(FILE *input, const char pattern[]);
 
-	double file_get_key(FILE *input, const char key[], const double min,
-	                    const double max, const double default_value);
-
 	double file_keyword(FILE *input, const char key[], const double min,
 	                    const double max, const double default_value);
 
@@ -28,9 +27,8 @@
 
 	int file_col_count(FILE *input);
 
-	bool file_end(FILE *stream);
-
-	void file_write(const void *data, const int data_size, const int n, FILE *stream);
+	void file_write(const void *data,
+	                const int data_size, const int n, FILE *stream);
 
 	void file_read(void *data, const int data_size,
 	               const int n, FILE *stream, const int offset);
