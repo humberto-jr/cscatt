@@ -5,7 +5,7 @@
 
 #include "utils.h"
 
-#define FORMAT "# %5d   %5d   %5d   %5d   %+5d   %5d     % -8e  % -8e  % -8e\n"
+#define FORMAT "# %5d   %5d   %5d   %5d   %5d   %+5d   %5d     % -8e  % -8e  % -8e\n"
 
 /******************************************************************************
 
@@ -68,11 +68,9 @@ matrix *fgh_multich_matrix(const int max_ch,
 
 					if (n != m && p == q)
 					{
-						const double nm
-							= as_double((n + 1) - (m + 1));
+						const double nm = as_double((n + 1) - (m + 1));
 
-						const double nm_term
-							= sin(nm*M_PI/as_double(grid_size));
+						const double nm_term = sin(nm*M_PI/as_double(grid_size));
 
 						pnqm = pow(-1.0, nm)*factor/pow(nm_term, 2);
 					}
@@ -148,9 +146,15 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J = (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
+	const int J_min = (int) file_keyword(stdin, "J_min", 0.0, INF, 0.0);
+
+	const int J_max = (int) file_keyword(stdin, "J_max", 0.0, INF, 0.0);
+
+	const int J_step = (int) file_keyword(stdin, "J_step", 1.0, INF, 0.0);
 
 	const int J_parity = (int) file_keyword(stdin, "parity", -1.0, 1.0, 0.0);
+
+	ASSERT(J_max >= J_min)
 
 /*
  *	Vibrational quantum numbers, v:
@@ -221,9 +225,9 @@ int main(int argc, char *argv[])
  *	Resolve the triatomic eigenvalues for each j-case and sort results as scatt. channels:
  */
 
-	printf("# J = %d, J-parity = %d, reduced mass = %f a.u., n = [%d, %d]\n", J, J_parity, mass, n_min, n_max);
-	printf("#    Ch.      v       j       l       p    Comp.       E (a.u.)       E (cm-1)         E (eV)   \n");
-	printf("# ----------------------------------------------------------------------------------------------\n");
+	printf("# J-parity = %d, reduced mass = %f a.u., n = [%d, %d]\n", J_parity, mass, n_min, n_max);
+	printf("#     J     Ch.      v       j       l       p    Comp.       E (a.u.)       E (cm-1)         E (eV)   \n");
+	printf("# -----------------------------------------------------------------------------------------------------\n");
 
 /*
  *	Step 1: loop over rotational states j of the triatom and solve a multichannel
@@ -231,7 +235,7 @@ int main(int argc, char *argv[])
  *	representation (FGH-DVR) method.
  */
 
-	int ch_counter = 0;
+	int *ch_counter = allocate(J_max + 1, sizeof(int), true);
 
 	for (int j = j_min; j <= j_max; j += j_step)
 	{
@@ -285,38 +289,41 @@ int main(int argc, char *argv[])
  *			given by the respective J and j.
  */
 
-			for (int l = abs(J - j); l <= (J + j); ++l)
+			for (int J = J_min; J <= J_max; J += J_step)
 			{
-				if (parity(j + l) != J_parity && J_parity != 0) continue;
-
-				for (int i = 0; i < max_state; ++i)
+				for (int l = abs(J - j); l <= (J + j); ++l)
 				{
-					printf(FORMAT, ch_counter, v, j, l, parity(j + l), i,
-					       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
+					if (parity(j + l) != J_parity && J_parity != 0) continue;
+
+					for (int n = 0; n < max_state; ++n)
+					{
+						printf(FORMAT, J, ch_counter[J], v, j, l, parity(j + l), n,
+						       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
 
 /*
- *					Step 4: save each basis function |vjli> in the disk and increment
- *					the counter of atom-triatom channels.
+ *						Step 4: save each basis function |vjln> in the disk and increment
+ *						the counter of atom-triatom channels.
  */
 
-					FILE *output = basis_file(arrang, ch_counter, J, "wb");
+						FILE *output = basis_file(arrang, ch_counter[J], J, "wb");
 
-					file_write(&v, sizeof(int), 1, output);
-					file_write(&j, sizeof(int), 1, output);
-					file_write(&l, sizeof(int), 1, output);
-					file_write(&i, sizeof(int), 1, output);
+						file_write(&v, sizeof(int), 1, output);
+						file_write(&j, sizeof(int), 1, output);
+						file_write(&l, sizeof(int), 1, output);
+						file_write(&n, sizeof(int), 1, output);
 
-					file_write(&R_min, sizeof(double), 1, output);
-					file_write(&R_max, sizeof(double), 1, output);
-					file_write(&R_step, sizeof(double), 1, output);
+						file_write(&R_min, sizeof(double), 1, output);
+						file_write(&R_max, sizeof(double), 1, output);
+						file_write(&R_step, sizeof(double), 1, output);
 
-					file_write(&eigenval[v], sizeof(double), 1, output);
+						file_write(&eigenval[v], sizeof(double), 1, output);
 
-					file_write(&n_counter, sizeof(int), 1, output);
-					file_write(wavef + i*n_counter, sizeof(double), n_counter, output);
+						file_write(&n_counter, sizeof(int), 1, output);
+						file_write(wavef + n*n_counter, sizeof(double), n_counter, output);
 
-					fclose(output);
-					++ch_counter;
+						file_close(&output);
+						ch_counter[J] += 1;
+					}
 				}
 			}
 
@@ -326,6 +333,8 @@ int main(int argc, char *argv[])
 		matrix_free(eigenvec);
 		free(eigenval);
 	}
+
+	free(ch_counter);
 
 	return EXIT_SUCCESS;
 }

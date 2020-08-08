@@ -5,7 +5,7 @@
 
 #include "utils.h"
 
-#define FORMAT "# %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
+#define FORMAT "# %5d   %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
 
 /******************************************************************************
 
@@ -107,9 +107,15 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J = (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
+	const int J_min = (int) file_keyword(stdin, "J_min", 0.0, INF, 0.0);
+
+	const int J_max = (int) file_keyword(stdin, "J_max", 0.0, INF, 0.0);
+
+	const int J_step = (int) file_keyword(stdin, "J_step", 1.0, INF, 0.0);
 
 	const int J_parity = (int) file_keyword(stdin, "parity", -1.0, 1.0, 0.0);
+
+	ASSERT(J_max >= J_min)
 
 /*
  *	Vibrational quantum numbers, v:
@@ -191,16 +197,16 @@ int main(int argc, char *argv[])
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
  */
 
-	printf("# J = %d, J-parity = %d, reduced mass = %f a.u.\n", J, J_parity, mass);
-	printf("#   Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
-	printf("# -------------------------------------------------------------------------------------\n");
+	printf("# J-parity = %d, reduced mass = %f a.u.\n", J_parity, mass);
+	printf("#     J     Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
+	printf("# ---------------------------------------------------------------------------------------------\n");
 
 /*
  *	Step 1: loop over rotational states j of the diatom and solve the diatomic eigenvalue problem
  *	using the Fourier grid Hamiltonian discrete variable representation (FGH-DVR) method.
  */
 
-	int ch_counter = 0;
+	int *ch_counter = allocate(J_max + 1, sizeof(int), true);
 	const int i = 0;
 
 	for (int j = j_min; j <= j_max; j += j_step)
@@ -234,36 +240,39 @@ int main(int argc, char *argv[])
  *			respective J and j.
  */
 
-			for (int l = abs(J - j); l <= (J + j); ++l)
+			for (int J = J_min; J <= J_max; J += J_step)
 			{
-				if (parity(j + l) != J_parity && J_parity != 0) continue;
+				for (int l = abs(J - j); l <= (J + j); ++l)
+				{
+					if (parity(j + l) != J_parity && J_parity != 0) continue;
 
-				printf(FORMAT, ch_counter, v, j, l, parity(j + l),
-				       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
+					printf(FORMAT, J, ch_counter[J], v, j, l, parity(j + l),
+					       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
 
 /*
- *				Step 4: save each basis function |vjl> in the disk and increment the counter of
- *				channels.
+ *					Step 4: save each basis function |vjl> in the disk and increment the counter of
+ *					channels.
  */
 
-				FILE *output = basis_file(arrang, ch_counter, J, "wb");
+					FILE *output = basis_file(arrang, ch_counter[J], J, "wb");
 
-				file_write(&v, sizeof(int), 1, output);
-				file_write(&j, sizeof(int), 1, output);
-				file_write(&l, sizeof(int), 1, output);
-				file_write(&i, sizeof(int), 1, output);
+					file_write(&v, sizeof(int), 1, output);
+					file_write(&j, sizeof(int), 1, output);
+					file_write(&l, sizeof(int), 1, output);
+					file_write(&i, sizeof(int), 1, output);
 
-				file_write(&r_min, sizeof(double), 1, output);
-				file_write(&r_max, sizeof(double), 1, output);
-				file_write(&r_step, sizeof(double), 1, output);
+					file_write(&r_min, sizeof(double), 1, output);
+					file_write(&r_max, sizeof(double), 1, output);
+					file_write(&r_step, sizeof(double), 1, output);
 
-				file_write(&eigenval[v], sizeof(double), 1, output);
+					file_write(&eigenval[v], sizeof(double), 1, output);
 
-				file_write(&n_max, sizeof(int), 1, output);
-				file_write(wavef, sizeof(double), n_max, output);
+					file_write(&n_max, sizeof(int), 1, output);
+					file_write(wavef, sizeof(double), n_max, output);
 
-				fclose(output);
-				++ch_counter;
+					file_close(&output);
+					ch_counter[J] += 1;
+				}
 			}
 
 			free(wavef);
@@ -272,6 +281,8 @@ int main(int argc, char *argv[])
 		matrix_free(eigenvec);
 		free(eigenval);
 	}
+
+	free(ch_counter);
 
 	return EXIT_SUCCESS;
 }
