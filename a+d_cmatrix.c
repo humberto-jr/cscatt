@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
 		printf(", channels = %d", max_channel);
 		printf(", grid points = %d\n", grid_size);
 
-		printf("# CPU    thread           n           n'      R (a.u.)    wall time (s)\n");
+		printf("# CPU    thread       Ch. a       Ch. b       R (a.u.)    wall time (s)\n");
 		printf("# ---------------------------------------------------------------------\n");
 	}
 
