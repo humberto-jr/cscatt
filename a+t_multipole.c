@@ -1,14 +1,15 @@
 #include "modules/pes.h"
 #include "modules/file.h"
+#include "modules/math.h"
 #include "modules/mpi_lib.h"
 #include "modules/globals.h"
 
-#define FORMAT "  %3d       %3d       %3d    %06f    %06f       % -8e         %f\n"
+#define FORMAT "  %3d       %3d       %3d       %3d       %3d    %06f    %06f    %06f       % -8e         %f\n"
 
 struct tasks
 {
-	double r, R, result;
-	int lambda, grid_index;
+	double r_bc, r_bcd, r_abcd, result;
+	int lambda, eta, m_eta, grid_index;
 };
 
 /******************************************************************************
@@ -59,24 +60,46 @@ void send_results(const int max_task, struct tasks *list)
 
 /******************************************************************************
 
- Function driver(): performs the calculation of a single task using one thread
- from one process.
+ Function legendre_integrand(): is an auxiliary routine which returns the atom-
+ diatom Legendre multipole integrand for the inner integral in Eq. (22) of Ref.
+ [1] at a given (r, R) Jacobi coordinate.
 
 ******************************************************************************/
 
-void driver(const char arrang, struct tasks *job)
+double legendre_integrand(const double theta, void *params)
+{
+	struct tasks *p = (struct tasks *) params;
+
+	const double v = pes_harmonics_multipole(p->eta,
+	                                         p->m_eta,
+	                                         p->r_bc,
+	                                         p->r_bcd,
+	                                         p->r_abcd,
+	                                         theta*180.0/M_PI);
+
+	return v*math_legendre_poly(p->lambda, cos(theta))*sin(theta);
+}
+
+/******************************************************************************
+
+ Function driver(): performs the calculation of a single task using one thread
+ from one CPU.
+
+******************************************************************************/
+
+void driver(struct tasks *job)
 {
 	const double start_time = wall_time();
 
-	job->result
-		= pes_legendre_multipole(arrang, job->lambda, job->r, job->R);
+	job->result = math_qags(0.0, M_PI, &job, legendre_integrand);
+	job->result = as_double(2*job->lambda + 1)*job->result/2.0;
 
 	const double end_time = wall_time();
 
 	#pragma omp critical
 	{
-		printf(FORMAT, mpi_rank(), thread_id(),
-		       job->lambda, job->r, job->R, job->result, end_time - start_time);
+		printf(FORMAT, mpi_rank(), thread_id(), job->lambda, job->eta, job->m_eta,
+		       job->r_bc, job->r_bcd, r_abcd, job->result, end_time - start_time);
 	}
 }
 
@@ -176,40 +199,49 @@ int main(int argc, char *argv[])
 	file_init_stdin(argv[1]);
 
 /*
- *	Arrangement (a = 1, b = 2, c = 3), atomic masses and PES:
+ *	Atomic masses and PES:
  */
-
-	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
 
 	pes_init_mass(stdin, 'a');
 	pes_init_mass(stdin, 'b');
 	pes_init_mass(stdin, 'c');
-
-	pes_init();
+	pes_init_mass(stdin, 'd');
 
 /*
- *	Vibrational grid:
+ *	Vibrational grid for BC:
  */
 
-	const int rovib_grid_size = (int) file_keyword(stdin, "rovib_grid_size", 1.0, INF, 500.0);
+	const int bc_grid_size = (int) file_keyword(stdin, "bc_grid_size", 1.0, INF, 500.0);
 
-	const double r_min = file_keyword(stdin, "r_min", 0.0, INF, 0.5);
+	const double bc_rmin = file_keyword(stdin, "bc_rmin", 0.0, INF, 0.5);
 
-	const double r_max = file_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
+	const double bc_rmax = file_keyword(stdin, "bc_rmax", r_min, INF, r_min + 30.0);
 
-	const double r_step = (r_max - r_min)/as_double(rovib_grid_size);
+	const double bc_rstep = (bc_rmax - bc_rmin)/as_double(bc_grid_size);
+
+/*
+ *	Vibrational grid for BC-D:
+ */
+
+	const int bcd_grid_size = (int) file_keyword(stdin, "bcd_grid_size", 1.0, INF, 500.0);
+
+	const double bcd_rmin = file_keyword(stdin, "bcd_rmin", 0.0, INF, 0.5);
+
+	const double bcd_rmax = file_keyword(stdin, "bcd_rmax", r_min, INF, r_min + 30.0);
+
+	const double bcd_rstep = (bc_rmax - bc_rmin)/as_double(bc_grid_size);
 
 /*
  *	Scattering grid:
  */
 
-	const int scatt_grid_size = (int) file_keyword(stdin, "scatt_grid_size", 1.0, INF, 500.0);
+	const int abcd_grid_size = (int) file_keyword(stdin, "abcd_grid_size", 1.0, INF, 500.0);
 
-	const double R_min = file_keyword(stdin, "R_min", 0.0, INF, 0.5);
+	const double abcd_rmin = file_keyword(stdin, "abcd_rmin", 0.0, INF, 0.5);
 
-	const double R_max = file_keyword(stdin, "R_max", R_min, INF, R_min + 30.0);
+	const double abcd_rmax = file_keyword(stdin, "abcd_rmax", R_min, INF, R_min + 30.0);
 
-	const double R_step = (R_max - R_min)/as_double(scatt_grid_size);
+	const double abcd_rstep = (R_max - R_min)/as_double(abcd_grid_size);
 
 /*
  *	Multipoles:
@@ -225,6 +257,16 @@ int main(int argc, char *argv[])
 
 	ASSERT(lambda_max >= lambda_min)
 
+	const int eta_min = (int) file_keyword(stdin, "eta_min", 0.0, INF, 0.0);
+
+	const int eta_max = (int) file_keyword(stdin, "eta_max", 0.0, INF, 20.0);
+
+	const int eta_step = (int) file_keyword(stdin, "eta_step", 1.0, INF, 2.0);
+
+	const int eta_grid_size = (eta_max - eta_min)/eta_step + 1;
+
+	ASSERT(eta_max >= eta_min)
+
 /*
  *	OpenMP:
  */
@@ -232,25 +274,38 @@ int main(int argc, char *argv[])
 	const bool use_omp = (bool) file_keyword(stdin, "use_omp", 0.0, 1.0, 1.0);
 
 /*
- *	Sort each task (r, R, lambda) in an ordered list:
+ *	Sort each task (r, R, lambda) in an ordered list: TODO: include m_eta grid size in max_task
  */
 
-	const int max_task = scatt_grid_size*rovib_grid_size*lambda_grid_size;
+	const int max_task
+		= bc_grid_size*bcd_grid_size*abcd_grid_size*lambda_grid_size*eta_grid_size;
 
 	struct tasks *list = allocate(max_task, sizeof(struct tasks), true);
 
 	int counter = 0;
-	for (int n = 0; n < scatt_grid_size; ++n)
+	for (int n = 0; n < abcd_grid_size; ++n)
 	{
 		for (int lambda = lambda_min; lambda <= lambda_max; lambda += lambda_step)
 		{
-			for (int m = 0; m < rovib_grid_size; ++m)
+			for (int eta = eta_min; eta <= eta_max; eta += eta_step)
 			{
-				list[counter].r = r_min + as_double(m)*r_step;
-				list[counter].R = R_min + as_double(n)*R_step;
-				list[counter].lambda = lambda;
-				list[counter].grid_index = n;
-				++counter;
+				for (int m_eta = -eta; m_eta <= eta; ++eta)
+				{
+					for (int p = 0; p < bcd_grid_size; ++p)
+					{
+						for (int q = 0; q < bc_grid_size; ++q)
+						{
+							list[counter].r_abcd = abcd_rmin + as_double(n)*abcd_rstep;
+							list[counter].r_bcd = bcd_rmin + as_double(p)*bcd_rstep;
+							list[counter].r_bc = bc_rmin + as_double(q)*bc_rstep;
+							list[counter].lambda = lambda;
+							list[counter].grid_index = n;
+							list[counter].m_eta = m_eta;
+							list[counter].eta = eta;
+							++counter;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -270,8 +325,8 @@ int main(int argc, char *argv[])
 	if (mpi_rank() == 0)
 	{
 		printf("# MPI CPUs = %d, OpenMP threads = %d, num. of tasks = %d\n", mpi_comm_size(), max_threads(), max_task);
-		printf("# CPU    thread    lambda    r (a.u.)    R (a.u.)    multipole (a.u.)    wall time (s)\n");
-		printf("# ------------------------------------------------------------------------------------\n");
+		printf("# CPU    thread    lambda    eta    m_eta    r_bc (a.u.)    r_bcd (a.u.)    r_abcd (a.u.)    multipole (a.u.)    wall time (s)\n");
+		printf("# ----------------------------------------------------------------------------------------------------------------------------\n");
 	}
 
 	#pragma omp parallel for default(none) shared(list) schedule(static) if(use_omp)
