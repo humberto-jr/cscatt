@@ -99,7 +99,7 @@ void driver(struct tasks *job)
 	#pragma omp critical
 	{
 		printf(FORMAT, mpi_rank(), thread_id(), job->lambda, job->eta, job->m_eta,
-		       job->r_bc, job->r_bcd, r_abcd, job->result, end_time - start_time);
+		       job->r_bc, job->r_bcd, job->r_abcd, job->result, end_time - start_time);
 	}
 }
 
@@ -113,8 +113,7 @@ void driver(struct tasks *job)
 
 ******************************************************************************/
 
-FILE *multipole_file(const char arrang,
-                     const int grid_index, const char mode[])
+FILE *multipole_file(const int grid_index, const char mode[])
 {
 	char filename[MAX_LINE_LENGTH], ext[4];
 
@@ -123,7 +122,7 @@ FILE *multipole_file(const char arrang,
 	else
 		sprintf(ext, "%s", "dat");
 
-	sprintf(filename, "multipole_arrang=%c_n=%d.%s", arrang, grid_index, ext);
+	sprintf(filename, "a+t_multipole_n=%d.%s", grid_index, ext);
 
 	FILE *stream = fopen(filename, mode);
 
@@ -141,48 +140,68 @@ FILE *multipole_file(const char arrang,
 
 ******************************************************************************/
 
-void sort_results(const char arrang,
-                  const int max_task,
+void sort_results(const int max_task,
+                  const int eta_max,
                   const int lambda_max,
-                  const int grid_size,
-                  const double r_min,
-                  const double r_max,
-                  const double r_step,
+                  const int bc_grid_size,
+                  const int bcd_grid_size,
+                  const double bc_rmin,
+                  const double bc_rmax,
+                  const double bc_rstep,
+                  const double bcd_rmin,
+                  const double bcd_rmax,
+                  const double bcd_rstep,
                   const struct tasks list[])
 {
 	if (mpi_rank() != 0) return;
 
 	FILE *output = NULL;
-	int last_index = -1, last_lambda = -1;
+	int last_index = -1, last_lambda = -1, last_eta = -1, last_m = -1;
 
 	for (int n = 0; n < max_task; ++n)
 	{
 		if (list[n].grid_index != last_index)
 		{
 			file_close(&output);
-			output = multipole_file(arrang, list[n].grid_index, "wb");
+			output = multipole_file(list[n].grid_index, "wb");
 
-			file_write(&list[n].R, sizeof(double), 1, output);
+			file_write(&list[n].r_abcd, sizeof(double), 1, output);
 
-			file_write(&r_min, sizeof(double), 1, output);
-			file_write(&r_max, sizeof(double), 1, output);
-			file_write(&r_step, sizeof(double), 1, output);
+			file_write(&bc_rmin, sizeof(double), 1, output);
+			file_write(&bc_rmax, sizeof(double), 1, output);
+			file_write(&bc_rstep, sizeof(double), 1, output);
 
+			file_write(&bcd_rmin, sizeof(double), 1, output);
+			file_write(&bcd_rmax, sizeof(double), 1, output);
+			file_write(&bcd_rstep, sizeof(double), 1, output);
+
+			file_write(&eta_max, sizeof(int), 1, output);
 			file_write(&lambda_max, sizeof(int), 1, output);
-			file_write(&grid_size, sizeof(int), 1, output);
+			file_write(&bc_grid_size, sizeof(int), 1, output);
+			file_write(&bcd_grid_size, sizeof(int), 1, output);
 
 			last_lambda = -1;
+			last_eta = -1;
 		}
 
-		if (list[n].lambda != last_lambda)
+		if (list[n].lambda != last_lambda || list[n].eta != last_eta)
+		{
+			last_m = -1;
+		}
+
+		if (list[n].m_eta != last_m)
 		{
 			file_write(&list[n].lambda, sizeof(int), 1, output);
+			file_write(&list[n].eta, sizeof(int), 1, output);
+			file_write(&list[n].m_eta, sizeof(int), 1, output);
 		}
 
 		file_write(&list[n].result, sizeof(double), 1, output);
 
 		last_index = list[n].grid_index;
 		last_lambda = list[n].lambda;
+		last_eta = list[n].eta;
+		last_m = list[n].m_eta;
 	}
 
 	file_close(&output);
@@ -215,7 +234,7 @@ int main(int argc, char *argv[])
 
 	const double bc_rmin = file_keyword(stdin, "bc_rmin", 0.0, INF, 0.5);
 
-	const double bc_rmax = file_keyword(stdin, "bc_rmax", r_min, INF, r_min + 30.0);
+	const double bc_rmax = file_keyword(stdin, "bc_rmax", bc_rmin, INF, bc_rmin + 30.0);
 
 	const double bc_rstep = (bc_rmax - bc_rmin)/as_double(bc_grid_size);
 
@@ -227,7 +246,7 @@ int main(int argc, char *argv[])
 
 	const double bcd_rmin = file_keyword(stdin, "bcd_rmin", 0.0, INF, 0.5);
 
-	const double bcd_rmax = file_keyword(stdin, "bcd_rmax", r_min, INF, r_min + 30.0);
+	const double bcd_rmax = file_keyword(stdin, "bcd_rmax", bcd_rmin, INF, bcd_rmin + 30.0);
 
 	const double bcd_rstep = (bc_rmax - bc_rmin)/as_double(bc_grid_size);
 
@@ -239,9 +258,9 @@ int main(int argc, char *argv[])
 
 	const double abcd_rmin = file_keyword(stdin, "abcd_rmin", 0.0, INF, 0.5);
 
-	const double abcd_rmax = file_keyword(stdin, "abcd_rmax", R_min, INF, R_min + 30.0);
+	const double abcd_rmax = file_keyword(stdin, "abcd_rmax", abcd_rmin, INF, abcd_rmin + 30.0);
 
-	const double abcd_rstep = (R_max - R_min)/as_double(abcd_grid_size);
+	const double abcd_rstep = (abcd_rmax - abcd_rmin)/as_double(abcd_grid_size);
 
 /*
  *	Multipoles:
@@ -289,7 +308,7 @@ int main(int argc, char *argv[])
 		{
 			for (int eta = eta_min; eta <= eta_max; eta += eta_step)
 			{
-				for (int m_eta = -eta; m_eta <= eta; ++eta)
+				for (int m_eta = 0; m_eta <= eta; ++eta)
 				{
 					for (int p = 0; p < bcd_grid_size; ++p)
 					{
@@ -333,7 +352,7 @@ int main(int argc, char *argv[])
 	for (int n = mpi_first_task(); n <= mpi_last_task(); ++n)
 	{
 		extra_step:
-		driver(arrang, &list[n]);
+		driver(&list[n]);
 
 		if (n == mpi_last_task() && mpi_extra_task() > 0)
 		{
@@ -344,8 +363,18 @@ int main(int argc, char *argv[])
 
 	send_results(max_task, list);
 
-	sort_results(arrang, max_task, lambda_max,
-	             rovib_grid_size, r_min, r_max, r_step, list);
+	sort_results(max_task,
+	             eta_max,
+	             lambda_max,
+	             bc_grid_size,
+	             bcd_grid_size,
+	             bc_rmin,
+	             bc_rmax,
+	             bc_rstep,
+	             bcd_rmin,
+	             bcd_rmax,
+	             bcd_rstep,
+	             list);
 
 	free(list);
 
