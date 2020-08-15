@@ -57,6 +57,8 @@ GSLROOT = /usr/local
 CC = gcc
 CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
 LDFLAGS = -L$(GSLROOT)/lib -lgsl -lgslcblas -lm
+
+FC = gfortran
 FORT_LIB = -lgfortran
 
 #
@@ -362,6 +364,11 @@ magma: $(LIB_DIR)/magma-2.5.1-alpha1.tar.gz $(CUDAROOT) $(MAGMAROOT)
 	cp magma-2.5.1-alpha1/make.inc-examples/make.inc.mkl-$(CC) magma-2.5.1-alpha1/make.inc
 	cd magma-2.5.1-alpha1/; export CUDADIR=$(CUDAROOT); export GPU_TARGET="Kepler Maxwell Pascal"; make; make install prefix=$(MAGMAROOT);
 	rm -rf magma-2.5.1-alpha1/
+
+arpack: $(LIB_DIR)/ARPACK.tar.xz $(ARPACKROOT)
+	tar -xf $<
+	cd ARPACK/; make lib home=$(PWD)/ARPACK PLAT=linux FC=$(FC) FFLAGS=-O3 MAKE=make SHELL=/bin/bash; mv libarpack_*.a $(ARPACKROOT)/
+	rm -rf ARPACK
 
 clean:
 	rm -f *.o *.out
