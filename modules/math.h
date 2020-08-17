@@ -2,6 +2,14 @@
 	#define MATH_HEADER
 	#include "globals.h"
 
+	struct math_lanczos_setup
+	{
+		int n, n_max, max_step;
+		double *start_vector, *eigenval, *eigenvec;
+	};
+
+	typedef struct math_lanczos_setup math_lanczos_setup;
+
 	double math_legendre_poly(const int l, const double x);
 
 	double math_sphe_harmonics(const int l, const int m,

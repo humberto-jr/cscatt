@@ -456,7 +456,7 @@ double math_vegas_mcarlo(const int n,
 
 /******************************************************************************
 
- Function math_miser_mcarlo(): the same as math_plain_mcarlo() butusing the
+ Function math_miser_mcarlo(): the same as math_plain_mcarlo() but using the
  MISER algorithm.
 
 ******************************************************************************/
@@ -495,4 +495,88 @@ double math_miser_mcarlo(const int n,
 	}
 
 	return result;
+}
+
+/******************************************************************************
+
+ Function math_lanczos(): the same as math_plain_mcarlo() butusing the
+ MISER algorithm.
+
+******************************************************************************/
+
+void math_lanczos(math_lanczos_setup *s)
+{
+	ASSERT(s != NULL)
+
+	ASSERT(s->n > 0)
+	ASSERT(s->n_max >= s->n)
+	ASSERT(s->max_step > 1)
+
+/*
+ *	NOTE: this driver uses the same naming convention used by ARPACK library
+ *	except for the following: N = n_max, nev = ncv = ldv = n, bmat = "I" and
+ *	which = "SA". Likewise, for dseupd() routine, howmny = "A".
+ */
+
+	int ido = 0;
+	int info = 1;
+	int ipntr[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	int iparam[11] = {1, 0, s->max_step, 1, 0, 0, 1, 0, 0, 0, 0};
+
+	const int lworkl = s->n*s->n + 8*s->n;
+
+	double *v = allocate(s->n_max*s->n, sizeof(double), false);
+	double *workd = allocate(3*s->n_max, sizeof(double), false);
+	double *workl = allocate(lworkl, sizeof(double), false);
+
+	if (s->start_vector == NULL)
+	{
+		info = 0;
+		s->start_vector = allocate(s->n_max, sizeof(double), false);
+	}
+
+	do
+	{
+		dnaupd_(&ido, "I", &s->n_max, "SA", &s->n, &abs_error, s->start_vector,
+		        &s->n_max, v, &s->n_max, iparam, ipntr, workd, workl, &lworkl, &info);
+
+		if (ido == -1 || ido == 1)
+		{
+			s->; // TODO
+		}
+	}
+	while(ido != 99);
+
+	if (info != 0)
+	{
+		PRINT_ERROR("dnaupd() failed with error code %d\n", info)
+		exit(EXIT_FAILURE);
+	}
+
+	bool *select = allocate(s->n, sizeof(double), false);
+
+	if (s->eigenval == NULL)
+	{
+		s->eigenval = allocate(s->n, sizeof(double), false);
+	}
+
+	if (s->eigenvec == NULL)
+	{
+		s->eigenvec = allocate(s->n_max*s->n, sizeof(double), false);
+	}
+
+	dseupd_(true, "A", select, s->eigenval, s->eigenvec, &s->n_max, 0.0, "I",
+	        &s->n_max, "SA", &s->n, &abs_error, s->start_vector, &s->n, v,
+	        &s->n_max, iparam, ipntr, workd, workl, &lworkl, &info);
+
+	free(v);
+	free(workd);
+	free(workl);
+	free(select);
+
+	if (info != 0)
+	{
+		PRINT_ERROR("dseupd() failed with error code %d\n", info)
+		exit(EXIT_FAILURE);
+	}
 }
