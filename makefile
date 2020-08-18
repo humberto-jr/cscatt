@@ -256,6 +256,11 @@ mpi_lib: $(MODULES_DIR)/mpi_lib.c $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/c_lib.
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
+blas_lib: $(MODULES_DIR)/blas_lib.c $(MODULES_DIR)/blas_lib.h $(MODULES_DIR)/gsl_lib.h $(MODULES_DIR)/c_lib.h $(MODULES_DIR)/globals.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -c $<
+	@echo
+
 #network: $(MODULES_DIR)/network.c $(MODULES_DIR)/network.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
 #	@echo "\033[31m$<\033[0m"
 #	$(CC) $(CFLAGS) -c $<

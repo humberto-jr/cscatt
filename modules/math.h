@@ -4,8 +4,10 @@
 
 	struct math_lanczos_setup
 	{
+		void *params;
 		int n, n_max, max_step;
 		double *start_vector, *eigenval, *eigenvec;
+		double (*product)(const int, const int, const int, double *, void *);
 	};
 
 	typedef struct math_lanczos_setup math_lanczos_setup;

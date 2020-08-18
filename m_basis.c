@@ -21,6 +21,83 @@ inline static int parity(const int l)
 
 /******************************************************************************
 
+ Function fgh_matrix_product(): the same as fgh_matrix(), except that the
+ potential energy is the one of a problem with max_ch channels within grid_size
+ points. For details see Eq. (19a), Eq. (19b) and Eq. (19c) of Ref. [2].
+
+******************************************************************************/
+
+struct fgh_params
+{
+	const tensor *pot_energy;
+	const int grid_size, max_ch;
+	const double grid_step, mass;
+};
+
+void fgh_matrix_product(const int size,
+                        const int from,
+                        const int to,
+                        double vector[],
+                        void *params)
+{
+	ASSERT(vector != NULL)
+	ASSERT(params != NULL)
+	ASSERT(size == fgh->max_ch*fgh->grid_size)
+
+	struct fgh_params *fgh = (struct fgh_params *) params;
+
+	const double box_length = as_double(fgh->grid_size - 1)*fgh->grid_step;
+
+	const double factor = (M_PI*M_PI)/(fgh->mass*box_length*box_length);
+
+	const double nn_term = factor*as_double(fgh->grid_size*fgh->grid_size + 2)/6.0;
+
+	int row = 0;
+	for (int p = 0; p < fgh->max_ch; ++p)
+	{
+		for (int n = 0; n < fgh->grid_size; ++n)
+		{
+			double sum = 0.0;
+
+			int col = 0;
+			for (int q = 0; q < fgh->max_ch; ++q)
+			{
+				for (int m = 0; m < fgh->grid_size; ++m)
+				{
+					double pnqm = 0.0;
+
+					if (n == m && p == q)
+					{
+						pnqm = nn_term + matrix_get(fgh->pot_energy[n].value, p, p);
+					}
+
+					if (n != m && p == q)
+					{
+						const double nm = as_double((n + 1) - (m + 1));
+
+						const double nm_term = sin(nm*M_PI/as_double(fgh->grid_size));
+
+						pnqm = pow(-1.0, nm)*factor/pow(nm_term, 2);
+					}
+
+					if (n == m && p != q)
+					{
+						pnqm = matrix_get(fgh->pot_energy[n].value, p, q);
+					}
+
+					sum += *(vector + from + col)*pnqm;
+					++col;
+				}
+			}
+
+			*(vector + to + row) = sum;
+			++row;
+		}
+	}
+}
+
+/******************************************************************************
+
  Function fgh_multich_matrix(): the same as fgh_matrix(), except that the
  potential energy is the one of a problem with max_ch channels within grid_size
  points. For details see Eq. (19a), Eq. (19b) and Eq. (19c) of Ref. [2].
@@ -36,17 +113,13 @@ matrix *fgh_multich_matrix(const int max_ch,
 	ASSERT(max_ch > 0)
 	ASSERT(pot_energy != NULL)
 
-	matrix *result
-		= matrix_alloc(grid_size*max_ch, grid_size*max_ch, false);
+	matrix *result = matrix_alloc(grid_size*max_ch, grid_size*max_ch, false);
 
-	const double box_length
-		= as_double(grid_size - 1)*grid_step;
+	const double box_length = as_double(grid_size - 1)*grid_step;
 
-	const double factor
-		= (M_PI*M_PI)/(mass*box_length*box_length);
+	const double factor = (M_PI*M_PI)/(mass*box_length*box_length);
 
-	const double nn_term
-		= factor*as_double(grid_size*grid_size + 2)/6.0;
+	const double nn_term = factor*as_double(grid_size*grid_size + 2)/6.0;
 
 	int row = 0;
 	for (int p = 0; p < max_ch; ++p)
@@ -62,8 +135,7 @@ matrix *fgh_multich_matrix(const int max_ch,
 
 					if (n == m && p == q)
 					{
-						pnqm = nn_term
-						     + matrix_get(pot_energy[n].value, p, p);
+						pnqm = nn_term + matrix_get(pot_energy[n].value, p, p);
 					}
 
 					if (n != m && p == q)

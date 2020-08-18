@@ -11,6 +11,7 @@
 
 #include "math.h"
 #include "gsl_lib.h"
+#include "arpack_lib.h"
 
 static int workspace_size = 5000;
 static double abs_error = 1.0E-6;
@@ -499,8 +500,7 @@ double math_miser_mcarlo(const int n,
 
 /******************************************************************************
 
- Function math_lanczos(): the same as math_plain_mcarlo() butusing the
- MISER algorithm.
+ Function math_lanczos():
 
 ******************************************************************************/
 
@@ -510,7 +510,7 @@ void math_lanczos(math_lanczos_setup *s)
 
 	ASSERT(s->n > 0)
 	ASSERT(s->n_max >= s->n)
-	ASSERT(s->max_step > 1)
+	ASSERT(s->max_step > 0)
 
 /*
  *	NOTE: this driver uses the same naming convention used by ARPACK library
@@ -520,10 +520,9 @@ void math_lanczos(math_lanczos_setup *s)
 
 	int ido = 0;
 	int info = 1;
+	int lworkl = s->n*s->n + 8*s->n;
 	int ipntr[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	int iparam[11] = {1, 0, s->max_step, 1, 0, 0, 1, 0, 0, 0, 0};
-
-	const int lworkl = s->n*s->n + 8*s->n;
 
 	double *v = allocate(s->n_max*s->n, sizeof(double), false);
 	double *workd = allocate(3*s->n_max, sizeof(double), false);
@@ -537,12 +536,12 @@ void math_lanczos(math_lanczos_setup *s)
 
 	do
 	{
-		dnaupd_(&ido, "I", &s->n_max, "SA", &s->n, &abs_error, s->start_vector,
+		dsaupd_(&ido, "I", &s->n_max, "SA", &s->n, &abs_error, s->start_vector,
 		        &s->n_max, v, &s->n_max, iparam, ipntr, workd, workl, &lworkl, &info);
 
 		if (ido == -1 || ido == 1)
 		{
-			s->; // TODO
+			s->product(s->n_max, ipntr[0], ipntr[1], workd, s->params);
 		}
 	}
 	while(ido != 99);
@@ -553,7 +552,7 @@ void math_lanczos(math_lanczos_setup *s)
 		exit(EXIT_FAILURE);
 	}
 
-	bool *select = allocate(s->n, sizeof(double), false);
+	bool *select = allocate(s->n, sizeof(bool), false);
 
 	if (s->eigenval == NULL)
 	{
@@ -565,7 +564,10 @@ void math_lanczos(math_lanczos_setup *s)
 		s->eigenvec = allocate(s->n_max*s->n, sizeof(double), false);
 	}
 
-	dseupd_(true, "A", select, s->eigenval, s->eigenvec, &s->n_max, 0.0, "I",
+	bool rvec = true;
+	double sigma = 0.0;
+
+	dseupd_(&rvec, "A", select, s->eigenval, s->eigenvec, &s->n_max, &sigma, "I",
 	        &s->n_max, "SA", &s->n, &abs_error, s->start_vector, &s->n, v,
 	        &s->n_max, iparam, ipntr, workd, workl, &lworkl, &info);
 
