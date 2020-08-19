@@ -7,7 +7,7 @@
 		void *params;
 		int n, n_max, max_step;
 		double *start_vector, *eigenval, *eigenvec;
-		double (*product)(const int, const int, const int, double *, void *);
+		void (*product)(const int, const int, const int, double *, void *);
 	};
 
 	typedef struct math_lanczos_setup math_lanczos_setup;
@@ -85,6 +85,8 @@
 	                         const double b[],
 	                         void *params,
 	                         double (*f)(double x[], size_t n, void *params));
+
+	void math_lanczos(math_lanczos_setup *s);
 
 	/******************************************************************************
 

@@ -1,5 +1,6 @@
 #include "modules/pes.h"
 #include "modules/file.h"
+#include "modules/math.h"
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
@@ -17,83 +18,6 @@
 inline static int parity(const int l)
 {
 	return (int) pow(-1.0, l);
-}
-
-/******************************************************************************
-
- Function fgh_matrix_product(): the same as fgh_matrix(), except that the
- potential energy is the one of a problem with max_ch channels within grid_size
- points. For details see Eq. (19a), Eq. (19b) and Eq. (19c) of Ref. [2].
-
-******************************************************************************/
-
-struct fgh_params
-{
-	const tensor *pot_energy;
-	const int grid_size, max_ch;
-	const double grid_step, mass;
-};
-
-void fgh_matrix_product(const int size,
-                        const int from,
-                        const int to,
-                        double vector[],
-                        void *params)
-{
-	ASSERT(vector != NULL)
-	ASSERT(params != NULL)
-	ASSERT(size == fgh->max_ch*fgh->grid_size)
-
-	struct fgh_params *fgh = (struct fgh_params *) params;
-
-	const double box_length = as_double(fgh->grid_size - 1)*fgh->grid_step;
-
-	const double factor = (M_PI*M_PI)/(fgh->mass*box_length*box_length);
-
-	const double nn_term = factor*as_double(fgh->grid_size*fgh->grid_size + 2)/6.0;
-
-	int row = 0;
-	for (int p = 0; p < fgh->max_ch; ++p)
-	{
-		for (int n = 0; n < fgh->grid_size; ++n)
-		{
-			double sum = 0.0;
-
-			int col = 0;
-			for (int q = 0; q < fgh->max_ch; ++q)
-			{
-				for (int m = 0; m < fgh->grid_size; ++m)
-				{
-					double pnqm = 0.0;
-
-					if (n == m && p == q)
-					{
-						pnqm = nn_term + matrix_get(fgh->pot_energy[n].value, p, p);
-					}
-
-					if (n != m && p == q)
-					{
-						const double nm = as_double((n + 1) - (m + 1));
-
-						const double nm_term = sin(nm*M_PI/as_double(fgh->grid_size));
-
-						pnqm = pow(-1.0, nm)*factor/pow(nm_term, 2);
-					}
-
-					if (n == m && p != q)
-					{
-						pnqm = matrix_get(fgh->pot_energy[n].value, p, q);
-					}
-
-					sum += *(vector + from + col)*pnqm;
-					++col;
-				}
-			}
-
-			*(vector + to + row) = sum;
-			++row;
-		}
-	}
 }
 
 /******************************************************************************
@@ -166,46 +90,79 @@ matrix *fgh_multich_matrix(const int max_ch,
 
 /******************************************************************************
 
- Function norm(): normalize to unity a radial multichannel eigenvector composed
- of max_state components and grid_size points, using a 1/3-Simpson quadrature
- rule.
+ Function fgh_lanczos_product(): the same as fgh_matrix(), except that the
+ potential energy is the one of a problem with max_ch channels within grid_size
+ points. For details see Eq. (19a), Eq. (19b) and Eq. (19c) of Ref. [2].
 
 ******************************************************************************/
 
-void norm(const int max_state, const int grid_size,
-          const double grid_step, const bool use_omp, double eigenvec[])
+struct fgh_params
 {
-	ASSERT(max_state > 0)
-	ASSERT(grid_size > 0)
-	ASSERT(eigenvec != NULL)
+	tensor *pot_energy;
+	double grid_step, mass;
+	int grid_size, max_state;
+};
 
-	double total_sum = 0.0;
+void fgh_lanczos_product(const int size,
+                         const int from,
+                         const int to,
+                         double vector[],
+                         void *params)
+{
+	ASSERT(vector != NULL)
+	ASSERT(params != NULL)
 
-	#pragma omp parallel for default(none) shared(eigenvec) reduction(+:total_sum) if(use_omp)
-	for (int m = 0; m < max_state; ++m)
+	struct fgh_params *fgh = (struct fgh_params *) params;
+
+	ASSERT(size == fgh->max_state*fgh->grid_size)
+
+	const double box_length = as_double(fgh->grid_size - 1)*fgh->grid_step;
+
+	const double factor = (M_PI*M_PI)/(fgh->mass*box_length*box_length);
+
+	const double nn_term = factor*as_double(fgh->grid_size*fgh->grid_size + 2)/6.0;
+
+	int row = 0;
+	for (int p = 0; p < fgh->max_state; ++p)
 	{
-		const int n_min = m*grid_size;
-		const int n_max = n_min + (grid_size%2 == 0? grid_size : grid_size - 1);
-
-		double sum
-			= eigenvec[n_min]*eigenvec[n_min] + eigenvec[n_max - 1]*eigenvec[n_max - 1];
-
-		for (int n = n_min + 1; n < (n_max - 2); n += 2)
+		for (int n = 0; n < fgh->grid_size; ++n)
 		{
-			sum += 4.0*eigenvec[n]*eigenvec[n];
-			sum += 2.0*eigenvec[n + 1]*eigenvec[n + 1];
+			double sum = 0.0;
+
+			int col = 0;
+			for (int q = 0; q < fgh->max_state; ++q)
+			{
+				for (int m = 0; m < fgh->grid_size; ++m)
+				{
+					double pnqm = 0.0;
+
+					if (n == m && p == q)
+					{
+						pnqm = nn_term + matrix_get(fgh->pot_energy[n].value, p, p);
+					}
+
+					if (n != m && p == q)
+					{
+						const double nm = as_double((n + 1) - (m + 1));
+
+						const double nm_term = sin(nm*M_PI/as_double(fgh->grid_size));
+
+						pnqm = pow(-1.0, nm)*factor/pow(nm_term, 2);
+					}
+
+					if (n == m && p != q)
+					{
+						pnqm = matrix_get(fgh->pot_energy[n].value, p, q);
+					}
+
+					sum += *(vector + from + col)*pnqm;
+					++col;
+				}
+			}
+
+			*(vector + to + row) = sum;
+			++row;
 		}
-
-		sum = grid_step*sum/3.0;
-		total_sum += sum;
-	}
-
-	total_sum = sqrt(total_sum);
-
-	#pragma omp parallel for default(none) shared(eigenvec, total_sum) if(use_omp)
-	for (int n = 0; n < max_state*grid_size; ++n)
-	{
-		eigenvec[n] = eigenvec[n]/total_sum;
 	}
 }
 
@@ -294,6 +251,16 @@ int main(int argc, char *argv[])
 	ASSERT(mass != 0.0)
 
 /*
+ *	Lanczos:
+ */
+
+	math_lanczos_setup s;
+
+	s.n = v_max;
+	s.product = fgh_lanczos_product;
+	s.max_step = (int) file_keyword(stdin, "lanczos_max_step", 1.0, INF, 300.0);
+
+/*
  *	Resolve the triatomic eigenvalues for each j-case and sort results as scatt. channels:
  */
 
@@ -311,16 +278,17 @@ int main(int argc, char *argv[])
 
 	for (int j = j_min; j <= j_max; j += j_step)
 	{
-		tensor *pot_energy = allocate(n_max, sizeof(tensor), true);
+		struct fgh_params fgh;
+		fgh.pot_energy = allocate(n_max, sizeof(tensor), true);
 
 		int n_counter = 0;
 		for (int n = n_min; n < n_max; ++n)
 		{
-			pot_energy[n_counter].value = coupling_read(arrang, n, false, j);
+			fgh.pot_energy[n_counter].value = coupling_read(arrang, n, false, j);
 
 			if (n_counter > 0)
 			{
-				ASSERT(matrix_row(pot_energy[n_counter - 1].value) == matrix_row(pot_energy[n_counter].value))
+				ASSERT(matrix_row(fgh.pot_energy[n_counter - 1].value) == matrix_row(fgh.pot_energy[n_counter].value))
 			}
 
 			++n_counter;
@@ -331,19 +299,22 @@ int main(int argc, char *argv[])
  *		eigenvectos is named max_state and it is equal ch_counter from dbasis driver.
  */
 
-		const int max_state = matrix_row(pot_energy[0].value);
+		fgh.max_state = matrix_row(fgh.pot_energy[0].value);
+		fgh.grid_size = n_counter;
+		fgh.grid_step = R_step;
+		fgh.mass = mass;
 
-		matrix *eigenvec
-			= fgh_multich_matrix(max_state, n_counter, R_step, pot_energy, mass);
+		s.n_max = fgh.grid_size*fgh.max_state;
+		s.params = &fgh;
+
+		math_lanczos(&s);
 
 		for (int n = 0; n < n_counter; ++n)
 		{
-			matrix_free(pot_energy[n].value);
+			matrix_free(fgh.pot_energy[n].value);
 		}
 
-		free(pot_energy);
-
-		double *eigenval = matrix_symm_eigen(eigenvec, 'v');
+		free(fgh.pot_energy);
 
 /*
  *		Step 2: loop over the vibrational states v of the triatom, solutions of
@@ -352,10 +323,6 @@ int main(int argc, char *argv[])
 
 		for (int v = v_min; v <= v_max; v += v_step)
 		{
-			double *wavef = matrix_raw_col(eigenvec, v, false);
-
-			norm(max_state, n_counter, R_step, (n_counter >= 2000), wavef);
-
 /*
  *			Step 3: loop over all partial waves l of the atom around the triatom
  *			given by the respective J and j.
@@ -367,10 +334,10 @@ int main(int argc, char *argv[])
 				{
 					if (parity(j + l) != J_parity && J_parity != 0) continue;
 
-					for (int n = 0; n < max_state; ++n)
+					for (int n = 0; n < fgh.max_state; ++n)
 					{
 						printf(FORMAT, J, ch_counter[J], v, j, l, parity(j + l), n,
-						       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
+						       s.eigenval[v], s.eigenval[v]*219474.63137054, s.eigenval[v]*27.211385);
 
 /*
  *						Step 4: save each basis function |vjln> in the disk and increment
@@ -388,22 +355,26 @@ int main(int argc, char *argv[])
 						file_write(&R_max, sizeof(double), 1, output);
 						file_write(&R_step, sizeof(double), 1, output);
 
-						file_write(&eigenval[v], sizeof(double), 1, output);
+						file_write(&s.eigenval[v], sizeof(double), 1, output);
 
 						file_write(&n_counter, sizeof(int), 1, output);
-						file_write(wavef + n*n_counter, sizeof(double), n_counter, output);
+						file_write(s.eigenvec + n*n_counter, sizeof(double), n_counter, output);
 
 						file_close(&output);
 						ch_counter[J] += 1;
 					}
 				}
 			}
-
-			free(wavef);
 		}
 
-		matrix_free(eigenvec);
-		free(eigenval);
+		free(s.eigenval);
+		s.eigenval = NULL;
+
+		free(s.eigenvec);
+		s.eigenvec = NULL;
+
+		free(s.start_vector);
+		s.start_vector = NULL;
 	}
 
 	free(ch_counter);
