@@ -11,7 +11,8 @@
 
 #include "math.h"
 #include "gsl_lib.h"
-#include "arpack_lib.h"
+
+#include "arpack.h"
 
 static int workspace_size = 5000;
 static double abs_error = 1.0E-6;
@@ -514,17 +515,18 @@ void math_lanczos(math_lanczos_setup *s)
 
 /*
  *	NOTE: this driver uses the same naming convention used by ARPACK library
- *	except for the following: N = n_max, nev = ncv = ldv = n, bmat = "I" and
- *	which = "SA". Likewise, for dseupd() routine, howmny = "A".
+ *	except for the following: N = n_max, nev = n, bmat = "I" and which = "SM".
+ *	Likewise, for dseupd() routine, rmat = true, howmny = "A" and sigma = 0.
  */
 
-	int ido = 0;
-	int info = 1;
-	int lworkl = s->n*s->n + 8*s->n;
-	int ipntr[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	int iparam[11] = {1, 0, s->max_step, 1, 0, 0, 1, 0, 0, 0, 0};
+	a_int ido = 0;
+	a_int info = 1;
+	a_int ncv = 2*s->n + 10;
+	a_int lworkl = ncv*ncv + 8*ncv;
+	a_int ipntr[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	a_int iparam[11] = {1, 0, s->max_step, 1, 0, 0, 1, 0, 0, 0, 0};
 
-	double *v = allocate(s->n_max*s->n, sizeof(double), false);
+	double *v = allocate(s->n_max*ncv, sizeof(double), false);
 	double *workd = allocate(3*s->n_max, sizeof(double), false);
 	double *workl = allocate(lworkl, sizeof(double), false);
 
@@ -534,25 +536,24 @@ void math_lanczos(math_lanczos_setup *s)
 		s->start_vector = allocate(s->n_max, sizeof(double), false);
 	}
 
-	do
+	while (ido != 99)
 	{
-		dsaupd_(&ido, "I", &s->n_max, "SA", &s->n, &abs_error, s->start_vector,
-		        &s->n_max, v, &s->n_max, iparam, ipntr, workd, workl, &lworkl, &info);
+		dsaupd_c(&ido, 'I', s->n_max, "SM", s->n, abs_error, s->start_vector,
+		         ncv, v, s->n_max, iparam, ipntr, workd, workl, lworkl, &info);
 
 		if (ido == -1 || ido == 1)
 		{
-			s->product(s->n_max, ipntr[0], ipntr[1], workd, s->params);
+			s->product(s->n_max, ipntr[0] - 1, ipntr[1] - 1, workd, s->params);
 		}
 	}
-	while(ido != 99);
 
 	if (info != 0)
 	{
-		PRINT_ERROR("dnaupd() failed with error code %d\n", info)
+		PRINT_ERROR("dsaupd_c() failed with error code %d\n", info)
 		exit(EXIT_FAILURE);
 	}
 
-	bool *select = allocate(s->n, sizeof(bool), false);
+	bool *select = allocate(ncv, sizeof(bool), false);
 
 	if (s->eigenval == NULL)
 	{
@@ -564,12 +565,9 @@ void math_lanczos(math_lanczos_setup *s)
 		s->eigenvec = allocate(s->n_max*s->n, sizeof(double), false);
 	}
 
-	bool rvec = true;
-	double sigma = 0.0;
-
-	dseupd_(&rvec, "A", select, s->eigenval, s->eigenvec, &s->n_max, &sigma, "I",
-	        &s->n_max, "SA", &s->n, &abs_error, s->start_vector, &s->n, v,
-	        &s->n_max, iparam, ipntr, workd, workl, &lworkl, &info);
+	dseupd_c(true, 'A', select, s->eigenval, s->eigenvec, s->n_max, 0.0, 'I',
+	         s->n_max, "SM", s->n, abs_error, s->start_vector, ncv, v,
+	         s->n_max, iparam, ipntr, workd, workl, lworkl, &info);
 
 	free(v);
 	free(workd);
@@ -578,7 +576,7 @@ void math_lanczos(math_lanczos_setup *s)
 
 	if (info != 0)
 	{
-		PRINT_ERROR("dseupd() failed with error code %d\n", info)
+		PRINT_ERROR("dseupd_c() failed with error code %d\n", info)
 		exit(EXIT_FAILURE);
 	}
 }
