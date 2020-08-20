@@ -382,5 +382,12 @@ arpack: $(LIB_DIR)/ARPACK.tar.xz $(ARPACKROOT)
 	cd ARPACK/; make lib home=$(PWD)/ARPACK PLAT=linux FC=$(FC) FFLAGS=-O3 MAKE=make SHELL=/bin/bash; mv libarpack_*.a $(ARPACKROOT)/
 	rm -rf ARPACK
 
+arpack-ng: $(LIB_DIR)/arpack-ng.tar.xz $(ARPACKROOT)
+	tar -xf $<
+	cd arpack-ng/; ./bootstrap;
+	cd arpack-ng/; ./configure --enable-icb F77=$(FC) FC=$(FC) CC=$(CC) CXX=g++ --prefix=$(ARPACKROOT)
+	cd arpack-ng/; make; make install
+	rm -rf arpack-ng
+
 clean:
 	rm -f *.o *.out
