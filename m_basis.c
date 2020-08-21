@@ -104,12 +104,10 @@ struct fgh_params
 };
 
 void fgh_lanczos_product(const int size,
-                         const int from,
-                         const int to,
-                         double vector[],
-                         void *params)
+                         const double x[], double y[], void *params)
 {
-	ASSERT(vector != NULL)
+	ASSERT(x != NULL)
+	ASSERT(y != NULL)
 	ASSERT(params != NULL)
 
 	struct fgh_params *fgh = (struct fgh_params *) params;
@@ -155,12 +153,12 @@ void fgh_lanczos_product(const int size,
 						pnqm = matrix_get(fgh->pot_energy[n].value, p, q);
 					}
 
-					sum += *(vector + from + col)*pnqm;
+					sum += x[col]*pnqm;
 					++col;
 				}
 			}
 
-			*(vector + to + row) = sum;
+			y[row] = sum;
 			++row;
 		}
 	}
