@@ -7,7 +7,7 @@
 		void *params;
 		int n, n_max, max_step;
 		double *start_vector, *eigenval, *eigenvec;
-		void (*product)(const int, const int, const int, double *, void *);
+		void (*product)(const int, const double *, double *, void *);
 	};
 
 	typedef struct math_lanczos_setup math_lanczos_setup;

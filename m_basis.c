@@ -257,6 +257,9 @@ int main(int argc, char *argv[])
 	math_lanczos_setup s;
 
 	s.n = v_max;
+	s.eigenval = NULL;
+	s.eigenvec = NULL;
+	s.start_vector = NULL;
 	s.product = fgh_lanczos_product;
 	s.max_step = (int) file_keyword(stdin, "lanczos_max_step", 1.0, INF, 300.0);
 

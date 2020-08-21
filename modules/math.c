@@ -12,7 +12,7 @@
 #include "math.h"
 #include "gsl_lib.h"
 
-#include "arpack.h"
+#include "arpack/arpack.h"
 
 static int workspace_size = 5000;
 static double abs_error = 1.0E-6;
@@ -522,9 +522,9 @@ void math_lanczos(math_lanczos_setup *s)
 	a_int ido = 0;
 	a_int info = 1;
 	a_int ncv = 2*s->n + 10;
-	a_int lworkl = ncv*ncv + 8*ncv;
-	a_int ipntr[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	a_int iparam[11] = {1, 0, s->max_step, 1, 0, 0, 1, 0, 0, 0, 0};
+	a_int lworkl = 3*ncv*ncv + 8*ncv;
+	a_int ipntr[14] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	a_int iparam[11] = {1, 1, s->max_step, 1, 0, 0, 1, 0, 0, 0, 0};
 
 	double *v = allocate(s->n_max*ncv, sizeof(double), false);
 	double *workd = allocate(3*s->n_max, sizeof(double), false);
@@ -534,26 +534,31 @@ void math_lanczos(math_lanczos_setup *s)
 	{
 		info = 0;
 		s->start_vector = allocate(s->n_max, sizeof(double), false);
-	}
 
-	while (ido != 99)
-	{
-		dsaupd_c(&ido, 'I', s->n_max, "SM", s->n, abs_error, s->start_vector,
-		         ncv, v, s->n_max, iparam, ipntr, workd, workl, lworkl, &info);
-
-		if (ido == -1 || ido == 1)
+		for (int p = 0; p < s->n_max; ++p)
 		{
-			s->product(s->n_max, ipntr[0] - 1, ipntr[1] - 1, workd, s->params);
+			s->start_vector[p] = (double) rand()/RAND_MAX;
 		}
 	}
 
-	if (info != 0)
+	while ((int) ido != 99)
 	{
-		PRINT_ERROR("dsaupd_c() failed with error code %d\n", info)
+		dsaupd_c(&ido, "I", s->n_max, "SM", s->n, abs_error, s->start_vector,
+		         ncv, v, s->n_max, iparam, ipntr, workd, workl, lworkl, &info);
+
+		double *x = workd + (int) ipntr[0] - 1;
+		double *y = workd + (int) ipntr[1] - 1;
+
+		s->product(s->n_max, x, y, s->params);
+	}
+
+	if ((int) info != 0)
+	{
+		PRINT_ERROR("dsaupd_c() failed with error code %d\n", (int) info)
 		exit(EXIT_FAILURE);
 	}
 
-	bool *select = allocate(ncv, sizeof(bool), false);
+	a_int *select = allocate(ncv, sizeof(a_int), false);
 
 	if (s->eigenval == NULL)
 	{
@@ -565,7 +570,7 @@ void math_lanczos(math_lanczos_setup *s)
 		s->eigenvec = allocate(s->n_max*s->n, sizeof(double), false);
 	}
 
-	dseupd_c(true, 'A', select, s->eigenval, s->eigenvec, s->n_max, 0.0, 'I',
+	dseupd_c(1, "A", select, s->eigenval, s->eigenvec, s->n_max, 0.0, "I",
 	         s->n_max, "SM", s->n, abs_error, s->start_vector, ncv, v,
 	         s->n_max, iparam, ipntr, workd, workl, lworkl, &info);
 
@@ -576,7 +581,7 @@ void math_lanczos(math_lanczos_setup *s)
 
 	if (info != 0)
 	{
-		PRINT_ERROR("dseupd_c() failed with error code %d\n", info)
+		PRINT_ERROR("dseupd_c() failed with error code %d\n", (int) info)
 		exit(EXIT_FAILURE);
 	}
 }

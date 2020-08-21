@@ -55,8 +55,8 @@ LINEAR_ALGEBRA = GSL
 GSLROOT = /usr/local
 
 CC = gcc
-CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include
-LDFLAGS = -L$(GSLROOT)/lib -lgsl -lgslcblas -lm
+CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include -I$(ARPACKROOT)/include
+LDFLAGS = $(ARPACKROOT)/lib/libarpack.a -L$(GSLROOT)/lib -lgsl -lgslcblas -lm -lifcore
 
 FC = gfortran
 FORT_LIB = -lgfortran
@@ -205,7 +205,7 @@ endif
 #
 
 ARPACKROOT = /usr/local
-LDFLAGS += $(ARPACKROOT)/libarpack_*.a 
+#LDFLAGS += $(ARPACKROOT)/lib/libarpack.a
 
 #
 # Extra macros, if any, in order to tune the building:
@@ -384,8 +384,8 @@ arpack: $(LIB_DIR)/ARPACK.tar.xz $(ARPACKROOT)
 
 arpack-ng: $(LIB_DIR)/arpack-ng.tar.xz $(ARPACKROOT)
 	tar -xf $<
-	cd arpack-ng/; ./bootstrap;
-	cd arpack-ng/; ./configure --enable-icb F77=$(FC) FC=$(FC) CC=$(CC) CXX=g++ --prefix=$(ARPACKROOT)
+	cd arpack-ng/; ./bootstrap
+	cd arpack-ng/; export FFLAGS='-DMKL_ILP64 -I$(MKLROOT)'; export FCLAGS='-DMKL_ILP64 -I$(MKLROOT)'; export INTERFACE64=1; ./configure --with-blas=mkl_gf_ilp64 --with-lapack=mkl_gf_ilp64 --enable-icb F77=$(FC) FC=$(FC) CC=$(CC) CXX=g++ --prefix=$(ARPACKROOT)
 	cd arpack-ng/; make; make install
 	rm -rf arpack-ng
 
