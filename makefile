@@ -7,7 +7,7 @@
 # make
 #
 # to build and link all codes using GNU gcc compiler (default). Notice,
-# the environment variable MKLROOT must be properly defined before make.
+# the environment variable MKL_DIR must be properly defined before make.
 #
 # 2) If Intel icc compiler is the C compiler of choice instead, type
 #
@@ -52,17 +52,18 @@
 
 SHELL = /bin/sh
 LINEAR_ALGEBRA = GSL
-GSLROOT = /usr/local
-
-CC = gcc
-CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSLROOT)/include -I$(ARPACKROOT)/include
-LDFLAGS = $(ARPACKROOT)/lib/libarpack.a -L$(GSLROOT)/lib -lgsl -lgslcblas -lm -lifcore
-
-FC = gfortran
-FORT_LIB = -lgfortran
+GSL_DIR = /usr/local
 
 #
-# GNU or Intel MPI compilers:
+# C compilers (GNU gcc by default):
+#
+
+CC = gcc
+CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSL_DIR)/include
+LDFLAGS = -L$(GSL_DIR)/lib -lgsl -lgslcblas -lm
+
+#
+# GNU or Intel MPI wrappers:
 #
 
 ifeq ($(CC), mpicc)
@@ -71,18 +72,17 @@ endif
 
 ifeq ($(CC), mpiicc)
 	CFLAGS += -DUSE_MPI
-	FORT_LIB += -lifcore
 endif
 
 #
 # IBM xlc compiler:
 #
 
-XLFROOT = /opt/ibmcmp/xlf/bg/14.1
+XLF_DIR = /opt/ibmcmp/xlf/bg/14.1
 
 ifeq ($(CC), xlc)
-	CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5
-	FORT_LIB = -lxlf90_r -lxl -lxlfmath -L$(XLFROOT)/bglib64
+	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
+	override LDFLAGS = -lxlf90_r -lxl -lxlfmath -L$(XLF_DIR)/bglib64
 endif
 
 #
@@ -90,8 +90,8 @@ endif
 #
 
 ifeq ($(CC), xlc_r)
-	CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5
-	FORT_LIB = -lxlf90_r -lxl -lxlfmath -L$(XLFROOT)/bglib64
+	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
+	override LDFLAGS = -lxlf90_r -lxl -lxlfmath -L$(XLF_DIR)/bglib64
 endif
 
 #
@@ -99,8 +99,8 @@ endif
 #
 
 ifeq ($(CC), mpixlc)
-	CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -DUSE_MPI
-	FORT_LIB = -lxlf90_r -lxl -lxlfmath -L$(XLFROOT)/bglib64
+	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include -DUSE_MPI
+	override LDFLAGS = -lxlf90_r -lxl -lxlfmath -L$(XLF_DIR)/bglib64
 endif
 
 #
@@ -108,8 +108,8 @@ endif
 #
 
 ifeq ($(CC), mpixlc_r)
-	CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -DUSE_MPI
-	FORT_LIB = -lxlf90_r -lxl -lxlfmath -L$(XLFROOT)/bglib64
+	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include -DUSE_MPI
+	override LDFLAGS = -lxlf90_r -lxl -lxlfmath -L$(XLF_DIR)/bglib64
 endif
 
 #
@@ -117,7 +117,25 @@ endif
 #
 
 ifeq ($(CC), pgcc)
-	override CFLAGS = -mp -O3 -I$(GSLROOT)/include
+	override CFLAGS = -mp -O3 -I$(GSL_DIR)/include
+endif
+
+#
+# Fortran compilers:
+#
+
+FC =
+
+ifeq ($(FC), gfortran)
+	LDFLAGS += -lgfortran
+endif
+
+ifeq ($(FC), ifort)
+	LDFLAGS += -lifcore
+endif
+
+ifeq ($(FC), )
+	FC = gfortran
 endif
 
 #
@@ -141,71 +159,73 @@ endif
 # Intel MKL (for GNU gcc or Intel icc compilers):
 #
 
+MKL_DIR = $(MKLROOT)
+
 ifeq ($(LINEAR_ALGEBRA), MKL)
-	LINEAR_ALGEBRA_INC = -DMKL_ILP64 -m64 -I$(MKLROOT)/include -DUSE_MKL
+	LINEAR_ALGEBRA_INC = -DMKL_ILP64 -m64 -I$(MKL_DIR)/include -DUSE_MKL
 
 	ifeq ($(CC), icc)
-		LINEAR_ALGEBRA_LIB = -parallel -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_ilp64.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a $(MKLROOT)/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl
-	else
-		LINEAR_ALGEBRA_LIB = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_ilp64.a $(MKLROOT)/lib/intel64/libmkl_gnu_thread.a $(MKLROOT)/lib/intel64/libmkl_core.a -Wl,--end-group -lgomp -lpthread -lm -ldl
+		LINEAR_ALGEBRA_LIB = -parallel -Wl,--start-group $(MKL_DIR)/lib/intel64/libmkl_intel_ilp64.a $(MKL_DIR)/lib/intel64/libmkl_intel_thread.a $(MKL_DIR)/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl
+	endif
+
+	ifeq ($(CC), gcc)
+		LINEAR_ALGEBRA_LIB = -Wl,--start-group $(MKL_DIR)/lib/intel64/libmkl_intel_ilp64.a $(MKL_DIR)/lib/intel64/libmkl_gnu_thread.a $(MKL_DIR)/lib/intel64/libmkl_core.a -Wl,--end-group -lgomp -lpthread -lm -ldl
 	endif
 endif
 
 #
-# LAPACKE library:
+# LAPACKE, LAPACK and BLAS libraries:
 #
 
-LAPACKEROOT = /usr/local
-LAPACKROOT = /usr/local
-BLASROOT = /usr/local
+LAPACKE_DIR = /usr/local
+LAPACK_DIR = /usr/local
+BLAS_DIR = /usr/local
 
 ifeq ($(LINEAR_ALGEBRA), LAPACKE)
-	LINEAR_ALGEBRA_INC = -I$(LAPACKEROOT)/include -DUSE_LAPACKE
-	LINEAR_ALGEBRA_LIB = -L$(LAPACKEROOT)/lib -llapacke -llapack -lblas -lgfortran -lm
+	LINEAR_ALGEBRA_INC = -I$(LAPACKE_DIR)/include -DUSE_LAPACKE
+	LINEAR_ALGEBRA_LIB = -L$(LAPACKE_DIR)/lib -llapacke -llapack -lblas -lgfortran -lm
 endif
 
 #
 # IBM ESSL (for Blue Gene machines):
-# TODO: XLFROOT is IDRIS dependent!
 #
 
-ESSLROOT = /usr
+ESSL_DIR = /usr
 
 ifeq ($(LINEAR_ALGEBRA), ESSL)
-	LINEAR_ALGEBRA_INC = -I$(ESSLROOT)/include -DUSE_ESSL
-	LINEAR_ALGEBRA_LIB = -L$(ESSLROOT)/lib64 -lesslbg -lm
+	LINEAR_ALGEBRA_INC = -I$(ESSL_DIR)/include -DUSE_ESSL
+	LINEAR_ALGEBRA_LIB = -L$(ESSL_DIR)/lib64 -lesslbg -lm
 endif
 
 #
 # MAGMA library:
 #
 
-MAGMAROOT = /usr/local/magma
-CUDAROOT = /usr/local/cuda
+MAGMA_DIR = /usr/local/magma
+CUDA_DIR = /usr/local/cuda
 
 ifeq ($(LINEAR_ALGEBRA), MAGMA)
 	CFLAGS += -DUSE_MAGMA
-	LINEAR_ALGEBRA_INC = -I$(CUDAROOT)/include -I$(MAGMAROOT)/include -DADD_
-	LINEAR_ALGEBRA_LIB = -L$(MAGMAROOT)/lib -L$(CUDAROOT)/lib64 -lmagma -lm
+	LINEAR_ALGEBRA_INC = -I$(CUDA_DIR)/include -I$(MAGMA_DIR)/include -DADD_
+	LINEAR_ALGEBRA_LIB = -L$(MAGMA_DIR)/lib -L$(CUDA_DIR)/lib64 -lmagma -lm
 endif
 
 #
 # ATLAS library:
 #
 
-ATLASROOT = /usr/local/atlas
+ATLAS_DIR = /usr/local/atlas
 
 ifeq ($(LINEAR_ALGEBRA), ATLAS)
-	LINEAR_ALGEBRA_INC = -I$(ATLASROOT)/include -DUSE_ATLAS
-	LINEAR_ALGEBRA_LIB = -L$(ATLASROOT)/lib -latlas -lptcblas -lm
+	LINEAR_ALGEBRA_INC = -I$(ATLAS_DIR)/include -DUSE_ATLAS
+	LINEAR_ALGEBRA_LIB = -L$(ATLAS_DIR)/lib -latlas -lptcblas -lm
 endif
 
 #
-# ARPACK library:
+# SLEPc library:
 #
 
-ARPACKROOT = /usr/local
-#LDFLAGS += $(ARPACKROOT)/lib/libarpack.a
+SLEPC_DIR = /usr/local
 
 #
 # Extra macros, if any, in order to tune the building:
@@ -358,23 +378,23 @@ a+t_multipole: a+t_multipole.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/m
 
 LIB_DIR = lib
 
-gsl: $(LIB_DIR)/gsl-2.5.tar.gz $(GSLROOT)
+gsl: $(LIB_DIR)/gsl-2.5.tar.gz $(GSL_DIR)
 	tar -zxvf $<
-	cd gsl-2.5/; ./configure CC=$(CC) --prefix=$(GSLROOT); make; make install
+	cd gsl-2.5/; ./configure CC=$(CC) --prefix=$(GSL_DIR); make; make install
 	rm -rf gsl-2.5/
 
-lapacke: $(LIB_DIR)/lapack-3.5.0.tar $(LAPACKEROOT)/lib $(LAPACKEROOT)/include
+lapacke: $(LIB_DIR)/lapack-3.5.0.tar $(LAPACKE_DIR)/lib $(LAPACKE_DIR)/include
 	tar -xvf $<
 	cd lapack-3.5.0/; cp make.inc.example make.inc
 	cd lapack-3.5.0/BLAS/SRC; make
 	cd lapack-3.5.0; make; make lapackelib
-	cd lapack-3.5.0; mv librefblas.a libblas.a; cp lib*.a $(LAPACKEROOT)/lib/; cp lapacke/include/*.h $(LAPACKEROOT)/include/
+	cd lapack-3.5.0; mv librefblas.a libblas.a; cp lib*.a $(LAPACKE_DIR)/lib/; cp lapacke/include/*.h $(LAPACKE_DIR)/include/
 	rm -rf lapack-3.5.0/
 
-magma: $(LIB_DIR)/magma-2.5.1-alpha1.tar.gz $(CUDAROOT) $(MAGMAROOT)
+magma: $(LIB_DIR)/magma-2.5.1-alpha1.tar.gz $(CUDA_DIR) $(MAGMA_DIR)
 	tar -zxvf $<
 	cp magma-2.5.1-alpha1/make.inc-examples/make.inc.mkl-$(CC) magma-2.5.1-alpha1/make.inc
-	cd magma-2.5.1-alpha1/; export CUDADIR=$(CUDAROOT); export GPU_TARGET="Kepler Maxwell Pascal"; make; make install prefix=$(MAGMAROOT);
+	cd magma-2.5.1-alpha1/; export CUDADIR=$(CUDA_DIR); export GPU_TARGET="Kepler Maxwell Pascal"; make; make install prefix=$(MAGMA_DIR);
 	rm -rf magma-2.5.1-alpha1/
 
 arpack: $(LIB_DIR)/ARPACK.tar.xz $(ARPACKROOT)
@@ -385,9 +405,20 @@ arpack: $(LIB_DIR)/ARPACK.tar.xz $(ARPACKROOT)
 arpack-ng: $(LIB_DIR)/arpack-ng.tar.xz $(ARPACKROOT)
 	tar -xf $<
 	cd arpack-ng/; ./bootstrap
-	cd arpack-ng/; export FFLAGS='-DMKL_ILP64 -I$(MKLROOT)'; export FCLAGS='-DMKL_ILP64 -I$(MKLROOT)'; export INTERFACE64=1; ./configure --with-blas=mkl_gf_ilp64 --with-lapack=mkl_gf_ilp64 --enable-icb F77=$(FC) FC=$(FC) CC=$(CC) CXX=g++ --prefix=$(ARPACKROOT)
+	cd arpack-ng/; export FFLAGS="-DMKL_ILP64 -I$(MKL_DIR)"; export FCLAGS="-DMKL_ILP64 -I$(MKL_DIR)"; export INTERFACE64=1; ./configure --with-blas=mkl_gf_ilp64 --with-lapack=mkl_gf_ilp64 --enable-icb F77=$(FC) FC=$(FC) CC=$(CC) CXX=g++ --prefix=$(ARPACKROOT)
 	cd arpack-ng/; make; make install
 	rm -rf arpack-ng
+
+slepc: $(LIB_DIR)/slepc-3.13.4.tar.gz $(LIB_DIR)/petsc-3.13.4.tar.gz $(SLEPC_DIR)
+	tar -zxvf $(LIB_DIR)/petsc-3.13.4.tar.gz
+	tar -zxvf $(LIB_DIR)/slepc-3.13.4.tar.gz
+	cd petsc-3.13.4/; export PETSC_DIR=$(PWD)/petsc-3.13.4; ./configure --with-cc=$(CC) --with-fc=$(FC) --with-mpi=0 --with-shared-libraries=0
+	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-debug all
+	cd slepc-3.13.4/; export PETSC_DIR=$(PWD)/petsc-3.13.4; export SLEPC_DIR=$(PWD)/slepc-3.13.4; export PETSC_ARCH=arch-linux2-c-debug; ./configure
+	cd slepc-3.13.4/; make SLEPC_DIR=$(PWD)/slepc-3.13.4 PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-debug
+	mv petsc-3.13.4/arch-linux2-c-debug $(SLEPC_DIR)/petsc
+	mv slepc-3.13.4/arch-linux2-c-debug $(SLEPC_DIR)/slepc # TODO: when using sudo PWD returns the root dir and so it fails.
+	rm -rf petsc-3.13.4 slepc-3.13.4
 
 clean:
 	rm -f *.o *.out
