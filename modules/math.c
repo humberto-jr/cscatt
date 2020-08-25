@@ -524,7 +524,7 @@ void math_lanczos(math_lanczos_setup *s)
 	a_int ncv = 2*s->n + 10;
 	a_int lworkl = 3*ncv*ncv + 8*ncv;
 	a_int ipntr[14] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	a_int iparam[11] = {1, 1, s->max_step, 1, 0, 0, 1, 0, 0, 0, 0};
+	a_int iparam[11] = {1, 1, (a_int) s->max_step, 1, 0, 0, 1, 0, 0, 0, 0};
 
 	double *v = allocate(s->n_max*ncv, sizeof(double), false);
 	double *workd = allocate(3*s->n_max, sizeof(double), false);
@@ -541,18 +541,18 @@ void math_lanczos(math_lanczos_setup *s)
 		}
 	}
 
-	while ((int) ido != 99)
+	while (ido != (a_int) 99)
 	{
 		dsaupd_c(&ido, "I", s->n_max, "SM", s->n, abs_error, s->start_vector,
 		         ncv, v, s->n_max, iparam, ipntr, workd, workl, lworkl, &info);
 
-		double *x = workd + (int) ipntr[0] - 1;
-		double *y = workd + (int) ipntr[1] - 1;
+		double *x = workd + ((int) ipntr[0]) - 1;
+		double *y = workd + ((int) ipntr[1]) - 1;
 
 		s->product(s->n_max, x, y, s->params);
 	}
 
-	if ((int) info != 0)
+	if (info != (a_int) 0)
 	{
 		PRINT_ERROR("dsaupd_c() failed with error code %d\n", (int) info)
 		exit(EXIT_FAILURE);
@@ -579,7 +579,7 @@ void math_lanczos(math_lanczos_setup *s)
 	free(workl);
 	free(select);
 
-	if (info != 0)
+	if (info != (a_int) 0)
 	{
 		PRINT_ERROR("dseupd_c() failed with error code %d\n", (int) info)
 		exit(EXIT_FAILURE);

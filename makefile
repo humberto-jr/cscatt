@@ -66,12 +66,14 @@ LDFLAGS = -L$(GSL_DIR)/lib -lgsl -lgslcblas -lm
 # GNU or Intel MPI wrappers:
 #
 
+USE_MPI = no
+
 ifeq ($(CC), mpicc)
-	CFLAGS += -DUSE_MPI
+	USE_MPI = yes
 endif
 
 ifeq ($(CC), mpiicc)
-	CFLAGS += -DUSE_MPI
+	USE_MPI = yes
 endif
 
 #
@@ -99,8 +101,9 @@ endif
 #
 
 ifeq ($(CC), mpixlc)
-	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include -DUSE_MPI
+	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
 	override LDFLAGS = -lxlf90_r -lxl -lxlfmath -L$(XLF_DIR)/bglib64
+	USE_MPI = yes
 endif
 
 #
@@ -108,8 +111,9 @@ endif
 #
 
 ifeq ($(CC), mpixlc_r)
-	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include -DUSE_MPI
+	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
 	override LDFLAGS = -lxlf90_r -lxl -lxlfmath -L$(XLF_DIR)/bglib64
+	USE_MPI = yes
 endif
 
 #
@@ -121,7 +125,7 @@ ifeq ($(CC), pgcc)
 endif
 
 #
-# Fortran compilers:
+# Fortran compilers (using GNU gfortran as default option):
 #
 
 FC =
@@ -153,6 +157,19 @@ else
 	endif
 
 	PES_MACRO = -DEXTERNAL_PES_NAME=$(PES_NAME)
+endif
+
+#
+# MPI library (using OpenMPI as default option):
+#
+
+MPI_DIR = /usr/include/openmpi
+
+ifeq ($(USE_MPI), yes)
+	CFLAGS += -DUSE_MPI
+	PETSC_MPI_OPTION = --with-mpi-dir=$(MPI_DIR)
+else
+	PETSC_MPI_OPTION = --with-mpi=0
 endif
 
 #
@@ -222,10 +239,30 @@ ifeq ($(LINEAR_ALGEBRA), ATLAS)
 endif
 
 #
-# SLEPc library:
+# PETSc library (optionally used by mpi_lib module):
 #
 
-SLEPC_DIR = /usr/local
+USE_PETSC = no
+PETSC_DIR = /usr/local/petsc
+
+ifeq ($(USE_PETSC), yes)
+	CFLAGS += -I$(PETSC_DIR)/include -DUSE_PETSC
+	LDFLAGS += $(PETSC_DIR)/libpetsc.a
+endif
+
+#
+# SLEPc library (optionally used by mpi_lib module and requires PETSc):
+#
+
+USE_SLEPC = no
+SLEPC_DIR = /usr/local/slepc
+
+ifeq ($(USE_SLEPC), yes)
+	CFLAGS += -I$(PETSC_DIR)/include -DUSE_PETSC
+	CFLAGS += -I$(SLEPC_DIR)/include -DUSE_SLEPC
+	LDFLAGS += $(PETSC_DIR)/libpetsc.a
+	LDFLAGS += $(SLEPC_DIR)/libpetsc.a
+endif
 
 #
 # Extra macros, if any, in order to tune the building:
@@ -409,16 +446,21 @@ arpack-ng: $(LIB_DIR)/arpack-ng.tar.xz $(ARPACKROOT)
 	cd arpack-ng/; make; make install
 	rm -rf arpack-ng
 
-slepc: $(LIB_DIR)/slepc-3.13.4.tar.gz $(LIB_DIR)/petsc-3.13.4.tar.gz $(SLEPC_DIR)
+petsc: $(LIB_DIR)/petsc-3.13.4.tar.gz
 	tar -zxvf $(LIB_DIR)/petsc-3.13.4.tar.gz
+	mkdir -p $(PETSC_DIR)
+	cd petsc-3.13.4/; ./configure --prefix=$(PETSC_DIR) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-debugging=0
+	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-opt all
+	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-opt install
+	rm -rf petsc-3.13.4
+
+slepc: $(LIB_DIR)/slepc-3.13.4.tar.gz $(PETSC_DIR)
 	tar -zxvf $(LIB_DIR)/slepc-3.13.4.tar.gz
-	cd petsc-3.13.4/; export PETSC_DIR=$(PWD)/petsc-3.13.4; ./configure --with-cc=$(CC) --with-fc=$(FC) --with-mpi=0 --with-shared-libraries=0
-	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-debug all
-	cd slepc-3.13.4/; export PETSC_DIR=$(PWD)/petsc-3.13.4; export SLEPC_DIR=$(PWD)/slepc-3.13.4; export PETSC_ARCH=arch-linux2-c-debug; ./configure
-	cd slepc-3.13.4/; make SLEPC_DIR=$(PWD)/slepc-3.13.4 PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-debug
-	mv petsc-3.13.4/arch-linux2-c-debug $(SLEPC_DIR)/petsc
-	mv slepc-3.13.4/arch-linux2-c-debug $(SLEPC_DIR)/slepc # TODO: when using sudo PWD returns the root dir and so it fails.
-	rm -rf petsc-3.13.4 slepc-3.13.4
+	mkdir -p $(SLEPC_DIR)
+	cd slepc-3.13.4/; export PETSC_DIR=$(PETSC_DIR); export SLEPC_DIR=$(PWD)/slepc-3.13.4; ./configure --prefix=$(SLEPC_DIR)
+	cd slepc-3.13.4/; make PETSC_DIR=$(PETSC_DIR) SLEPC_DIR=$(PWD)/slepc-3.13.4
+	cd slepc-3.13.4/; make PETSC_DIR=$(PETSC_DIR) SLEPC_DIR=$(PWD)/slepc-3.13.4 install
+	rm -rf slepc-3.13.4
 
 clean:
 	rm -f *.o *.out

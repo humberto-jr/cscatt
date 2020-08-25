@@ -18,10 +18,38 @@
 	#include "mpi.h"
 #endif
 
+#if defined(USE_PETSC)
+	#include <petscmat.h>
+#endif
+
+#if defined(USE_PETSC) && defined(USE_SLEPC)
+	#include "slepceps.h"
+#endif
+
 FILE *stream = NULL;
 
 static int rank = 0, size = 1, level = 0, chunk_size = 1, tasks = 1, extra_tasks = 0;
 static int *index_min = NULL, *index_max = NULL;
+
+/******************************************************************************
+
+ Macro ASSERT_RANK(): check if the n-th process is among those in the MPI
+ communicator.
+
+******************************************************************************/
+
+struct mpi_matrix
+{
+	#if defined(USE_PETSC)
+		Mat data;
+	#endif
+
+	#if defined(USE_SLEPC)
+		EPS solver;
+	#endif
+
+	int local_row, global_row, global_col;
+};
 
 /******************************************************************************
 
@@ -99,10 +127,36 @@ void mpi_init(int argc, char *argv[])
 	ASSERT(argv != NULL)
 
 	#if defined(USE_MPI)
+	{
 		MPI_Init_thread(&argc, &argv, MPI_THREAD_SERIALIZED, &level);
 
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 		MPI_Comm_size(MPI_COMM_WORLD, &size);
+	}
+	#endif
+
+	#if defined(USE_PETSC)
+	{
+		const PetscErrorCode info = PetscInitialize(&argc, &argv, NULL, NULL);
+
+		if (info != 0)
+		{
+			PRINT_ERROR("PetscInitialize() failed with error code %d\n", (int) info)
+			exit(EXIT_FAILURE);
+		}
+	}
+	#endif
+
+	#if defined(USE_SLEPC)
+	{
+		const PetscErrorCode info = SlepcInitialize(&argc, &argv, NULL, NULL);
+
+		if (info != 0)
+		{
+			PRINT_ERROR("SlepcInitialize() failed with error code %d\n", (int) info)
+			exit(EXIT_FAILURE);
+		}
+	}
 	#endif
 
 	return;
@@ -118,11 +172,37 @@ void mpi_init(int argc, char *argv[])
 void mpi_end()
 {
 	#if defined(USE_MPI)
+	{
 		#pragma omp master
 		{
 			MPI_Barrier(MPI_COMM_WORLD);
 			MPI_Finalize();
 		}
+	}
+	#endif
+
+	#if defined(USE_PETSC)
+	{
+		const PetscErrorCode info = PetscFinalize();
+
+		if (info != 0)
+		{
+			PRINT_ERROR("PetscFinalize() failed with error code %d\n", (int) info)
+			exit(EXIT_FAILURE);
+		}
+	}
+	#endif
+
+	#if defined(USE_SLEPC)
+	{
+		const PetscErrorCode info = SlepcFinalize();
+
+		if (info != 0)
+		{
+			PRINT_ERROR("SlepcFinalize() failed with error code %d\n", (int) info)
+			exit(EXIT_FAILURE);
+		}
+	}
 	#endif
 
 	if (index_min != NULL) free(index_min);
@@ -472,4 +552,180 @@ void mpi_fwrite(const int length, const c_type c, const void *array)
 	}
 
 	return;
+}
+
+/******************************************************************************
+
+ Function mpi_matrix_alloc():
+
+******************************************************************************/
+
+mpi_matrix *mpi_matrix_alloc(const int block_row,
+                             const int total_row,
+                             const int total_col,
+                             const int non_zeros[])
+{
+	ASSERT(block_row > 0)
+	ASSERT(total_row > 0)
+	ASSERT(total_col > 0)
+	ASSERT(non_zeros[0] >= 0)
+	ASSERT(non_zeros[1] >= 0)
+
+	#if defined(USE_PETSC)
+	{
+		PetscErrorCode info;
+
+		mpi_matrix *pointer = allocate(1, sizeof(mpi_matrix), true);
+
+		if (mpi_comm_size() > 0)
+		{
+			info = MatCreateAIJ(MPI_COMM_WORLD,
+			                    (PetscInt) block_row,
+			                    (PetscInt) total_col,
+			                    (PetscInt) total_row,
+			                    (PetscInt) total_col,
+			                    (PetscInt) non_zeros[0],
+			                    NULL, (PetscInt) non_zeros[1], NULL, &pointer->data);
+			if (info != 0)
+			{
+				PRINT_ERROR("MatCreateAIJ() failed with error code %d\n", (int) info)
+				exit(EXIT_FAILURE);
+			}
+		}
+		else
+		{
+			info = MatCreateSeqAIJ(PETSC_COMM_SELF,
+			                       (PetscInt) total_row,
+			                       (PetscInt) total_col,
+			                       (PetscInt) non_zeros[0], NULL, &pointer->data);
+			if (info != 0)
+			{
+				PRINT_ERROR("MatCreateSeqAIJ() failed with error code %d\n", (int) info)
+				exit(EXIT_FAILURE);
+			}
+		}
+
+		#if defined(USE_SLEPC)
+		{
+			EPSCreate(MPI_COMM_WORLD, &pointer->solver);
+			EPSSetOperators(pointer->solver, pointer->data, NULL);
+		}
+		#endif
+
+		return pointer;
+	}
+	#endif
+
+	return NULL;
+}
+
+/******************************************************************************
+
+ Function mpi_matrix_set():
+
+******************************************************************************/
+
+void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
+{
+	ASSERT(p > 0)
+	ASSERT(q > 0)
+	ASSERT(m != NULL)
+
+	#if defined(USE_PETSC)
+	{
+		const PetscInt p_index[1] = {(PetscInt) p};
+		const PetscInt q_index[1] = {(PetscInt) q};
+		const PetscScalar value[1] = {(PetscScalar) x};
+
+		const PetscErrorCode info
+			= MatSetValues(m->data, 1, p_index, 1, q_index, value, INSERT_VALUES);
+
+		if (info != 0)
+		{
+			PRINT_ERROR("MatSetValues() failed with error code %d\n", (int) info)
+			exit(EXIT_FAILURE);
+		}
+	}
+	#endif
+}
+
+/******************************************************************************
+
+ Function mpi_matrix_build():
+
+******************************************************************************/
+
+void mpi_matrix_build(mpi_matrix *m)
+{
+	PetscErrorCode info;
+
+	info = MatAssemblyBegin(m->data, MAT_FINAL_ASSEMBLY);
+	info = MatAssemblyEnd(m->data, MAT_FINAL_ASSEMBLY);
+
+	if (info != 0)
+	{
+		PRINT_ERROR("MatAssemblyEnd() failed with error code %d\n", (int) info)
+		exit(EXIT_FAILURE);
+	}
+}
+
+/******************************************************************************
+
+ Function mpi_matrix_sparse_eigen(): Krylov-Schur, a variation of Arnoldi with
+ a very effective restarting technique. In the case of symmetric problems, this
+ is equivalent to the thick-restart Lanczos method. Hermitian only.
+
+******************************************************************************/
+
+void mpi_matrix_sparse_eigen(mpi_matrix *m, const int max_eigenval)
+{
+	ASSERT(m != NULL)
+	ASSERT(max_eigenval > 0)
+
+	#if defined(USE_PETSC) && defined(USE_SLEPC)
+	{
+		const PetscInt nev = (PetscInt) max_eigenval;
+		const PetscInt ncv = 2*nev + 10;
+
+		PetscErrorCode info = EPSSetDimensions(m->solver, nev, ncv, nev);
+
+		if (info != 0)
+		{
+			PRINT_ERROR("EPSSetDimensions() failed with error code %d\n", (int) info)
+			exit(EXIT_FAILURE);
+		}
+
+		info = EPSSetProblemType(m->solver, EPS_HEP);
+
+		if (info != 0)
+		{
+			PRINT_ERROR("EPSSetProblemType() failed with error code %d\n", (int) info)
+			exit(EXIT_FAILURE);
+		}
+
+		info = EPSSetWhichEigenpairs(m->solver, EPS_SMALLEST_MAGNITUDE);
+
+		if (info != 0)
+		{
+			PRINT_ERROR("EPSSetWhichEigenpairs() failed with error code %d\n", (int) info)
+			exit(EXIT_FAILURE);
+		}
+
+		info = EPSSetType(m->solver, EPSKRYLOVSCHUR);
+
+		if (info != 0)
+		{
+			PRINT_ERROR("EPSSetType() failed with error code %d\n", (int) info)
+			exit(EXIT_FAILURE);
+		}
+
+		info = EPSSolve(m->solver);
+
+		if (info != 0)
+		{
+			PRINT_ERROR("EPSSolve() failed with error code %d\n", (int) info)
+			exit(EXIT_FAILURE);
+		}
+	}
+	#endif
 }

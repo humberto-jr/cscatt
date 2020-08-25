@@ -2,6 +2,8 @@
 	#define MPI_LIB_HEADER
 	#include "c_lib.h"
 
+	typedef struct mpi_matrix mpi_matrix;
+
 	void mpi_init(int argc, char *argv[]);
 
 	void mpi_end();
