@@ -33,8 +33,9 @@ static int *index_min = NULL, *index_max = NULL;
 
 /******************************************************************************
 
- Macro ASSERT_RANK(): check if the n-th process is among those in the MPI
- communicator.
+ Type mpi_matrix: defines a matrix object, often very large and sparse, whose
+ non-zero elements are allocated among all MPI processes available. It needs
+ the PETSc library by defining the USE_PETSC macro during compilation.
 
 ******************************************************************************/
 
@@ -42,14 +43,46 @@ struct mpi_matrix
 {
 	#if defined(USE_PETSC)
 		Mat data;
+		PetscInt global_row, global_col, rank_chunk;
 	#endif
 
 	#if defined(USE_SLEPC)
 		EPS solver;
 	#endif
-
-	int local_row, global_row, global_col;
 };
+
+/******************************************************************************
+
+ Type mpi_vector: defines a vector object whose elements are allocated among
+ all MPI processes available. It needs the PETSc library by defining the
+ USE_PETSC macro during compilation.
+
+******************************************************************************/
+
+struct mpi_vector
+{
+	#if defined(USE_PETSC)
+		Vec data;
+		PetscInt global_length, rank_chunk, remainder, start, end;
+	#endif
+};
+
+/******************************************************************************
+
+ Macro CHECK_PETSC_ERROR(): checks the error code of PETSc calls and writes an
+ error message in the C stderr with the name of the failed function, if the
+ code corresponds to an error. When stop = true, the exection is terminated.
+
+******************************************************************************/
+
+#define CHECK_PETSC_ERROR(name, code, stop)                                  \
+{                                                                            \
+  if (code != 0)                                                             \
+  {                                                                          \
+    PRINT_ERROR("rank %d, %s failed with error code %d\n", rank, name, code) \
+    if (stop) exit(EXIT_FAILURE);                                            \
+  }                                                                          \
+}
 
 /******************************************************************************
 
@@ -117,7 +150,8 @@ static size_t mpi_sizeof(const c_type c)
 /******************************************************************************
 
  Function mpi_init(): initializes the MPI library and should be invoked before
- any MPI call.
+ any MPI call. It also initializes PETSc and/or SLEPc libraries if USE_PETSC
+ and/or USE_SLEPC macros are defined during compilation.
 
 ******************************************************************************/
 
@@ -138,24 +172,14 @@ void mpi_init(int argc, char *argv[])
 	#if defined(USE_PETSC)
 	{
 		const PetscErrorCode info = PetscInitialize(&argc, &argv, NULL, NULL);
-
-		if (info != 0)
-		{
-			PRINT_ERROR("PetscInitialize() failed with error code %d\n", (int) info)
-			exit(EXIT_FAILURE);
-		}
+		CHECK_PETSC_ERROR("PetscInitialize()", info, true)
 	}
 	#endif
 
 	#if defined(USE_SLEPC)
 	{
 		const PetscErrorCode info = SlepcInitialize(&argc, &argv, NULL, NULL);
-
-		if (info != 0)
-		{
-			PRINT_ERROR("SlepcInitialize() failed with error code %d\n", (int) info)
-			exit(EXIT_FAILURE);
-		}
+		CHECK_PETSC_ERROR("SlepcInitialize()", info, true)
 	}
 	#endif
 
@@ -165,7 +189,8 @@ void mpi_init(int argc, char *argv[])
 /******************************************************************************
 
  Function mpi_end(): finalizes the use of MPI and no calls to MPI functions
- should be done after.
+ should be done after. It also finalizes PETSc and/or SLEPc libraries if
+ USE_PETSC and/or USE_SLEPC macros are defined during compilation.
 
 ******************************************************************************/
 
@@ -181,27 +206,17 @@ void mpi_end()
 	}
 	#endif
 
-	#if defined(USE_PETSC)
-	{
-		const PetscErrorCode info = PetscFinalize();
-
-		if (info != 0)
-		{
-			PRINT_ERROR("PetscFinalize() failed with error code %d\n", (int) info)
-			exit(EXIT_FAILURE);
-		}
-	}
-	#endif
-
 	#if defined(USE_SLEPC)
 	{
 		const PetscErrorCode info = SlepcFinalize();
+		CHECK_PETSC_ERROR("SlepcFinalize()", info, false)
+	}
+	#endif
 
-		if (info != 0)
-		{
-			PRINT_ERROR("SlepcFinalize() failed with error code %d\n", (int) info)
-			exit(EXIT_FAILURE);
-		}
+	#if defined(USE_PETSC)
+	{
+		const PetscErrorCode info = PetscFinalize();
+		CHECK_PETSC_ERROR("PetscFinalize()", info, false)
 	}
 	#endif
 
@@ -255,8 +270,10 @@ int mpi_thread_level()
 void mpi_barrier()
 {
 	#if defined(USE_MPI)
+	{
 		#pragma omp critical
 		MPI_Barrier(MPI_COMM_WORLD);
+	}
 	#endif
 }
 
@@ -361,6 +378,7 @@ void mpi_send(const int to, const int n_max, const c_type c, void *data)
 	ASSERT(c != type_unknown)
 
 	#if defined(USE_MPI)
+	{
 		#pragma omp critical
 		{
 			const MPI_Datatype type_name = mpi_type(c);
@@ -368,6 +386,7 @@ void mpi_send(const int to, const int n_max, const c_type c, void *data)
 			MPI_Send(&n_max, 1, MPI_INT, to, 666, MPI_COMM_WORLD);
 			MPI_Send(data, n_max, type_name, to, 667, MPI_COMM_WORLD);
 		}
+	}
 	#endif
 }
 
@@ -385,6 +404,7 @@ void mpi_receive(const int from, const int n_max, const c_type c, void *data)
 	ASSERT(c != type_unknown)
 
 	#if defined(USE_MPI)
+	{
 		#pragma omp critical
 		{
 			const MPI_Datatype type_name = mpi_type(c);
@@ -399,6 +419,7 @@ void mpi_receive(const int from, const int n_max, const c_type c, void *data)
 			MPI_Recv(data, m_max,
 			         type_name, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
+	}
 	#endif
 }
 
@@ -556,18 +577,24 @@ void mpi_fwrite(const int length, const c_type c, const void *array)
 
 /******************************************************************************
 
- Function mpi_matrix_alloc():
+ Function mpi_matrix_alloc(): allocate resources for a matrix of shape max_row-
+ by-max_col, where chunks of cpu_rows are stored in each MPI process available.
+ The approximated number of non-zero elements, in the diagonal blocks, given by
+ non_zeros[0], and off-diagonal blocks, non_zeros[1], is provided to optimize
+ memory allocation.
+
+ NOTE: if PETSc library is not available this is a dummy function.
 
 ******************************************************************************/
 
-mpi_matrix *mpi_matrix_alloc(const int block_row,
-                             const int total_row,
-                             const int total_col,
+mpi_matrix *mpi_matrix_alloc(const int cpu_row,
+                             const int max_row,
+                             const int max_col,
                              const int non_zeros[])
 {
-	ASSERT(block_row > 0)
-	ASSERT(total_row > 0)
-	ASSERT(total_col > 0)
+	ASSERT(cpu_row > 0)
+	ASSERT(max_row > 0)
+	ASSERT(max_col > 0)
 	ASSERT(non_zeros[0] >= 0)
 	ASSERT(non_zeros[1] >= 0)
 
@@ -577,32 +604,30 @@ mpi_matrix *mpi_matrix_alloc(const int block_row,
 
 		mpi_matrix *pointer = allocate(1, sizeof(mpi_matrix), true);
 
-		if (mpi_comm_size() > 0)
+		pointer->rank_chunk = cpu_row;
+		pointer->global_row = max_row;
+		pointer->global_col = max_col;
+
+		if (size > 1)
 		{
 			info = MatCreateAIJ(MPI_COMM_WORLD,
-			                    (PetscInt) block_row,
-			                    (PetscInt) total_col,
-			                    (PetscInt) total_row,
-			                    (PetscInt) total_col,
+			                    (PetscInt) cpu_row,
+			                    (PetscInt) max_col,
+			                    (PetscInt) max_row,
+			                    (PetscInt) max_col,
 			                    (PetscInt) non_zeros[0],
 			                    NULL, (PetscInt) non_zeros[1], NULL, &pointer->data);
-			if (info != 0)
-			{
-				PRINT_ERROR("MatCreateAIJ() failed with error code %d\n", (int) info)
-				exit(EXIT_FAILURE);
-			}
+
+			CHECK_PETSC_ERROR("MatCreateAIJ()", info, true)
 		}
 		else
 		{
 			info = MatCreateSeqAIJ(PETSC_COMM_SELF,
-			                       (PetscInt) total_row,
-			                       (PetscInt) total_col,
+			                       (PetscInt) max_row,
+			                       (PetscInt) max_col,
 			                       (PetscInt) non_zeros[0], NULL, &pointer->data);
-			if (info != 0)
-			{
-				PRINT_ERROR("MatCreateSeqAIJ() failed with error code %d\n", (int) info)
-				exit(EXIT_FAILURE);
-			}
+
+			CHECK_PETSC_ERROR("MatCreateSeqAIJ()", info, true)
 		}
 
 		#if defined(USE_SLEPC)
@@ -640,11 +665,7 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 		const PetscErrorCode info
 			= MatSetValues(m->data, 1, p_index, 1, q_index, value, INSERT_VALUES);
 
-		if (info != 0)
-		{
-			PRINT_ERROR("MatSetValues() failed with error code %d\n", (int) info)
-			exit(EXIT_FAILURE);
-		}
+		CHECK_PETSC_ERROR("MatSetValues()", info, true)
 	}
 	#endif
 }
@@ -657,16 +678,101 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 
 void mpi_matrix_build(mpi_matrix *m)
 {
-	PetscErrorCode info;
+	ASSERT(m != NULL)
 
-	info = MatAssemblyBegin(m->data, MAT_FINAL_ASSEMBLY);
-	info = MatAssemblyEnd(m->data, MAT_FINAL_ASSEMBLY);
-
-	if (info != 0)
+	#if defined(USE_PETSC)
 	{
-		PRINT_ERROR("MatAssemblyEnd() failed with error code %d\n", (int) info)
-		exit(EXIT_FAILURE);
+		PetscErrorCode info;
+
+		info = MatAssemblyBegin(m->data, MAT_FINAL_ASSEMBLY);
+		info = MatAssemblyEnd(m->data, MAT_FINAL_ASSEMBLY);
+
+		CHECK_PETSC_ERROR("MatAssemblyEnd()", info, true)
 	}
+	#endif
+}
+
+/******************************************************************************
+
+ Function mpi_vector_alloc():
+
+******************************************************************************/
+
+mpi_vector *mpi_vector_alloc(const int length)
+{
+	ASSERT(length > 0)
+
+	#if defined(USE_PETSC)
+	{
+		PetscErrorCode info;
+
+		mpi_vector *pointer = allocate(1, sizeof(mpi_vector), true);
+
+		info = VecCreate(MPI_COMM_WORLD, &pointer->data);
+
+		CHECK_PETSC_ERROR("VecCreate()", info, true)
+
+		pointer->global_length = length;
+		pointer->remainder = length%size;
+		pointer->rank_chunk = length/size;
+		pointer->start = rank*pointer->rank_chunk;
+		pointer->end = pointer->start + pointer->rank_chunk;
+
+		if (rank == (size - 1) && pointer->remainder > 0)
+		{
+			pointer->end = pointer->start + pointer->remainder;
+		}
+
+		info = VecSetSizes(pointer->data, pointer->rank_chunk, pointer->global_length);
+
+		CHECK_PETSC_ERROR("VecSetSizes()", info, true)
+
+		return pointer;
+	}
+	#endif
+
+	return NULL;
+}
+
+/******************************************************************************
+
+ Function mpi_vector_free():
+
+******************************************************************************/
+
+void mpi_vector_free(mpi_vector *v)
+{
+	ASSERT(v != NULL)
+
+	#if defined(USE_PETSC)
+	{
+		const PetscErrorCode info = VecDestroy(&v->data);
+		CHECK_PETSC_ERROR("VecDestroy()", info, true)
+		free(v);
+	}
+	#endif
+}
+
+/******************************************************************************
+
+ Function mpi_vector_build():
+
+******************************************************************************/
+
+void mpi_vector_build(mpi_vector *v)
+{
+	ASSERT(v != NULL)
+
+	#if defined(USE_PETSC)
+	{
+		PetscErrorCode info;
+
+		info = VecAssemblyBegin(v->data);
+		info = VecAssemblyEnd(v->data);
+
+		CHECK_PETSC_ERROR("VecAssemblyEnd()", info, true)
+	}
+	#endif
 }
 
 /******************************************************************************
@@ -677,54 +783,141 @@ void mpi_matrix_build(mpi_matrix *m)
 
 ******************************************************************************/
 
-void mpi_matrix_sparse_eigen(mpi_matrix *m, const int max_eigenval)
+void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n)
 {
 	ASSERT(m != NULL)
-	ASSERT(max_eigenval > 0)
+	ASSERT(n > 0)
 
 	#if defined(USE_PETSC) && defined(USE_SLEPC)
 	{
-		const PetscInt nev = (PetscInt) max_eigenval;
+		const PetscInt nev = (PetscInt) n;
 		const PetscInt ncv = 2*nev + 10;
 
 		PetscErrorCode info = EPSSetDimensions(m->solver, nev, ncv, nev);
 
-		if (info != 0)
-		{
-			PRINT_ERROR("EPSSetDimensions() failed with error code %d\n", (int) info)
-			exit(EXIT_FAILURE);
-		}
+		CHECK_PETSC_ERROR("EPSSetDimensions()", info, true)
 
 		info = EPSSetProblemType(m->solver, EPS_HEP);
 
-		if (info != 0)
-		{
-			PRINT_ERROR("EPSSetProblemType() failed with error code %d\n", (int) info)
-			exit(EXIT_FAILURE);
-		}
+		CHECK_PETSC_ERROR("EPSSetProblemType()", info, true)
 
 		info = EPSSetWhichEigenpairs(m->solver, EPS_SMALLEST_MAGNITUDE);
 
-		if (info != 0)
-		{
-			PRINT_ERROR("EPSSetWhichEigenpairs() failed with error code %d\n", (int) info)
-			exit(EXIT_FAILURE);
-		}
+		CHECK_PETSC_ERROR("EPSSetWhichEigenpairs()", info, true)
 
 		info = EPSSetType(m->solver, EPSKRYLOVSCHUR);
 
-		if (info != 0)
-		{
-			PRINT_ERROR("EPSSetType() failed with error code %d\n", (int) info)
-			exit(EXIT_FAILURE);
-		}
+		CHECK_PETSC_ERROR("EPSSetType()", info, true)
 
 		info = EPSSolve(m->solver);
 
-		if (info != 0)
+		CHECK_PETSC_ERROR("EPSSolve()", info, true)
+	}
+	#endif
+}
+
+/******************************************************************************
+
+ Function mpi_matrix_sparse_eigen(): Krylov-Schur, a variation of Arnoldi with
+ a very effective restarting technique. In the case of symmetric problems, this
+ is equivalent to the thick-restart Lanczos method. Hermitian only.
+
+******************************************************************************/
+
+mpi_vector *mpi_matrix_eigenpair(mpi_matrix *m, const int n, double *eigenval)
+{
+	ASSERT(m != NULL)
+	ASSERT(n > 0)
+
+	#if defined(USE_PETSC) && defined(USE_SLEPC)
+	{
+		PetscErrorCode info;
+
+		PetscInt nconv;
+		info = EPSGetConverged(m->solver, &nconv);
+
+		CHECK_PETSC_ERROR("EPSGetConverged()", info, true)
+
+		if (n >= (int) nconv)
 		{
-			PRINT_ERROR("EPSSolve() failed with error code %d\n", (int) info)
-			exit(EXIT_FAILURE);
+			PRINT_ERROR("n = %d is out from %d converged solutions\n", n, (int) nconv)
+			*eigenval = 0.0;
+			return NULL;
+		}
+
+		mpi_vector *eigenvec = mpi_vector_alloc(m->global_row);
+
+		PetscScalar value = 0.0;
+		const PetscInt index = (PetscInt) n;
+
+		info = EPSGetEigenpair(m->solver, index, &value, NULL, eigenvec->data, NULL);
+
+		CHECK_PETSC_ERROR("EPSGetEigenpair()", info, true)
+
+		*eigenval = (double) value;
+		return eigenvec;
+	}
+	#endif
+
+	*eigenval = 0.0;
+	return NULL;
+}
+
+/******************************************************************************
+
+ Function mpi_vector_write(): Krylov-Schur, a variation of Arnoldi with
+ a very effective restarting technique. In the case of symmetric problems, this
+ is equivalent to the thick-restart Lanczos method. Hermitian only.
+
+******************************************************************************/
+
+void mpi_vector_write(mpi_vector *v, FILE *stream)
+{
+	ASSERT(v != NULL)
+	ASSERT((rank == 0) && (stream != NULL))
+	ASSERT((rank != 0) && (stream == NULL))
+
+	#if defined(USE_PETSC)
+	{
+		mpi_barrier();
+
+		int index[1];
+		double value[1];
+		PetscErrorCode info;
+
+		if (rank == 0)
+		{
+			for (int n = v->start; n < v->end; ++n)
+			{
+				index[0] = n;
+				info = VecGetValues(v->data, 1, index, value);
+
+				CHECK_PETSC_ERROR("VecGetValues()", info, true)
+
+				fwrite(value, sizeof(double), 1, stream);
+			}
+
+			for (int from = 1; from < size; ++from)
+			{
+				do
+				{
+					mpi_receive(from, 1, type_double, value);
+					fwrite(value, sizeof(double), 1, stream);
+				}
+				while (mpi_check(from));
+			}
+		}
+		else
+		{
+			for (int n = v->start; n < v->end; ++n)
+			{
+				index[0] = n;
+				info = VecGetValues(v->data, 1, index, value);
+
+				CHECK_PETSC_ERROR("VecGetValues()", info, true)
+
+				mpi_send(0, 1, type_double, value);
+			}
 		}
 	}
 	#endif

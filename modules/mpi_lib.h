@@ -4,6 +4,8 @@
 
 	typedef struct mpi_matrix mpi_matrix;
 
+	typedef struct mpi_vector mpi_vector;
+
 	void mpi_init(int argc, char *argv[]);
 
 	void mpi_end();
