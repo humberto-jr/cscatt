@@ -12,7 +12,7 @@
 #include "math.h"
 #include "gsl_lib.h"
 
-#include "arpack/arpack.h"
+//#include "arpack/arpack.h"
 
 static int workspace_size = 5000;
 static double abs_error = 1.0E-6;
@@ -504,7 +504,7 @@ double math_miser_mcarlo(const int n,
  Function math_lanczos():
 
 ******************************************************************************/
-
+/*
 void math_lanczos(math_lanczos_setup *s)
 {
 	ASSERT(s != NULL)
@@ -512,13 +512,13 @@ void math_lanczos(math_lanczos_setup *s)
 	ASSERT(s->n > 0)
 	ASSERT(s->n_max >= s->n)
 	ASSERT(s->max_step > 0)
-
+*/
 /*
  *	NOTE: this driver uses the same naming convention used by ARPACK library
  *	except for the following: N = n_max, nev = n, bmat = "I" and which = "SM".
  *	Likewise, for dseupd() routine, rmat = true, howmny = "A" and sigma = 0.
  */
-
+/*
 	a_int ido = 0;
 	a_int info = 1;
 	a_int ncv = 2*s->n + 10;
@@ -584,4 +584,4 @@ void math_lanczos(math_lanczos_setup *s)
 		PRINT_ERROR("dseupd_c() failed with error code %d\n", (int) info)
 		exit(EXIT_FAILURE);
 	}
-}
+}*/

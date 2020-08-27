@@ -166,10 +166,7 @@ endif
 MPI_DIR = /usr/include/openmpi
 
 ifeq ($(USE_MPI), yes)
-	CFLAGS += -DUSE_MPI
-	PETSC_MPI_OPTION = --with-mpi-dir=$(MPI_DIR)
-else
-	PETSC_MPI_OPTION = --with-mpi=0
+	MPI_INC = -DUSE_MPI
 endif
 
 #
@@ -239,29 +236,29 @@ ifeq ($(LINEAR_ALGEBRA), ATLAS)
 endif
 
 #
-# PETSc library (optionally used by mpi_lib module):
-#
-
-USE_PETSC = no
-PETSC_DIR = /usr/local/petsc
-
-ifeq ($(USE_PETSC), yes)
-	CFLAGS += -I$(PETSC_DIR)/include -DUSE_PETSC
-	LDFLAGS += $(PETSC_DIR)/libpetsc.a
-endif
-
-#
 # SLEPc library (optionally used by mpi_lib module and requires PETSc):
 #
 
 USE_SLEPC = no
+SLEPC_INC =
 SLEPC_DIR = /usr/local/slepc
 
 ifeq ($(USE_SLEPC), yes)
-	CFLAGS += -I$(PETSC_DIR)/include -DUSE_PETSC
-	CFLAGS += -I$(SLEPC_DIR)/include -DUSE_SLEPC
-	LDFLAGS += $(PETSC_DIR)/libpetsc.a
-	LDFLAGS += $(SLEPC_DIR)/libpetsc.a
+	SLEPC_INC = -I$(SLEPC_DIR)/include -DUSE_SLEPC
+	SLEPC_LIB = -Wl,-rpath,$(SLEPC_DIR)/lib -L$(SLEPC_DIR)/lib -lslepc #-lquadmath -ldl
+endif
+
+#
+# PETSc library (optionally used by mpi_lib module and requires BLAS/LAPACK):
+#
+
+USE_PETSC = no
+PETSC_INC =
+PETSC_DIR = /usr/local/petsc
+
+ifeq ($(USE_PETSC), yes)
+	PETSC_INC = -I$(PETSC_DIR)/include -DUSE_PETSC
+	PETSC_LIB = -Wl,-rpath,$(PETSC_DIR)/lib -L$(PETSC_DIR)/lib -lpetsc -lquadmath -ldl
 endif
 
 #
@@ -317,7 +314,7 @@ math: $(MODULES_DIR)/math.c $(MODULES_DIR)/math.h $(MODULES_DIR)/globals.h
 
 mpi_lib: $(MODULES_DIR)/mpi_lib.c $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/c_lib.h $(MODULES_DIR)/globals.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) $(MPI_INC) $(PETSC_INC) $(SLEPC_INC) -c $<
 	@echo
 
 blas_lib: $(MODULES_DIR)/blas_lib.c $(MODULES_DIR)/blas_lib.h $(MODULES_DIR)/gsl_lib.h $(MODULES_DIR)/c_lib.h $(MODULES_DIR)/globals.h
@@ -359,9 +356,9 @@ c_print: c_print.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MO
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
-m_basis: m_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
+m_basis: m_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o matrix.o file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o mpi_lib.o matrix.o file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h matrix.o

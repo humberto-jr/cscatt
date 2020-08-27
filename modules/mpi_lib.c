@@ -19,6 +19,7 @@
 #endif
 
 #if defined(USE_PETSC)
+	#include <petscvec.h>
 	#include <petscmat.h>
 #endif
 
@@ -43,12 +44,13 @@ struct mpi_matrix
 {
 	#if defined(USE_PETSC)
 		Mat data;
-		PetscInt global_row, global_col, rank_chunk;
 	#endif
 
 	#if defined(USE_SLEPC)
 		EPS solver;
 	#endif
+
+	int max_row, max_col;
 };
 
 /******************************************************************************
@@ -63,8 +65,9 @@ struct mpi_vector
 {
 	#if defined(USE_PETSC)
 		Vec data;
-		PetscInt global_length, rank_chunk, remainder, start, end;
 	#endif
+
+	int global_length, rank_chunk, remainder, start, end;
 };
 
 /******************************************************************************
@@ -171,14 +174,14 @@ void mpi_init(int argc, char *argv[])
 
 	#if defined(USE_PETSC)
 	{
-		const PetscErrorCode info = PetscInitialize(&argc, &argv, NULL, NULL);
+		const int info = PetscInitialize(&argc, &argv, NULL, NULL);
 		CHECK_PETSC_ERROR("PetscInitialize()", info, true)
 	}
 	#endif
 
 	#if defined(USE_SLEPC)
 	{
-		const PetscErrorCode info = SlepcInitialize(&argc, &argv, NULL, NULL);
+		const int info = SlepcInitialize(&argc, &argv, NULL, NULL);
 		CHECK_PETSC_ERROR("SlepcInitialize()", info, true)
 	}
 	#endif
@@ -208,14 +211,14 @@ void mpi_end()
 
 	#if defined(USE_SLEPC)
 	{
-		const PetscErrorCode info = SlepcFinalize();
+		const int info = SlepcFinalize();
 		CHECK_PETSC_ERROR("SlepcFinalize()", info, false)
 	}
 	#endif
 
 	#if defined(USE_PETSC)
 	{
-		const PetscErrorCode info = PetscFinalize();
+		const int info = PetscFinalize();
 		CHECK_PETSC_ERROR("PetscFinalize()", info, false)
 	}
 	#endif
@@ -587,12 +590,9 @@ void mpi_fwrite(const int length, const c_type c, const void *array)
 
 ******************************************************************************/
 
-mpi_matrix *mpi_matrix_alloc(const int cpu_row,
-                             const int max_row,
-                             const int max_col,
-                             const int non_zeros[])
+mpi_matrix *mpi_matrix_alloc(const int max_row,
+                             const int max_col, const int non_zeros[])
 {
-	ASSERT(cpu_row > 0)
 	ASSERT(max_row > 0)
 	ASSERT(max_col > 0)
 	ASSERT(non_zeros[0] >= 0)
@@ -600,32 +600,31 @@ mpi_matrix *mpi_matrix_alloc(const int cpu_row,
 
 	#if defined(USE_PETSC)
 	{
-		PetscErrorCode info;
+		int info;
 
 		mpi_matrix *pointer = allocate(1, sizeof(mpi_matrix), true);
 
-		pointer->rank_chunk = cpu_row;
-		pointer->global_row = max_row;
-		pointer->global_col = max_col;
+		pointer->max_row = max_row;
+		pointer->max_col = max_col;
 
 		if (size > 1)
 		{
 			info = MatCreateAIJ(MPI_COMM_WORLD,
-			                    (PetscInt) cpu_row,
-			                    (PetscInt) max_col,
-			                    (PetscInt) max_row,
-			                    (PetscInt) max_col,
-			                    (PetscInt) non_zeros[0],
-			                    NULL, (PetscInt) non_zeros[1], NULL, &pointer->data);
+			                    PETSC_DECIDE,
+			                    PETSC_DECIDE,
+			                    max_row,
+			                    max_col,
+			                    non_zeros[0],
+			                    NULL, non_zeros[1], NULL, &pointer->data);
 
 			CHECK_PETSC_ERROR("MatCreateAIJ()", info, true)
 		}
 		else
 		{
 			info = MatCreateSeqAIJ(PETSC_COMM_SELF,
-			                       (PetscInt) max_row,
-			                       (PetscInt) max_col,
-			                       (PetscInt) non_zeros[0], NULL, &pointer->data);
+			                       max_row,
+			                       max_col,
+			                       non_zeros[0], NULL, &pointer->data);
 
 			CHECK_PETSC_ERROR("MatCreateSeqAIJ()", info, true)
 		}
@@ -658,14 +657,11 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 
 	#if defined(USE_PETSC)
 	{
-		const PetscInt p_index[1] = {(PetscInt) p};
-		const PetscInt q_index[1] = {(PetscInt) q};
-		const PetscScalar value[1] = {(PetscScalar) x};
-
-		const PetscErrorCode info
-			= MatSetValues(m->data, 1, p_index, 1, q_index, value, INSERT_VALUES);
-
-		CHECK_PETSC_ERROR("MatSetValues()", info, true)
+		if (rank == 0)
+		{
+			const int info = MatSetValues(m->data, 1, &p, 1, &q, &x, INSERT_VALUES);
+			CHECK_PETSC_ERROR("MatSetValues()", info, true)
+		}
 	}
 	#endif
 }
@@ -682,7 +678,7 @@ void mpi_matrix_build(mpi_matrix *m)
 
 	#if defined(USE_PETSC)
 	{
-		PetscErrorCode info;
+		int info;
 
 		info = MatAssemblyBegin(m->data, MAT_FINAL_ASSEMBLY);
 		info = MatAssemblyEnd(m->data, MAT_FINAL_ASSEMBLY);
@@ -704,7 +700,7 @@ mpi_vector *mpi_vector_alloc(const int length)
 
 	#if defined(USE_PETSC)
 	{
-		PetscErrorCode info;
+		int info;
 
 		mpi_vector *pointer = allocate(1, sizeof(mpi_vector), true);
 
@@ -746,7 +742,7 @@ void mpi_vector_free(mpi_vector *v)
 
 	#if defined(USE_PETSC)
 	{
-		const PetscErrorCode info = VecDestroy(&v->data);
+		const int info = VecDestroy(&v->data);
 		CHECK_PETSC_ERROR("VecDestroy()", info, true)
 		free(v);
 	}
@@ -765,7 +761,7 @@ void mpi_vector_build(mpi_vector *v)
 
 	#if defined(USE_PETSC)
 	{
-		PetscErrorCode info;
+		int info;
 
 		info = VecAssemblyBegin(v->data);
 		info = VecAssemblyEnd(v->data);
@@ -790,10 +786,7 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n)
 
 	#if defined(USE_PETSC) && defined(USE_SLEPC)
 	{
-		const PetscInt nev = (PetscInt) n;
-		const PetscInt ncv = 2*nev + 10;
-
-		PetscErrorCode info = EPSSetDimensions(m->solver, nev, ncv, nev);
+		int info = EPSSetDimensions(m->solver, n, 2*n + 10, n);
 
 		CHECK_PETSC_ERROR("EPSSetDimensions()", info, true)
 
@@ -831,30 +824,26 @@ mpi_vector *mpi_matrix_eigenpair(mpi_matrix *m, const int n, double *eigenval)
 
 	#if defined(USE_PETSC) && defined(USE_SLEPC)
 	{
-		PetscErrorCode info;
+		int n_max, info;
 
-		PetscInt nconv;
-		info = EPSGetConverged(m->solver, &nconv);
+		info = EPSGetConverged(m->solver, &n_max);
 
 		CHECK_PETSC_ERROR("EPSGetConverged()", info, true)
 
-		if (n >= (int) nconv)
+		if (n >= n_max)
 		{
-			PRINT_ERROR("n = %d is out from %d converged solutions\n", n, (int) nconv)
+			PRINT_ERROR("n = %d is out of the %d converged solutions\n", n, n_max)
+
 			*eigenval = 0.0;
 			return NULL;
 		}
 
-		mpi_vector *eigenvec = mpi_vector_alloc(m->global_row);
+		mpi_vector *eigenvec = mpi_vector_alloc(m->max_row);
 
-		PetscScalar value = 0.0;
-		const PetscInt index = (PetscInt) n;
-
-		info = EPSGetEigenpair(m->solver, index, &value, NULL, eigenvec->data, NULL);
+		info = EPSGetEigenpair(m->solver, n, eigenval, NULL, eigenvec->data, NULL);
 
 		CHECK_PETSC_ERROR("EPSGetEigenpair()", info, true)
 
-		*eigenval = (double) value;
 		return eigenvec;
 	}
 	#endif
@@ -881,28 +870,26 @@ void mpi_vector_write(mpi_vector *v, FILE *stream)
 	{
 		mpi_barrier();
 
-		int index[1];
-		double value[1];
-		PetscErrorCode info;
+		int info;
+		double value;
 
 		if (rank == 0)
 		{
 			for (int n = v->start; n < v->end; ++n)
 			{
-				index[0] = n;
-				info = VecGetValues(v->data, 1, index, value);
+				info = VecGetValues(v->data, 1, &n, &value);
 
 				CHECK_PETSC_ERROR("VecGetValues()", info, true)
 
-				fwrite(value, sizeof(double), 1, stream);
+				fwrite(&value, sizeof(double), 1, stream);
 			}
 
 			for (int from = 1; from < size; ++from)
 			{
 				do
 				{
-					mpi_receive(from, 1, type_double, value);
-					fwrite(value, sizeof(double), 1, stream);
+					mpi_receive(from, 1, type_double, &value);
+					fwrite(&value, sizeof(double), 1, stream);
 				}
 				while (mpi_check(from));
 			}
@@ -911,12 +898,11 @@ void mpi_vector_write(mpi_vector *v, FILE *stream)
 		{
 			for (int n = v->start; n < v->end; ++n)
 			{
-				index[0] = n;
-				info = VecGetValues(v->data, 1, index, value);
+				info = VecGetValues(v->data, 1, &n, &value);
 
 				CHECK_PETSC_ERROR("VecGetValues()", info, true)
 
-				mpi_send(0, 1, type_double, value);
+				mpi_send(0, 1, type_double, &value);
 			}
 		}
 	}
