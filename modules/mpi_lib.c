@@ -359,8 +359,10 @@ bool mpi_check(const int from)
 	int message_sent = (int) false;
 
 	#if defined(USE_MPI)
+	{
 		#pragma omp critical
 		MPI_Iprobe(from, 666, MPI_COMM_WORLD, &message_sent, MPI_STATUS_IGNORE);
+	}
 	#endif
 
 	return (bool) message_sent;

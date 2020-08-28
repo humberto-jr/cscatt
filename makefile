@@ -236,19 +236,6 @@ ifeq ($(LINEAR_ALGEBRA), ATLAS)
 endif
 
 #
-# SLEPc library (optionally used by mpi_lib module and requires PETSc):
-#
-
-USE_SLEPC = no
-SLEPC_INC =
-SLEPC_DIR = /usr/local/slepc
-
-ifeq ($(USE_SLEPC), yes)
-	SLEPC_INC = -I$(SLEPC_DIR)/include -DUSE_SLEPC
-	SLEPC_LIB = -Wl,-rpath,$(SLEPC_DIR)/lib -L$(SLEPC_DIR)/lib -lslepc #-lquadmath -ldl
-endif
-
-#
 # PETSc library (optionally used by mpi_lib module and requires BLAS/LAPACK):
 #
 
@@ -259,6 +246,26 @@ PETSC_DIR = /usr/local/petsc
 ifeq ($(USE_PETSC), yes)
 	PETSC_INC = -I$(PETSC_DIR)/include -DUSE_PETSC
 	PETSC_LIB = -Wl,-rpath,$(PETSC_DIR)/lib -L$(PETSC_DIR)/lib -lpetsc -lquadmath -ldl
+endif
+
+ifeq ($(USE_MPI), yes)
+	PETSC_CONFIG = --prefix=$(PETSC_DIR) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-debugging=0
+else
+	PETSC_CONFIG = --prefix=$(PETSC_DIR) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-debugging=0 --with-mpi=0
+endif
+
+#
+# SLEPc library (optionally used by mpi_lib module and requires PETSc):
+#
+
+USE_SLEPC = no
+SLEPC_INC =
+SLEPC_DIR = /usr/local/slepc
+
+ifeq ($(USE_SLEPC), yes)
+	SLEPC_INC = -I$(SLEPC_DIR)/include -DUSE_SLEPC
+#	include $(SLEPC_DIR)/lib/slepc/conf/slepc_variables # it calls -Wl,-rpath,/usr/local/slepc/lib -L/usr/local/slepc/lib -lslepc
+	SLEPC_LIB = -Wl,-rpath,$(SLEPC_DIR)/lib -L$(SLEPC_DIR)/lib -lslepc
 endif
 
 #
@@ -443,10 +450,10 @@ arpack-ng: $(LIB_DIR)/arpack-ng.tar.xz $(ARPACKROOT)
 	cd arpack-ng/; make; make install
 	rm -rf arpack-ng
 
-petsc: $(LIB_DIR)/petsc-3.13.4.tar.gz
-	tar -zxvf $(LIB_DIR)/petsc-3.13.4.tar.gz
+petsc: $(LIB_DIR)/petsc-3.13.4.tar.xz
+	tar -xf $<
 	mkdir -p $(PETSC_DIR)
-	cd petsc-3.13.4/; ./configure --prefix=$(PETSC_DIR) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-debugging=0
+	cd petsc-3.13.4/; ./configure $(PETSC_CONFIG)
 	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-opt all
 	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-opt install
 	rm -rf petsc-3.13.4
