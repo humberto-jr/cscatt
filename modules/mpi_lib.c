@@ -89,6 +89,32 @@ struct mpi_vector
 
 /******************************************************************************
 
+ Macro ASSERT_ROW_INDEX(): check if the p-th element is within the row bounds
+ of a matrix pointed by a given pointer.
+
+******************************************************************************/
+
+#define ASSERT_ROW_INDEX(pointer, p) \
+{                                    \
+  ASSERT((p) > -1)                   \
+  ASSERT((p) < pointer->max_row)     \
+}
+
+/******************************************************************************
+
+ Macro ASSERT_COL_INDEX(): check if the q-th element is within the column bounds
+ of a matrix pointed by a given pointer.
+
+******************************************************************************/
+
+#define ASSERT_COL_INDEX(pointer, q) \
+{                                    \
+  ASSERT((q) > -1)                   \
+  ASSERT((q) < pointer->max_col)     \
+}
+
+/******************************************************************************
+
  Macro ASSERT_RANK(): check if the n-th process is among those in the MPI
  communicator.
 
@@ -160,7 +186,7 @@ static size_t mpi_sizeof(const c_type c)
 
 void mpi_init(int argc, char *argv[])
 {
-	ASSERT(argc > 1)
+	ASSERT(argc > 0)
 	ASSERT(argv != NULL)
 
 	#if defined(USE_MPI)
@@ -604,39 +630,25 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 	{
 		int info;
 
-		mpi_matrix *pointer = allocate(1, sizeof(mpi_matrix), true);
+		mpi_matrix *pointer = allocate(1, sizeof(struct mpi_matrix), true);
 
 		pointer->max_row = max_row;
 		pointer->max_col = max_col;
 
-		if (size > 1)
+		if (mpi_comm_size() > 1)
 		{
-			info = MatCreateAIJ(MPI_COMM_WORLD,
-			                    PETSC_DECIDE,
-			                    PETSC_DECIDE,
-			                    max_row,
-			                    max_col,
-			                    non_zeros[0],
-			                    NULL, non_zeros[1], NULL, &pointer->data);
+			info = MatCreateAIJ(MPI_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, max_row,
+			                    max_col, non_zeros[0], NULL, non_zeros[1], NULL, &pointer->data);
 
 			CHECK_PETSC_ERROR("MatCreateAIJ()", info, true)
 		}
 		else
 		{
 			info = MatCreateSeqAIJ(PETSC_COMM_SELF,
-			                       max_row,
-			                       max_col,
-			                       non_zeros[0], NULL, &pointer->data);
+			                       max_row, max_col, non_zeros[0], NULL, &pointer->data);
 
 			CHECK_PETSC_ERROR("MatCreateSeqAIJ()", info, true)
 		}
-
-		#if defined(USE_SLEPC)
-		{
-			EPSCreate(MPI_COMM_WORLD, &pointer->solver);
-			EPSSetOperators(pointer->solver, pointer->data, NULL);
-		}
-		#endif
 
 		return pointer;
 	}
@@ -653,9 +665,9 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 
 void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 {
-	ASSERT(p > 0)
-	ASSERT(q > 0)
 	ASSERT(m != NULL)
+	ASSERT_ROW_INDEX(m, p)
+	ASSERT_COL_INDEX(m, q)
 
 	#if defined(USE_PETSC)
 	{
@@ -788,7 +800,15 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n)
 
 	#if defined(USE_PETSC) && defined(USE_SLEPC)
 	{
-		int info = EPSSetDimensions(m->solver, n, 2*n + 10, n);
+		int info = EPSCreate(MPI_COMM_WORLD, &m->solver);
+
+		CHECK_PETSC_ERROR("EPSCreate()", info, true)
+
+		info = EPSSetOperators(m->solver, m->data, NULL);
+
+		CHECK_PETSC_ERROR("EPSSetOperators()", info, true)
+
+		info = EPSSetDimensions(m->solver, n, 2*n + 10, n + 2*n + 10);
 
 		CHECK_PETSC_ERROR("EPSSetDimensions()", info, true)
 
@@ -808,6 +828,10 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n)
 
 		CHECK_PETSC_ERROR("EPSSolve()", info, true)
 	}
+	#else
+	{
+		PRINT_ERROR("both PETSc and SLEPc libraries are required\n")
+	}
 	#endif
 }
 
@@ -822,7 +846,7 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n)
 mpi_vector *mpi_matrix_eigenpair(mpi_matrix *m, const int n, double *eigenval)
 {
 	ASSERT(m != NULL)
-	ASSERT(n > 0)
+	ASSERT_COL_INDEX(m, n)
 
 	#if defined(USE_PETSC) && defined(USE_SLEPC)
 	{
@@ -840,13 +864,21 @@ mpi_vector *mpi_matrix_eigenpair(mpi_matrix *m, const int n, double *eigenval)
 			return NULL;
 		}
 
-		mpi_vector *eigenvec = mpi_vector_alloc(m->max_row);
+		mpi_vector *eigenvec = allocate(1, sizeof(struct mpi_vector), true);
+
+		info = MatCreateVecs(m->data, NULL, &eigenvec->data);
+
+		CHECK_PETSC_ERROR("MatCreateVecs()", info, true)
 
 		info = EPSGetEigenpair(m->solver, n, eigenval, NULL, eigenvec->data, NULL);
 
 		CHECK_PETSC_ERROR("EPSGetEigenpair()", info, true)
 
 		return eigenvec;
+	}
+	#else
+	{
+		PRINT_ERROR("both PETSc and SLEPc libraries are required\n")
 	}
 	#endif
 
