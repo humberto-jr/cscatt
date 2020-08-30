@@ -41,6 +41,8 @@
 	mpi_matrix *mpi_matrix_alloc(const int max_row,
 	                             const int max_col, const int non_zeros[]);
 
+	void mpi_matrix_free(mpi_matrix *m);
+
 	void mpi_matrix_set(mpi_matrix *m,
 	                    const int p, const int q, const double x);
 
@@ -52,12 +54,13 @@
 
 	void mpi_vector_build(mpi_vector *v);
 
-	void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n);
+	void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n, const bool up);
 
-	mpi_vector *mpi_matrix_eigenpair(mpi_matrix *m,
+	mpi_vector *mpi_matrix_eigenpair(const mpi_matrix *m,
 	                                 const int n, double *eigenval);
 
-	void mpi_vector_write(mpi_vector *v, FILE *stream);
+	void mpi_vector_write(const mpi_vector *v,
+	                      const int n_min, const int n_max, FILE *stream);
 
 	/******************************************************************************
 

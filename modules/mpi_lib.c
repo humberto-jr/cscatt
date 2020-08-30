@@ -50,7 +50,7 @@ struct mpi_matrix
 		EPS solver;
 	#endif
 
-	int max_row, max_col;
+	int max_row, max_col, first, last;
 };
 
 /******************************************************************************
@@ -67,7 +67,7 @@ struct mpi_vector
 		Vec data;
 	#endif
 
-	int global_length, rank_chunk, remainder, start, end;
+	int length, first, last;
 };
 
 /******************************************************************************
@@ -609,12 +609,13 @@ void mpi_fwrite(const int length, const c_type c, const void *array)
 /******************************************************************************
 
  Function mpi_matrix_alloc(): allocate resources for a matrix of shape max_row-
- by-max_col, where chunks of cpu_rows are stored in each MPI process available.
- The approximated number of non-zero elements, in the diagonal blocks, given by
- non_zeros[0], and off-diagonal blocks, non_zeros[1], is provided to optimize
- memory allocation.
+ by-max_col, where chunks of rows are stored in each MPI process available. The
+ approximated number of non-zero elements, in the diagonal blocks, given by
+ non_zeros[0], and off-diagonal blocks, non_zeros[1], is provided to
+ optimize memory allocation.
 
- NOTE: if PETSc library is not available this is a dummy function.
+ NOTE: it requires the PETSc library by defining the USE_PETSC macro during
+ compilation. Otherwise, this is a dummy function.
 
 ******************************************************************************/
 
@@ -650,6 +651,18 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 			CHECK_PETSC_ERROR("MatCreateSeqAIJ()", info, true)
 		}
 
+		info = MatSetOption(pointer->data, MAT_NEW_NONZERO_ALLOCATION_ERR, false);
+
+		CHECK_PETSC_ERROR("MatSetOption()", info, true)
+
+		info = MatSetOption(pointer->data, MAT_USE_HASH_TABLE, true);
+
+		CHECK_PETSC_ERROR("MatSetOption()", info, true)
+
+		info = MatGetOwnershipRange(pointer->data, &pointer->first, &pointer->last);
+
+		CHECK_PETSC_ERROR("MatGetOwnershipRange()", info, true)
+
 		return pointer;
 	}
 	#endif
@@ -659,7 +672,33 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 
 /******************************************************************************
 
- Function mpi_matrix_set():
+ Function mpi_matrix_free(): release resources allocated by mpi_matrix_alloc().
+
+ NOTE: it requires the PETSc library by defining the USE_PETSC macro during
+ compilation. Otherwise, this is a dummy function.
+
+******************************************************************************/
+
+void mpi_matrix_free(mpi_matrix *m)
+{
+	ASSERT(m != NULL)
+
+	#if defined(USE_PETSC)
+	{
+		const int info = MatDestroy(&m->data);
+		CHECK_PETSC_ERROR("MatDestroy()", info, true)
+		free(m);
+	}
+	#endif
+}
+
+/******************************************************************************
+
+ Function mpi_matrix_set(): stores all non-zero elements that will be used by
+ mpi_matrix_build() to construct a sparse matrix among all MPI processes.
+
+ NOTE: it requires the PETSc library by defining the USE_PETSC macro during
+ compilation. Otherwise, this is a dummy function.
 
 ******************************************************************************/
 
@@ -671,7 +710,7 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 
 	#if defined(USE_PETSC)
 	{
-		if (rank == 0)
+		if ((p >= m->first) && (p < m->last))
 		{
 			const int info = MatSetValues(m->data, 1, &p, 1, &q, &x, INSERT_VALUES);
 			CHECK_PETSC_ERROR("MatSetValues()", info, true)
@@ -682,7 +721,11 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 
 /******************************************************************************
 
- Function mpi_matrix_build():
+ Function mpi_matrix_build(): builds the matrix among all MPI processes after
+ its elements have been cached by all needed calls of mpi_matrix_set().
+
+ NOTE: it requires the PETSc library by defining the USE_PETSC macro during
+ compilation. Otherwise, this is a dummy function.
 
 ******************************************************************************/
 
@@ -704,7 +747,11 @@ void mpi_matrix_build(mpi_matrix *m)
 
 /******************************************************************************
 
- Function mpi_vector_alloc():
+ Function mpi_vector_alloc(): allocate resources for a vector of a given length
+ where chunks of elements are stored in each MPI process available.
+
+ NOTE: it requires the PETSc library by defining the USE_PETSC macro during
+ compilation. Otherwise, this is a dummy function.
 
 ******************************************************************************/
 
@@ -722,20 +769,15 @@ mpi_vector *mpi_vector_alloc(const int length)
 
 		CHECK_PETSC_ERROR("VecCreate()", info, true)
 
-		pointer->global_length = length;
-		pointer->remainder = length%size;
-		pointer->rank_chunk = length/size;
-		pointer->start = rank*pointer->rank_chunk;
-		pointer->end = pointer->start + pointer->rank_chunk;
+		pointer->length = length;
 
-		if (rank == (size - 1) && pointer->remainder > 0)
-		{
-			pointer->end = pointer->start + pointer->remainder;
-		}
-
-		info = VecSetSizes(pointer->data, pointer->rank_chunk, pointer->global_length);
+		info = VecSetSizes(pointer->data, PETSC_DECIDE, pointer->length);
 
 		CHECK_PETSC_ERROR("VecSetSizes()", info, true)
+
+		info = VecGetOwnershipRange(pointer->data, &pointer->first, &pointer->last);
+
+		CHECK_PETSC_ERROR("VecGetOwnershipRange()", info, true)
 
 		return pointer;
 	}
@@ -746,7 +788,10 @@ mpi_vector *mpi_vector_alloc(const int length)
 
 /******************************************************************************
 
- Function mpi_vector_free():
+ Function mpi_vector_free(): release resources allocated by mpi_vector_alloc().
+
+ NOTE: it requires the PETSc library by defining the USE_PETSC macro during
+ compilation. Otherwise, this is a dummy function.
 
 ******************************************************************************/
 
@@ -765,7 +810,13 @@ void mpi_vector_free(mpi_vector *v)
 
 /******************************************************************************
 
- Function mpi_vector_build():
+ Function mpi_vector_build(): builds the vector among all MPI processes after
+ its elements have been cached by all needed calls of mpi_vector_set().
+
+ NOTE: it requires the PETSc library by defining the USE_PETSC macro during
+ compilation. Otherwise, this is a dummy function.
+
+ TODO: the actual routine mpi_vector_set() is not yet implemented.
 
 ******************************************************************************/
 
@@ -787,13 +838,22 @@ void mpi_vector_build(mpi_vector *v)
 
 /******************************************************************************
 
- Function mpi_matrix_sparse_eigen(): Krylov-Schur, a variation of Arnoldi with
- a very effective restarting technique. In the case of symmetric problems, this
- is equivalent to the thick-restart Lanczos method. Hermitian only.
+ Function mpi_matrix_sparse_eigen(): computes n eigenvalues and eigenvectors of
+ a matrix m, where the upper part of the spectrum is resolved if up = true, and
+ the lowest part is computed otherwise. On entry, m is expected hermitian. The
+ method used is Krylov-Schur, a variation of Arnoldi with a very effective
+ restarting technique. In the case of symmetric problems, this is
+ equivalent to the thick-restart Lanczos method.
+
+ NOTE: it requires the PETSc library by defining the USE_PETSC macro during
+ compilation. Otherwise, this is a dummy function.
+
+ NOTE: it requires the SLEPc library by defining the USE_SLEPC macro during
+ compilation. Otherwise, this is a dummy function.
 
 ******************************************************************************/
 
-void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n)
+void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n, const bool up)
 {
 	ASSERT(m != NULL)
 	ASSERT(n > 0)
@@ -816,7 +876,9 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n)
 
 		CHECK_PETSC_ERROR("EPSSetProblemType()", info, true)
 
-		info = EPSSetWhichEigenpairs(m->solver, EPS_SMALLEST_MAGNITUDE);
+		const EPSWhich job = (up? EPS_LARGEST_MAGNITUDE : EPS_SMALLEST_MAGNITUDE);
+
+		info = EPSSetWhichEigenpairs(m->solver, job);
 
 		CHECK_PETSC_ERROR("EPSSetWhichEigenpairs()", info, true)
 
@@ -837,13 +899,19 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n)
 
 /******************************************************************************
 
- Function mpi_matrix_sparse_eigen(): Krylov-Schur, a variation of Arnoldi with
- a very effective restarting technique. In the case of symmetric problems, this
- is equivalent to the thick-restart Lanczos method. Hermitian only.
+ Function mpi_matrix_eigenpair(): returns the n-th eigenvalue and eigenvector
+ of a matrix m after a call to mpi_matrix_sparse_eigen().
+
+ NOTE: it requires the PETSc library by defining the USE_PETSC macro during
+ compilation. Otherwise, this is a dummy function.
+
+ NOTE: it requires the SLEPc library by defining the USE_SLEPC macro during
+ compilation. Otherwise, this is a dummy function.
 
 ******************************************************************************/
 
-mpi_vector *mpi_matrix_eigenpair(mpi_matrix *m, const int n, double *eigenval)
+mpi_vector *mpi_matrix_eigenpair(const mpi_matrix *m,
+                                 const int n, double *eigenval)
 {
 	ASSERT(m != NULL)
 	ASSERT_COL_INDEX(m, n)
@@ -870,6 +938,14 @@ mpi_vector *mpi_matrix_eigenpair(mpi_matrix *m, const int n, double *eigenval)
 
 		CHECK_PETSC_ERROR("MatCreateVecs()", info, true)
 
+		info = VecGetSize(eigenvec->data, &eigenvec->length);
+
+		CHECK_PETSC_ERROR("VecGetSize()", info, true)
+
+		info = VecGetOwnershipRange(eigenvec->data, &eigenvec->first, &eigenvec->last);
+
+		CHECK_PETSC_ERROR("VecGetOwnershipRange()", info, true)
+
 		info = EPSGetEigenpair(m->solver, n, eigenval, NULL, eigenvec->data, NULL);
 
 		CHECK_PETSC_ERROR("EPSGetEigenpair()", info, true)
@@ -888,17 +964,27 @@ mpi_vector *mpi_matrix_eigenpair(mpi_matrix *m, const int n, double *eigenval)
 
 /******************************************************************************
 
- Function mpi_vector_write(): Krylov-Schur, a variation of Arnoldi with
- a very effective restarting technique. In the case of symmetric problems, this
- is equivalent to the thick-restart Lanczos method. Hermitian only.
+ Function mpi_vector_write(): writes n elements, with n = [n_min, n_max), from
+ vector v to an output file using binary format. On entry, the file stream is
+ written by the MPI process zero and may be set NULL for other processes.
+
+ NOTE: it requires the PETSc library by defining the USE_PETSC macro during
+ compilation. Otherwise, this is a dummy function.
 
 ******************************************************************************/
 
-void mpi_vector_write(mpi_vector *v, FILE *stream)
+void mpi_vector_write(const mpi_vector *v,
+                      const int n_min, const int n_max, FILE *stream)
 {
 	ASSERT(v != NULL)
-	ASSERT((rank == 0) && (stream != NULL))
-	ASSERT((rank != 0) && (stream == NULL))
+	ASSERT(n_min > -1)
+	ASSERT(n_max > n_min)
+	ASSERT(n_max < v->length)
+
+	if (mpi_rank() == 0)
+	{
+		ASSERT(stream != NULL)
+	}
 
 	#if defined(USE_PETSC)
 	{
@@ -907,30 +993,43 @@ void mpi_vector_write(mpi_vector *v, FILE *stream)
 		int info;
 		double value;
 
-		if (rank == 0)
+		if (mpi_rank() == 0)
 		{
-			for (int n = v->start; n < v->end; ++n)
+			if (n_min < v->last)
 			{
-				info = VecGetValues(v->data, 1, &n, &value);
+				for (int n = max(n_min, v->first); n < min(n_max, v->last); ++n)
+				{
+					info = VecGetValues(v->data, 1, &n, &value);
 
-				CHECK_PETSC_ERROR("VecGetValues()", info, true)
+					CHECK_PETSC_ERROR("VecGetValues()", info, true)
 
-				fwrite(&value, sizeof(double), 1, stream);
+					fwrite(&value, sizeof(double), 1, stream);
+				}
+			}
+			else
+			{
+/*
+ *				NOTE: when this if-block is false a delay is used to make sure other
+ *				processes had enough time to send at least the first data used by
+ *				the for-block below. Ten milliseconds are used.
+ */
+				sleep(0.010);
 			}
 
-			for (int from = 1; from < size; ++from)
+			for (int from = 1; from < mpi_comm_size(); ++from)
 			{
-				do
+				while (mpi_check(from))
 				{
 					mpi_receive(from, 1, type_double, &value);
 					fwrite(&value, sizeof(double), 1, stream);
 				}
-				while (mpi_check(from));
 			}
 		}
 		else
 		{
-			for (int n = v->start; n < v->end; ++n)
+			if (n_min >= v->last) return;
+
+			for (int n = max(n_min, v->first); n < min(n_max, v->last); ++n)
 			{
 				info = VecGetValues(v->data, 1, &n, &value);
 
