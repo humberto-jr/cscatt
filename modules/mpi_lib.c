@@ -1005,6 +1005,8 @@ void mpi_vector_write(const mpi_vector *v,
 
 					fwrite(&value, sizeof(double), 1, stream);
 				}
+
+				if (mpi_comm_size() == 1) return;
 			}
 			else
 			{

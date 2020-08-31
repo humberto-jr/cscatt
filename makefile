@@ -264,7 +264,6 @@ SLEPC_DIR = /usr/local/slepc
 
 ifeq ($(USE_SLEPC), yes)
 	SLEPC_INC = -I$(SLEPC_DIR)/include -DUSE_SLEPC
-#	include $(SLEPC_DIR)/lib/slepc/conf/slepc_variables # it calls -Wl,-rpath,/usr/local/slepc/lib -L/usr/local/slepc/lib -lslepc
 	SLEPC_LIB = -Wl,-rpath,$(SLEPC_DIR)/lib -L$(SLEPC_DIR)/lib -lslepc
 endif
 

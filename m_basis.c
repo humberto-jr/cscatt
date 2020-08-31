@@ -37,18 +37,17 @@ mpi_matrix *fgh_multich_matrix(const int max_ch,
 	ASSERT(max_ch > 0)
 	ASSERT(pot_energy != NULL)
 
-	const int non_zeros[2] = {grid_size, max_ch};
+	const int size = grid_size*max_ch;
 
-	mpi_matrix *result
-		= mpi_matrix_alloc(grid_size*max_ch, grid_size*max_ch, non_zeros);
+	const int non_zeros[2] = {grid_size + max_ch, grid_size + max_ch};
+
+	mpi_matrix *result = mpi_matrix_alloc(size, size, non_zeros);
 
 	const double box_length = as_double(grid_size - 1)*grid_step;
 
 	const double factor = (M_PI*M_PI)/(mass*box_length*box_length);
 
 	const double nn_term = factor*as_double(grid_size*grid_size + 2)/6.0;
-
-	if (mpi_rank() != 0) goto end;
 
 	int row = 0;
 	for (int p = 0; p < max_ch; ++p)
@@ -91,7 +90,6 @@ mpi_matrix *fgh_multich_matrix(const int max_ch,
 		}
 	}
 
-	end:
 	mpi_barrier();
 	mpi_matrix_build(result);
 
@@ -187,9 +185,12 @@ int main(int argc, char *argv[])
  *	Resolve the triatomic eigenvalues for each j-case and sort results as scatt. channels:
  */
 
-	printf("# Reduced mass = %f a.u., n = [%d, %d]\n", mass, n_min, n_max);
-	printf("#     J     Ch.      v       j       l       p    Comp.       E (a.u.)       E (cm-1)         E (eV)   \n");
-	printf("# -----------------------------------------------------------------------------------------------------\n");
+	if (mpi_rank() == 0)
+	{
+		printf("# Reduced mass = %f a.u., n = [%d, %d]\n", mass, n_min, n_max);
+		printf("#     J     Ch.      v       j       l       p    Comp.       E (a.u.)       E (cm-1)         E (eV)   \n");
+		printf("# -----------------------------------------------------------------------------------------------------\n");
+	}
 
 /*
  *	Step 1: loop over rotational states j of the triatom and solve a multichannel
@@ -233,7 +234,7 @@ int main(int argc, char *argv[])
 
 		free(pot_energy);
 
-		mpi_matrix_sparse_eigen(fgh, v_max);
+		mpi_matrix_sparse_eigen(fgh, v_max, false);
 
 /*
  *		Step 2: loop over the vibrational states v of the triatom, solutions of
@@ -258,31 +259,40 @@ int main(int argc, char *argv[])
 
 					for (int n = 0; n < max_state; ++n)
 					{
-						printf(FORMAT, J, ch_counter[J], v, j, l, parity(j + l), n,
-						       eigenval, eigenval*219474.63137054, eigenval*27.211385);
-
 /*
  *						Step 4: save each basis function |vjln> in the disk and increment
  *						the counter of atom-triatom channels.
  */
+						FILE *output = NULL;
 
-						FILE *output = basis_file(arrang, ch_counter[J], J, "wb");
+						if (mpi_rank() == 0)
+						{
+							printf(FORMAT, J, ch_counter[J], v, j, l, parity(j + l), n,
+							       eigenval, eigenval*219474.63137054, eigenval*27.211385);
 
-						file_write(&v, sizeof(int), 1, output);
-						file_write(&j, sizeof(int), 1, output);
-						file_write(&l, sizeof(int), 1, output);
-						file_write(&n, sizeof(int), 1, output);
+							output = basis_file(arrang, ch_counter[J], J, "wb");
 
-						file_write(&R_min, sizeof(double), 1, output);
-						file_write(&R_max, sizeof(double), 1, output);
-						file_write(&R_step, sizeof(double), 1, output);
+							file_write(&v, sizeof(int), 1, output);
+							file_write(&j, sizeof(int), 1, output);
+							file_write(&l, sizeof(int), 1, output);
+							file_write(&n, sizeof(int), 1, output);
 
-						file_write(&eigenval, sizeof(double), 1, output);
+							file_write(&R_min, sizeof(double), 1, output);
+							file_write(&R_max, sizeof(double), 1, output);
+							file_write(&R_step, sizeof(double), 1, output);
 
-						file_write(&n_counter, sizeof(int), 1, output);
-//						file_write(wavef + n*n_counter, sizeof(double), n_counter, output);
+							file_write(&eigenval, sizeof(double), 1, output);
 
-						file_close(&output);
+							file_write(&n_counter, sizeof(int), 1, output);
+						}
+
+						const int start = n*n_counter;
+						const int end = start + n_counter;
+
+						mpi_vector_write(eigenvec, start, end, output);
+
+						if (mpi_rank() == 0) file_close(&output);
+
 						ch_counter[J] += 1;
 					}
 				}
@@ -291,7 +301,7 @@ int main(int argc, char *argv[])
 			mpi_vector_free(eigenvec);
 		}
 
-		free(eigenval);
+		mpi_matrix_free(fgh);
 	}
 
 	free(ch_counter);
