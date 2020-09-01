@@ -716,6 +716,11 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 			CHECK_PETSC_ERROR("MatSetValues()", info, true)
 		}
 	}
+	#else
+	{
+		ASSERT(x == x)
+		PRINT_ERROR("%s\n", "the PETSc library is required")
+	}
 	#endif
 }
 
@@ -892,7 +897,8 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n, const bool up)
 	}
 	#else
 	{
-		PRINT_ERROR("both PETSc and SLEPc libraries are required\n")
+		ASSERT(up == up)
+		PRINT_ERROR("%s\n", "both PETSc and SLEPc libraries are required")
 	}
 	#endif
 }
@@ -954,7 +960,7 @@ mpi_vector *mpi_matrix_eigenpair(const mpi_matrix *m,
 	}
 	#else
 	{
-		PRINT_ERROR("both PETSc and SLEPc libraries are required\n")
+		PRINT_ERROR("%s\n", "both PETSc and SLEPc libraries are required")
 	}
 	#endif
 

@@ -18,6 +18,8 @@
 	matrix *matrix_alloc(const int max_row,
 	                     const int max_col, const bool set_zero);
 
+	matrix *matrix_alloc_as(const matrix *m, const bool set_zero);
+
 	void matrix_free(matrix *m);
 
 	void matrix_set(matrix *m, const int p, const int q, const double x);

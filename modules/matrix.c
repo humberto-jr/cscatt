@@ -353,6 +353,22 @@ matrix *matrix_alloc(const int max_row, const int max_col, const bool set_zero)
 
 /******************************************************************************
 
+ Function matrix_alloc_as(): allocate resources for a matrix with the shape of
+ a given matrix m.
+
+******************************************************************************/
+
+matrix *matrix_alloc_as(const matrix *m, const bool set_zero)
+{
+	ASSERT(m != NULL)
+
+	matrix *pointer = matrix_alloc(m->max_row, m->max_col, set_zero);
+
+	return pointer;
+}
+
+/******************************************************************************
+
  Function matrix_free(): release resources allocated by matrix_alloc().
 
 ******************************************************************************/

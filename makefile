@@ -241,17 +241,22 @@ endif
 
 USE_PETSC = no
 PETSC_INC =
-PETSC_DIR = /usr/local/petsc
+PETSC_DIR =
+PETSC_PREFIX = /usr/local/petsc
 
 ifeq ($(USE_PETSC), yes)
+	ifeq ($(PETSC_DIR), )
+		PETSC_DIR = $(PETSC_PREFIX)
+	endif
+
 	PETSC_INC = -I$(PETSC_DIR)/include -DUSE_PETSC
 	PETSC_LIB = -Wl,-rpath,$(PETSC_DIR)/lib -L$(PETSC_DIR)/lib -lpetsc -lquadmath -ldl
 endif
 
 ifeq ($(USE_MPI), yes)
-	PETSC_CONFIG = --prefix=$(PETSC_DIR) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-debugging=0
+	PETSC_CONFIG = --prefix=$(PETSC_PREFIX) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-debugging=0 --with-x=0
 else
-	PETSC_CONFIG = --prefix=$(PETSC_DIR) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-debugging=0 --with-mpi=0
+	PETSC_CONFIG = --prefix=$(PETSC_PREFIX) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-debugging=0 --with-x=0 --with-mpi=0
 endif
 
 #
@@ -260,9 +265,14 @@ endif
 
 USE_SLEPC = no
 SLEPC_INC =
-SLEPC_DIR = /usr/local/slepc
+SLEPC_DIR =
+SLEPC_PREFIX = /usr/local/slepc
 
 ifeq ($(USE_SLEPC), yes)
+	ifeq ($(SLEPC_DIR), )
+		SLEPC_DIR = $(SLEPC_PREFIX)
+	endif
+
 	SLEPC_INC = -I$(SLEPC_DIR)/include -DUSE_SLEPC
 	SLEPC_LIB = -Wl,-rpath,$(SLEPC_DIR)/lib -L$(SLEPC_DIR)/lib -lslepc
 endif
@@ -412,6 +422,11 @@ a+t_multipole: a+t_multipole.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/m
 	$(CC) $(CFLAGS) $< -o $@.out utils.o file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
+numerov: numerov.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT) math.o nist.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out utils.o matrix.o file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
@@ -451,7 +466,7 @@ arpack-ng: $(LIB_DIR)/arpack-ng.tar.xz $(ARPACKROOT)
 
 petsc: $(LIB_DIR)/petsc-3.13.4.tar.xz
 	tar -xf $<
-	mkdir -p $(PETSC_DIR)
+	mkdir -p $(PETSC_PREFIX)
 	cd petsc-3.13.4/; ./configure $(PETSC_CONFIG)
 	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-opt all
 	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-opt install
@@ -459,8 +474,8 @@ petsc: $(LIB_DIR)/petsc-3.13.4.tar.xz
 
 slepc: $(LIB_DIR)/slepc-3.13.4.tar.gz $(PETSC_DIR)
 	tar -zxvf $(LIB_DIR)/slepc-3.13.4.tar.gz
-	mkdir -p $(SLEPC_DIR)
-	cd slepc-3.13.4/; export PETSC_DIR=$(PETSC_DIR); export SLEPC_DIR=$(PWD)/slepc-3.13.4; ./configure --prefix=$(SLEPC_DIR)
+	mkdir -p $(SLEPC_PREFIX)
+	cd slepc-3.13.4/; export PETSC_DIR=$(PETSC_DIR); export SLEPC_DIR=$(PWD)/slepc-3.13.4; ./configure --prefix=$(SLEPC_PREFIX)
 	cd slepc-3.13.4/; make PETSC_DIR=$(PETSC_DIR) SLEPC_DIR=$(PWD)/slepc-3.13.4
 	cd slepc-3.13.4/; make PETSC_DIR=$(PETSC_DIR) SLEPC_DIR=$(PWD)/slepc-3.13.4 install
 	rm -rf slepc-3.13.4

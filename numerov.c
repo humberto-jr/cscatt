@@ -1,17 +1,27 @@
-#include "config.h"
+#include "modules/pes.h"
+#include "modules/file.h"
+#include "modules/matrix.h"
+#include "modules/mpi_lib.h"
+#include "modules/globals.h"
+
+#include "utils.h"
+
+#define FORMAT "  %3d       %06f    %f\n"
 
 /******************************************************************************
 
- Function johnson_jcp78_numerov(): use the method of B. R. Johnson, Ref. [1],
+ Function johnson_jcp78_numerov(): uses the method of B. R. Johnson, Ref. [1],
  to propagate the ratio matrix of a multichannel wavefunction from the radial
  grid point (n - 1) to n at a given total energy.
 
- NOTE: the potential matrix is used as workspace and its content is destroyed.
+ NOTE: the potential matrix is used as workspace and its content is destroyed
+ if workspace = NULL.
 
 ******************************************************************************/
 
-void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
-                           const double tot_energy, const double mass, matrix *ratio)
+void johnson_jcp78_numerov(const double grid_step,
+                           const double mass, const double tot_energy,
+                           matrix *pot_energy, matrix *ratio, matrix *workspace)
 {
 	ASSERT(ratio != NULL)
 	ASSERT(pot_energy != NULL)
@@ -29,20 +39,26 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
  *	Resolve Eq. (23) of Ref. [1] with Eq. (2) and (17) plugged in:
  */
 
-	matrix *w = pot_energy;
+	matrix *w = NULL;
 
-	for (int n = 0; n < matrix_row(pot_energy); ++n)
+	if (workspace == NULL)
+		w = pot_energy;
+	else
+		w = workspace;
+
+	const int n_max = matrix_row(pot_energy);
+
+	for (int n = 0; n < n_max; ++n)
 	{
-		double t = factor*(tot_energy - matrix_get(pot_energy, n, n));
-		matrix_set(w, n, n, 1.0 - t);
+		const double t_nn = factor*(tot_energy - matrix_get(pot_energy, n, n));
 
-		for (int m = (n + 1); m < matrix_col(pot_energy); ++m)
+		matrix_diag_set(w, n, 1.0 - t_nn);
+
+		for (int m = (n + 1); m < n_max; ++m)
 		{
-			t = factor*(0.0 - matrix_get(pot_energy, n, m));
-			matrix_set(w, n, m, 0.0 - t);
+			const double t_nm = factor*(0.0 - matrix_get(pot_energy, n, m));
 
-			t = factor*(0.0 - matrix_get(pot_energy, m, n));
-			matrix_set(w, m, n, 0.0 - t);
+			matrix_symm_set(w, n, m, 0.0 - t_nm);
 		}
 	}
 
@@ -52,18 +68,17 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 
 	matrix_inverse(w);
 
-	for (int n = 0; n < matrix_row(pot_energy); ++n)
+	for (int n = 0; n < n_max; ++n)
 	{
-		double u = 12.0*matrix_get(w, n, n) - 10.0;
-		matrix_set(ratio, n, n, u - matrix_get(ratio, n, n));
+		const double u_nn = 12.0*matrix_get(w, n, n) - 10.0;
 
-		for (int m = (n + 1); m < matrix_col(pot_energy); ++m)
+		matrix_diag_set(ratio, n, u_nn - matrix_get(ratio, n, n));
+
+		for (int m = (n + 1); m < n_max; ++m)
 		{
-			u = 12.0*matrix_get(w, n, m);
-			matrix_set(ratio, n, m, u - matrix_get(ratio, n, m));
+			const double u_nm = 12.0*matrix_get(w, n, m);
 
-			u = 12.0*matrix_get(w, m, n);
-			matrix_set(ratio, m, n, u - matrix_get(ratio, m, n));
+			matrix_symm_set(ratio, n, m, u_nm - matrix_get(ratio, n, m));
 		}
 	}
 
@@ -119,12 +134,6 @@ int main(int argc, char *argv[])
 	const double R_step = (R_max - R_min)/as_double(scatt_grid_size);
 
 /*
- *	OpenMP:
- */
-
-	const bool use_omp = (bool) file_keyword(stdin, "use_omp", 0.0, 1.0, 1.0);
-
-/*
  *	MPI:
  */
 
@@ -141,32 +150,28 @@ int main(int argc, char *argv[])
 		printf("# --------------------------------\n");
 	}
 
-	matrix *workspace = NULL;
+	matrix *pot_energy = NULL, *ratio = NULL, *workspace = NULL;
 
 	for (int n = 0; n < scatt_grid_size; ++n)
 	{
-		matrix *pot_energy = coupling_read(arrang, n, J, false);
+		pot_energy = coupling_read(arrang, n, J, false);
 
-		if (n == 0)
-		{
-			const int max_channel = matrix_row(pot_energy);
-			workspace = matrix_alloc(max_channel, max_channel, false);
-		} 
+		if (n == 0) workspace = matrix_alloc_as(pot_energy, false);
 
 		const double start_time = wall_time();
 
 		for (int m = mpi_first_task(); m <= mpi_last_task(); ++m)
 		{
-			extra_step: /* This is an empty statement */;
+			extra_step:
+			ratio = ratio_read(arrang, m, J, false);
 
 			const double tot_energy = E_min + as_double(m)*E_step;
 
-			matrix *ratio = rmatrix_load(arrang, n, J, false);
+			johnson_jcp78_numerov(R_step, mass,
+			                      tot_energy, pot_energy, ratio, workspace);
 
-			johnson_jcp78_numerov(R_step,
-			                      pot_energy, tot_energy, mass, ratio, workspace);
-
-			rmatrix_save(arrang, n, J, false, ratio);
+			ratio_write(arrang, m, J, false, ratio);
+			matrix_free(ratio);
 
 			if (m == mpi_last_task() && mpi_extra_task() > 0)
 			{
@@ -175,10 +180,14 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		const double end_time = wall_time();
+		const double end_time = wall_time(), R = R_min + as_double(n)*R_step;
+
+		if (mpi_rank() == 0) printf(FORMAT, mpi_rank(), R, end_time - start_time);
 
 		matrix_free(pot_energy);
 	}
+
+	matrix_free(workspace);
 
 	mpi_end();
 	return EXIT_SUCCESS;

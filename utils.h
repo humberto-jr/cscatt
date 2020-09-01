@@ -65,4 +65,10 @@
 
 	FILE *coupling_datafile(const char arrang, const int n,
 	                        const int J, const bool verbose, const char mode[]);
+
+	void ratio_write(const char arrang, const int m,
+	                 const int J, const bool verbose, const matrix *ratio);
+
+	matrix *ratio_read(const char arrang,
+	                   const int m, const int J, const bool verbose);
 #endif

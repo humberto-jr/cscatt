@@ -20,6 +20,10 @@
 	#define COUPLING_DATAFILE_FORMAT "cmatrix_arrang=%c_n=%d_J=%d.dat"
 #endif
 
+#if !defined(RATIO_MATRIX_FORMAT)
+	#define RATIO_MATRIX_FORMAT "ratio_arrang=%c_m=%d_J=%d.dat"
+#endif
+
 /******************************************************************************
 
  Function basis_count(): counts how many basis functions are available in the
@@ -302,4 +306,40 @@ FILE *coupling_datafile(const char arrang, const int n,
 	ASSERT(stream != NULL)
 
 	return stream;
+}
+
+/******************************************************************************
+
+ Function ratio_write(): saves in the disk a Numerov's ratio matrix for a given
+ energy grid m, arrangement and total angular momentum, J.
+
+******************************************************************************/
+
+void ratio_write(const char arrang, const int m,
+                 const int J, const bool verbose, const matrix *ratio)
+{
+	char filename[MAX_LINE_LENGTH];
+	sprintf(filename, RATIO_MATRIX_FORMAT, arrang, m, J);
+
+	if (verbose) printf("# Writing %s\n", filename);
+
+	matrix_save(ratio, filename);
+}
+
+/******************************************************************************
+
+ Function ratio_read(): loads from the disk a Numerov's ratio matrix for a
+ given energy grid m, arrangement and total angular momentum, J.
+
+******************************************************************************/
+
+matrix *ratio_read(const char arrang,
+                   const int m, const int J, const bool verbose)
+{
+	char filename[MAX_LINE_LENGTH];
+	sprintf(filename, RATIO_MATRIX_FORMAT, arrang, m, J);
+
+	if (verbose) printf("# Reading %s\n", filename);
+
+	return matrix_load(filename);
 }
