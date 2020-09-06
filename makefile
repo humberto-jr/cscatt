@@ -372,6 +372,11 @@ c_print: c_print.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MO
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
+m_basis_std: m_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o mpi_lib.o matrix.o file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	@echo
+
 m_basis: m_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o mpi_lib.o matrix.o file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
@@ -425,6 +430,32 @@ a+t_multipole: a+t_multipole.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/m
 numerov: numerov.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT) math.o nist.o
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) $< -o $@.out utils.o matrix.o file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	@echo
+
+#
+# Rules for tools:
+#
+
+TOOLS_DIR = tools
+
+3j: $(TOOLS_DIR)/3j.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
+	@echo
+
+6j: $(TOOLS_DIR)/6j.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
+	@echo
+
+9j: $(TOOLS_DIR)/9j.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
+	@echo
+
+sphe_harmonics: $(TOOLS_DIR)/sphe_harmonics.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 #

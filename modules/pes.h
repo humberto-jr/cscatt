@@ -23,6 +23,8 @@
 
 	double pes_mass_abc(const char arrang);
 
+	double pes_mass_abcd();
+
 	double pes_abc(const char arrang,
 	               const double r, const double R, const double theta);
 

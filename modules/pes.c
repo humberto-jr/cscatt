@@ -253,6 +253,17 @@ double pes_mass_abc(const char arrang)
 
 /******************************************************************************
 
+ Function pes_mass_abc(): return the reduced mass of an A+BCD arrangement.
+
+******************************************************************************/
+
+double pes_mass_abcd()
+{
+	return mass_a*(mass_b + mass_c + mass_d)/(mass_a + mass_b + mass_c + mass_d);
+}
+
+/******************************************************************************
+
  Wrapper pes_abc(): an interface for the external user defined triatomic PES as
  function of a set of Jacobi coordinates (r, R, theta) for a given arrangement,
  which are translated to internuclear distances (ab, bc, ac).

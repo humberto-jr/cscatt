@@ -636,6 +636,25 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 		pointer->max_row = max_row;
 		pointer->max_col = max_col;
 
+/*		info = MatCreate(MPI_COMM_WORLD, &pointer->data);
+
+		CHECK_PETSC_ERROR("MatCreate()", info, true)
+
+		info = MatSetType(pointer->data, MATAIJ);
+
+		CHECK_PETSC_ERROR("MatSetType()", info, true)
+
+		info = MatSetSizes(pointer->data, PETSC_DECIDE, PETSC_DECIDE, max_row, max_col);
+
+		CHECK_PETSC_ERROR("MatSetSizes()", info, true)
+
+		info = MatSetUp(pointer->data);
+
+		CHECK_PETSC_ERROR("MatSetUp()", info, true)
+
+		info = MatMPIAIJSetPreallocation(pointer->data,
+		                                 non_zeros[0], NULL, non_zeros[1], NULL);
+*/
 		if (mpi_comm_size() > 1)
 		{
 			info = MatCreateAIJ(MPI_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, max_row,
@@ -712,8 +731,8 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 	{
 		if ((p >= m->first) && (p < m->last))
 		{
-			const int info = MatSetValues(m->data, 1, &p, 1, &q, &x, INSERT_VALUES);
-			CHECK_PETSC_ERROR("MatSetValues()", info, true)
+			const int info = MatSetValue(m->data, p, q, x, INSERT_VALUES);
+			CHECK_PETSC_ERROR("MatSetValue()", info, true)
 		}
 	}
 	#else
@@ -858,7 +877,8 @@ void mpi_vector_build(mpi_vector *v)
 
 ******************************************************************************/
 
-void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n, const bool up)
+void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n,
+                             const int max_step, const double tol, const bool up)
 {
 	ASSERT(m != NULL)
 	ASSERT(n > 0)
@@ -890,6 +910,10 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n, const bool up)
 		info = EPSSetType(m->solver, EPSKRYLOVSCHUR);
 
 		CHECK_PETSC_ERROR("EPSSetType()", info, true)
+
+		info = EPSSetTolerances(m->solver, tol, max_step);
+
+		CHECK_PETSC_ERROR("EPSSetTolerances()", info, true)
 
 		info = EPSSolve(m->solver);
 
@@ -985,7 +1009,6 @@ void mpi_vector_write(const mpi_vector *v,
 	ASSERT(v != NULL)
 	ASSERT(n_min > -1)
 	ASSERT(n_max > n_min)
-	ASSERT(n_max < v->length)
 
 	if (mpi_rank() == 0)
 	{
@@ -1018,8 +1041,8 @@ void mpi_vector_write(const mpi_vector *v,
 			{
 /*
  *				NOTE: when this if-block is false a delay is used to make sure other
- *				processes had enough time to send at least the first data used by
- *				the for-block below. Ten milliseconds are used.
+ *				processes had enough time to send at least the first data received
+ *				by the for-block below. Ten milliseconds are used.
  */
 				sleep(0.010);
 			}

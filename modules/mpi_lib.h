@@ -54,7 +54,8 @@
 
 	void mpi_vector_build(mpi_vector *v);
 
-	void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n, const bool up);
+	void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n, const int max_step,
+	                             const double tol, const bool up);
 
 	mpi_vector *mpi_matrix_eigenpair(const mpi_matrix *m,
 	                                 const int n, double *eigenval);
