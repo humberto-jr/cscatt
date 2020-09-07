@@ -117,6 +117,59 @@ double math_clebsch_gordan(const int j1, const int j2, const int j3,
 
 /******************************************************************************
 
+ Function math_racah_coeff():
+
+******************************************************************************/
+
+double math_racah_coeff(const int J,
+                        const int j1,
+                        const int j2,
+                        const int l1,
+                        const int l2,
+                        const int lambda)
+{
+	return pow(-1.0, j1 + l1 + j2 + l2)*math_wigner_6j(j1, l1, J, l2, j2, lambda);
+}
+
+/******************************************************************************
+
+ Function math_percival_seaton(): return the so-called Percival & Seaton term
+ often used in the definition of the atom-diatom collisional coupling matrix.
+ Where,
+
+ j1     = diatomic rotational angular momentum quantum number for channel 1
+ j2     = diatomic rotational angular momentum quantum number for channel 2
+ l1     = atom-diatom orbital angular momentum quantum number for channel 1
+ l2     = atom-diatom orbital angular momentum quantum number for channel 2
+ J      = total angular momentum of the problem
+ lambda = an integer parameter (0, 1, 2, ...)
+
+ and also depends parametrically on the electronic spin multiplicity (1 for
+ singlet, 2 for doublet and 3 for triplet).
+
+ See Ref. [1] for more, in particular, Eq. (A1).
+
+******************************************************************************/
+
+double math_percival_seaton(const int J,
+                            const int j1,
+                            const int j2,
+                            const int l1,
+                            const int l2,
+                            const int lambda)
+{
+	double result = pow(-1.0, j1 + j2 - J);
+
+	result *= math_wigner_3j(l1, l2, lambda, 0, 0, 0);
+	result *= math_wigner_3j(j1, j2, lambda, 0, 0, 0);
+	result *= math_wigner_6j(j1, j2, lambda, l2, l1, J);
+	result *= sqrt(as_double(2*j1 + 1)*as_double(2*j2 + 1)*as_double(2*l1 + 1)*as_double(2*l2 + 1));
+
+	return result;
+}
+
+/******************************************************************************
+
  Function math_wigner_d():
 
 ******************************************************************************/

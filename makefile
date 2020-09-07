@@ -458,6 +458,11 @@ sphe_harmonics: $(TOOLS_DIR)/sphe_harmonics.c $(MODULES_DIR)/globals.h $(MODULES
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
+percival_seaton: $(TOOLS_DIR)/percival_seaton.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
