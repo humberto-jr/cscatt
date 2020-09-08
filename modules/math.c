@@ -34,7 +34,7 @@ double math_legendre_poly(const int l, const double x)
 
 /******************************************************************************
 
- Function math_sphe_harmonics(): returns the spherical harmonics for angular
+ Function math_sphe_harmonics(): returns the spherical harmonics y for angular
  momentum l and projection m at (theta, phi).
 
 ******************************************************************************/
@@ -241,6 +241,43 @@ double *math_wigner_d(const int k,
 	}
 
 	return result;
+}
+
+/******************************************************************************
+
+ Function math_integral_yyy():
+
+******************************************************************************/
+
+double math_integral_yyy(const int j1, const int m1,
+                         const int j2, const int m2,
+                         const int j3, const int m3)
+{
+	const double a = as_double(2*j1 + 1);
+
+	const double b = as_double(2*j2 + 1);
+
+	const double c = as_double(2*j3 + 1);
+
+	const double d = sqrt(a*b*c/(4.0*M_PI));
+
+	const double e = math_wigner_3j(j1, j2, j3, 0, 0, 0);
+
+	const double f = math_wigner_3j(j1, j2, j3, m1, m2, m3);
+
+/*	const double a = as_double(2*j1 + 1);
+
+	const double b = as_double(2*j2 + 1);
+
+	const double c = as_double(2*j3 + 1);
+
+	const double d = sqrt(a*b/(4.0*M_PI*c));
+
+	const double e = math_clebsch_gordan(j1, j2, j3, 0, 0, 0);
+
+	const double f = math_clebsch_gordan(j1, j2, j3, m1, m2, m3);*/
+
+	return d*e*f;
 }
 
 /******************************************************************************

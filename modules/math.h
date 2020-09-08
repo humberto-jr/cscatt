@@ -49,6 +49,10 @@
 	                      const int j_max,
 	                      const double beta);
 
+	double math_integral_yyy(const int j1, const int m1,
+	                         const int j2, const int m2,
+	                         const int j3, const int m3);
+
 	void math_set_workspace(const int size);
 
 	void math_set_error(const double error);

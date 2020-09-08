@@ -182,13 +182,21 @@ int main(int argc, char *argv[])
 	ASSERT(mass != 0.0)
 
 /*
+ *	Number of iterations used in the eigensolver:
+ */
+
+	const int max_step = (int) file_keyword(stdin, "max_step", 1.0, INF, 300.0);
+
+	const double tol = file_keyword(stdin, "tolerance", -INF, INF, 1.0E-8);
+
+/*
  *	Resolve the triatomic eigenvalues for each j-case and sort results as scatt. channels:
  */
 
 	if (mpi_rank() == 0)
 	{
 		printf("# Reduced mass = %f a.u., n = [%d, %d]\n", mass, n_min, n_max);
-		printf("#     J     Ch.      v       j       l       p    Comp.       E (a.u.)       E (cm-1)         E (eV)   \n");
+		printf("#     J      Ch.      v       j       l       p    Comp.      E (a.u.)       E (cm-1)         E (eV)   \n");
 		printf("# -----------------------------------------------------------------------------------------------------\n");
 	}
 
@@ -234,7 +242,7 @@ int main(int argc, char *argv[])
 
 		free(pot_energy);
 
-		mpi_matrix_sparse_eigen(fgh, v_max, false);
+		mpi_matrix_sparse_eigen(fgh, v_max + 1, max_step, tol, false);
 
 /*
  *		Step 2: loop over the vibrational states v of the triatom, solutions of
