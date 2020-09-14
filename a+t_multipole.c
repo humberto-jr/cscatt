@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
 	file_init_stdin(argv[1]);
 
 /*
- *	Atomic masses and PES:
+ *	Atomic masses:
  */
 
 	pes_init_mass(stdin, 'a');
@@ -286,6 +286,15 @@ int main(int argc, char *argv[])
 
 	ASSERT(eta_max >= eta_min)
 
+	int counter = 0;
+	for (int eta = eta_min; eta <= eta_max; eta += eta_step)
+	{
+		/* NOTE: only the positive m-projections are considered. */
+		counter += eta + 1;
+	}
+
+	const int m_grid_size = counter;
+
 /*
  *	OpenMP:
  */
@@ -293,15 +302,15 @@ int main(int argc, char *argv[])
 	const bool use_omp = (bool) file_keyword(stdin, "use_omp", 0.0, 1.0, 1.0);
 
 /*
- *	Sort each task (r, R, lambda) in an ordered list: TODO: include m_eta grid size in max_task
+ *	Sort each task (r_bc, r_bcd, r_abcd, lambda, eta, m_eta) in an ordered list:
  */
 
 	const int max_task
-		= bc_grid_size*bcd_grid_size*abcd_grid_size*lambda_grid_size*eta_grid_size;
+		= bc_grid_size*bcd_grid_size*abcd_grid_size*lambda_grid_size*eta_grid_size*m_grid_size;
 
 	struct tasks *list = allocate(max_task, sizeof(struct tasks), true);
 
-	int counter = 0;
+	counter = 0;
 	for (int n = 0; n < abcd_grid_size; ++n)
 	{
 		for (int lambda = lambda_min; lambda <= lambda_max; lambda += lambda_step)

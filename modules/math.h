@@ -2,6 +2,16 @@
 	#define MATH_HEADER
 	#include "globals.h"
 
+	struct math_qag_integrand
+	{
+		int size;
+		void *params;
+		double a, b, error;
+		double (*integrand)(double x, void *params);
+	};
+
+	typedef struct math_qag_integrand math_qag_integrand;
+
 	struct math_lanczos_setup
 	{
 		void *params;

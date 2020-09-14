@@ -245,7 +245,7 @@ double *math_wigner_d(const int k,
 
 /******************************************************************************
 
- Function math_integral_yyy():
+ Function math_integral_yyy(): Eq. (4.34), Pag 62.
 
 ******************************************************************************/
 
@@ -265,7 +265,9 @@ double math_integral_yyy(const int j1, const int m1,
 
 	const double f = math_wigner_3j(j1, j2, j3, m1, m2, m3);
 
-/*	const double a = as_double(2*j1 + 1);
+
+/*
+	const double a = as_double(2*j1 + 1);
 
 	const double b = as_double(2*j2 + 1);
 
@@ -275,7 +277,22 @@ double math_integral_yyy(const int j1, const int m1,
 
 	const double e = math_clebsch_gordan(j1, j2, j3, 0, 0, 0);
 
-	const double f = math_clebsch_gordan(j1, j2, j3, m1, m2, m3);*/
+	const double f = math_clebsch_gordan(j1, j2, j3, m1, m2, m3);
+*/
+
+/*
+	const double a = as_double(2*j1 + 1);
+
+	const double b = as_double(2*j2 + 1);
+
+	const double c = as_double(2*j3 + 1);
+
+	const double d = sqrt(c*b/(4.0*M_PI*a));
+
+	const double e = math_clebsch_gordan(j3, j2, j1, 0, 0, 0);
+
+	const double f = math_clebsch_gordan(j3, j2, j1, m3, m2, m1);
+*/
 
 	return d*e*f;
 }
@@ -424,6 +441,43 @@ double math_qag(const double a,
 
 /******************************************************************************
 
+ Function math_qag(): returns the integral of f = f(x) from a to b, using a 61
+ point Gauss-Kronrod rule in a QAG framework. Where, f and all parameters upon
+ which it depends are given using a math_qag_integrand object.
+
+******************************************************************************/
+
+double _math_qag(const math_qag_integrand *job)
+{
+	ASSERT(job != NULL)
+
+	gsl_function f =
+	{
+		.params = job->params,
+		.function = job->integrand
+	};
+
+	gsl_integration_workspace *work = gsl_integration_workspace_alloc(job->size);
+
+	ASSERT(work != NULL)
+
+	double result = 0.0, error = 0.0;
+
+	const int info = gsl_integration_qag(&f, job->a, job->b, job->error, 0.0,
+	                                     job->size, GSL_INTEG_GAUSS61, work, &result, &error);
+
+	gsl_integration_workspace_free(work);
+
+	if (info != 0)
+	{
+		PRINT_ERROR("%s; error = %f\n", gsl_strerror(info), error)
+	}
+
+	return result;
+}
+
+/******************************************************************************
+
  Function math_qags(): the same as integral_qag() but using a smaller order in
  the Gauss-Kronrod rule (21) and assuming that f may be singular.
 
@@ -448,6 +502,42 @@ double math_qags(const double a,
 
 	const int info = gsl_integration_qags(&gsl_f, a, b, abs_error, 0.0,
 	                                      workspace_size, work, &result, &error);
+
+	gsl_integration_workspace_free(work);
+
+	if (info != 0)
+	{
+		PRINT_ERROR("%s; error = %f\n", gsl_strerror(info), error)
+	}
+
+	return result;
+}
+
+/******************************************************************************
+
+ Function math_qags(): the same as math_qag() but using a smaller order in the
+ Gauss-Kronrod rule (21) and assuming that f may be singular.
+
+******************************************************************************/
+
+double _math_qags(const math_qag_integrand *job)
+{
+	ASSERT(job != NULL)
+
+	gsl_function f =
+	{
+		.params = job->params,
+		.function = job->integrand
+	};
+
+	gsl_integration_workspace *work = gsl_integration_workspace_alloc(job->size);
+
+	ASSERT(work != NULL)
+
+	double result = 0.0, error = 0.0;
+
+	const int info = gsl_integration_qags(&f, job->a, job->b, job->error,
+	                                      0.0, job->size, work, &result, &error);
 
 	gsl_integration_workspace_free(work);
 
