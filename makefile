@@ -254,9 +254,9 @@ ifeq ($(USE_PETSC), yes)
 endif
 
 ifeq ($(USE_MPI), yes)
-	PETSC_CONFIG = --prefix=$(PETSC_PREFIX) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-debugging=0 --with-x=0
+	PETSC_CONFIG = --prefix=$(PETSC_PREFIX) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-x=0
 else
-	PETSC_CONFIG = --prefix=$(PETSC_PREFIX) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-debugging=0 --with-x=0 --with-mpi=0
+	PETSC_CONFIG = --prefix=$(PETSC_PREFIX) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-x=0 --with-mpi=0
 endif
 
 #
@@ -504,8 +504,8 @@ petsc: $(LIB_DIR)/petsc-3.13.4.tar.xz
 	tar -xf $<
 	mkdir -p $(PETSC_PREFIX)
 	cd petsc-3.13.4/; ./configure $(PETSC_CONFIG)
-	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-opt all
-	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-opt install
+	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-debug all
+	cd petsc-3.13.4/; make PETSC_DIR=$(PWD)/petsc-3.13.4 PETSC_ARCH=arch-linux2-c-debug install
 	rm -rf petsc-3.13.4
 
 slepc: $(LIB_DIR)/slepc-3.13.4.tar.gz $(PETSC_DIR)
