@@ -357,8 +357,11 @@ int main(int argc, char *argv[])
 		printf("# ----------------------------------------------------------------------------------------------------------------------------\n");
 	}
 
-	#pragma omp parallel for default(none) shared(list) schedule(static) if(use_omp)
-	for (int n = mpi_first_task(); n <= mpi_last_task(); ++n)
+	/* FIXME: when using Intel icc, n must be declared with a private clause. */
+	int n = 0;
+
+	#pragma omp parallel for default(none) private(n) shared(list) schedule(static) if(use_omp)
+	for (n = mpi_first_task(); n <= mpi_last_task(); ++n)
 	{
 		extra_step:
 		driver(&list[n]);
