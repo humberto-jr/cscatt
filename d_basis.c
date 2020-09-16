@@ -101,6 +101,9 @@ void norm(const int grid_size,
 int main(int argc, char *argv[])
 {
 	ASSERT(argc > 1)
+
+	matrix_init_gpu();
+
 	file_init_stdin(argv[1]);
 
 /*
@@ -283,6 +286,8 @@ int main(int argc, char *argv[])
 	}
 
 	free(ch_counter);
+
+	matrix_end_gpu();
 
 	return EXIT_SUCCESS;
 }

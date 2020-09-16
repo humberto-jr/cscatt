@@ -287,6 +287,7 @@ void call_dsyev(const char jobz,
 void matrix_init_gpu()
 {
 	#if defined(USE_MAGMA)
+	{
 		if (magma_init() != MAGMA_SUCCESS)
 		{
 			PRINT_ERROR("%s\n", "magma_init() failed")
@@ -294,8 +295,7 @@ void matrix_init_gpu()
 		}
 
 		magma_queue_create(0, &gpu_queue);
-	#else
-		PRINT_ERROR("%s\n", "macro USE_MAGMA not defined")
+	}
 	#endif
 }
 
@@ -308,14 +308,14 @@ void matrix_init_gpu()
 void matrix_end_gpu()
 {
 	#if defined(USE_MAGMA)
+	{
 		if (magma_finalize() != MAGMA_SUCCESS)
 		{
 			PRINT_ERROR("%s\n", "magma_finalize() failed")
 		}
 
 		magma_queue_destroy(gpu_queue);
-	#else
-		PRINT_ERROR("%s\n", "macro USE_MAGMA not defined")
+	}
 	#endif
 }
 
