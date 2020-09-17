@@ -3,9 +3,12 @@
  About
  -----
 
- This module is an interface to an external user defined potential energy
- surface routine provided during compilation by the macro EXTERNAL_PES_NAME for
- systems with either three or four atoms.
+ This module is an interface to an external user defined function that returns
+ a potential energy surface (PES), provided during compilation by the macro
+ EXTERNAL_PES_NAME, i.e. EXTERNAL_PES_NAME(x). Where, x is a vector with
+ the coordinates of the system. Internuclear distances are assume as a default
+ coordinate system. The module also contains all routines needed to read, save,
+ and output the respective atomic masses of the problem.
 
 
  References
@@ -167,7 +170,12 @@ void pes_init()
 	ASSERT(mass_b != 0.0)
 	ASSERT(mass_c != 0.0)
 
-	const bool is_nan = isnan(pes_abc('a', inf, inf, 90.0));
+	bool is_nan = true;
+
+	if (mass_d == 0.0)
+		is_nan = isnan(pes_abc('a', inf, inf, 90.0));
+	else
+		is_nan = isnan(pes_abcd(inf, inf, inf, 90.0, 90.0, 0.0));
 
 	ASSERT(is_nan == false)
 
@@ -253,7 +261,7 @@ double pes_mass_abc(const char arrang)
 
 /******************************************************************************
 
- Function pes_mass_abc(): return the reduced mass of an A+BCD arrangement.
+ Function pes_mass_abc(): return the reduced mass of the A+BCD arrangement.
 
 ******************************************************************************/
 
@@ -439,13 +447,6 @@ double pes_abcd(const double r_bc,
 	a.y = cbd.y + r_abcd*sin(theta_a*M_PI/180.0)*sin(phi_a*M_PI/180.0);
 	a.z = cbd.z + r_abcd*cos(theta_a*M_PI/180.0);
 
-	internuc[0] = cartesian_distance(&a, &b);
-	internuc[1] = cartesian_distance(&a, &c);
-	internuc[2] = cartesian_distance(&a, &d);
-	internuc[3] = cartesian_distance(&b, &c);
-	internuc[4] = cartesian_distance(&b, &d);
-	internuc[5] = cartesian_distance(&c, &d);
-
 	#if defined(USE_CARTESIAN_COORDINATES)
 	{
 		const double xyz[12]
@@ -454,6 +455,13 @@ double pes_abcd(const double r_bc,
 		return EXTERNAL_PES_NAME(xyz);
 	}
 	#endif
+
+	internuc[0] = cartesian_distance(&a, &b);
+	internuc[1] = cartesian_distance(&a, &c);
+	internuc[2] = cartesian_distance(&a, &d);
+	internuc[3] = cartesian_distance(&b, &c);
+	internuc[4] = cartesian_distance(&b, &d);
+	internuc[5] = cartesian_distance(&c, &d);
 
 	return EXTERNAL_PES_NAME(internuc);
 }
@@ -739,8 +747,8 @@ matrix *pes_tully_model(const int n, const double x)
 
 /******************************************************************************
 
- Function pes_about(): print in a given output file the conditions in which the
- module was compiled.
+ Function pes_about(): prints in a given output file the conditions in which
+ the module was compiled.
 
 ******************************************************************************/
 
@@ -752,11 +760,15 @@ void pes_about(FILE *output)
 	fprintf(output, "# source code  = %s\n", __FILE__);
 	fprintf(output, "# external PES = %s\n", PRINT_MACRO(EXTERNAL_PES_NAME));
 
-	#if defined(USE_NON_REACTIVE_PES)
+	#if defined(USE_JACOBI_COORDINATES)
 		fprintf(output, "# coordinates  = Jacobi\n");
-		fprintf(output, "# interface    = %s(r, R, theta)\n", PRINT_MACRO(EXTERNAL_PES_NAME));
-	#else
+	#endif
+
+	#if defined(USE_CARTESIAN_COORDINATES)
+		fprintf(output, "# coordinates  = Cartesian\n");
+	#endif
+
+	#if !defined(USE_JACOBI_COORDINATES) && !defined(USE_CARTESIAN_COORDINATES)
 		fprintf(output, "# coordinates  = internuclear distances\n");
-		fprintf(output, "# interface    = %s(r_ab, r_bc, r_ac)\n", PRINT_MACRO(EXTERNAL_PES_NAME));
 	#endif
 }

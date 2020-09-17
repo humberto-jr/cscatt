@@ -63,6 +63,8 @@
 	void mpi_vector_write(const mpi_vector *v,
 	                      const int n_min, const int n_max, FILE *stream);
 
+	void mpi_about(FILE *output);
+
 	/******************************************************************************
 
 	 Macro MPI_PRINTF(): prints a formatted message from a given process (master

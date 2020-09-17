@@ -922,6 +922,8 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n,
 	#else
 	{
 		ASSERT(up == up)
+		ASSERT(tol == tol)
+		ASSERT(max_step == max_step)
 		PRINT_ERROR("%s\n", "both PETSc and SLEPc libraries are required")
 	}
 	#endif
@@ -1070,5 +1072,38 @@ void mpi_vector_write(const mpi_vector *v,
 			}
 		}
 	}
+	#endif
+}
+
+/******************************************************************************
+
+ Function mpi_about(): prints in a given output file the conditions in which
+ the module was compiled.
+
+******************************************************************************/
+
+void mpi_about(FILE *output)
+{
+	ASSERT(output != NULL)
+
+	fprintf(output, "# build date  = %s\n", __DATE__);
+	fprintf(output, "# source code = %s\n", __FILE__);
+
+	#if defined(USE_MPI)
+		fprintf(output, "# using MPI   = yes\n");
+	#else
+		fprintf(output, "# using MPI   = no\n");
+	#endif
+
+	#if defined(USE_PETSC)
+		fprintf(output, "# using PETSc = yes\n");
+	#else
+		fprintf(output, "# using PETSc = no\n");
+	#endif
+
+	#if defined(USE_SLEPC)
+		fprintf(output, "# using SLEPc = yes\n");
+	#else
+		fprintf(output, "# using SLEPc = no\n");
 	#endif
 }
