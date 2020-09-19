@@ -3396,4 +3396,6 @@
 	const char *nist_atomic_symbol(const isotope a);
 
 	isotope nist_isotope(const char s[]);
+
+	void nist_about(FILE *output);
 #endif

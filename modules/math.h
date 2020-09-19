@@ -116,6 +116,8 @@
 
 	void math_lanczos(math_lanczos_setup *s);
 
+	void math_about(FILE *output);
+
 	/******************************************************************************
 
 	 Function math_side_c() uses the law of cosines to resolve the side c opposite

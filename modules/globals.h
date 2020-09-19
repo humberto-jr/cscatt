@@ -466,4 +466,28 @@
 			default: return as_double(n)*factorial(n - 1);
 		}
 	}
+
+	/******************************************************************************
+
+	 Function globals_about(): prints in a given output file the conditions in
+	 which the module was compiled.
+
+	******************************************************************************/
+
+	inline static void globals_about(FILE *output)
+	{
+		ASSERT(output != NULL)
+
+		fprintf(output, "# build date      = %s\n", __DATE__);
+		fprintf(output, "# source code     = %s\n", __FILE__);
+
+		#if defined(USE_SINGLE_PRECISION)
+			fprintf(output, "# real precision  = single\n");
+		#else
+			fprintf(output, "# real precision  = double\n");
+		#endif
+
+		fprintf(output, "# MAX_LINE_LENGTH = %d\n", MAX_LINE_LENGTH);
+		fprintf(output, "# INF             = %8e\n", INF);
+	}
 #endif

@@ -7,6 +7,34 @@
 	#define MAX_ATOM (MAX_JACOBI_VECTOR + 1)
 	#define MAX_INTERNUC_DISTANCE (3*MAX_ATOM - 6)
 
+	/******************************************************************************
+
+	 Type pes_multipole:
+
+	******************************************************************************/
+
+	struct pes_multipole
+	{
+		double *value;
+	};
+
+	typedef struct pes_multipole pes_multipole;
+
+	/******************************************************************************
+
+	 Type pes_multipole_set:
+
+	******************************************************************************/
+
+	struct pes_multipole_set
+	{
+		pes_multipole *set;
+		int lambda_max, grid_size;
+		double R, r_min, r_max, r_step;
+	};
+
+	typedef struct pes_multipole_set pes_multipole_set;
+
 	void pes_set_inf(const double x_inf);
 
 	void pes_init_mass(FILE *input, const char atom);
@@ -53,9 +81,16 @@
 	                               const double r_abcd,
 	                               const double theta_bc);
 
-//	matrix *pes_olson_smith_model(const double x);
+	FILE *pes_multipole_file(const char arrang,
+	                         const int n, const char mode[], const bool verbose);
 
-//	matrix *pes_tully_model(const int n, const double x);
+	void pes_multipole_save(const pes_multipole_set *m,
+	                        const char arrang, const int n, const bool verbose);
+
+	void pes_multipole_load(pes_multipole_set *m,
+	                        const char arrang, const int n, const bool verbose);
+
+	void pes_multipole_free(pes_multipole_set *m);
 
 	void pes_about(FILE *output);
 #endif

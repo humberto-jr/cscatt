@@ -304,3 +304,18 @@ void file_read(void *data,
 
 	if (info < n) PRINT_ERROR("only %d/%d elements read\n", info, n)
 }
+
+/******************************************************************************
+
+ Function file_about(): prints in a given output file the conditions in which
+ the module was compiled.
+
+******************************************************************************/
+
+void file_about(FILE *output)
+{
+	ASSERT(output != NULL)
+
+	fprintf(output, "# build date   = %s\n", __DATE__);
+	fprintf(output, "# source code  = %s\n", __FILE__);
+}

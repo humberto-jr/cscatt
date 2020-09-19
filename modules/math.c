@@ -12,8 +12,6 @@
 #include "math.h"
 #include "gsl_lib.h"
 
-//#include "arpack/arpack.h"
-
 static int workspace_size = 5000;
 static double abs_error = 1.0E-6;
 
@@ -765,3 +763,18 @@ void math_lanczos(math_lanczos_setup *s)
 		exit(EXIT_FAILURE);
 	}
 }*/
+
+/******************************************************************************
+
+ Function math_about(): prints in a given output file the conditions in which
+ the module was compiled.
+
+******************************************************************************/
+
+void math_about(FILE *output)
+{
+	ASSERT(output != NULL)
+
+	fprintf(output, "# build date   = %s\n", __DATE__);
+	fprintf(output, "# source code  = %s\n", __FILE__);
+}

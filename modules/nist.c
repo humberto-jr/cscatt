@@ -6766,3 +6766,18 @@ isotope nist_isotope(const char s[])
 	PRINT_ERROR("invalid atomic symbol s = %s\n", s)
 	exit(EXIT_FAILURE);
 }
+
+/******************************************************************************
+
+ Function nist_about(): prints in a given output file the conditions in which
+ the module was compiled.
+
+******************************************************************************/
+
+void nist_about(FILE *output)
+{
+	ASSERT(output != NULL)
+
+	fprintf(output, "# build date   = %s\n", __DATE__);
+	fprintf(output, "# source code  = %s\n", __FILE__);
+}

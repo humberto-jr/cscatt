@@ -33,6 +33,16 @@ static double mass_a = 0.0, mass_b = 0.0, mass_c = 0.0, mass_d = 0.0, inf = 1000
 
 /******************************************************************************
 
+ Macro MULTIPOLE_FILE_FORMAT:
+
+******************************************************************************/
+
+#if !defined(MULTIPOLE_FILE_FORMAT)
+	#define MULTIPOLE_FILE_FORMAT "multipole_arrang=%c_n=%d.%s"
+#endif
+
+/******************************************************************************
+
  Macro EXTERNAL_PES_NAME: is the name of an external user defined routine that
  evaluates the PES as function of a vector of coordinates, and defined during
  compilation. If not defined, a place holder called pes_noname is created for
@@ -667,83 +677,138 @@ double pes_harmonics_multipole(const int eta,
 
 /******************************************************************************
 
- Function pes_olson_smith_model(): return the 2-by-2 model potential of Olson
- and Smith for the system Ne + He^+ at a given internuclear distance x. See
- Eq. (45) and Table I from Ref. [1] for details.
+ Function pes_multipole_file(): opens the multipole file for the n-th grid
+ index, arrangement and total angular momentum, J. Where, mode is the file
+ access mode of fopen() from the C library.
 
- NOTE: a handy benchmark for the algorithms.
+ NOTE: mode = "wb" for write + binary format and "rb" for read + binary format,
+ extension used is .bin otherwise .dat is used assuming text mode ("w" or "r").
 
 ******************************************************************************/
-/*
-matrix *pes_olson_smith_model(const double x)
+
+FILE *pes_multipole_file(const char arrang,
+                         const int n, const char mode[], const bool verbose)
 {
-	matrix *m = matrix_alloc(2, 2, false);
+	char filename[MAX_LINE_LENGTH], ext[4];
 
-	matrix_set(m, 0, 0, 21.1*exp(-x/0.678)/x);
-	matrix_set(m, 0, 1, 0.170*exp(-x/0.667));
-	matrix_set(m, 1, 0, 0.170*exp(-x/0.667));
-	matrix_set(m, 1, 1, (21.1/x - 12.1)*exp(-x/0.678) + 16.8/27.2113961);
+	if (strlen(mode) > 1 && mode[1] == 'b')
+		sprintf(ext, "%s", "bin");
+	else
+		sprintf(ext, "%s", "dat");
 
-	return m;
-}*/
+	sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, n, ext);
+
+	FILE *stream = fopen(filename, mode);
+
+	ASSERT(stream != NULL)
+
+	if (verbose)
+	{
+		if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
+		if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
+	}
+
+	return stream;
+}
 
 /******************************************************************************
 
- Function pes_tully_model(): return one of the three (n = 1, 2, 3) 2-by-2 model
- potentials of J. C. Tully at a given x. See Eq. (21), (23) and (24) of
- Ref. [2].
+ Function pes_multipole_save(): saves in the disk a set of multipole terms for
+ a given n-th grid index, arrangement and total angular momentum, J.
 
 ******************************************************************************/
-/*
-matrix *pes_tully_model(const int n, const double x)
+
+void pes_multipole_save(const pes_multipole_set *m,
+                        const char arrang, const int n, const bool verbose)
 {
-	matrix *m = matrix_alloc(2, 2, false);
+	ASSERT(m != NULL)
 
-	switch (n)
+	FILE *output = pes_multipole_file(arrang, n, "wb", verbose);
+
+	file_write(&m->R, sizeof(double), 1, output);
+
+	file_write(&m->r_min, sizeof(double), 1, output);
+
+	file_write(&m->r_max, sizeof(double), 1, output);
+
+	file_write(&m->r_step, sizeof(double), 1, output);
+
+	file_write(&m->lambda_max, sizeof(int), 1, output);
+
+	file_write(&m->grid_size, sizeof(int), 1, output);
+
+	for (int lambda = 0; lambda <= m->lambda_max; ++lambda)
 	{
-		case 1:
-			if (x > 0.0)
-			{
-				matrix_set(m, 0, 0,  0.01*(1.0 - exp(-1.6*x)));
-				matrix_set(m, 1, 1, -0.01*(1.0 - exp(-1.6*x)));
-			}
-			else
-			{
-				matrix_set(m, 0, 0, -0.01*(1.0 - exp(1.6*x)));
-				matrix_set(m, 1, 1,  0.01*(1.0 - exp(1.6*x)));
-			}
-
-			matrix_set(m, 0, 1, 0.005*exp(-1.0*x*x));
-			matrix_set(m, 1, 0, 0.005*exp(-1.0*x*x));
-		break;
-
-		case 2:
-			matrix_set(m, 0, 0,  0.0);
-			matrix_set(m, 0, 1,  0.015*exp(-0.06*x*x));
-			matrix_set(m, 1, 0,  0.015*exp(-0.06*x*x));
-			matrix_set(m, 1, 1, -0.10*exp(-0.28*x*x) + 0.05);
-		break;
-
-		case 3:
-			matrix_set(m, 0, 0,  0.0006);
-			matrix_set(m, 1, 1, -0.0006);
-
-			matrix_set(m, 1, 0, 0.0);
-
-			if (x < 0.0)
-				matrix_set(m, 0, 1, 0.10*exp(0.90*x));
-
-			else
-				matrix_set(m, 0, 1, 0.10*(2.0 - exp(-0.90*x)));
-		break;
-
-		default:
-			PRINT_ERROR("invalid index n = %d\n", n)
-			exit(EXIT_FAILURE);
+		if (m->set[lambda].value != NULL)
+		{
+			file_write(&lambda, sizeof(int), 1, output);
+			file_write(m->set[lambda].value, sizeof(double), m->grid_size, output);
+		}
 	}
 
-	return m;
-}*/
+	file_close(&output);
+}
+
+/******************************************************************************
+
+ Function pes_multipole_load(): load from the disk a set of multipole terms for
+ a given n-th grid index, arrangement and total angular momentum, J.
+
+******************************************************************************/
+
+void pes_multipole_load(pes_multipole_set *m,
+                        const char arrang, const int n, const bool verbose)
+{
+	ASSERT(m != NULL)
+
+	FILE *input = pes_multipole_file(arrang, n, "rb", verbose);
+
+	file_read(&m->R, sizeof(double), 1, input, 0);
+
+	file_read(&m->r_min, sizeof(double), 1, input, 0);
+
+	file_read(&m->r_max, sizeof(double), 1, input, 0);
+
+	file_read(&m->r_step, sizeof(double), 1, input, 0);
+
+	file_read(&m->lambda_max, sizeof(int), 1, input, 0);
+
+	file_read(&m->grid_size, sizeof(int), 1, input, 0);
+
+	m->set = allocate(m->lambda_max, sizeof(pes_multipole), true);
+
+	int lambda = -1;
+	while (lambda != m->lambda_max)
+	{
+		file_read(&lambda, sizeof(int), 1, input, 0);
+
+		m->set[lambda].value = allocate(m->grid_size, sizeof(double), false);
+
+		file_read(m->set[lambda].value, sizeof(double), m->grid_size, input, 0);
+	}
+
+	file_close(&input);
+}
+
+/******************************************************************************
+
+ Function pes_multipole_free():
+
+******************************************************************************/
+
+void pes_multipole_free(pes_multipole_set *m)
+{
+	ASSERT(m != NULL)
+
+	if (m->set == NULL) return;
+
+	for (int lambda = 0; lambda <= m->lambda_max; ++lambda)
+	{
+		if (m->set[lambda].value != NULL) free(m->set[lambda].value);
+	}
+
+	free(m->set);
+}
 
 /******************************************************************************
 

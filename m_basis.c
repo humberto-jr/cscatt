@@ -278,7 +278,7 @@ int main(int argc, char *argv[])
 							printf(FORMAT, J, ch_counter[J], v, j, l, parity(j + l), n,
 							       eigenval, eigenval*219474.63137054, eigenval*27.211385);
 
-							output = basis_file(arrang, ch_counter[J], J, "wb");
+							output = basis_file(arrang, ch_counter[J], J, "wb", false);
 
 							file_write(&v, sizeof(int), 1, output);
 							file_write(&j, sizeof(int), 1, output);
