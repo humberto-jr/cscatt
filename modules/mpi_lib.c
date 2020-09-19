@@ -901,7 +901,7 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n,
 
 		CHECK_PETSC_ERROR("EPSSetProblemType()", info, true)
 
-		const EPSWhich job = (up? EPS_LARGEST_MAGNITUDE : EPS_SMALLEST_MAGNITUDE);
+		const EPSWhich job = (up? EPS_LARGEST_REAL : EPS_SMALLEST_REAL);
 
 		info = EPSSetWhichEigenpairs(m->solver, job);
 
