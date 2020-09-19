@@ -58,7 +58,8 @@ int basis_count(const char arrang, const int J)
 
 ******************************************************************************/
 
-FILE *basis_file(const char arrang, const int n, const int J, const char mode[])
+FILE *basis_file(const char arrang,
+                 const int n, const int J, const char mode[], const bool verbose)
 {
 	char filename[MAX_LINE_LENGTH], ext[4];
 
@@ -73,8 +74,11 @@ FILE *basis_file(const char arrang, const int n, const int J, const char mode[])
 
 	ASSERT(stream != NULL)
 
-//	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
-//	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
+	if (verbose)
+	{
+		if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
+		if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
+	}
 
 	return stream;
 }
@@ -86,11 +90,12 @@ FILE *basis_file(const char arrang, const int n, const int J, const char mode[])
 
 ******************************************************************************/
 
-void basis_read(const char arrang, const int n, const int J, basis *b)
+void basis_read(const char arrang,
+                const int n, const int J, basis *b, const bool verbose)
 {
 	ASSERT(b != NULL)
 
-	FILE *input = basis_file(arrang, n, J, "rb");
+	FILE *input = basis_file(arrang, n, J, "rb", verbose);
 
 	file_read(&b->v, sizeof(int), 1, input, 0);
 
@@ -114,7 +119,7 @@ void basis_read(const char arrang, const int n, const int J, basis *b)
 
 	file_read(b->eigenvec, sizeof(double), b->grid_size, input, 0);
 
-	fclose(input);
+	file_close(&input);
 }
 
 /******************************************************************************
@@ -214,6 +219,8 @@ void multipole_read(const char arrang, const int n, multipole_set *m)
 
 void multipole_free(multipole_set *m)
 {
+	ASSERT(m != NULL)
+
 	if (m->set == NULL) return;
 
 	for (int lambda = 0; lambda <= m->lambda_max; ++lambda)

@@ -3,8 +3,9 @@
 
 	/******************************************************************************
 
-	 Type basis: represent one component of a scattering basis set based upon
-	 asymptotic diatomic rovibrational states.
+	 Type basis: represents one component of a scattering basis set based upon
+	 asymptotic rovibrational states (single channel, n = 0, or multichannel,
+	 n > 0).
 
 	******************************************************************************/
 
@@ -18,8 +19,7 @@
 
 	/******************************************************************************
 
-	 Type basis: represent one component of a scattering basis set based upon
-	 asymptotic diatomic rovibrational states.
+	 Type multipole:
 
 	******************************************************************************/
 
@@ -29,6 +29,12 @@
 	};
 
 	typedef struct multipole multipole;
+
+	/******************************************************************************
+
+	 Type multipole_set:
+
+	******************************************************************************/
 
 	struct multipole_set
 	{
@@ -42,9 +48,10 @@
 	int basis_count(const char arrang, const int J);
 
 	FILE *basis_file(const char arrang,
-	                 const int n, const int J, const char mode[]);
+	                 const int n, const int J, const char mode[], const bool verbose);
 
-	void basis_read(const char arrang, const int n, const int J, basis *b);
+	void basis_read(const char arrang,
+	                const int n, const int J, basis *b, const bool verbose);
 
 	int multipole_count(const char arrang);
 
