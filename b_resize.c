@@ -48,7 +48,13 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J = (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
+	const int J_min = (int) file_keyword(stdin, "J_min", 0.0, INF, 0.0);
+
+	const int J_max = (int) file_keyword(stdin, "J_max", 0.0, INF, 0.0);
+
+	const int J_step = (int) file_keyword(stdin, "J_step", 1.0, INF, 0.0);
+
+	ASSERT(J_max >= J_min)
 
 /*
  *	Vibrational grid:
@@ -68,45 +74,55 @@ int main(int argc, char *argv[])
 
 	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
 
-	const int n_max = basis_count(arrang, J);
+/*
+ *	Resize the basis functions for all J:
+ */
 
-	for (int n = 0; n < n_max; ++n)
+	for (int J = J_min; J <= J_max; J += J_step)
 	{
-		basis old;
-		basis_read(arrang, n, J, &old);
+		const int n_max = basis_count(arrang, J);
 
-		FILE *output = basis_file(arrang, n, J, "wb");
-
-		file_write(&old.v, sizeof(int), 1, output);
-
-		file_write(&old.j, sizeof(int), 1, output);
-
-		file_write(&old.l, sizeof(int), 1, output);
-
-		file_write(&old.n, sizeof(int), 1, output);
-
-		file_write(&r_min, sizeof(double), 1, output);
-
-		file_write(&r_max, sizeof(double), 1, output);
-
-		file_write(&r_step, sizeof(double), 1, output);
-
-		file_write(&old.eigenval, sizeof(double), 1, output);
-
-		file_write(&grid_size, sizeof(int), 1, output);
-
-		for (int m = 0; m < grid_size; ++m)
+		for (int ch = 0; ch < n_max; ++ch)
 		{
-			const double r = r_min + as_double(m)*r_step;
+			basis old;
+			basis_read(arrang, ch, J, &old, true);
 
-			const double wavef = fgh_eigenvec(old.grid_size,
-			                                  old.r_min, old.r_max, r, old.eigenvec);
+			ASSERT(r_min >= old.r_min)
+			ASSERT(r_max <= old.r_max)
 
-			file_write(&wavef, sizeof(double), 1, output);
+			FILE *output = basis_file(arrang, ch, J, "wb", true);
+
+			file_write(&old.v, sizeof(int), 1, output);
+
+			file_write(&old.j, sizeof(int), 1, output);
+
+			file_write(&old.l, sizeof(int), 1, output);
+
+			file_write(&old.n, sizeof(int), 1, output);
+
+			file_write(&r_min, sizeof(double), 1, output);
+
+			file_write(&r_max, sizeof(double), 1, output);
+
+			file_write(&r_step, sizeof(double), 1, output);
+
+			file_write(&old.eigenval, sizeof(double), 1, output);
+
+			file_write(&grid_size, sizeof(int), 1, output);
+
+			for (int n = 0; n < grid_size; ++n)
+			{
+				const double r = r_min + as_double(n)*r_step;
+
+				const double wavef
+					= fgh_eigenvec(old.grid_size, old.r_min, old.r_max, r, old.eigenvec);
+
+				file_write(&wavef, sizeof(double), 1, output);
+			}
+
+			file_close(&output);
+			free(old.eigenvec);
 		}
-
-		fclose(output);
-		free(old.eigenvec);
 	}
 
 	return EXIT_SUCCESS;
