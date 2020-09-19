@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
 
 	for (int n = 0; n < max_channel; ++n)
 	{
-		basis_read(arrang, n, J, &b_list[n]);
+		basis_read(arrang, n, J, &b_list[n], false);
 	}
 
 	const int max_task = max_channel*(max_channel + 1)/2;

@@ -148,11 +148,11 @@ double bc_cmatrix(const int j, const int a, const int b, const multipole_set *m)
 
 	basis bra;
 	bra.eigenvec = NULL;
-	basis_read('a', a, j, &bra);
+	basis_read('a', a, j, &bra, false);
 
 	basis ket;
 	ket.eigenvec = NULL;
-	basis_read('a', b, j, &ket);
+	basis_read('a', b, j, &ket, false);
 
 	const double result = bc_braket(j, m, &bra, &ket);
 
