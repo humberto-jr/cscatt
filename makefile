@@ -185,6 +185,10 @@ ifeq ($(LINEAR_ALGEBRA), MKL)
 	ifeq ($(CC), gcc)
 		LINEAR_ALGEBRA_LIB = -Wl,--start-group $(MKL_DIR)/lib/intel64/libmkl_intel_ilp64.a $(MKL_DIR)/lib/intel64/libmkl_gnu_thread.a $(MKL_DIR)/lib/intel64/libmkl_core.a -Wl,--end-group -lgomp -lpthread -lm -ldl
 	endif
+
+	ifeq ($(CC), mpicc)
+		LINEAR_ALGEBRA_LIB = -Wl,--start-group $(MKL_DIR)/lib/intel64/libmkl_intel_ilp64.a $(MKL_DIR)/lib/intel64/libmkl_gnu_thread.a $(MKL_DIR)/lib/intel64/libmkl_core.a -Wl,--end-group -lgomp -lpthread -lm -ldl
+	endif
 endif
 
 #
@@ -356,7 +360,7 @@ d_basis: d_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MO
 
 about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/nist.h $(MODULES_DIR)/pes.h
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o mpi_lib.o pes.o file.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o mpi_lib.o pes.o file.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 pes_print: pes_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
