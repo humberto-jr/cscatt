@@ -713,8 +713,44 @@ FILE *pes_multipole_file(const char arrang,
 
 /******************************************************************************
 
+ Function pes_multipole_write(): writes in the disk a set of multipole terms in
+ a binary format.
+
+******************************************************************************/
+
+void pes_multipole_write(const pes_multipole_set *m, FILE *output)
+{
+	ASSERT(m != NULL)
+	ASSERT(m->set != NULL)
+	ASSERT(output != NULL)
+	ASSERT(m->grid_size > 0)
+
+	file_write(&m->R, sizeof(double), 1, output);
+
+	file_write(&m->r_min, sizeof(double), 1, output);
+
+	file_write(&m->r_max, sizeof(double), 1, output);
+
+	file_write(&m->r_step, sizeof(double), 1, output);
+
+	file_write(&m->lambda_max, sizeof(int), 1, output);
+
+	file_write(&m->grid_size, sizeof(int), 1, output);
+
+	for (int lambda = 0; lambda <= m->lambda_max; ++lambda)
+	{
+		if (m->set[lambda].value != NULL)
+		{
+			file_write(&lambda, sizeof(int), 1, output);
+			file_write(m->set[lambda].value, sizeof(double), m->grid_size, output);
+		}
+	}
+}
+
+/******************************************************************************
+
  Function pes_multipole_save(): saves in the disk a set of multipole terms for
- a given n-th grid index, arrangement and total angular momentum, J.
+ the n-th grid index, arrangement and total angular momentum, J.
 
 ******************************************************************************/
 

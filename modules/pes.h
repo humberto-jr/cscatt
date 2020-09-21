@@ -84,6 +84,10 @@
 	FILE *pes_multipole_file(const char arrang,
 	                         const int n, const char mode[], const bool verbose);
 
+	void pes_multipole_write(const pes_multipole_set *m, FILE *output);
+
+	pes_multipole_set *pes_multipole_read(FILE *input);
+
 	void pes_multipole_save(const pes_multipole_set *m,
 	                        const char arrang, const int n, const bool verbose);
 
