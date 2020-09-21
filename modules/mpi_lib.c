@@ -893,7 +893,7 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n,
 
 		CHECK_PETSC_ERROR("EPSSetOperators()", info, true)
 
-		info = EPSSetDimensions(m->solver, n, 2*n + 10, n + 2*n + 10);
+		info = EPSSetDimensions(m->solver, n, 2*n + 10, PETSC_DECIDE);
 
 		CHECK_PETSC_ERROR("EPSSetDimensions()", info, true)
 
