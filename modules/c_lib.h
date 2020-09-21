@@ -38,10 +38,16 @@
 	/* C11 and beyond */
 	#if (__STDC_VERSION__ > 199901L)
 		#include <uchar.h>
-		#include <threads.h>
 		#include <stdalign.h>
-		#include <stdatomic.h>
 		#include <stdnoreturn.h>
+
+		#if !defined(_OPENMP)
+			#include <stdatomic.h>
+		#endif
+
+		#if !defined(__STDC_NO_THREADS__)
+			#include <threads.h>
+		#endif
 	#endif
 
 	/* NOTE: just a few types, to complete as needed. */

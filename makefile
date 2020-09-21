@@ -249,6 +249,8 @@ ifeq ($(USE_PETSC), yes)
 		PETSC_DIR = $(PETSC_PREFIX)
 	endif
 
+	CFLAGS += -std=c11
+
 	PETSC_INC = -I$(PETSC_DIR)/include -DUSE_PETSC
 	PETSC_LIB = -Wl,-rpath,$(PETSC_DIR)/lib -L$(PETSC_DIR)/lib -lpetsc -lquadmath -ldl
 endif

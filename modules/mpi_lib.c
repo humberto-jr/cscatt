@@ -14,7 +14,7 @@
 #include "mpi_lib.h"
 #include "globals.h"
 
-#if defined(USE_MPI)
+#if defined(USE_MPI) && !defined(USE_PETSC)
 	#include "mpi.h"
 #endif
 
@@ -189,15 +189,6 @@ void mpi_init(int argc, char *argv[])
 	ASSERT(argc > 0)
 	ASSERT(argv != NULL)
 
-	#if defined(USE_MPI)
-	{
-		MPI_Init_thread(&argc, &argv, MPI_THREAD_SERIALIZED, &level);
-
-		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-		MPI_Comm_size(MPI_COMM_WORLD, &size);
-	}
-	#endif
-
 	#if defined(USE_PETSC)
 	{
 		const int info = PetscInitialize(&argc, &argv, NULL, NULL);
@@ -212,7 +203,16 @@ void mpi_init(int argc, char *argv[])
 	}
 	#endif
 
-	return;
+	#if defined(USE_MPI)
+	{
+		#if !defined(USE_PETSC)
+			MPI_Init_thread(&argc, &argv, MPI_THREAD_SERIALIZED, &level);
+		#endif
+
+		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+		MPI_Comm_size(MPI_COMM_WORLD, &size);
+	}
+	#endif
 }
 
 /******************************************************************************
