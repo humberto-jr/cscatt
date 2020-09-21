@@ -749,6 +749,44 @@ void pes_multipole_write(const pes_multipole_set *m, FILE *output)
 
 /******************************************************************************
 
+ Function pes_multipole_read(): reads from the disk a set of multipole terms in
+ binary format.
+
+******************************************************************************/
+
+pes_multipole_set *pes_multipole_read(FILE *input)
+{
+	pes_multipole_set *m = allocate(1, sizeof(pes_multipole_set), true);
+
+	file_read(&m->R, sizeof(double), 1, input, 0);
+
+	file_read(&m->r_min, sizeof(double), 1, input, 0);
+
+	file_read(&m->r_max, sizeof(double), 1, input, 0);
+
+	file_read(&m->r_step, sizeof(double), 1, input, 0);
+
+	file_read(&m->lambda_max, sizeof(int), 1, input, 0);
+
+	file_read(&m->grid_size, sizeof(int), 1, input, 0);
+
+	m->set = allocate(m->lambda_max, sizeof(pes_multipole), true);
+
+	int lambda = -1;
+	while (lambda != m->lambda_max)
+	{
+		file_read(&lambda, sizeof(int), 1, input, 0);
+
+		m->set[lambda].value = allocate(m->grid_size, sizeof(double), false);
+
+		file_read(m->set[lambda].value, sizeof(double), m->grid_size, input, 0);
+	}
+
+	return m;
+}
+
+/******************************************************************************
+
  Function pes_multipole_save(): saves in the disk a set of multipole terms for
  the n-th grid index, arrangement and total angular momentum, J.
 
