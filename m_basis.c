@@ -39,7 +39,7 @@ mpi_matrix *fgh_multich_matrix(const int max_ch,
 
 	const int size = grid_size*max_ch;
 
-	const int non_zeros[2] = {grid_size + max_ch, grid_size + max_ch};
+	const int non_zeros[2] = {1, 1};
 
 	mpi_matrix *result = mpi_matrix_alloc(size, size, non_zeros);
 

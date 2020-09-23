@@ -636,7 +636,8 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 		pointer->max_row = max_row;
 		pointer->max_col = max_col;
 
-/*		info = MatCreate(MPI_COMM_WORLD, &pointer->data);
+/*
+		info = MatCreate(MPI_COMM_WORLD, &pointer->data);
 
 		CHECK_PETSC_ERROR("MatCreate()", info, true)
 
@@ -655,6 +656,7 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 		info = MatMPIAIJSetPreallocation(pointer->data,
 		                                 non_zeros[0], NULL, non_zeros[1], NULL);
 */
+
 		if (mpi_comm_size() > 1)
 		{
 			info = MatCreateAIJ(MPI_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, max_row,
@@ -674,9 +676,12 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 
 		CHECK_PETSC_ERROR("MatSetOption()", info, true)
 
+/*
+		FIXME: PETSc fails when using hash table with MPI.
 		info = MatSetOption(pointer->data, MAT_USE_HASH_TABLE, true);
 
 		CHECK_PETSC_ERROR("MatSetOption()", info, true)
+*/
 
 		info = MatGetOwnershipRange(pointer->data, &pointer->first, &pointer->last);
 

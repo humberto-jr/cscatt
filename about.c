@@ -8,8 +8,8 @@
 
 int main()
 {
-	printf("# build date   = %s\n", __DATE__);
-	printf("# source code  = %s\n", __FILE__);
+	printf("# build date  = %s\n", __DATE__);
+	printf("# source code = %s\n", __FILE__);
 
 	printf("\n");
 	globals_about(stdout);

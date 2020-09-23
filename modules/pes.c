@@ -721,9 +721,6 @@ FILE *pes_multipole_file(const char arrang,
 void pes_multipole_write(const pes_multipole_set *m, FILE *output)
 {
 	ASSERT(m != NULL)
-	ASSERT(m->set != NULL)
-	ASSERT(output != NULL)
-	ASSERT(m->grid_size > 0)
 
 	file_write(&m->R, sizeof(double), 1, output);
 
