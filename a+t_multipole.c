@@ -10,6 +10,7 @@ struct tasks
 {
 	double r_bc, r_bcd, r_abcd, result;
 	int lambda, eta, m_eta, grid_index;
+	pes_multipole_set m;
 };
 
 /******************************************************************************
@@ -34,7 +35,7 @@ void send_results(const int max_task, struct tasks *list)
 		{
 			do
 			{
-				int n = max_task - 1;
+				int n;
 				mpi_receive(rank, 1, type_int, &n);
 				mpi_receive(rank, 1, type_double, &list[n].result);
 			}
@@ -80,6 +81,36 @@ double legendre_integrand(const double theta, void *params)
 	return v*math_legendre_poly(p->lambda, cos(theta))*sin(theta);
 }
 
+int read_all()
+{
+	FILE *output = pes_multipole_file('?', n, "wb", false);
+
+	const double r_abcd = abcd_rmin + as_double(n)*abcd_rstep;
+
+	file_write(&r_abcd, sizeof(double), 1, output);
+
+	file_write(&eta_max, sizeof(int), 1, output);
+
+	for (int eta = eta_min; eta <= eta_max; eta += eta_step)
+	{
+		for (int m_eta = 0; m_eta <= eta; ++eta)
+		{
+			file_write(&eta, sizeof(int), 1, output);
+			file_write(&m_eta, sizeof(int), 1, output);
+			file_write(&bcd_grid_size, sizeof(int), 1, output);
+
+			for (int p = 0; p < bcd_grid_size; ++p)
+			{
+				m.R = bcd_rmin + as_double(p)*bcd_rstep;
+
+				pes_multipole_write(&m, output);
+			}
+		}
+	}
+
+	file_close(&output);
+}
+
 /******************************************************************************
 
  Function driver(): performs the calculation of a single task using one thread
@@ -87,7 +118,72 @@ double legendre_integrand(const double theta, void *params)
 
 ******************************************************************************/
 
+void driver(const int n)
+{
+	FILE *input = pes_multipole_file('?', n, "rb", false);
+
+	double R;
+	file_read(&R, sizeof(double), 1, input, 0);
+
+	int eta_max;
+	file_read(&eta_max, sizeof(int), 1, input, 0);
+
+	int n_max;
+	file_read(&n_max, sizeof(int), 1, input, 0);
+
+	int grid_size;
+	file_write(&grid_size, sizeof(int), 1, output);
+
+	tasks *job = allocate(max_set, sizeof(tasks), true);
+
+	for (int n = 0; n < n_max; ++n)
+	{
+		int eta;
+		file_read(&eta, sizeof(int), 1, input, 0);
+
+		int m_eta;
+		file_read(&m_eta, sizeof(int), 1, input, 0);
+
+		job[n].m = pes_multipole_read_all(grid_size, input);
+	}
+
+	file_close(&input);
+
+	FILE *output = pes_multipole_file('?', n, "wb", false);
+
+	file_write(&R, sizeof(double), 1, output);
+
+	file_write(&eta_max, sizeof(int), 1, output);
+
+	file_write(&n_max, sizeof(int), 1, output);
+
+	file_write(&grid_size, sizeof(int), 1, output);
+
+	for (int eta = eta_min; eta <= eta_max; eta += eta_step)
+	{
+		for (int m_eta = 0; m_eta <= eta; ++eta)
+		{
+			file_write(&eta, sizeof(int), 1, output);
+			file_write(&m_eta, sizeof(int), 1, output);
+
+			for (int p = 0; p < bcd_grid_size; ++p)
+			{
+				m.R = bcd_rmin + as_double(p)*bcd_rstep;
+
+				pes_multipole_write(&m, output);
+			}
+
+			++counter;
+		}
+	}
+
+
+	file_close(&input);
+}
+
+/*
 void driver(struct tasks *job)
+		
 {
 	const double start_time = wall_time();
 
@@ -102,35 +198,7 @@ void driver(struct tasks *job)
 		       job->r_bc, job->r_bcd, job->r_abcd, job->result, end_time - start_time);
 	}
 }
-
-/******************************************************************************
-
- Function multipole_file(): opens the file for a given arrangement and grid
- index. Where, mode is the file access mode of fopen() from the C library.
-
- NOTE: mode = "wb" for write + binary format and "rb" for read + binary format,
- extension used is .bin, otherwise .dat is used assuming text mode ("w" or "r").
-
-******************************************************************************/
-
-FILE *multipole_file(const int grid_index, const char mode[])
-{
-	char filename[MAX_LINE_LENGTH], ext[4];
-
-	if (strlen(mode) > 1 && mode[1] == 'b')
-		sprintf(ext, "%s", "bin");
-	else
-		sprintf(ext, "%s", "dat");
-
-	sprintf(filename, "a+t_multipole_n=%d.%s", grid_index, ext);
-
-	FILE *stream = fopen(filename, mode);
-
-	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
-	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
-
-	return stream;
-}
+*/
 
 /******************************************************************************
 
@@ -138,20 +206,18 @@ FILE *multipole_file(const int grid_index, const char mode[])
  r per lambda using binary format and filename labeled by the grid index, n (of
  R) and arrangement.
 
+ TODO: working here, needs to call pes_multipole_write().
+
 ******************************************************************************/
 
 void sort_results(const int max_task,
                   const int eta_max,
-                  const int lambda_max,
-                  const int bc_grid_size,
                   const int bcd_grid_size,
-                  const double bc_rmin,
-                  const double bc_rmax,
-                  const double bc_rstep,
                   const double bcd_rmin,
                   const double bcd_rmax,
                   const double bcd_rstep,
-                  const struct tasks list[])
+                  const struct tasks list[],
+                  const pes_multipole_set *m)
 {
 	if (mpi_rank() != 0) return;
 
@@ -160,7 +226,7 @@ void sort_results(const int max_task,
 
 	for (int n = 0; n < max_task; ++n)
 	{
-		if (list[n].grid_index != last_index)
+		if (n > 0 && list[n].grid_index != last_index)
 		{
 			file_close(&output);
 			output = multipole_file(list[n].grid_index, "wb");
@@ -196,7 +262,7 @@ void sort_results(const int max_task,
 			file_write(&list[n].m_eta, sizeof(int), 1, output);
 		}
 
-		file_write(&list[n].result, sizeof(double), 1, output);
+		m->set[list[n].lambda].value = list[n].result;
 
 		last_index = list[n].grid_index;
 		last_lambda = list[n].lambda;
@@ -208,7 +274,6 @@ void sort_results(const int max_task,
 }
 
 /******************************************************************************
-
 ******************************************************************************/
 
 int main(int argc, char *argv[])
@@ -305,46 +370,61 @@ int main(int argc, char *argv[])
  *	Sort each task (r_bc, r_bcd, r_abcd, lambda, eta, m_eta) in an ordered list:
  */
 
-	const int max_task
-		= bc_grid_size*bcd_grid_size*abcd_grid_size*lambda_grid_size*eta_grid_size*m_grid_size;
+	pes_multipole_set m =
+	{
+		.r_min = bc_rmin,
+		.r_max = bc_rmax,
+		.r_step = bc_rstep,
+		.lambda_max = lambda_max, 
+		.grid_size = bc_grid_size
+	};
 
-	struct tasks *list = allocate(max_task, sizeof(struct tasks), true);
+	pes_multipole_init_set(&m, bc_grid_size, lambda_max, lambda_step);
 
-	counter = 0;
 	for (int n = 0; n < abcd_grid_size; ++n)
 	{
-		for (int lambda = lambda_min; lambda <= lambda_max; lambda += lambda_step)
+		FILE *output = pes_multipole_file('?', n, "wb", false);
+
+		const double r_abcd = abcd_rmin + as_double(n)*abcd_rstep;
+
+		file_write(&r_abcd, sizeof(double), 1, output);
+
+		file_write(&eta_max, sizeof(int), 1, output);
+
+		counter = eta_grid_size*m_grid_size;
+		file_write(&counter, sizeof(int), 1, output);
+
+		file_write(&bcd_grid_size, sizeof(int), 1, output);
+
+		counter = 0;
+		for (int eta = eta_min; eta <= eta_max; eta += eta_step)
 		{
-			for (int eta = eta_min; eta <= eta_max; eta += eta_step)
+			for (int m_eta = 0; m_eta <= eta; ++eta)
 			{
-				for (int m_eta = 0; m_eta <= eta; ++eta)
+				file_write(&eta, sizeof(int), 1, output);
+				file_write(&m_eta, sizeof(int), 1, output);
+
+				for (int p = 0; p < bcd_grid_size; ++p)
 				{
-					for (int p = 0; p < bcd_grid_size; ++p)
-					{
-						for (int q = 0; q < bc_grid_size; ++q)
-						{
-							list[counter].r_abcd = abcd_rmin + as_double(n)*abcd_rstep;
-							list[counter].r_bcd = bcd_rmin + as_double(p)*bcd_rstep;
-							list[counter].r_bc = bc_rmin + as_double(q)*bc_rstep;
-							list[counter].lambda = lambda;
-							list[counter].grid_index = n;
-							list[counter].m_eta = m_eta;
-							list[counter].eta = eta;
-							++counter;
-						}
-					}
+					m.R = bcd_rmin + as_double(p)*bcd_rstep;
+
+					pes_multipole_write(&m, output);
 				}
+
+				++counter;
 			}
 		}
-	}
 
-	ASSERT(counter == max_task);
+		file_close(&output);
+
+		ASSERT(counter == eta_grid_size*m_grid_size)
+	}
 
 /*
  *	MPI:
  */
 
-	mpi_set_tasks(max_task);
+	mpi_set_tasks(abcd_grid_size);
 
 /*
  *	Resolve all tasks:
@@ -357,14 +437,14 @@ int main(int argc, char *argv[])
 		printf("# ----------------------------------------------------------------------------------------------------------------------------\n");
 	}
 
-	/* FIXME: when using Intel icc, n must be declared with a private clause. */
+	/* FIXME: when using Intel icc, n must be declared with an OMP private clause. */
 	int n = 0;
 
 	#pragma omp parallel for default(none) private(n) shared(list) schedule(static) if(use_omp)
 	for (n = mpi_first_task(); n <= mpi_last_task(); ++n)
 	{
 		extra_step:
-		driver(&list[n]);
+		driver(n, eta_max, lambda_step, use_omp);
 
 		if (n == mpi_last_task() && mpi_extra_task() > 0)
 		{
@@ -373,22 +453,37 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	send_results(max_task, list);
+/*	send_results(max_task, list);
+
+	pes_multipole_set m;
+
+	if (mpi_rank() == 0)
+	{
+		m.r_min = bc_rmin;
+		m.r_max = bc_rmax;
+		m.r_step = bc_rstep;
+		m.lambda_max = lambda_max; 
+		m.grid_size = bc_grid_size;
+		m.set = allocate(lambda_max, sizeof(pes_multipole), true);
+
+		for (int lambda = 0; lambda <= lambda_max; lambda += lambda_step)
+		{
+			m.set[lambda].value = allocate(bc_grid_size, sizeof(double), false);
+		}
+	}
 
 	sort_results(max_task,
 	             eta_max,
-	             lambda_max,
-	             bc_grid_size,
 	             bcd_grid_size,
-	             bc_rmin,
-	             bc_rmax,
-	             bc_rstep,
 	             bcd_rmin,
 	             bcd_rmax,
 	             bcd_rstep,
-	             list);
+	             list,
+	             &m);
+
 
 	free(list);
+*/
 
 	mpi_end();
 	return EXIT_SUCCESS;

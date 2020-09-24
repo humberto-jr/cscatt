@@ -84,9 +84,19 @@
 	FILE *pes_multipole_file(const char arrang,
 	                         const int n, const char mode[], const bool verbose);
 
+	void pes_multipole_init_set(pes_multipole_set *m,
+	                            const int grid_size,
+	                            const int lambda_max,
+	                            const int lambda_step);
+
 	void pes_multipole_write(const pes_multipole_set *m, FILE *output);
 
+	void pes_multipole_write_all(const int n_max,
+	                             const pes_multipole_set m[], FILE *output);
+
 	pes_multipole_set *pes_multipole_read(FILE *input);
+
+	pes_multipole_set **pes_multipole_read_all(const int n_max, FILE *input);
 
 	void pes_multipole_save(const pes_multipole_set *m,
 	                        const char arrang, const int n, const bool verbose);

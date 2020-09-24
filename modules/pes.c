@@ -713,6 +713,28 @@ FILE *pes_multipole_file(const char arrang,
 
 /******************************************************************************
 
+ Function pes_multipole_init_set(): allocates a set of multipole coefficients
+ for a given number of grid points and lambda terms.
+
+******************************************************************************/
+
+void pes_multipole_init_set(pes_multipole_set *m,
+                            const int grid_size,
+                            const int lambda_max,
+                            const int lambda_step)
+{
+	ASSERT(m->set == NULL)
+
+	m->set = allocate(lambda_max, sizeof(pes_multipole), true);
+
+	for (int lambda = 0; lambda <= lambda_max; lambda += lambda_step)
+	{
+		m->set[lambda].value = allocate(grid_size, sizeof(double), true);
+	}
+}
+
+/******************************************************************************
+
  Function pes_multipole_write(): writes in the disk a set of multipole terms in
  a binary format.
 
@@ -721,6 +743,7 @@ FILE *pes_multipole_file(const char arrang,
 void pes_multipole_write(const pes_multipole_set *m, FILE *output)
 {
 	ASSERT(m != NULL)
+	ASSERT(m->set != NULL)
 
 	file_write(&m->R, sizeof(double), 1, output);
 
@@ -741,6 +764,24 @@ void pes_multipole_write(const pes_multipole_set *m, FILE *output)
 			file_write(&lambda, sizeof(int), 1, output);
 			file_write(m->set[lambda].value, sizeof(double), m->grid_size, output);
 		}
+	}
+}
+
+/******************************************************************************
+
+ Function pes_multipole_write_all(): the same as pes_multipole_write() but for
+ an array of n sets. 
+
+******************************************************************************/
+
+void pes_multipole_write_all(const int n_max,
+                             const pes_multipole_set m[], FILE *output)
+{
+	ASSERT(n_max > 0)
+
+	for (int n = 0; n < n_max; ++n)
+	{
+		pes_multipole_write(&m[n], output);
 	}
 }
 
@@ -777,6 +818,29 @@ pes_multipole_set *pes_multipole_read(FILE *input)
 		m->set[lambda].value = allocate(m->grid_size, sizeof(double), false);
 
 		file_read(m->set[lambda].value, sizeof(double), m->grid_size, input, 0);
+	}
+
+	return m;
+}
+
+/******************************************************************************
+
+ Function pes_multipole_read_all(): the same as pes_multipole_read() but for
+ an array of n sets. 
+
+ NOTE: the returned pointer points to a first element of an array of pointers.
+
+******************************************************************************/
+
+pes_multipole_set **pes_multipole_read_all(const int n_max, FILE *input)
+{
+	ASSERT(n_max > 0)
+
+	pes_multipole_set **m = allocate(n_max, sizeof(pes_multipole_set *), true);
+
+	for (int n = 0; n < n_max; ++n)
+	{
+		m[n] = pes_multipole_read(input);
 	}
 
 	return m;

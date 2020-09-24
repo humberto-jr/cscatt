@@ -316,6 +316,6 @@ void file_about(FILE *output)
 {
 	ASSERT(output != NULL)
 
-	fprintf(output, "# build date   = %s\n", __DATE__);
-	fprintf(output, "# source code  = %s\n", __FILE__);
+	fprintf(output, "# build date  = %s\n", __DATE__);
+	fprintf(output, "# source code = %s\n", __FILE__);
 }
