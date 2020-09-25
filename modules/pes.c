@@ -713,37 +713,40 @@ FILE *pes_multipole_file(const char arrang,
 
 /******************************************************************************
 
- Function pes_multipole_init_set(): allocates a set of multipole coefficients
- for a given number of grid points and lambda terms.
+ Function pes_multipole_init(): allocates a set of multipole coefficients for a
+ given number of grid points and lambda terms.
 
 ******************************************************************************/
 
-void pes_multipole_init_set(pes_multipole_set *m,
-                            const int grid_size,
-                            const int lambda_max,
-                            const int lambda_step)
+void pes_multipole_init(pes_multipole *m)
 {
-	ASSERT(m->set == NULL)
+	ASSERT(m->value == NULL)
+	ASSERT(m->grid_size > 0)
+	ASSERT(m->lambda_min > -1)
+	ASSERT(m->lambda_step > 0)
+	ASSERT(m->lambda_max >= m->lambda_min)
 
-	m->set = allocate(lambda_max, sizeof(pes_multipole), true);
+	const int lambda_size = (m->lambda_max - m->lambda_min)/m->lambda_step + 1;
 
-	for (int lambda = 0; lambda <= lambda_max; lambda += lambda_step)
+	m->value = allocate(lambda_size, sizeof(double *), true);
+
+	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 	{
-		m->set[lambda].value = allocate(grid_size, sizeof(double), true);
+		m->value[lambda] = allocate(m->grid_size, sizeof(double), false);
 	}
 }
 
 /******************************************************************************
 
  Function pes_multipole_write(): writes in the disk a set of multipole terms in
- a binary format.
+ binary format.
 
 ******************************************************************************/
 
-void pes_multipole_write(const pes_multipole_set *m, FILE *output)
+void pes_multipole_write(const pes_multipole *m, FILE *output)
 {
 	ASSERT(m != NULL)
-	ASSERT(m->set != NULL)
+	ASSERT(m->value != NULL)
 
 	file_write(&m->R, sizeof(double), 1, output);
 
@@ -753,17 +756,17 @@ void pes_multipole_write(const pes_multipole_set *m, FILE *output)
 
 	file_write(&m->r_step, sizeof(double), 1, output);
 
+	file_write(&m->lambda_min, sizeof(int), 1, output);
+
 	file_write(&m->lambda_max, sizeof(int), 1, output);
+
+	file_write(&m->lambda_step, sizeof(int), 1, output);
 
 	file_write(&m->grid_size, sizeof(int), 1, output);
 
-	for (int lambda = 0; lambda <= m->lambda_max; ++lambda)
+	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 	{
-		if (m->set[lambda].value != NULL)
-		{
-			file_write(&lambda, sizeof(int), 1, output);
-			file_write(m->set[lambda].value, sizeof(double), m->grid_size, output);
-		}
+		file_write(m->value[lambda], sizeof(double), m->grid_size, output);
 	}
 }
 
@@ -775,7 +778,7 @@ void pes_multipole_write(const pes_multipole_set *m, FILE *output)
 ******************************************************************************/
 
 void pes_multipole_write_all(const int n_max,
-                             const pes_multipole_set m[], FILE *output)
+                             const pes_multipole m[], FILE *output)
 {
 	ASSERT(n_max > 0)
 
@@ -792,9 +795,9 @@ void pes_multipole_write_all(const int n_max,
 
 ******************************************************************************/
 
-pes_multipole_set *pes_multipole_read(FILE *input)
+pes_multipole *pes_multipole_read(FILE *input)
 {
-	pes_multipole_set *m = allocate(1, sizeof(pes_multipole_set), true);
+	pes_multipole *m = allocate(1, sizeof(pes_multipole), true);
 
 	file_read(&m->R, sizeof(double), 1, input, 0);
 
@@ -804,20 +807,19 @@ pes_multipole_set *pes_multipole_read(FILE *input)
 
 	file_read(&m->r_step, sizeof(double), 1, input, 0);
 
+	file_read(&m->lambda_min, sizeof(int), 1, input, 0);
+
 	file_read(&m->lambda_max, sizeof(int), 1, input, 0);
+
+	file_read(&m->lambda_step, sizeof(int), 1, input, 0);
 
 	file_read(&m->grid_size, sizeof(int), 1, input, 0);
 
-	m->set = allocate(m->lambda_max, sizeof(pes_multipole), true);
+	pes_multipole_init(m);
 
-	int lambda = -1;
-	while (lambda != m->lambda_max)
+	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 	{
-		file_read(&lambda, sizeof(int), 1, input, 0);
-
-		m->set[lambda].value = allocate(m->grid_size, sizeof(double), false);
-
-		file_read(m->set[lambda].value, sizeof(double), m->grid_size, input, 0);
+		file_read(m->value[lambda], sizeof(double), m->grid_size, input, 0);
 	}
 
 	return m;
@@ -828,15 +830,16 @@ pes_multipole_set *pes_multipole_read(FILE *input)
  Function pes_multipole_read_all(): the same as pes_multipole_read() but for
  an array of n sets. 
 
- NOTE: the returned pointer points to a first element of an array of pointers.
+ NOTE: the returned pointer points to the first element of an array of pointers
+ for pes_multipole objects.
 
 ******************************************************************************/
 
-pes_multipole_set **pes_multipole_read_all(const int n_max, FILE *input)
+pes_multipole **pes_multipole_read_all(const int n_max, FILE *input)
 {
 	ASSERT(n_max > 0)
 
-	pes_multipole_set **m = allocate(n_max, sizeof(pes_multipole_set *), true);
+	pes_multipole **m = allocate(n_max, sizeof(pes_multipole *), true);
 
 	for (int n = 0; n < n_max; ++n)
 	{
@@ -848,101 +851,112 @@ pes_multipole_set **pes_multipole_read_all(const int n_max, FILE *input)
 
 /******************************************************************************
 
- Function pes_multipole_save(): saves in the disk a set of multipole terms for
- the n-th grid index, arrangement and total angular momentum, J.
-
-******************************************************************************/
-
-void pes_multipole_save(const pes_multipole_set *m,
-                        const char arrang, const int n, const bool verbose)
-{
-	ASSERT(m != NULL)
-
-	FILE *output = pes_multipole_file(arrang, n, "wb", verbose);
-
-	file_write(&m->R, sizeof(double), 1, output);
-
-	file_write(&m->r_min, sizeof(double), 1, output);
-
-	file_write(&m->r_max, sizeof(double), 1, output);
-
-	file_write(&m->r_step, sizeof(double), 1, output);
-
-	file_write(&m->lambda_max, sizeof(int), 1, output);
-
-	file_write(&m->grid_size, sizeof(int), 1, output);
-
-	for (int lambda = 0; lambda <= m->lambda_max; ++lambda)
-	{
-		if (m->set[lambda].value != NULL)
-		{
-			file_write(&lambda, sizeof(int), 1, output);
-			file_write(m->set[lambda].value, sizeof(double), m->grid_size, output);
-		}
-	}
-
-	file_close(&output);
-}
-
-/******************************************************************************
-
- Function pes_multipole_load(): load from the disk a set of multipole terms for
- a given n-th grid index, arrangement and total angular momentum, J.
-
-******************************************************************************/
-
-void pes_multipole_load(pes_multipole_set *m,
-                        const char arrang, const int n, const bool verbose)
-{
-	ASSERT(m != NULL)
-
-	FILE *input = pes_multipole_file(arrang, n, "rb", verbose);
-
-	file_read(&m->R, sizeof(double), 1, input, 0);
-
-	file_read(&m->r_min, sizeof(double), 1, input, 0);
-
-	file_read(&m->r_max, sizeof(double), 1, input, 0);
-
-	file_read(&m->r_step, sizeof(double), 1, input, 0);
-
-	file_read(&m->lambda_max, sizeof(int), 1, input, 0);
-
-	file_read(&m->grid_size, sizeof(int), 1, input, 0);
-
-	m->set = allocate(m->lambda_max, sizeof(pes_multipole), true);
-
-	int lambda = -1;
-	while (lambda != m->lambda_max)
-	{
-		file_read(&lambda, sizeof(int), 1, input, 0);
-
-		m->set[lambda].value = allocate(m->grid_size, sizeof(double), false);
-
-		file_read(m->set[lambda].value, sizeof(double), m->grid_size, input, 0);
-	}
-
-	file_close(&input);
-}
-
-/******************************************************************************
-
  Function pes_multipole_free():
 
 ******************************************************************************/
 
-void pes_multipole_free(pes_multipole_set *m)
+void pes_multipole_free(pes_multipole *m)
 {
 	ASSERT(m != NULL)
 
-	if (m->set == NULL) return;
+	if (m->value == NULL) return;
 
-	for (int lambda = 0; lambda <= m->lambda_max; ++lambda)
+	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 	{
-		if (m->set[lambda].value != NULL) free(m->set[lambda].value);
+		if (m->value[lambda] != NULL) free(m->value[lambda]);
 	}
 
-	free(m->set);
+	free(m->value);
+}
+
+/******************************************************************************
+
+ Function pes_multipole_set_init(): allocates a set of multipole coefficients
+ for a given range of eta terms.
+
+******************************************************************************/
+
+void pes_multipole_set_init(pes_multipole_set *s,
+                            const int lambda_min,
+                            const int lambda_max,
+                            const int lambda_step,
+                            const int grid_size)
+{
+	ASSERT(s->set == NULL)
+	ASSERT(s->eta_min > -1)
+	ASSERT(s->eta_step > 0)
+	ASSERT(s->eta_max >= s->eta_min)
+
+	const int eta_size = (s->eta_max - s->eta_min)/s->eta_step + 1;
+
+	s->set = allocate(eta_size, sizeof(pes_multipole *), true);
+
+	for (int eta = s->eta_min; eta <= s->eta_max; eta += s->eta_step)
+	{
+		s->set[eta] = allocate(eta + 1, sizeof(pes_multipole), true);
+
+		for (int m_eta = 0; m_eta <= eta; ++m_eta)
+		{
+			s->set[eta][m_eta].grid_size = grid_size;
+			s->set[eta][m_eta].lambda_min = lambda_min;
+			s->set[eta][m_eta].lambda_max = lambda_max;
+			s->set[eta][m_eta].lambda_step = lambda_step;
+
+			pes_multipole_init(&s->set[eta][m_eta]);
+		}
+	}
+}
+
+/******************************************************************************
+
+ Function pes_multipole_set_write(): writes in the disk a set of multipole
+ terms in binary format.
+
+******************************************************************************/
+
+void pes_multipole_set_write(const pes_multipole_set *s, FILE *output)
+{
+	ASSERT(s != NULL)
+	ASSERT(s->set != NULL)
+
+	file_write(&s->R, sizeof(double), 1, output);
+
+	file_write(&s->eta_min, sizeof(int), 1, output);
+
+	file_write(&s->eta_max, sizeof(int), 1, output);
+
+	file_write(&s->eta_step, sizeof(int), 1, output);
+
+	for (int eta = s->eta_min; eta <= s->eta_max; eta += s->eta_step)
+	{
+		for (int m_eta = 0; m_eta <= eta; ++eta)
+		{
+			pes_multipole_write(&s->set[eta][m_eta], output);
+		}
+	}
+}
+
+/******************************************************************************
+
+ Function pes_multipole_set_free():
+
+******************************************************************************/
+
+void pes_multipole_set_free(pes_multipole_set *s)
+{
+	ASSERT(s != NULL)
+
+	if (s->set == NULL) return;
+
+	for (int eta = s->eta_min; eta <= s->eta_max; eta += s->eta_step)
+	{
+		for (int m_eta = 0; m_eta <= eta; ++m_eta)
+		{
+			if (s->set[eta] != NULL) pes_multipole_free(&s->set[eta][m_eta]);
+		}
+	}
+
+	free(s->set);
 }
 
 /******************************************************************************
