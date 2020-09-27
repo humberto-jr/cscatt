@@ -726,9 +726,7 @@ void pes_multipole_init(pes_multipole *m)
 	ASSERT(m->lambda_step > 0)
 	ASSERT(m->lambda_max >= m->lambda_min)
 
-	const int lambda_size = (m->lambda_max - m->lambda_min)/m->lambda_step + 1;
-
-	m->value = allocate(lambda_size, sizeof(double *), true);
+	m->value = allocate(m->lambda_max + 1, sizeof(double *), true);
 
 	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 	{
@@ -795,10 +793,8 @@ void pes_multipole_write_all(const int n_max,
 
 ******************************************************************************/
 
-pes_multipole *pes_multipole_read(FILE *input)
+void pes_multipole_read(pes_multipole *m, FILE *input)
 {
-	pes_multipole *m = allocate(1, sizeof(pes_multipole), true);
-
 	file_read(&m->R, sizeof(double), 1, input, 0);
 
 	file_read(&m->r_min, sizeof(double), 1, input, 0);
@@ -821,32 +817,23 @@ pes_multipole *pes_multipole_read(FILE *input)
 	{
 		file_read(m->value[lambda], sizeof(double), m->grid_size, input, 0);
 	}
-
-	return m;
 }
 
 /******************************************************************************
 
  Function pes_multipole_read_all(): the same as pes_multipole_read() but for
- an array of n sets. 
-
- NOTE: the returned pointer points to the first element of an array of pointers
- for pes_multipole objects.
+ an array of n sets.
 
 ******************************************************************************/
 
-pes_multipole **pes_multipole_read_all(const int n_max, FILE *input)
+void pes_multipole_read_all(const int n_max, pes_multipole m[], FILE *input)
 {
 	ASSERT(n_max > 0)
 
-	pes_multipole **m = allocate(n_max, sizeof(pes_multipole *), true);
-
 	for (int n = 0; n < n_max; ++n)
 	{
-		m[n] = pes_multipole_read(input);
+		pes_multipole_read(&m[n], input);
 	}
-
-	return m;
 }
 
 /******************************************************************************
@@ -887,9 +874,7 @@ void pes_multipole_set_init(pes_multipole_set *s,
 	ASSERT(s->eta_step > 0)
 	ASSERT(s->eta_max >= s->eta_min)
 
-	const int eta_size = (s->eta_max - s->eta_min)/s->eta_step + 1;
-
-	s->set = allocate(eta_size, sizeof(pes_multipole *), true);
+	s->set = allocate(s->eta_max + 1, sizeof(pes_multipole *), true);
 
 	for (int eta = s->eta_min; eta <= s->eta_max; eta += s->eta_step)
 	{
@@ -933,6 +918,54 @@ void pes_multipole_set_write(const pes_multipole_set *s, FILE *output)
 		{
 			pes_multipole_write(&s->set[eta][m_eta], output);
 		}
+	}
+}
+
+/******************************************************************************
+
+ Function pes_multipole_set_read(): reads from the disk a set of multipole
+ terms in binary format.
+
+******************************************************************************/
+
+void pes_multipole_set_read(pes_multipole_set *s, FILE *input)
+{
+	file_read(&s->R, sizeof(double), 1, input, 0);
+
+	file_read(&s->eta_min, sizeof(int), 1, input, 0);
+
+	file_read(&s->eta_max, sizeof(int), 1, input, 0);
+
+	file_read(&s->eta_step, sizeof(int), 1, input, 0);
+
+	s->set = allocate(s->eta_max + 1, sizeof(pes_multipole *), true);
+
+	for (int eta = s->eta_min; eta <= s->eta_max; eta += s->eta_step)
+	{
+		s->set[eta] = allocate(eta + 1, sizeof(pes_multipole), true);
+
+		for (int m_eta = 0; m_eta <= eta; ++eta)
+		{
+			pes_multipole_read(&s->set[eta][m_eta], input);
+		}
+	}
+}
+
+/******************************************************************************
+
+ Function pes_multipole_set_read(): the same as pes_multipole_set_read() but
+ for an array of n sets.
+
+******************************************************************************/
+
+void pes_multipole_set_read_all(const int n_max,
+                                pes_multipole_set s[], FILE *input)
+{
+	ASSERT(n_max > 0)
+
+	for (int n = 0; n < n_max; ++n)
+	{
+		pes_multipole_set_read(&s[n], input);
 	}
 }
 

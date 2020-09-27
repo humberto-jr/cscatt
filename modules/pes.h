@@ -9,7 +9,7 @@
 
 	/******************************************************************************
 
-	 Type pes_multipole_set:
+	 Type pes_multipole_set: value[lambda][n], n from r1
 
 	******************************************************************************/
 
@@ -23,7 +23,11 @@
 
 	/******************************************************************************
 
-	 Type pes_multipole_set:
+	 Type pes_multipole_set: set[eta][m_eta], R = r2
+
+	 test[m].set[eta][m_eta].value[lambda][n], m from r2
+
+    what if: value[lambda][eta][m_eta][m][n]
 
 	******************************************************************************/
 
@@ -92,9 +96,9 @@
 	void pes_multipole_write_all(const int n_max,
 	                             const pes_multipole m[], FILE *output);
 
-	pes_multipole *pes_multipole_read(FILE *input);
+	void pes_multipole_read(pes_multipole *m, FILE *input);
 
-	pes_multipole **pes_multipole_read_all(const int n_max, FILE *input);
+	void pes_multipole_read_all(const int n_max, pes_multipole m[], FILE *input);
 
 	void pes_multipole_free(pes_multipole *m);
 
@@ -103,6 +107,13 @@
 	                            const int lambda_max,
 	                            const int lambda_step,
 	                            const int grid_size);
+
+	void pes_multipole_set_write(const pes_multipole_set *s, FILE *output);
+
+	void pes_multipole_set_read(pes_multipole_set *s, FILE *input);
+
+	void pes_multipole_set_read_all(const int n_max,
+	                                pes_multipole_set s[], FILE *input);
 
 	void pes_about(FILE *output);
 #endif
