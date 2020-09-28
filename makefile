@@ -282,6 +282,7 @@ endif
 
 ifeq ($(LINEAR_ALGEBRA), LAPACKE)
 	PETSC_CONFIG += --with-blas-lib=$(LAPACKE_DIR)
+	PETSC_CONFIG += --with-lapack-lib=$(LAPACKE_DIR)
 endif
 
 ifeq ($(USE_CUDA), yes)
