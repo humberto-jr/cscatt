@@ -226,7 +226,7 @@ endif
 USE_CUDA = no
 CUDA_DIR = /usr/local/cuda
 
-ifeq($(USE_CUDA), yes)
+ifeq ($(USE_CUDA), yes)
 	LINEAR_ALGEBRA_INC = -I$(CUDA_DIR)/include
 	LINEAR_ALGEBRA_LIB = -L$(CUDA_DIR)/lib64
 endif
@@ -281,7 +281,7 @@ ifeq ($(USE_MPI), no)
 endif
 
 ifeq ($(USE_CUDA), yes)
-	PETSC_CONFIG += --with-cuda
+	PETSC_CONFIG += --with-cuda --with-cuda-dir=$(CUDA_DIR)
 endif
 
 #
