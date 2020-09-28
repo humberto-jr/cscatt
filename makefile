@@ -510,8 +510,11 @@ gsl: $(LIB_DIR)/gsl-2.5.tar.gz $(GSL_DIR)
 	cd gsl-2.5/; ./configure CC=$(CC) --prefix=$(GSL_DIR); make; make install
 	rm -rf gsl-2.5/
 
-lapacke: $(LIB_DIR)/lapack-3.5.0.tar $(LAPACKE_DIR)/lib $(LAPACKE_DIR)/include
+lapacke: $(LIB_DIR)/lapack-3.5.0.tar
 	tar -xvf $<
+	mkdir -p $(LAPACKE_DIR)
+	mkdir -p $(LAPACKE_DIR)/lib
+	mkdir -p $(LAPACKE_DIR)/include
 	cd lapack-3.5.0/; cp make.inc.example make.inc
 	cd lapack-3.5.0/BLAS/SRC; make
 	cd lapack-3.5.0; make; make lapackelib
