@@ -220,16 +220,27 @@ ifeq ($(LINEAR_ALGEBRA), ESSL)
 endif
 
 #
-# MAGMA library:
+# CUDA library
+#
+
+USE_CUDA = no
+CUDA_DIR = /usr/local/cuda
+
+ifeq($(USE_CUDA), yes)
+	LINEAR_ALGEBRA_INC = -I$(CUDA_DIR)/include
+	LINEAR_ALGEBRA_LIB = -L$(CUDA_DIR)/lib64
+endif
+
+#
+# MAGMA library (requires CUDA):
 #
 
 MAGMA_DIR = /usr/local/magma
-CUDA_DIR = /usr/local/cuda
 
 ifeq ($(LINEAR_ALGEBRA), MAGMA)
 	CFLAGS += -DUSE_MAGMA
-	LINEAR_ALGEBRA_INC = -I$(CUDA_DIR)/include -I$(MAGMA_DIR)/include -DADD_
-	LINEAR_ALGEBRA_LIB = -L$(MAGMA_DIR)/lib -L$(CUDA_DIR)/lib64 -lmagma -lm
+	LINEAR_ALGEBRA_INC += -I$(CUDA_DIR)/include -I$(MAGMA_DIR)/include -DADD_
+	LINEAR_ALGEBRA_LIB += -L$(MAGMA_DIR)/lib -L$(CUDA_DIR)/lib64 -lmagma -lm
 endif
 
 #
