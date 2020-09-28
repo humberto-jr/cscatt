@@ -182,6 +182,10 @@ ifeq ($(LINEAR_ALGEBRA), MKL)
 		LINEAR_ALGEBRA_LIB = -parallel -Wl,--start-group $(MKL_DIR)/lib/intel64/libmkl_intel_ilp64.a $(MKL_DIR)/lib/intel64/libmkl_intel_thread.a $(MKL_DIR)/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl
 	endif
 
+	ifeq ($(CC), mpiicc)
+		LINEAR_ALGEBRA_LIB = -parallel -Wl,--start-group $(MKL_DIR)/lib/intel64/libmkl_intel_ilp64.a $(MKL_DIR)/lib/intel64/libmkl_intel_thread.a $(MKL_DIR)/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl
+	endif
+
 	ifeq ($(CC), gcc)
 		LINEAR_ALGEBRA_LIB = -Wl,--start-group $(MKL_DIR)/lib/intel64/libmkl_intel_ilp64.a $(MKL_DIR)/lib/intel64/libmkl_gnu_thread.a $(MKL_DIR)/lib/intel64/libmkl_core.a -Wl,--end-group -lgomp -lpthread -lm -ldl
 	endif
@@ -259,10 +263,14 @@ ifeq ($(USE_PETSC), yes)
 	PETSC_LIB = -Wl,-rpath,$(PETSC_DIR)/lib -L$(PETSC_DIR)/lib -lpetsc -lquadmath -ldl
 endif
 
-ifeq ($(USE_MPI), yes)
-	PETSC_CONFIG = --prefix=$(PETSC_PREFIX) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-x=0
-else
-	PETSC_CONFIG = --prefix=$(PETSC_PREFIX) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-x=0 --with-mpi=0
+PETSC_CONFIG = --prefix=$(PETSC_PREFIX) --with-cc=$(CC) --with-cxx=0 --with-fc=0 --with-shared-libraries=0 --with-x=0
+
+ifeq ($(USE_MPI), no)
+	PETSC_CONFIG += --with-mpi=0
+endif
+
+ifeq ($(USE_CUDA), yes)
+	PETSC_CONFIG += --with-cuda
 endif
 
 #
