@@ -280,6 +280,10 @@ ifeq ($(USE_MPI), no)
 	PETSC_CONFIG += --with-mpi=0
 endif
 
+ifeq ($(LINEAR_ALGEBRA), LAPACKE)
+	PETSC_CONFIG += --with-blas-lib=$(LAPACKE_DIR)
+endif
+
 ifeq ($(USE_CUDA), yes)
 	PETSC_CONFIG += --with-cuda --with-cuda-dir=$(CUDA_DIR)
 endif
