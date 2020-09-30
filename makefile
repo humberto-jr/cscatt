@@ -80,11 +80,8 @@ endif
 # IBM xlc compiler:
 #
 
-XLF_DIR = /opt/ibmcmp/xlf/bg/14.1
-
 ifeq ($(CC), xlc)
 	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
-	override LDFLAGS = -lxlf90_r -lxl -lxlfmath -L$(XLF_DIR)/bglib64
 endif
 
 #
@@ -93,7 +90,6 @@ endif
 
 ifeq ($(CC), xlc_r)
 	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
-	override LDFLAGS = -lxlf90_r -lxl -lxlfmath -L$(XLF_DIR)/bglib64
 endif
 
 #
@@ -102,7 +98,6 @@ endif
 
 ifeq ($(CC), mpixlc)
 	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
-	override LDFLAGS = -lxlf90_r -lxl -lxlfmath -L$(XLF_DIR)/bglib64
 	USE_MPI = yes
 endif
 
@@ -112,7 +107,6 @@ endif
 
 ifeq ($(CC), mpixlc_r)
 	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
-	override LDFLAGS = -lxlf90_r -lxl -lxlfmath -L$(XLF_DIR)/bglib64
 	USE_MPI = yes
 endif
 
@@ -129,6 +123,15 @@ endif
 #
 
 FC =
+XLF_DIR = /opt/ibmcmp/xlf
+
+ifeq ($(FC), xlf)
+	LDFLAGS += -L$(XLF_DIR) -lxlf90 -lxl -lxlfmath
+endif
+
+ifeq ($(FC), xlf90)
+	LDFLAGS += -L$(XLF_DIR) -lxlf90 -lxl -lxlfmath
+endif
 
 ifeq ($(FC), gfortran)
 	LDFLAGS += -lgfortran
