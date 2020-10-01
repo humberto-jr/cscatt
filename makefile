@@ -146,7 +146,7 @@ ifeq ($(FC), )
 endif
 
 #
-# User defined potential energy surface (PES):
+# User defined potential energy surface (required by the pes module):
 #
 
 PES_NAME =
@@ -242,8 +242,8 @@ MAGMA_DIR = /usr/local/magma
 
 ifeq ($(LINEAR_ALGEBRA), MAGMA)
 	CFLAGS += -DUSE_MAGMA
-	LINEAR_ALGEBRA_INC += -I$(CUDA_DIR)/include -I$(MAGMA_DIR)/include -DADD_
-	LINEAR_ALGEBRA_LIB += -L$(MAGMA_DIR)/lib -L$(CUDA_DIR)/lib64 -lmagma -lm
+	LINEAR_ALGEBRA_INC += -I$(MAGMA_DIR)/include -DADD_
+	LINEAR_ALGEBRA_LIB += -L$(MAGMA_DIR)/lib -lmagma -lm
 endif
 
 #
@@ -322,7 +322,7 @@ USE_MACRO = DUMMY_MACRO
 
 all: modules drivers
 modules: utils matrix nist johnson pes file math mpi_lib
-drivers: d_basis pes_print b_print c_print m_print m_basis a+d_multipole a+d_cmatrix pec_print b_resize about
+drivers: d_basis pes_print b_print c_print m_print a+d_basis a+d_multipole a+d_cmatrix pec_print b_resize about
 
 #
 # Rules for modules:
@@ -410,7 +410,7 @@ m_basis_std: m_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o mpi_lib.o matrix.o file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
-m_basis: m_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
+a+d_basis: a+d_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o mpi_lib.o matrix.o file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
 	@echo
@@ -470,6 +470,31 @@ numerov: numerov.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(M
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) $< -o $@.out utils.o matrix.o file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
+
+#
+# Rules for debug:
+#
+
+setup:
+	@echo "                CC = $(CC)"
+	@echo "                FC = $(FC)"
+	@echo "            CFLAGS = $(CFLAGS)"
+	@echo "           LDFLAGS = $(LDFLAGS)"
+	@echo "           USE_MPI = $(USE_MPI)"
+	@echo "          USE_CUDA = $(USE_CUDA)"
+	@echo "         USE_PETSC = $(USE_PETSC)"
+	@echo "         USE_SLEPC = $(USE_SLEPC)"
+	@echo "         PETSC_DIR = $(PETSC_DIR)"
+	@echo "         PETSC_INC = $(PETSC_INC)"
+	@echo "         PETSC_LIB = $(PETSC_LIB)"
+	@echo "         SLEPC_DIR = $(SLEPC_DIR)"
+	@echo "         SLEPC_INC = $(SLEPC_INC)"
+	@echo "         SLEPC_LIB = $(SLEPC_LIB)"
+	@echo "          PES_NAME = $(PES_NAME)"
+	@echo "        PES_OBJECT = $(PES_OBJECT)"
+	@echo "    LINEAR_ALGEBRA = $(LINEAR_ALGEBRA)"
+	@echo "LINEAR_ALGEBRA_INC = $(LINEAR_ALGEBRA_INC)"
+	@echo "LINEAR_ALGEBRA_LIB = $(LINEAR_ALGEBRA_LIB)"
 
 #
 # Rules for tools:

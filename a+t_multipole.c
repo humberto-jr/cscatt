@@ -177,6 +177,8 @@ int main(int argc, char *argv[])
 
 	pes_multipole job;
 
+	job.value = NULL;
+
 	job.r_min = bc_min;
 	job.r_max = bc_max;
 	job.r_step = bc_step;
@@ -207,6 +209,12 @@ int main(int argc, char *argv[])
 		file_write(&eta_max, sizeof(int), 1, output);
 
 		file_write(&eta_step, sizeof(int), 1, output);
+
+		file_write(&bcd_min, sizeof(double), 1, output);
+
+		file_write(&bcd_max, sizeof(double), 1, output);
+
+		file_write(&bcd_step, sizeof(double), 1, output);
 
 		file_write(&bcd_grid_size, sizeof(int), 1, output);
 

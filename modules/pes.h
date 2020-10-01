@@ -21,23 +21,6 @@
 
 	typedef struct pes_multipole pes_multipole;
 
-	/******************************************************************************
-
-	 Type pes_multipole_set: set[eta][m_eta], R = r2
-
-	 test[m].set[eta][m_eta].value[lambda][n], m from r2
-
-    what if: value[lambda][eta][m_eta][m][n]
-
-	******************************************************************************/
-
-	struct pes_multipole_set
-	{
-		double R;
-		pes_multipole **set;
-		int eta_min, eta_max, eta_step;
-	};
-
 	typedef struct pes_multipole_set pes_multipole_set;
 
 	void pes_set_inf(const double x_inf);
@@ -91,6 +74,8 @@
 
 	void pes_multipole_init(pes_multipole *m);
 
+	void pes_multipole_init_all(const int n_max, pes_multipole m[]);
+
 	void pes_multipole_write(const pes_multipole *m, FILE *output);
 
 	void pes_multipole_write_all(const int n_max,
@@ -101,19 +86,6 @@
 	void pes_multipole_read_all(const int n_max, pes_multipole m[], FILE *input);
 
 	void pes_multipole_free(pes_multipole *m);
-
-	void pes_multipole_set_init(pes_multipole_set *s,
-	                            const int lambda_min,
-	                            const int lambda_max,
-	                            const int lambda_step,
-	                            const int grid_size);
-
-	void pes_multipole_set_write(const pes_multipole_set *s, FILE *output);
-
-	void pes_multipole_set_read(pes_multipole_set *s, FILE *input);
-
-	void pes_multipole_set_read_all(const int n_max,
-	                                pes_multipole_set s[], FILE *input);
 
 	void pes_about(FILE *output);
 #endif
