@@ -126,11 +126,11 @@ FC =
 XLF_DIR = /opt/ibmcmp/xlf
 
 ifeq ($(FC), xlf)
-	LDFLAGS += -L$(XLF_DIR) -lxlf90 -lxl -lxlfmath
+	LDFLAGS += -L$(XLF_DIR)/lib -lxlf90 -lxl -lxlfmath
 endif
 
 ifeq ($(FC), xlf90)
-	LDFLAGS += -L$(XLF_DIR) -lxlf90 -lxl -lxlfmath
+	LDFLAGS += -L$(XLF_DIR)/lib -lxlf90 -lxl -lxlfmath
 endif
 
 ifeq ($(FC), gfortran)
@@ -208,7 +208,30 @@ BLAS_DIR = /usr/local
 
 ifeq ($(LINEAR_ALGEBRA), LAPACKE)
 	LINEAR_ALGEBRA_INC = -I$(LAPACKE_DIR)/include -DUSE_LAPACKE
-	LINEAR_ALGEBRA_LIB = -L$(LAPACKE_DIR)/lib -llapacke -llapack -lblas -lgfortran -lm
+	LINEAR_ALGEBRA_LIB = -L$(LAPACKE_DIR)/lib -L$(LAPACKE_DIR)/lib64 -llapacke -llapack -lblas -lm
+endif
+
+BLAS_CONFIG = FORTRAN=$(FC)
+LAPACK_CONFIG = FORTRAN=$(FC) LOADER=$(FC) CC=$(CC) NOOPT=-O0 TIMER=NONE
+
+ifeq ($(FC), gfortran)
+	BLAS_CONFIG += OPTS=-O3
+	LAPACK_CONFIG += CFLAGS=-O3 OPTS=-O3
+endif
+
+ifeq ($(FC), ifort)
+	BLAS_CONFIG += OPTS=-O3
+	LAPACK_CONFIG += CFLAGS=-O3 OPTS=-O3
+endif
+
+ifeq ($(FC), xlf)
+	BLAS_CONFIG += OPTS="-qstrict -O5"
+	LAPACK_CONFIG += CFLAGS="-qstrict -O5" OPTS="-qstrict -O5"
+endif
+
+ifeq ($(FC), xlf90)
+	BLAS_CONFIG += OPTS="-qstrict -O5"
+	LAPACK_CONFIG += CFLAGS="-qstrict -O5" OPTS="-qstrict -O5"
 endif
 
 #
@@ -549,8 +572,8 @@ lapacke: $(LIB_DIR)/lapack-3.5.0.tar
 	mkdir -p $(LAPACKE_DIR)/lib
 	mkdir -p $(LAPACKE_DIR)/include
 	cd lapack-3.5.0/; cp make.inc.example make.inc
-	cd lapack-3.5.0/BLAS/SRC; make
-	cd lapack-3.5.0; make; make lapackelib
+	cd lapack-3.5.0/BLAS/SRC; make $(BLAS_CONFIG)
+	cd lapack-3.5.0; make $(LAPACK_CONFIG); make lapackelib
 	cd lapack-3.5.0; mv librefblas.a libblas.a; cp lib*.a $(LAPACKE_DIR)/lib/; cp lapacke/include/*.h $(LAPACKE_DIR)/include/
 	rm -rf lapack-3.5.0/
 
