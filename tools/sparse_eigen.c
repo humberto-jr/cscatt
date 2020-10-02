@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
 	FILE *input = file_open(argv[1], "r");
 
-	int max_row = 0, max_col = 0, non_zeros[] = {1000, 1000}, info = 0;
+	int max_row = 0, max_col = 0, non_zeros[] = {1, 1}, info = 0;
 
 	info = fscanf(input, "%d %d", &max_row, &max_col);
 
