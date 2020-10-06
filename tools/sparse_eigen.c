@@ -6,9 +6,9 @@ int main(int argc, char *argv[])
 {
 	mpi_init(argc, argv);
 
-	if (argc != 5)
+	if (argc != 6)
 	{
-		PRINT_ERROR("%d arguments given. Usage: ./sparse_eigen.out [filename] [n_max] [max_step] [tolerance]\n", argc - 1)
+		PRINT_ERROR("%d arguments given. Usage: ./sparse_eigen.out [filename] [n_max] [max_step] [tolerance] [upper/lower (true/false)]\n", argc - 1)
 		return EXIT_FAILURE;
 	}
 
@@ -24,13 +24,13 @@ int main(int argc, char *argv[])
 
 	mpi_matrix *a = mpi_matrix_alloc(max_row, max_col, non_zeros);
 
-	while (file_end(input) == false)
+	while (true)
 	{
 		int p, q;
 		double value;
 		info = fscanf(input, "%d %d %lf", &p, &q, &value);
 
-		ASSERT(info == 3)
+		if (info != 3) break;
 
 		mpi_matrix_set(a, p, q, value);
 	}
@@ -43,7 +43,9 @@ int main(int argc, char *argv[])
 
 	const double tolerance = atof(argv[4]);
 
-	mpi_matrix_sparse_eigen(a, n_max, max_step, tolerance, false);
+	const bool up = (bool) atoi(argv[5]);
+
+	mpi_matrix_sparse_eigen(a, n_max, max_step, tolerance, up);
 
 	for (int n = 0; n < n_max; ++n)
 	{
