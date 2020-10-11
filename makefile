@@ -555,6 +555,11 @@ sparse_eigen: $(TOOLS_DIR)/sparse_eigen.c $(MODULES_DIR)/globals.h $(MODULES_DIR
 	$(CC) $(CFLAGS) $< -o $@.out mpi_lib.o matrix.o file.o $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
+dgemm_timer: $(TOOLS_DIR)/dgemm_timer.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out matrix.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
