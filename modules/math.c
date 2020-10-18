@@ -42,17 +42,13 @@ double math_sphe_harmonics(const int l, const int m,
 {
 	ASSERT(l >= abs(m))
 
-	const double x
-		= cos(theta*M_PI/180.0);
+	const double x = cos(theta*M_PI/180.0);
 
-	const double m_phase
-		= (m > 0? pow(-1.0, m) : 1.0);
+	const double m_phase = (m > 0? pow(-1.0, m) : 1.0);
 
-	const double theta_wavef
-		= gsl_sf_legendre_sphPlm(l, abs(m), x);
+	const double theta_wavef = gsl_sf_legendre_sphPlm(l, abs(m), x);
 
-	const double phi_wavef
-		= exp(as_double(m)*phi*M_PI/180.0)/sqrt(2.0*M_PI);
+	const double phi_wavef = exp(as_double(m)*phi*M_PI/180.0)/sqrt(2.0*M_PI);
 
 	/* NOTE: see Eq. 1.43 (pag. 8) of Angular Momentum by Richard N. Zare. */
 	return m_phase*theta_wavef*phi_wavef;
@@ -115,18 +111,18 @@ double math_clebsch_gordan(const int j1, const int j2, const int j3,
 
 /******************************************************************************
 
- Function math_racah_coeff():
+ Function math_racah_w(): W(abcd;ef)
 
 ******************************************************************************/
 
-double math_racah_coeff(const int J,
-                        const int j1,
-                        const int j2,
-                        const int l1,
-                        const int l2,
-                        const int lambda)
+double math_racah_coeff(const int a,
+                        const int b,
+                        const int c,
+                        const int d,
+                        const int e,
+                        const int f)
 {
-	return pow(-1.0, j1 + l1 + j2 + l2)*math_wigner_6j(j1, l1, J, l2, j2, lambda);
+	return pow(-1.0, a + b + c + d)*math_wigner_6j(a, b, e, d, c, f);
 }
 
 /******************************************************************************
@@ -162,6 +158,26 @@ double math_percival_seaton(const int J,
 	result *= math_wigner_3j(j1, j2, lambda, 0, 0, 0);
 	result *= math_wigner_6j(j1, j2, lambda, l2, l1, J);
 	result *= sqrt(as_double(2*j1 + 1)*as_double(2*j2 + 1)*as_double(2*l1 + 1)*as_double(2*l2 + 1));
+
+	return result;
+}
+
+/******************************************************************************
+
+ Function math_gaunt(): Eq. 3.15 of Tennyson's 1986 review.
+
+******************************************************************************/
+
+double math_gaunt(const int k,
+                  const int j1,
+                  const int j2,
+                  const int lambda)
+{
+	double result = pow(-1.0, k);
+
+	result *= math_wigner_3j(j2, lambda, j1, 0, 0, 0);
+	result *= math_wigner_3j(j2, lambda, j1, -k, 0, k);
+	result *= sqrt(as_double(2*j1 + 1)*as_double(2*j2 + 1));
 
 	return result;
 }
@@ -247,9 +263,8 @@ double *math_wigner_d(const int k,
 
 ******************************************************************************/
 
-double math_integral_yyy(const int j1, const int m1,
-                         const int j2, const int m2,
-                         const int j3, const int m3)
+double math_integral_yyy(const int j1, const int j2, const int j3,
+                         const int m1, const int m2, const int m3)
 {
 	const double a = as_double(2*j1 + 1);
 
@@ -262,35 +277,6 @@ double math_integral_yyy(const int j1, const int m1,
 	const double e = math_wigner_3j(j1, j2, j3, 0, 0, 0);
 
 	const double f = math_wigner_3j(j1, j2, j3, m1, m2, m3);
-
-
-/*
-	const double a = as_double(2*j1 + 1);
-
-	const double b = as_double(2*j2 + 1);
-
-	const double c = as_double(2*j3 + 1);
-
-	const double d = sqrt(a*b/(4.0*M_PI*c));
-
-	const double e = math_clebsch_gordan(j1, j2, j3, 0, 0, 0);
-
-	const double f = math_clebsch_gordan(j1, j2, j3, m1, m2, m3);
-*/
-
-/*
-	const double a = as_double(2*j1 + 1);
-
-	const double b = as_double(2*j2 + 1);
-
-	const double c = as_double(2*j3 + 1);
-
-	const double d = sqrt(c*b/(4.0*M_PI*a));
-
-	const double e = math_clebsch_gordan(j3, j2, j1, 0, 0, 0);
-
-	const double f = math_clebsch_gordan(j3, j2, j1, m3, m2, m1);
-*/
 
 	return d*e*f;
 }

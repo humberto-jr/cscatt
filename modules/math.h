@@ -40,12 +40,12 @@
 	double math_clebsch_gordan(const int j1, const int j2, const int j3,
 	                           const int m1, const int m2, const int m3);
 
-	double math_racah_coeff(const int J,
-	                        const int j1,
-	                        const int j2,
-	                        const int l1,
-	                        const int l2,
-	                        const int lambda);
+	double math_racah_coeff(const int a,
+	                        const int b,
+	                        const int c,
+	                        const int d,
+	                        const int e,
+	                        const int f);
 
 	double math_percival_seaton(const int J,
 	                            const int j1,
@@ -54,14 +54,25 @@
 	                            const int l2,
 	                            const int lambda);
 
+	double math_ps(const int J,
+	                            const int j1,
+	                            const int j2,
+	                            const int l1,
+	                            const int l2,
+	                            const int lambda);
+
+	double math_gaunt(const int k,
+	                  const int j1,
+	                  const int j2,
+	                  const int lambda);
+
 	double *math_wigner_d(const int k,
 	                      const int m,
 	                      const int j_max,
 	                      const double beta);
 
-	double math_integral_yyy(const int j1, const int m1,
-	                         const int j2, const int m2,
-	                         const int j3, const int m3);
+	double math_integral_yyy(const int j1, const int j2, const int j3,
+	                         const int m1, const int m2, const int m3);
 
 	void math_set_workspace(const int size);
 
