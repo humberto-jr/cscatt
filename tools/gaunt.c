@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
 	if (argc != 4)
 	{
-		PRINT_ERROR("%d arguments given. Usage: ./percival_seaton.out [j1] [j2] [lambda]\n", argc - 1)
+		PRINT_ERROR("%d arguments given. Usage: ./gaunt.out [j1] [j2] [lambda]\n", argc - 1)
 		return EXIT_FAILURE;
 	}
 
