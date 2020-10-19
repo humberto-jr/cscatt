@@ -164,14 +164,14 @@ double math_percival_seaton(const int J,
 
 /******************************************************************************
 
- Function math_gaunt(): Eq. 3.15 of Tennyson's 1986 review.
+ Function math_gaunt_coeff(): Eq. 3.15 of Tennyson's 1986 review.
 
 ******************************************************************************/
 
-double math_gaunt(const int k,
-                  const int j1,
-                  const int j2,
-                  const int lambda)
+double math_gaunt_coeff(const int k,
+                        const int j1,
+                        const int j2,
+                        const int lambda)
 {
 	double result = pow(-1.0, k);
 

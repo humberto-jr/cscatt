@@ -560,6 +560,11 @@ dgemm_timer: $(TOOLS_DIR)/dgemm_timer.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
+gaunt: $(TOOLS_DIR)/gaunt.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
