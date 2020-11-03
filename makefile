@@ -565,6 +565,11 @@ gaunt: $(TOOLS_DIR)/gaunt.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
+mass: $(TOOLS_DIR)/mass.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/nist.h nist.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out nist.o $(LDFLAGS)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
