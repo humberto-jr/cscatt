@@ -66,9 +66,9 @@
 	                        const int j2,
 	                        const int lambda);
 
-	double *math_wigner_d(const int k,
-	                      const int m,
-	                      const int j_max,
+	double *math_wigner_d(const double k_in,
+	                      const double m_in,
+	                      const double j_in,
 	                      const double beta);
 
 	double math_integral_yyy(const int j1, const int j2, const int j3,

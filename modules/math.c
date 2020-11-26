@@ -7,6 +7,12 @@
  quantum physics as well as routines to perform numerical integration, either
  using quadratures or statistical methods.
 
+
+ References
+ ----------
+
+ [1] fukushima2016
+
 ******************************************************************************/
 
 #include "math.h"
@@ -184,47 +190,66 @@ double math_gaunt_coeff(const int k,
 
 /******************************************************************************
 
- Function math_wigner_d():
+ Function math_wigner_d(): returns the km matrix element of a Wigner d function
+ as function of an angle beta, in degree, for all j values in [0, j_in]. The
+ returned pointer points to 2*j_in elements. The algorithm is a port of a
+ Fortran version available from Ref. [1]. Half-integer input parameters
+ are accepted.
+
+ NOTE: undefined results are considered zero.
+
+ NOTE: the maximum j-value considered is 46340.
 
 ******************************************************************************/
 
-double *math_wigner_d(const int k,
-                      const int m,
-                      const int j_max,
+double *math_wigner_d(const double k_in,
+                      const double m_in,
+                      const double j_in,
                       const double beta)
 {
+	const int k = as_int(2.0*k_in);
+	const int m = as_int(2.0*m_in);
+	const int j_max = as_int(2.0*j_in);
+	const double x = beta*M_PI/180.0;
+
 	ASSERT(m >= 0)
 	ASSERT(k >= m)
 	ASSERT(j_max > -1)
 	ASSERT(j_max < 46340)
 
-	double dkm[3], *result = allocate(j_max + 1, sizeof(double), true);
+	double wigner_d[3], *result = allocate(j_max + 1, sizeof(double), true);
 
-	/* NOTE: from degree to radian */
-	const double x = beta*M_PI/180.0;
+	const int km_sum = as_int(k_in + m_in);
+	const int km_sub = as_int(k_in - m_in);
 
-	/* Eq. (20) */
-	const double seed_c = pow(cos(x/2.0), k + m);
+	/* Equation (20) */
+	const double seed_c = pow(cos(x/2.0), km_sum);
 
-	/* Eq. (20) */
-	const double seed_s = pow(sin(x/2.0), k - m);
+	/* Equation (20) */
+	const double seed_s = pow(sin(x/2.0), km_sub);
 
-	/* Eq. (21) */
-	const double seed_e = sqrt(factorial(2*k)/(factorial(k + m)*factorial(k - m)));
+	/* Equation (21) */
+	const double seed_e = sqrt(factorial(k)/(factorial(km_sum)*factorial(km_sub)));
 
 	const double t = 2.0*pow(sin(x/2.0), 2);
 
-	/* Eq. (18) */
-	dkm[0] = seed_c*seed_s*seed_e;
+	/* Equation (18) */
+	wigner_d[0] = seed_c*seed_s*seed_e;
 
-	result[k/2] = dkm[0];
+/*
+ *	NOTE: from this point on, the algorithm uses k, m and j_max, i.e. twice the
+ *	actual input values such that half-integer input parameters are also
+ *	considered.
+ */
+
+	result[k/2] = wigner_d[0];
 
 	if (j_max <= k) return result;
 
 	int j = k + 2;
-	dkm[1] = dkm[0]*sqrt(as_double(j - 1)/as_double((j + m)*(j - m)))*(as_double(j - m) - as_double(j)*t);
+	wigner_d[1] = wigner_d[0]*sqrt(as_double(j - 1)/as_double((j + m)*(j - m)))*(as_double(j - m) - as_double(j)*t);
 
-	result[j/2] = dkm[1];
+	result[j/2] = wigner_d[1];
 
 	const double i = as_double(k*m);
 
@@ -246,12 +271,11 @@ double *math_wigner_d(const int k,
 
 		const double a = c*as_double(2*j - 2)*((h - i) - h*t);
 
-		dkm[2] = a*dkm[1] - b*dkm[0];
+		wigner_d[2] = a*wigner_d[1] - b*wigner_d[0];
 
-		result[j/2] = dkm[2];
-
-		dkm[0] = dkm[1];
-		dkm[1] = dkm[2];
+		result[j/2] = wigner_d[2];
+		wigner_d[0] = wigner_d[1];
+		wigner_d[1] = wigner_d[2];
 	}
 
 	return result;
