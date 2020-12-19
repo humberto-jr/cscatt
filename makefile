@@ -570,6 +570,17 @@ mass: $(TOOLS_DIR)/mass.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/nist.h nist.o
 	$(CC) $(CFLAGS) $< -o $@.out nist.o $(LDFLAGS)
 	@echo
 
+simpson_timer: $(TOOLS_DIR)/simpson_timer.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
+	@echo
+
+gauss_legendre_timer: $(TOOLS_DIR)/gauss_legendre_timer.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
+	@echo
+
+
 #
 # Rules to build/install external libraries:
 #

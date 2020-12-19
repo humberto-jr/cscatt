@@ -12,7 +12,7 @@ double f(const int J,
 
 	result *= math_clebsch_gordan(j1, j2, lambda, 0, 0, 0);
 	result *= math_clebsch_gordan(l1, l2, lambda, 0, 0, 0);
-	result *= math_racah_coeff(J, j1, j2, l1, l2, lambda);
+	result *= math_racah_coeff(j1, l1, j2, l2, J, lambda);
 	result *= sqrt(as_double(2*j1 + 1)*as_double(2*j2 + 1)*as_double(2*l1 + 1)*as_double(2*l2 + 1))/as_double(2*lambda + 1);
 
 	return result;
@@ -36,6 +36,8 @@ int main(int argc, char *argv[])
 	const int lambda = atoi(argv[6]);
 
 	printf("% -8e\n", math_percival_seaton(J, j1, j2, l1, l2, lambda));
+	printf("% -8e\n", f(J, j1, j2, l1, l2, lambda));
+	printf("% -8e\n", math_ps(J, j1, j2, l1, l2, lambda));
 
 	return EXIT_SUCCESS;
 }

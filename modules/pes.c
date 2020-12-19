@@ -534,7 +534,7 @@ struct legendre_params
 	const double R;
 };
 
-static double pes_legendre_integrand(const double theta, void *params)
+static double pes_legendre_integrand(const double theta, const void *params)
 {
 	struct legendre_params *p = (struct legendre_params *) params;
 
@@ -552,10 +552,39 @@ static double pes_legendre_integrand(const double theta, void *params)
  triatomic PES at a given (r, R) Jacobi coordinate, as shown in Eq. (22) of
  Ref. [1].
 
+ NOTE: Integration over theta in [0, pi] performed by a Gauss-Legendre
+ quadrature rule with 64 Gauss points.
+
+******************************************************************************/
+
+double pes_legendre_multipole(const char arrang,
+                              const int lambda, const double r, const double R)
+{
+	struct legendre_params p =
+	{
+		.arrang = arrang,
+		.lambda = lambda,
+		.r = r,
+		.R = R
+	};
+
+	const double result
+		= math_gauss_legendre(0.0, M_PI, 64, &p, pes_legendre_integrand);
+
+	return as_double(2*lambda + 1)*result/2.0;
+}
+
+/******************************************************************************
+
+ Function pes_legendre_multipole(): return the inner integral (in theta) of the
+ triatomic PES at a given (r, R) Jacobi coordinate, as shown in Eq. (22) of
+ Ref. [1].
+
  NOTE: Integration over theta in [0, pi] performed by the QAG algorithm.
 
 ******************************************************************************/
 
+/*
 double pes_legendre_multipole(const char arrang,
                               const int lambda, const double r, const double R)
 {
@@ -590,7 +619,7 @@ double pes_legendre_multipole(const char arrang,
 	const double result = math_qags(0.0, theta_max, &p, pes_legendre_integrand);
 
 	return as_double(2*lambda + 1)*factor*result/2.0;
-}
+}*/
 
 /******************************************************************************
 

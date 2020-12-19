@@ -80,19 +80,12 @@
 
 	void math_no_gsl_handler();
 
-	double math_simpson(const int n,
-	                    const double a,
+	double math_simpson(const double a,
 	                    const double b,
-	                    void *params,
+	                    const int n_max,
+	                    const void *params,
 	                    const bool use_omp,
-	                    double (*f)(double x, void *params));
-
-	double math_2nd_simpson(const int n,
-	                        const double a,
-	                        const double b,
-	                        void *params,
-	                        const bool use_omp,
-	                        double (*f)(double x, void *params));
+	                    double (*f)(const double x, const void *params));
 
 	double math_qag(const double a,
 	                const double b,
@@ -125,7 +118,11 @@
 	                         void *params,
 	                         double (*f)(double x[], size_t n, void *params));
 
-	void math_lanczos(math_lanczos_setup *s);
+	double math_gauss_legendre(const double a,
+	                           const double b,
+	                           const int order,
+	                           const void *params,
+	                           double (*f)(const double x, const void *params));
 
 	void math_about(FILE *output);
 
