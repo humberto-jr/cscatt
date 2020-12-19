@@ -116,6 +116,12 @@
 
 	bool matrix_has_nan(const matrix *m);
 
+	bool matrix_using_magma();
+
+	bool matrix_using_mkl();
+
+	bool matrix_using_lapacke();
+
 	void matrix_save(const matrix *m, const char filename[]);
 
 	matrix *matrix_load(const char filename[]);

@@ -234,7 +234,12 @@ int main(int argc, char *argv[])
 
 		for (int v = v_min; v <= v_max; v += v_step)
 		{
-			double *wavef = matrix_raw_col(eigenvec, v, false);
+			double *wavef = NULL;
+
+			if (matrix_using_magma())
+				wavef = matrix_raw_row(eigenvec, v, false);
+			else
+				wavef = matrix_raw_col(eigenvec, v, false);
 
 			norm(n_max, r_step, (n_max >= 3000), wavef);
 
