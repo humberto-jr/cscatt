@@ -729,8 +729,6 @@ FILE *pes_multipole_file(const char arrang,
 
 	FILE *stream = fopen(filename, mode);
 
-	ASSERT(stream != NULL)
-
 	if (verbose)
 	{
 		if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
@@ -809,9 +807,7 @@ void pes_multipole_write(const pes_multipole *m, FILE *output)
 	file_write(&m->grid_size, sizeof(int), 1, output);
 
 	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
-	{
 		file_write(m->value[lambda], sizeof(double), m->grid_size, output);
-	}
 }
 
 /******************************************************************************
@@ -895,9 +891,7 @@ void pes_multipole_free(pes_multipole *m)
 	if (m->value == NULL) return;
 
 	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
-	{
 		if (m->value[lambda] != NULL) free(m->value[lambda]);
-	}
 
 	free(m->value);
 	m->value = NULL;

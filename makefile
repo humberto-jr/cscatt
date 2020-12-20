@@ -453,9 +453,9 @@ a+d_multipole: a+d_multipole.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h
 	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-m_print: m_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
+m_print: m_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h nist.o math.o
 	@echo "\033[31m$<\033[0m"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o pes.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 utils: utils.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h

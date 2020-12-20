@@ -3,170 +3,56 @@
 #include "modules/mpi_lib.h"
 #include "modules/globals.h"
 
-#define FORMAT "  %3d       %3d       %3d    %06f    %06f       % -8e         %f\n"
-
-struct tasks
-{
-	double r, R, result;
-	int lambda, grid_index;
-};
+#define FORMAT "  %3d       %3d       %3d    %06f         %f\n"
 
 /******************************************************************************
 
- Function send_results(): send all results from a given CPU to that same
- interval in the list of tasks of CPU 0.
+ Function driver(): performs the calculation of all multipole coefficients for
+ all lambda- and r-values.
 
 ******************************************************************************/
 
-void send_results(const int max_task, struct tasks *list)
+void driver(const char arrang, const bool use_omp, pes_multipole *m)
 {
-	if (mpi_comm_size() == 1) return;
+	ASSERT(m != NULL)
+	ASSERT(m->value != NULL)
 
-	ASSERT(max_task > 0)
-	ASSERT(list != NULL)
-
-	mpi_barrier();
-
-	if (mpi_rank() == 0)
+	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
+	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 	{
-		for (int rank = 1; rank < mpi_comm_size(); ++rank)
-		{
-			do
-			{
-				int n = max_task - 1;
-				mpi_receive(rank, 1, type_int, &n);
-				mpi_receive(rank, 1, type_double, &list[n].result);
-			}
-			while (mpi_check(rank));
-		}
-	}
-	else
-	{
-		for (int n = mpi_first_task(); n <= mpi_last_task(); ++n)
-		{
-			extra_step:
-			mpi_send(0, 1, type_int, &n);
-			mpi_send(0, 1, type_double, &list[n].result);
+		const double start_time = wall_time();
 
-			if (n == mpi_last_task() && mpi_extra_task() > 0)
-			{
-				n = mpi_extra_task();
-				goto extra_step;
-			}
+		for (int n = 0; n < m->grid_size; ++n)
+		{
+			const double r = m->r_min + as_double(n)*m->r_step;
+
+			m->value[lambda][n] = pes_legendre_multipole(arrang, lambda, r, m->R);
 		}
+
+		const double end_time = wall_time();
+
+		#pragma omp critical
+		printf(FORMAT, mpi_rank(), thread_id(), lambda, m->R, end_time - start_time);
 	}
 }
 
 /******************************************************************************
 
- Function driver(): performs the calculation of a single task using one thread
- from one process.
+ Function save_multipole(): writes in the disk the multipole for a given R grid
+ index, n, and arrangement. Binary format is used.
 
 ******************************************************************************/
 
-void driver(const char arrang, struct tasks *job)
+void save_multipole(const char arrang, const int n, const pes_multipole *m)
 {
-	const double start_time = wall_time();
+	FILE *output = pes_multipole_file(arrang, n, "wb", false);
 
-	job->result
-		= pes_legendre_multipole(arrang, job->lambda, job->r, job->R);
+	pes_multipole_write(m, output);
 
-	const double end_time = wall_time();
-
-	#pragma omp critical
-	{
-		printf(FORMAT, mpi_rank(), thread_id(),
-		       job->lambda, job->r, job->R, job->result, end_time - start_time);
-	}
+	fclose(output);
 }
 
 /******************************************************************************
-
- Function multipole_file(): opens the file for a given arrangement and grid
- index. Where, mode is the file access mode of fopen() from the C library.
-
- NOTE: mode = "wb" for write + binary format and "rb" for read + binary format,
- extension used is .bin, otherwise .dat is used assuming text mode ("w" or "r").
-
-******************************************************************************/
-
-FILE *multipole_file(const char arrang,
-                     const int grid_index, const char mode[])
-{
-	char filename[MAX_LINE_LENGTH], ext[4];
-
-	if (strlen(mode) > 1 && mode[1] == 'b')
-		sprintf(ext, "%s", "bin");
-	else
-		sprintf(ext, "%s", "dat");
-
-	sprintf(filename, "multipole_arrang=%c_n=%d.%s", arrang, grid_index, ext);
-
-	FILE *stream = fopen(filename, mode);
-
-	if (stream != NULL && mode[0] == 'r') printf("# Reading %s\n", filename);
-	if (stream != NULL && mode[0] == 'w') printf("# Writing %s\n", filename);
-
-	return stream;
-}
-
-/******************************************************************************
-
- Function sort_results(): CPU 0 writes the respective multipoles as function of
- r per lambda using binary format and filename labeled by the grid index, n (of
- R) and arrangement.
-
-******************************************************************************/
-
-void sort_results(const char arrang,
-                  const int max_task,
-                  const int lambda_max,
-                  const int grid_size,
-                  const double r_min,
-                  const double r_max,
-                  const double r_step,
-                  const struct tasks list[])
-{
-	if (mpi_rank() != 0) return;
-
-	FILE *output = NULL;
-	int last_index = -1, last_lambda = -1;
-
-	for (int n = 0; n < max_task; ++n)
-	{
-		if (list[n].grid_index != last_index)
-		{
-			file_close(&output);
-			output = multipole_file(arrang, list[n].grid_index, "wb");
-
-			file_write(&list[n].R, sizeof(double), 1, output);
-
-			file_write(&r_min, sizeof(double), 1, output);
-			file_write(&r_max, sizeof(double), 1, output);
-			file_write(&r_step, sizeof(double), 1, output);
-
-			file_write(&lambda_max, sizeof(int), 1, output);
-			file_write(&grid_size, sizeof(int), 1, output);
-
-			last_lambda = -1;
-		}
-
-		if (list[n].lambda != last_lambda)
-		{
-			file_write(&list[n].lambda, sizeof(int), 1, output);
-		}
-
-		file_write(&list[n].result, sizeof(double), 1, output);
-
-		last_index = list[n].grid_index;
-		last_lambda = list[n].lambda;
-	}
-
-	file_close(&output);
-}
-
-/******************************************************************************
-
 ******************************************************************************/
 
 int main(int argc, char *argv[])
@@ -221,8 +107,6 @@ int main(int argc, char *argv[])
 
 	const int lambda_step = (int) file_keyword(stdin, "lambda_step", 1.0, INF, 2.0);
 
-	const int lambda_grid_size = (lambda_max - lambda_min)/lambda_step + 1;
-
 	ASSERT(lambda_max >= lambda_min)
 
 /*
@@ -232,36 +116,10 @@ int main(int argc, char *argv[])
 	const bool use_omp = (bool) file_keyword(stdin, "use_omp", 0.0, 1.0, 1.0);
 
 /*
- *	Sort each task (r, R, lambda) in an ordered list:
- */
-
-	const int max_task = scatt_grid_size*rovib_grid_size*lambda_grid_size;
-
-	struct tasks *list = allocate(max_task, sizeof(struct tasks), true);
-
-	int counter = 0;
-	for (int n = 0; n < scatt_grid_size; ++n)
-	{
-		for (int lambda = lambda_min; lambda <= lambda_max; lambda += lambda_step)
-		{
-			for (int m = 0; m < rovib_grid_size; ++m)
-			{
-				list[counter].r = r_min + as_double(m)*r_step;
-				list[counter].R = R_min + as_double(n)*R_step;
-				list[counter].lambda = lambda;
-				list[counter].grid_index = n;
-				++counter;
-			}
-		}
-	}
-
-	ASSERT(counter == max_task);
-
-/*
  *	MPI:
  */
 
-	mpi_set_tasks(max_task);
+	mpi_set_tasks(scatt_grid_size);
 
 /*
  *	Resolve all tasks:
@@ -269,19 +127,33 @@ int main(int argc, char *argv[])
 
 	if (mpi_rank() == 0)
 	{
-		printf("# MPI CPUs = %d, OpenMP threads = %d, num. of tasks = %d\n", mpi_comm_size(), max_threads(), max_task);
-		printf("# CPU    thread    lambda    r (a.u.)    R (a.u.)    multipole (a.u.)    wall time (s)\n");
-		printf("# ------------------------------------------------------------------------------------\n");
+		printf("# MPI CPUs = %d, OpenMP threads = %d\n", mpi_comm_size(), max_threads());
+		printf("# CPU    thread    lambda    R (a.u.)    wall time (s)\n");
+		printf("# ----------------------------------------------------\n");
 	}
 
-	/* FIXME: when using Intel icc, n must be declared with a private clause. */
-	int n = 0;
+	pes_multipole m =
+	{
+		.R = 0.0,
+		.value = NULL,
+		.r_min = r_min,
+		.r_max = r_max,
+		.r_step = r_step,
+		.lambda_min = lambda_min,
+		.lambda_max = lambda_max,
+		.lambda_step = lambda_step,
+		.grid_size = rovib_grid_size
+	};
 
-	#pragma omp parallel for default(none) private(n) shared(list) schedule(static) if(use_omp)
-	for (n = mpi_first_task(); n <= mpi_last_task(); ++n)
+	pes_multipole_init(&m);
+
+	for (int n = mpi_first_task(); n <= mpi_last_task(); ++n)
 	{
 		extra_step:
-		driver(arrang, &list[n]);
+		m.R = R_min + as_double(n)*R_step;
+
+		driver(arrang, use_omp, &m);
+		save_multipole(arrang, n, &m);
 
 		if (n == mpi_last_task() && mpi_extra_task() > 0)
 		{
@@ -290,12 +162,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	send_results(max_task, list);
-
-	sort_results(arrang, max_task, lambda_max,
-	             rovib_grid_size, r_min, r_max, r_step, list);
-
-	free(list);
+	pes_multipole_free(&m);
 
 	mpi_end();
 	return EXIT_SUCCESS;
