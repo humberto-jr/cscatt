@@ -710,8 +710,8 @@ double pes_harmonics_multipole(const int eta,
  index, arrangement and total angular momentum, J. Where, mode is the file
  access mode of fopen() from the C library.
 
- NOTE: mode = "wb" for write + binary format and "rb" for read + binary format,
- extension used is .bin otherwise .dat is used assuming text mode ("w" or "r").
+ NOTE: mode = "wb" for write + binary format and "rb" for read + binary format.
+ Extension used is .bin otherwise .dat is used assuming text mode ("w" or "r").
 
 ******************************************************************************/
 
