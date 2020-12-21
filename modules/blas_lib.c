@@ -143,6 +143,40 @@ void blas_dgemm(const char trans_a,
 		magma_free(b_gpu);
 		magma_free(c_gpu);
 	}
+
+	#elif defined(USE_CUDA)
+	{
+/*
+ *		NOTE: a normal matrix in the host (row-major) implies transposed matrix
+ *		(col-major) in the device.
+ */
+		const cublasOperation_t a_form
+			= (trans_a == 't'? CUBLAS_OP_N : CUBLAS_OP_T);
+
+		const cublasOperation_t b_form
+			= (trans_b == 't'? CUBLAS_OP_N : CUBLAS_OP_T);
+
+		double *a_gpu = cpu_to_gpu(m*k, a);
+		double *b_gpu = cpu_to_gpu(k*n, b);
+		double *c_gpu = (beta == 0.0? gpu_malloc(m*n) : cpu_to_gpu(m*n, c));
+
+		cublasStatus_t info = cublasDgemm(cublas_conf, a_form, b_form, m, n, k,
+		                    &alpha, a_gpu, lda, b_gpu, ldb, &beta, c_gpu, ldc);
+
+		cudaDeviceSynchronize();
+		if (info != CUBLAS_STATUS_SUCCESS)
+		{
+			PRINT_ERROR("cublasDgemm() failed with error code %d\n", info);
+			exit(EXIT_FAILURE);
+		}
+
+		cudaMemcpy(c, c_gpu, sizeof(double)*m*n, cudaMemcpyDeviceToHost);
+
+		cudaFree(a_gpu);
+		cudaFree(b_gpu);
+		cudaFree(c_gpu);
+	}
+
 	#else
 	{
 		const CBLAS_TRANSPOSE a_form = (trans_a == 't'? CblasTrans : CblasNoTrans);

@@ -3,36 +3,44 @@
 #include "modules/mpi_lib.h"
 #include "modules/globals.h"
 
-#define FORMAT "  %3d       %3d       %3d    %06f         %f\n"
+#define FORMAT "  %3d       %3d       %3d    %06f    %06f         %f\n"
+
+struct tasks
+{
+	double r;
+	int lambda, index;
+};
 
 /******************************************************************************
 
- Function driver(): performs the calculation of all multipole coefficients for
- all lambda- and r-values.
+ Function driver(): performs the calculation of multipole coefficients for each
+ (lambda, r)-value with fixed R.
 
 ******************************************************************************/
 
-void driver(const char arrang, const bool use_omp, pes_multipole *m)
+void driver(const char arrang, const bool use_omp,
+            const int max_task, const struct tasks *jobs, pes_multipole *m)
 {
 	ASSERT(m != NULL)
+	ASSERT(jobs != NULL)
+	ASSERT(max_task > 0)
 	ASSERT(m->value != NULL)
 
-	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
-	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
+	#pragma omp parallel for default(none) shared(jobs, m) schedule(static) if(use_omp)
+	for (int task = 0; task < max_task; ++task)
 	{
+		const int n = jobs[task].index;
+		const int lambda = jobs[task].lambda;
+		const double r = jobs[task].r, R = m->R;
+
 		const double start_time = wall_time();
 
-		for (int n = 0; n < m->grid_size; ++n)
-		{
-			const double r = m->r_min + as_double(n)*m->r_step;
-
-			m->value[lambda][n] = pes_legendre_multipole(arrang, lambda, r, m->R);
-		}
+		m->value[lambda][n] = pes_legendre_multipole(arrang, lambda, r, R);
 
 		const double end_time = wall_time();
 
 		#pragma omp critical
-		printf(FORMAT, mpi_rank(), thread_id(), lambda, m->R, end_time - start_time);
+		printf(FORMAT, mpi_rank(), thread_id(), lambda, r, R, end_time - start_time);
 	}
 }
 
@@ -110,13 +118,34 @@ int main(int argc, char *argv[])
 	ASSERT(lambda_max >= lambda_min)
 
 /*
- *	OpenMP:
+ *	OpenMP. For a given R-value, each (lambda, r)-dependent multipole coefficient
+ *	is computed by an OpenMP thread, if any. In order to impose a good workload
+ *	of tasks per thread with minimal sync, an array of struct tasks is utilized
+ *	to store precomputed values of (lambda, r). Thus, a single for-loop is used.
  */
 
 	const bool use_omp = (bool) file_keyword(stdin, "use_omp", 0.0, 1.0, 1.0);
 
+	struct tasks *list = NULL;
+
+	int counter = 0;
+	for (int lambda = lambda_min; lambda <= lambda_max; lambda += lambda_step)
+	{
+		for (int n = 0; n < rovib_grid_size; ++n)
+		{
+			++counter;
+
+			list = realloc(list, sizeof(struct tasks)*counter);
+
+			list[counter - 1].r = r_min + as_double(n)*r_step;
+			list[counter - 1].lambda = lambda;
+			list[counter - 1].index = n;
+		}
+	}
+
 /*
- *	MPI:
+ *	MPI. The main loop, over chunks of R-values, is handled by MPI processes,
+ *	if any.
  */
 
 	mpi_set_tasks(scatt_grid_size);
@@ -127,9 +156,9 @@ int main(int argc, char *argv[])
 
 	if (mpi_rank() == 0)
 	{
-		printf("# MPI CPUs = %d, OpenMP threads = %d\n", mpi_comm_size(), max_threads());
-		printf("# CPU    thread    lambda    R (a.u.)    wall time (s)\n");
-		printf("# ----------------------------------------------------\n");
+		printf("# MPI CPUs = %d, OpenMP threads = %d, num. of tasks = %d\n", mpi_comm_size(), max_threads(), counter*scatt_grid_size);
+		printf("# CPU    thread    lambda    r (a.u.)    R (a.u.)    wall time (s)\n");
+		printf("# ----------------------------------------------------------------\n");
 	}
 
 	pes_multipole m =
@@ -152,7 +181,7 @@ int main(int argc, char *argv[])
 		extra_step:
 		m.R = R_min + as_double(n)*R_step;
 
-		driver(arrang, use_omp, &m);
+		driver(arrang, use_omp, counter, list, &m);
 		save_multipole(arrang, n, &m);
 
 		if (n == mpi_last_task() && mpi_extra_task() > 0)
@@ -163,6 +192,7 @@ int main(int argc, char *argv[])
 	}
 
 	pes_multipole_free(&m);
+	free(list);
 
 	mpi_end();
 	return EXIT_SUCCESS;

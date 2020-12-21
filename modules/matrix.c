@@ -852,8 +852,6 @@ void matrix_swap(matrix *a, matrix *b)
 	a->max_row = b_row;
 	a->max_col = b_col;
 	a->data = b_data;
-
-	b_data = NULL;
 }
 
 /******************************************************************************

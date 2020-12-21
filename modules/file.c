@@ -67,7 +67,7 @@ bool file_exist(const char filename[])
 bool file_end(FILE *stream)
 {
 	ASSERT(stream != NULL)
-	return (feof(stream) != 0);
+	return (bool) feof(stream);
 }
 
 /******************************************************************************
