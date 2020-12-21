@@ -1,6 +1,8 @@
 #if !defined(FGH_HEADER)
 	#define FGH_HEADER
 	#include "globals.h"
+	#include "mpi_lib.h"
+	#include "matrix.h"
 
 	/******************************************************************************
 

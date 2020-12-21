@@ -1,8 +1,7 @@
+#include "modules/fgh.h"
 #include "modules/file.h"
 #include "modules/matrix.h"
 #include "modules/globals.h"
-
-#include "utils.h"
 
 /******************************************************************************
 ******************************************************************************/
@@ -10,6 +9,7 @@
 int main(int argc, char *argv[])
 {
 	ASSERT(argc > 1)
+
 	file_init_stdin(argv[1]);
 
 /*
@@ -36,14 +36,19 @@ int main(int argc, char *argv[])
 
 	for (int J = J_min; J <= J_max; J += J_step)
 	{
-		const int max_ch = basis_count(arrang, J);
+		const int max_ch = fgh_basis_count(arrang, J);
 
 		for (int ch = 0; ch < max_ch; ++ch)
 		{
-			basis b;
-			basis_read(arrang, ch, J, &b, true);
+			fgh_basis b;
 
-			FILE *output = basis_file(arrang, ch, J, "w", true);
+			FILE *input = fgh_basis_file(arrang, ch, J, "rb", true);
+
+			fgh_basis_read(&b, input);
+
+			fclose(input);
+
+			FILE *output = fgh_basis_file(arrang, ch, J, "w", true);
 
 			ASSERT(output != NULL)
 
@@ -53,18 +58,15 @@ int main(int argc, char *argv[])
 
 			fprintf(output, "# Component  = %d\n", b.n);
 			fprintf(output, "# Eigenvalue = % -8e\n", b.eigenval);
-
-			fprintf(output, "# File created on %s\n", time_stamp());
+			fprintf(output, "# File created at %s\n", time_stamp());
 
 			for (int n = 0; n < b.grid_size; ++n)
 			{
 				const double r = b.r_min + as_double(n)*b.r_step;
-
 /*
  *				NOTE: "% -8e\t" print numbers left-justified with an invisible
  *				plus sign, if any, 8 digits wide in scientific notation + tab.
  */
-
 				fprintf(output, "%06f\t % -8e\t\n", r, b.eigenvec[n]);
 			}
 

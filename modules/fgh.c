@@ -9,8 +9,9 @@
 ******************************************************************************/
 
 #include "globals.h"
+#include "mpi_lib.h"
 #include "matrix.h"
-#include "mpi_lb.h"
+#include "file.h"
 #include "fgh.h"
 
 #if !defined(FGH_BASIS_FORMAT)
@@ -313,9 +314,8 @@ double *fgh_eigenvec(const matrix *fgh, const int v, const double grid_step)
 	ASSERT(v > -1)
 	ASSERT(fgh != NULL)
 
-	int n_max = matrix_row(fgh);
-
-	if (n_max%2 != 0) --n_max;
+	const int grid_size = matrix_row(fgh);
+	const int n_max = (grid_size%2 == 0? grid_size : grid_size - 1);
 
 	double *eigenvec = NULL;
 
@@ -336,7 +336,7 @@ double *fgh_eigenvec(const matrix *fgh, const int v, const double grid_step)
 
 	const double norm = 1.0/sqrt(sum);
 
-	for (int n = 0; n < n_max; ++n)
+	for (int n = 0; n < grid_size; ++n)
 		eigenvec[n] = norm*eigenvec[n];
 
 	return eigenvec;

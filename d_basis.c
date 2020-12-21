@@ -1,9 +1,8 @@
 #include "modules/pes.h"
+#include "modules/fgh.h"
 #include "modules/file.h"
 #include "modules/matrix.h"
 #include "modules/globals.h"
-
-#include "utils.h"
 
 #define FORMAT "# %5d   %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
 
@@ -20,83 +19,7 @@ inline static int parity(const int l)
 }
 
 /******************************************************************************
-
- Function fgh_matrix(): return the discrete variable representation (DVR) of a
- Fourier grid Hamiltonian (FGH) subjected to a given single channel potential
- energy and reduced mass. As shown in Eq. (6a) and (6b) of Ref. [1].
-
- NOTE: The m-th eigenvector is the m-th column in a grid_size-by-grid_size row-
- major matrix: eigenvec[n*grid_size + m], where n = m = [0, grid_size).
-
 ******************************************************************************/
-
-matrix *fgh_matrix(const int grid_size,
-                   const double grid_step,
-                   const double pot_energy[],
-                   const double mass)
-{
-	ASSERT(pot_energy != NULL)
-
-	matrix *result = matrix_alloc(grid_size, grid_size, false);
-
-	const double box_length = as_double(grid_size - 1)*grid_step;
-
-	const double factor = (M_PI*M_PI)/(mass*box_length*box_length);
-
-	const double nn_term = factor*as_double(grid_size*grid_size + 2)/6.0;
-
-	for (int n = 0; n < grid_size; ++n)
-	{
-		matrix_diag_set(result, n, nn_term + pot_energy[n]);
-
-		for (int m = (n + 1); m < grid_size; ++m)
-		{
-			const double nm = as_double((n + 1) - (m + 1));
-
-			const double nm_term = sin(nm*M_PI/as_double(grid_size));
-
-			matrix_symm_set(result, n, m, pow(-1.0, nm)*factor/pow(nm_term, 2));
-		}
-	}
-
-	return result;
-}
-
-/******************************************************************************
-
- Function norm(): normalize to unity a radial eigenvector of grid_size points,
- using a 1/3-Simpson quadrature rule.
-
-******************************************************************************/
-
-void norm(const int grid_size,
-          const double grid_step, const bool use_omp, double eigenvec[])
-{
-	ASSERT(grid_size > 0)
-	ASSERT(eigenvec != NULL)
-
-	const int n_max
-		= (grid_size%2 == 0? grid_size : grid_size - 1);
-
-	double sum
-		= eigenvec[0]*eigenvec[0] + eigenvec[n_max - 1]*eigenvec[n_max - 1];
-
-	#pragma omp parallel for default(none) shared(eigenvec) reduction(+:sum) if(use_omp)
-	for (int n = 1; n < (n_max - 2); n += 2)
-	{
-		sum += 4.0*eigenvec[n]*eigenvec[n];
-		sum += 2.0*eigenvec[n + 1]*eigenvec[n + 1];
-	}
-
-	sum = grid_step*sum/3.0;
-	sum = sqrt(sum);
-
-	#pragma omp parallel for default(none) shared(eigenvec, sum) if(use_omp)
-	for (int n = 0; n < grid_size; ++n)
-	{
-		eigenvec[n] = eigenvec[n]/sum;
-	}
-}
 
 int main(int argc, char *argv[])
 {
@@ -204,44 +127,50 @@ int main(int argc, char *argv[])
 	printf("#     J     Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
 	printf("# ---------------------------------------------------------------------------------------------\n");
 
+	int *ch_counter = allocate(J_max + 1, sizeof(int), true);
+
+	fgh_basis basis =
+	{
+		.v = 0,
+		.j = 0,
+		.l = 0,
+		.n = 0,
+		.r_min = r_min,
+		.r_max = r_max,
+		.r_step = r_step,
+		.grid_size = n_max,
+		.eigenval = 0.0,
+		.eigenvec = NULL
+	};
+
 /*
  *	Step 1: loop over rotational states j of the diatom and solve the diatomic eigenvalue problem
  *	using the Fourier grid Hamiltonian discrete variable representation (FGH-DVR) method.
  */
 
-	int *ch_counter = allocate(J_max + 1, sizeof(int), true);
-	const int i = 0;
-
-	for (int j = j_min; j <= j_max; j += j_step)
+	for (basis.j = j_min; basis.j <= j_max; basis.j += j_step)
 	{
 		double *pot_energy = allocate(n_max, sizeof(double), false);
 
 		for (int n = 0; n < n_max; ++n)
-		{
-			pot_energy[n] = pec(j, r_min + as_double(n)*r_step);
-		}
+			pot_energy[n] = pec(basis.j, r_min + as_double(n)*r_step);
 
-		matrix *eigenvec = fgh_matrix(n_max, r_step, pot_energy, mass);
+		matrix *fgh
+			= fgh_dense_single_channel(n_max, r_step, pot_energy, mass);
 
 		free(pot_energy);
 
-		double *eigenval = matrix_symm_eigen(eigenvec, 'v');
+		double *eigenval = matrix_symm_eigen(fgh, 'v');
 
 /*
  *		Step 2: loop over the vibrational states v of the diatom, solutions of step 2, and select
  *		only those of interest.
  */
 
-		for (int v = v_min; v <= v_max; v += v_step)
+		for (basis.v = v_min; basis.v <= v_max; basis.v += v_step)
 		{
-			double *wavef = NULL;
-
-			if (matrix_using_magma())
-				wavef = matrix_raw_row(eigenvec, v, false);
-			else
-				wavef = matrix_raw_col(eigenvec, v, false);
-
-			norm(n_max, r_step, (n_max >= 3000), wavef);
+			basis.eigenval = eigenval[basis.v];
+			basis.eigenvec = fgh_eigenvec(fgh, basis.v, r_step);
 
 /*
  *			Step 3: loop over all partial waves l of the atom around the diatom given by the
@@ -250,43 +179,32 @@ int main(int argc, char *argv[])
 
 			for (int J = J_min; J <= J_max; J += J_step)
 			{
-				for (int l = abs(J - j); l <= (J + j); ++l)
+				for (basis.l = abs(J - basis.j); basis.l <= (J + basis.j); ++basis.l)
 				{
-					if (parity(j + l) != J_parity && J_parity != 0) continue;
+					if (parity(basis.j + basis.l) != J_parity && J_parity != 0) continue;
 
-					printf(FORMAT, J, ch_counter[J], v, j, l, parity(j + l),
-					       eigenval[v], eigenval[v]*219474.63137054, eigenval[v]*27.211385);
+					printf(FORMAT, J, ch_counter[J], basis.v, basis.j, basis.l, parity(basis.j + basis.l),
+					       basis.eigenval, basis.eigenval*219474.63137054, basis.eigenval*27.211385);
 
 /*
  *					Step 4: save each basis function |vjl> in the disk and increment the counter of
  *					channels.
  */
 
-					FILE *output = basis_file(arrang, ch_counter[J], J, "wb", false);
+					FILE *output = fgh_basis_file(arrang, ch_counter[J], J, "wb", false);
 
-					file_write(&v, sizeof(int), 1, output);
-					file_write(&j, sizeof(int), 1, output);
-					file_write(&l, sizeof(int), 1, output);
-					file_write(&i, sizeof(int), 1, output);
-
-					file_write(&r_min, sizeof(double), 1, output);
-					file_write(&r_max, sizeof(double), 1, output);
-					file_write(&r_step, sizeof(double), 1, output);
-
-					file_write(&eigenval[v], sizeof(double), 1, output);
-
-					file_write(&n_max, sizeof(int), 1, output);
-					file_write(wavef, sizeof(double), n_max, output);
+					fgh_basis_write(&basis, output);
 
 					file_close(&output);
+
 					ch_counter[J] += 1;
 				}
 			}
 
-			free(wavef);
+			free(basis.eigenvec);
 		}
 
-		matrix_free(eigenvec);
+		matrix_free(fgh);
 		free(eigenval);
 	}
 
