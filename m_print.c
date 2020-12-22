@@ -8,6 +8,7 @@
 int main(int argc, char *argv[])
 {
 	ASSERT(argc > 1)
+
 	file_init_stdin(argv[1]);
 
 	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
@@ -17,7 +18,7 @@ int main(int argc, char *argv[])
 
 	while ((input = pes_multipole_file(arrang, n, "rb", true)) != NULL)
 	{
-		pes_multipole m;
+		pes_multipole m = {.value = NULL};
 		pes_multipole_read(&m, input);
 
 		FILE *output = pes_multipole_file(arrang, n, "w", true);

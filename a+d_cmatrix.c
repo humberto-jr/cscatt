@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
 
 		FILE *input = pes_multipole_file(arrang, n, "rb", false);
 
-		pes_multipole m;
+		pes_multipole m = {.value = NULL};
 		pes_multipole_read(&m, input);
 
 		fclose(input);
