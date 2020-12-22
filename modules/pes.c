@@ -556,7 +556,7 @@ static double pes_legendre_integrand(const double theta, const void *params)
  quadrature rule with 64 Gauss points.
 
 ******************************************************************************/
-
+/*
 double pes_legendre_multipole(const char arrang,
                               const int lambda, const double r, const double R)
 {
@@ -583,18 +583,7 @@ double pes_legendre_multipole(const char arrang,
 		= math_gauss_legendre(0.0, M_PI, order, &p, pes_legendre_integrand);
 
 	return as_double(2*lambda + 1)*result/2.0;
-}
-
-/******************************************************************************
-
- Function pes_legendre_multipole(): return the inner integral (in theta) of the
- triatomic PES at a given (r, R) Jacobi coordinate, as shown in Eq. (22) of
- Ref. [1].
-
- NOTE: Integration over theta in [0, pi] performed by the QAG algorithm.
-
-******************************************************************************/
-
+}*/
 /*
 double pes_legendre_multipole(const char arrang,
                               const int lambda, const double r, const double R)
@@ -631,6 +620,38 @@ double pes_legendre_multipole(const char arrang,
 
 	return as_double(2*lambda + 1)*factor*result/2.0;
 }*/
+
+/******************************************************************************
+
+ Function pes_legendre_multipole(): return the inner integral (in theta) of the
+ triatomic PES at a given (r, R) Jacobi coordinate, as shown in Eq. (22) of
+ Ref. [1].
+
+ NOTE: Integration over theta in [0, pi] performed by the QAG algorithm.
+
+******************************************************************************/
+
+double pes_legendre_multipole(const char arrang,
+                              const int lambda, const double r, const double R)
+{
+	struct legendre_params p =
+	{
+		.arrang = arrang,
+		.lambda = lambda,
+		.r = r,
+		.R = R
+	};
+
+	/* NOTE: assuming lambda/2 + 1 oscillations with 1000 points each. */
+	const int n_max = 1000*(round(lambda/2) + 1);
+
+	ASSERT(n_max > 0)
+
+	const double result
+		= math_simpson(0.0, M_PI, n_max, &p, false, pes_legendre_integrand);
+
+	return as_double(2*lambda + 1)*result/2.0;
+}
 
 /******************************************************************************
 
