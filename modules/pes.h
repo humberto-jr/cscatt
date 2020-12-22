@@ -85,6 +85,8 @@
 
 	void pes_multipole_read_all(const int n_max, pes_multipole m[], FILE *input);
 
+	int pes_multipole_count(const char arrang);
+
 	void pes_multipole_free(pes_multipole *m);
 
 	void pes_about(FILE *output);

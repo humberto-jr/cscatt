@@ -880,6 +880,29 @@ void pes_multipole_read_all(const int n_max, pes_multipole m[], FILE *input)
 
 /******************************************************************************
 
+ Function pes_multipole_count(): counts how many multipole files (one per grid
+ point) are available in the disk for a given arrangement.
+
+******************************************************************************/
+
+int pes_multipole_count(const char arrang)
+{
+	char filename[MAX_LINE_LENGTH];
+
+	int counter = 0;
+	sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, counter, "bin");
+
+	while (file_exist(filename))
+	{
+		++counter;
+		sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, counter, "bin");
+	}
+
+	return counter;
+}
+
+/******************************************************************************
+
  Function pes_multipole_free():
 
 ******************************************************************************/
