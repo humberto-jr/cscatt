@@ -560,6 +560,8 @@ static double pes_legendre_integrand(const double theta, const void *params)
 double pes_legendre_multipole(const char arrang,
                               const int lambda, const double r, const double R)
 {
+	ASSERT(lambda > -1)
+
 	struct legendre_params p =
 	{
 		.arrang = arrang,
@@ -568,8 +570,17 @@ double pes_legendre_multipole(const char arrang,
 		.R = R
 	};
 
+	int order = 64;
+
+	if (lambda%2 == 0)
+		order = (int) as_double(lambda + 1)/2.0 + 0.5;
+	else
+		order = (lambda + 1)/2;
+
+	if (order == 1) ++order;
+
 	const double result
-		= math_gauss_legendre(0.0, M_PI, 64, &p, pes_legendre_integrand);
+		= math_gauss_legendre(0.0, M_PI, order, &p, pes_legendre_integrand);
 
 	return as_double(2*lambda + 1)*result/2.0;
 }
