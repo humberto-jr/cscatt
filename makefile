@@ -585,6 +585,10 @@ gauss_legendre_timer: $(TOOLS_DIR)/gauss_legendre_timer.c $(MODULES_DIR)/globals
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
+legendre_poly: $(TOOLS_DIR)/legendre_poly.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
+	@echo
 
 #
 # Rules to build/install external libraries:
