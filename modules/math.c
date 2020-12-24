@@ -419,6 +419,7 @@ double math_qag(const double a,
 		= gsl_integration_workspace_alloc(workspace_size);
 
 	ASSERT(work != NULL)
+
 	double result = 0.0, error = 0.0;
 
 	const int info = gsl_integration_qag(&gsl_f, a, b, abs_error, 0.0,
@@ -493,6 +494,7 @@ double math_qags(const double a,
 		= gsl_integration_workspace_alloc(workspace_size);
 
 	ASSERT(work != NULL)
+
 	double result = 0.0, error = 0.0;
 
 	const int info = gsl_integration_qags(&gsl_f, a, b, abs_error, 0.0,

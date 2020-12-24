@@ -556,7 +556,7 @@ static double pes_legendre_integrand(const double theta, const void *params)
  quadrature rule with 64 Gauss points.
 
 ******************************************************************************/
-/*
+
 double pes_legendre_multipole(const char arrang,
                               const int lambda, const double r, const double R)
 {
@@ -570,20 +570,12 @@ double pes_legendre_multipole(const char arrang,
 		.R = R
 	};
 
-	int order = 64;
-
-	if (lambda%2 == 0)
-		order = (int) as_double(lambda + 1)/2.0 + 0.5;
-	else
-		order = (lambda + 1)/2;
-
-	if (order == 1) ++order;
-
 	const double result
-		= math_gauss_legendre(0.0, M_PI, order, &p, pes_legendre_integrand);
+		= math_gauss_legendre(0.0, M_PI, 64, &p, pes_legendre_integrand);
 
 	return as_double(2*lambda + 1)*result/2.0;
-}*/
+}
+
 /*
 double pes_legendre_multipole(const char arrang,
                               const int lambda, const double r, const double R)
@@ -619,18 +611,10 @@ double pes_legendre_multipole(const char arrang,
 	const double result = math_qags(0.0, theta_max, &p, pes_legendre_integrand);
 
 	return as_double(2*lambda + 1)*factor*result/2.0;
-}*/
+}
+*/
 
-/******************************************************************************
-
- Function pes_legendre_multipole(): return the inner integral (in theta) of the
- triatomic PES at a given (r, R) Jacobi coordinate, as shown in Eq. (22) of
- Ref. [1].
-
- NOTE: Integration over theta in [0, pi] performed by the QAG algorithm.
-
-******************************************************************************/
-
+/*
 double pes_legendre_multipole(const char arrang,
                               const int lambda, const double r, const double R)
 {
@@ -642,7 +626,7 @@ double pes_legendre_multipole(const char arrang,
 		.R = R
 	};
 
-	/* NOTE: assuming lambda/2 + 1 oscillations with 1000 points each. */
+//	NOTE: assuming lambda/2 + 1 oscillations with 1000 points each.
 	const int n_max = 1000*(round(lambda/2) + 1);
 
 	ASSERT(n_max > 0)
@@ -652,6 +636,7 @@ double pes_legendre_multipole(const char arrang,
 
 	return as_double(2*lambda + 1)*result/2.0;
 }
+*/
 
 /******************************************************************************
 
