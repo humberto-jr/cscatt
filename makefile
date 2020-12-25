@@ -590,6 +590,11 @@ legendre_poly: $(TOOLS_DIR)/legendre_poly.c $(MODULES_DIR)/globals.h $(MODULES_D
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
+mpi_tester: $(TOOLS_DIR)/mpi_tester.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out mpi_lib.o $(LDFLAGS)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
