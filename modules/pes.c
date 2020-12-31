@@ -635,8 +635,8 @@ double pes_legendre_multipole(const char arrang,
 		= math_simpson(0.0, M_PI, n_max, &p, false, pes_legendre_integrand);
 
 	return as_double(2*lambda + 1)*result/2.0;
-}
-*/
+}*/
+
 
 /******************************************************************************
 

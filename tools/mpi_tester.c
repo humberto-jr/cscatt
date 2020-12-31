@@ -5,12 +5,12 @@ int main(int argc, char *argv[])
 {
 	mpi_init(argc, argv);
 
-	srand(time(NULL));
-
 	const int last_rank = mpi_comm_size() - 1;
 
 	if (mpi_rank() == 0)
 	{
+		srand(time(NULL));
+
 		double tag = (double) rand()/RAND_MAX;
 
 		printf("# Rank 0 created  tag %f\n", tag);

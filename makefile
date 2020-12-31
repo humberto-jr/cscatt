@@ -595,6 +595,11 @@ mpi_tester: $(TOOLS_DIR)/mpi_tester.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mp
 	$(CC) $(CFLAGS) $< -o $@.out mpi_lib.o $(LDFLAGS)
 	@echo
 
+multipole_integrand: $(TOOLS_DIR)/multipole_integrand.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/pes.h $(PES_OBJECT) nist.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(FORT_LIB)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #

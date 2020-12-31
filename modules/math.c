@@ -676,6 +676,35 @@ double math_miser_mcarlo(const int n,
 	return result;
 }
 
+/******************************************************************************
+
+ Function math_bubble_sort():
+
+******************************************************************************/
+
+int *math_bubble_sort(const int n_max, const double x[])
+{
+	ASSERT(n_max > 0)
+	ASSERT(x != NULL)
+
+	int *index = allocate(n_max, sizeof(int), false);
+
+	for (int n = (n_max - 2); n > -1; --n)
+		for (int m = 0; m <= n; ++m)
+			if (x[m] > x[m + 1])
+			{
+				index[m] = m + 1;
+				index[m + 1] = m;
+			}
+			else
+			{
+				index[m] = m;
+				index[m + 1] = m + 1;
+			}
+
+	return index;
+}
+
 static const long double math_gauss_legendre_weight_2nd[] =
 {
 	1.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,

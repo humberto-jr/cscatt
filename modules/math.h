@@ -118,6 +118,8 @@
 	                         void *params,
 	                         double (*f)(double x[], size_t n, void *params));
 
+	int *math_bubble_sort(const int n_max, const double x[]);
+
 	double math_gauss_legendre(const double a,
 	                           const double b,
 	                           const int order,
