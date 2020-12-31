@@ -600,6 +600,11 @@ multipole_integrand: $(TOOLS_DIR)/multipole_integrand.c $(MODULES_DIR)/globals.h
 	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(FORT_LIB)
 	@echo
 
+simpson: $(TOOLS_DIR)/simpson.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out matrix.o file.o math.o $(LDFLAGS)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #

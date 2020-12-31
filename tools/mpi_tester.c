@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
 		double tag = (double) rand()/RAND_MAX;
 
-		printf("# Rank 0 created  tag %f\n", tag);
+		printf("# Rank 0 created tag %f\n", tag);
 
 		if (mpi_comm_size() > 1) mpi_send(1, 1, type_double, &tag);
 	}

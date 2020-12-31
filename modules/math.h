@@ -87,6 +87,12 @@
 	                    const bool use_omp,
 	                    double (*f)(const double x, const void *params));
 
+	double math_simpson_array(const double a,
+	                          const double b,
+	                          const int n_max,
+	                          const bool use_omp,
+	                          const double array[]);
+
 	double math_qag(const double a,
 	                const double b,
 	                void *params,

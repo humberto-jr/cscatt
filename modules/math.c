@@ -391,9 +391,52 @@ double math_simpson(const double a,
 	}
 
 	else
-	{
 		return math_simpson(a, b, n_max - 1, params, use_omp, f);
+}
+
+/******************************************************************************
+
+ Function math_simpson():
+
+******************************************************************************/
+
+double math_simpson_array(const double a,
+                          const double b,
+                          const int n_max,
+                          const bool use_omp,
+                          const double array[])
+{
+	const double grid_step = (b - a)/as_double(n_max);
+
+/*	
+ *	NOTE: unlike math_simpson(), in this case a = [0] and b = [n_max - 1], thus
+ * subdivision is made between elements [1] and [n_max - 2].
+ */
+
+	double sum = array[0] + array[n_max - 1];
+
+	if (n_max%3 == 0)
+	{
+		#pragma omp parallel for default(none) shared(array) reduction(+:sum) if(use_omp)
+		for (int n = 1; n < (n_max - 4); n += 3)
+			sum += 3.0*array[n] + 3.0*array[n + 1] + 2.0*array[n + 2];
+
+		sum += 3.0*array[n_max - 2];
+
+		return 3.0*grid_step*sum/8.0;
 	}
+
+	else if (n_max%2 == 0)
+	{
+		#pragma omp parallel for default(none) shared(array) reduction(+:sum) if(use_omp)
+		for (int n = 1; n < (n_max - 2); n += 2)
+			sum += 4.0*array[n] + 2.0*array[n + 1];
+
+		return grid_step*sum/3.0;
+	}
+
+	else
+		return math_simpson_array(a, b, n_max - 1, use_omp, array);
 }
 
 /******************************************************************************
