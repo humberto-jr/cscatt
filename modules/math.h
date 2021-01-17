@@ -61,10 +61,10 @@
 	                            const int l2,
 	                            const int lambda);
 
-	double math_gaunt_coeff(const int k,
-	                        const int j1,
-	                        const int j2,
-	                        const int lambda);
+	double math_gaunt(const int k,
+	                  const int j1,
+	                  const int j2,
+	                  const int lambda);
 
 	double *math_wigner_d(const double k_in,
 	                      const double m_in,

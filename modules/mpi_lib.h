@@ -8,6 +8,10 @@
 
 	void mpi_init(int argc, char *argv[]);
 
+	bool mpi_using_petsc();
+
+	bool mpi_using_slepc();
+
 	void mpi_end();
 
 	int mpi_rank();

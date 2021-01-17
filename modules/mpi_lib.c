@@ -29,8 +29,9 @@
 
 FILE *stream = NULL;
 
-static int rank = 0, size = 1, level = 0, chunk_size = 1, tasks = 1, extra_tasks = 0;
-static int *index_min = NULL, *index_max = NULL;
+static int rank = 0, size = 1, level = 0;
+
+static int chunk_size = 1, tasks = 1, extra_tasks = 0, last_rank_index = 0;
 
 /******************************************************************************
 
@@ -217,6 +218,38 @@ void mpi_init(int argc, char *argv[])
 
 /******************************************************************************
 
+ Function mpi_using_petsc(): return true if the macro USE_PETSC was used during
+ compilation, false otherwise.
+
+******************************************************************************/
+
+bool mpi_using_petsc()
+{
+	#if defined(USE_PETSC)
+		return true;
+	#else
+		return false;
+	#endif
+}
+
+/******************************************************************************
+
+ Function mpi_using_slepc(): return true if the macro USE_SLEPC was used during
+ compilation, false otherwise.
+
+******************************************************************************/
+
+bool mpi_using_slepc()
+{
+	#if defined(USE_SLEPC)
+		return true;
+	#else
+		return false;
+	#endif
+}
+
+/******************************************************************************
+
  Function mpi_end(): finalizes the use of MPI and no calls to MPI functions
  should be done after. It also finalizes PETSc and/or SLEPc libraries if
  USE_PETSC and/or USE_SLEPC macros are defined during compilation.
@@ -249,15 +282,12 @@ void mpi_end()
 	}
 	#endif
 
-	if (index_min != NULL) free(index_min);
-	if (index_max != NULL) free(index_max);
-
 	return;
 }
 
 /******************************************************************************
 
- Function mpi_rank(): returns the ID of the current process.
+ Function mpi_rank(): returns the ID of the current MPI process.
 
 ******************************************************************************/
 
@@ -268,7 +298,7 @@ int mpi_rank()
 
 /******************************************************************************
 
- Function mpi_comm_size(): returns the maximum number of processes in
+ Function mpi_comm_size(): returns the maximum number of MPI processes in
  communication.
 
 ******************************************************************************/
@@ -320,17 +350,8 @@ void mpi_set_tasks(const int max_task)
 
 	tasks = max_task;
 	chunk_size = max_task/size;
-
-	index_min = allocate(size, sizeof(int), false);
-	index_max = allocate(size, sizeof(int), false);
-
-	for (int cpu_rank = 0; cpu_rank < size; ++cpu_rank)
-	{
-		index_min[cpu_rank] = cpu_rank*chunk_size;
-		index_max[cpu_rank] = index_min[cpu_rank] + chunk_size - 1;
-	}
-
-	extra_tasks = (max_task - 1) - index_max[size - 1];
+	last_rank_index = (size - 1)*chunk_size + (chunk_size - 1);
+	extra_tasks = (max_task - 1) - last_rank_index;
 
 	ASSERT(extra_tasks >= 0)
 }
@@ -343,7 +364,7 @@ void mpi_set_tasks(const int max_task)
 
 int mpi_first_task()
 {
-	return index_min[rank];
+	return rank*chunk_size;
 }
 
 /******************************************************************************
@@ -354,7 +375,7 @@ int mpi_first_task()
 
 int mpi_last_task()
 {
-	return index_max[rank];
+	return rank*chunk_size + (chunk_size - 1);
 }
 
 /******************************************************************************
@@ -366,7 +387,7 @@ int mpi_last_task()
 
 int mpi_extra_task()
 {
-	const int index = (extra_tasks > 0? index_max[size - 1] + rank + 1 : 0);
+	const int index = (extra_tasks > 0? last_rank_index + rank + 1 : 0);
 
 	return (index < tasks? index : 0);
 }

@@ -23,8 +23,10 @@ static double abs_error = 1.0E-6;
 
 /******************************************************************************
 
- Function math_legendre_poly(): returns a Legendre polynomial at x in [-1, 1].
- Where, l is positive.
+ Function math_legendre_poly(): returns a Legendre polynomial of order l at x
+ in [-1, 1].
+
+ NOTE: l is non-negative.
 
 ******************************************************************************/
 
@@ -38,8 +40,10 @@ double math_legendre_poly(const int l, const double x)
 
 /******************************************************************************
 
- Function math_sphe_harmonics(): returns the spherical harmonics y for angular
- momentum l and projection m at (theta, phi).
+ Function math_sphe_harmonics(): returns a spherical harmonics, y, for angular
+ momentum l and projection m at x = (theta, phi).
+
+ NOTE: -l <= m <= +l.
 
 ******************************************************************************/
 
@@ -62,7 +66,7 @@ double math_sphe_harmonics(const int l, const int m,
 
 /******************************************************************************
 
- Function math_wigner_3j(): returns the Wigner 3j-symbol of coupling a and b to
+ Function math_wigner_3j(): returns a Wigner 3j-symbol of coupling a and b to
  result in c, where d, e and f are the projections of a, b, c, respectively.
 
 ******************************************************************************/
@@ -103,9 +107,9 @@ double math_wigner_9j(const int a, const int b, const int c,
 
 /******************************************************************************
 
- Function math_clebsch_gordan(): returns the Clebsch–Gordan coefficients that
- arise in the angular momentum coupling of j1 and j2 to result in j3. Where, m
- is the respective projection.
+ Function math_clebsch_gordan(): returns a Clebsch-Gordan coefficient for the
+ angular momentum coupling of j1 and j2 to result in j3. Where, the m-terms are
+ the respective projection.
 
 ******************************************************************************/
 
@@ -170,14 +174,14 @@ double math_percival_seaton(const int J,
 
 /******************************************************************************
 
- Function math_gaunt_coeff(): Eq. 3.15 of Tennyson's 1986 review.
+ Function math_gaunt(): Eq. 3.15 of Tennyson's 1986 review.
 
 ******************************************************************************/
 
-double math_gaunt_coeff(const int k,
-                        const int j1,
-                        const int j2,
-                        const int lambda)
+double math_gaunt(const int k,
+                  const int j1,
+                  const int j2,
+                  const int lambda)
 {
 	double result = pow(-1.0, k);
 
@@ -408,7 +412,7 @@ double math_simpson_array(const double a,
 {
 	const double grid_step = (b - a)/as_double(n_max);
 
-/*	
+/*
  *	NOTE: unlike math_simpson(), in this case a = [0] and b = [n_max - 1], thus
  * subdivision is made between elements [1] and [n_max - 2].
  */
@@ -524,8 +528,7 @@ double _math_qag(const math_qag_integrand *job)
 
 double math_qags(const double a,
                  const double b,
-                 void *params,
-                 double (*f)(double x, void *params))
+                 void *params, double (*f)(double x, void *params))
 {
 	gsl_function gsl_f =
 	{

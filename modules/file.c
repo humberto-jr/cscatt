@@ -149,10 +149,9 @@ char *file_find(FILE *input, const char pattern[])
 	char *line = allocate(MAX_LINE_LENGTH, sizeof(char), false);
 
 	rewind(input);
+
 	while (fgets(line, MAX_LINE_LENGTH, input) != NULL)
-	{
 		if (line[0] != '#' && strstr(line, pattern) != NULL) return line;
-	}
 
 	free(line);
 	return "\n";
