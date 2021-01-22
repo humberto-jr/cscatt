@@ -903,8 +903,8 @@ void mpi_vector_build(mpi_vector *v)
 
 ******************************************************************************/
 
-void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n,
-                             const int max_step, const double tol, const bool up)
+int mpi_matrix_sparse_eigen(mpi_matrix *m, const int n,
+                            const int max_step, const double tol, const bool up)
 {
 	ASSERT(m != NULL)
 	ASSERT(n > 0)
@@ -944,15 +944,17 @@ void mpi_matrix_sparse_eigen(mpi_matrix *m, const int n,
 		info = EPSSolve(m->solver);
 
 		CHECK_PETSC_ERROR("EPSSolve()", info, true)
-	}
-	#else
-	{
-		ASSERT(up == up)
-		ASSERT(tol == tol)
-		ASSERT(max_step == max_step)
-		PRINT_ERROR("%s\n", "both PETSc and SLEPc libraries are required")
+
+		int n_max = 0;
+		info = EPSGetConverged(m->solver, &n_max);
+
+		CHECK_PETSC_ERROR("EPSGetConverged()", info, true)
+
+		return n_max;
 	}
 	#endif
+
+	return 0;
 }
 
 /******************************************************************************
@@ -976,23 +978,9 @@ mpi_vector *mpi_matrix_eigenpair(const mpi_matrix *m,
 
 	#if defined(USE_PETSC) && defined(USE_SLEPC)
 	{
-		int n_max, info;
-
-		info = EPSGetConverged(m->solver, &n_max);
-
-		CHECK_PETSC_ERROR("EPSGetConverged()", info, true)
-
-		if (n >= n_max)
-		{
-			PRINT_ERROR("n = %d is out of the %d converged solutions\n", n, n_max)
-
-			*eigenval = 0.0;
-			return NULL;
-		}
-
 		mpi_vector *eigenvec = allocate(1, sizeof(struct mpi_vector), true);
 
-		info = MatCreateVecs(m->data, NULL, &eigenvec->data);
+		int info = MatCreateVecs(m->data, NULL, &eigenvec->data);
 
 		CHECK_PETSC_ERROR("MatCreateVecs()", info, true)
 
@@ -1009,10 +997,6 @@ mpi_vector *mpi_matrix_eigenpair(const mpi_matrix *m,
 		CHECK_PETSC_ERROR("EPSGetEigenpair()", info, true)
 
 		return eigenvec;
-	}
-	#else
-	{
-		PRINT_ERROR("%s\n", "both PETSc and SLEPc libraries are required")
 	}
 	#endif
 

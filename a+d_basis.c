@@ -236,13 +236,18 @@ int main(int argc, char *argv[])
 			= fgh_multich_matrix(max_state, n_counter, R_step, pot_energy, mass);
 
 		for (int n = 0; n < n_counter; ++n)
-		{
 			matrix_free(pot_energy[n].value);
-		}
 
 		free(pot_energy);
 
-		mpi_matrix_sparse_eigen(fgh, v_max + 1, max_step, tol, false);
+		const int info
+			= mpi_matrix_sparse_eigen(fgh, v_max + 1, max_step, tol, false);
+
+		if (info < (v_max + 1))
+		{
+			PRINT_ERROR("only %d/%d solutions converged for j = %d\n", info, v_max + 1, j)
+			exit(EXIT_FAILURE);
+		}
 
 /*
  *		Step 2: loop over the vibrational states v of the triatom, solutions of
@@ -253,12 +258,10 @@ int main(int argc, char *argv[])
 		{
 			double eigenval = 0.0;
 			mpi_vector *eigenvec = mpi_matrix_eigenpair(fgh, v, &eigenval);
-
 /*
  *			Step 3: loop over all partial waves l of the atom around the triatom
  *			given by the respective J and j.
  */
-
 			for (int J = J_min; J <= J_max; J += J_step)
 			{
 				for (int l = abs(J - j); l <= (J + j); ++l)
@@ -273,11 +276,16 @@ int main(int argc, char *argv[])
  */
 						FILE *output = NULL;
 
-						if (mpi_rank() == 0)
+						if (eigenval != 0.0)
 						{
+							/* NOTE: only one CPU shall have the v-th non-zero eigenvalue. */
+
 							printf(FORMAT, J, ch_counter[J], v, j, l, parity(j + l), n,
 							       eigenval, eigenval*219474.63137054, eigenval*27.211385);
+						}
 
+						if (mpi_rank() == 0)
+						{
 							output = basis_file(arrang, ch_counter[J], J, "wb", false);
 
 							file_write(&v, sizeof(int), 1, output);
@@ -297,6 +305,7 @@ int main(int argc, char *argv[])
 						const int start = n*n_counter;
 						const int end = start + n_counter;
 
+						/* NOTE: all pieces of the v-th eigenvector, per CPU, should collapse on the same file written by CPU 0. */
 						mpi_vector_write(eigenvec, start, end, output);
 
 						if (mpi_rank() == 0) file_close(&output);
