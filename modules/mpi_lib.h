@@ -32,15 +32,9 @@
 
 	bool mpi_check(const int from);
 
-	void mpi_send(const int to, const int n_max, const c_type c, void *data);
+	void mpi_send(const int to, const int n, const char type, void *data);
 
-	void mpi_receive(const int from, const int n_max, const c_type c, void *data);
-
-	void mpi_printf(const char line[]);
-
-	void mpi_set_stream(FILE *new_stream);
-
-	void mpi_fwrite(const int length, const c_type c, const void *array);
+	void mpi_receive(const int from, const int n, const char type, void *data);
 
 	mpi_matrix *mpi_matrix_alloc(const int max_row,
 	                             const int max_col, const int non_zeros[]);

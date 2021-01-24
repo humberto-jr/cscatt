@@ -4,9 +4,9 @@
  -----
 
  This module is a wrapper to MPI functions that encapsulates most of the actual
- calls of MPI routines. The wrapper is thread-safe and the OpenMP master thread
- is responsible for all operations. A macro USE_MPI is used to switch on/off
- the library usage. If off, all functions from this module becomes a set of
+ calls of MPI routines. The wrapper is thread-safe and only one OpenMP thread
+ is executed at the time. Macro USE_MPI is used during compilation to switch
+ on/off the MPI usage. If off, all functions from this module become a set of
  valid compilable dummy calls.
 
 ******************************************************************************/
@@ -27,17 +27,16 @@
 	#include "slepceps.h"
 #endif
 
-FILE *stream = NULL;
-
-static int rank = 0, size = 1, level = 0;
+static int this_rank = 0, comm_size = 1, thread_level = 0;
 
 static int chunk_size = 1, tasks = 1, extra_tasks = 0, last_rank_index = 0;
 
 /******************************************************************************
 
  Type mpi_matrix: defines a matrix object, often very large and sparse, whose
- non-zero elements are allocated among all MPI processes available. It needs
- the PETSc library by defining the USE_PETSC macro during compilation.
+ non-zero elements are stored among all MPI processes available. It needs the
+ PETSc and/or SLEPc libraries by defining the USE_PETSC and USE_SLEPC macros
+ during compilation.
 
 ******************************************************************************/
 
@@ -56,9 +55,10 @@ struct mpi_matrix
 
 /******************************************************************************
 
- Type mpi_vector: defines a vector object whose elements are allocated among
- all MPI processes available. It needs the PETSc library by defining the
- USE_PETSC macro during compilation.
+ Type mpi_vector: defines a vector object, often very large and sparse, whose
+ non-zero elements are stored among all MPI processes available. It needs the
+ PETSc and/or SLEPc libraries by defining the USE_PETSC and USE_SLEPC macros
+ during compilation.
 
 ******************************************************************************/
 
@@ -74,18 +74,18 @@ struct mpi_vector
 /******************************************************************************
 
  Macro CHECK_PETSC_ERROR(): checks the error code of PETSc calls and writes an
- error message in the C stderr with the name of the failed function, if the
- code corresponds to an error. When stop = true, the exection is terminated.
+ error message in the C stderr reporting the problem if the code corresponds to
+ an error. When stop = true, the execution is terminated.
 
 ******************************************************************************/
 
-#define CHECK_PETSC_ERROR(name, code, stop)                                  \
-{                                                                            \
-  if (code != 0)                                                             \
-  {                                                                          \
-    PRINT_ERROR("rank %d, %s failed with error code %d\n", rank, name, code) \
-    if (stop) exit(EXIT_FAILURE);                                            \
-  }                                                                          \
+#define CHECK_PETSC_ERROR(name, code, stop)                                       \
+{                                                                                 \
+  if (code != 0)                                                                  \
+  {                                                                               \
+    PRINT_ERROR("rank %d, %s failed with error code %d\n", this_rank, name, code) \
+    if (stop) exit(EXIT_FAILURE);                                                 \
+  }                                                                               \
 }
 
 /******************************************************************************
@@ -103,8 +103,8 @@ struct mpi_vector
 
 /******************************************************************************
 
- Macro ASSERT_COL_INDEX(): check if the q-th element is within the column bounds
- of a matrix pointed by a given pointer.
+ Macro ASSERT_COL_INDEX(): check if the q-th element is within the column
+ bounds of a matrix pointed by a given pointer.
 
 ******************************************************************************/
 
@@ -121,67 +121,17 @@ struct mpi_vector
 
 ******************************************************************************/
 
-#define ASSERT_RANK(n) \
-{                      \
-  ASSERT((n) > -1)     \
-  ASSERT((n) < size)   \
+#define ASSERT_RANK(n)    \
+{                         \
+  ASSERT((n) > -1)        \
+  ASSERT((n) < comm_size) \
 }
 
 /******************************************************************************
 
- Function mpi_type(): an auxiliary routine that returns the MPI datatype for a
- given C datatype (int, char, float and double).
-
- NOTE: only few types implemented and should be completed as needed.
-
-******************************************************************************/
-
-#if defined(USE_MPI)
-	static MPI_Datatype mpi_type(const c_type c)
-	{
-		switch (c)
-		{
-			case type_int:    return MPI_INT;
-			case type_char:   return MPI_CHAR;
-			case type_float:  return MPI_FLOAT;
-			case type_double: return MPI_DOUBLE;
-
-			default:
-				PRINT_ERROR("invalid C type %d\n", (int) c)
-				exit(EXIT_FAILURE);
-		}
-	}
-#endif
-
-/******************************************************************************
-
- Function mpi_sizeof(): an auxiliary routine that returns the output of sizeof
- for a given C type.
-
- NOTE: only few types implemented and should be completed as needed.
-
-******************************************************************************/
-
-static size_t mpi_sizeof(const c_type c)
-{
-	switch (c)
-	{
-		case type_int:    return sizeof(int);
-		case type_char:   return sizeof(char);
-		case type_float:  return sizeof(float);
-		case type_double: return sizeof(double);
-
-		default:
-			PRINT_ERROR("invalid C type %d\n", (int) c)
-			exit(EXIT_FAILURE);
-	}
-}
-
-/******************************************************************************
-
- Function mpi_init(): initializes the MPI library and should be invoked before
+ Function mpi_init(): initializes the MPI library and shall be invoked before
  any MPI call. It also initializes PETSc and/or SLEPc libraries if USE_PETSC
- and/or USE_SLEPC macros are defined during compilation.
+ and USE_SLEPC macros are defined during compilation.
 
 ******************************************************************************/
 
@@ -207,11 +157,11 @@ void mpi_init(int argc, char *argv[])
 	#if defined(USE_MPI)
 	{
 		#if !defined(USE_PETSC)
-			MPI_Init_thread(&argc, &argv, MPI_THREAD_SERIALIZED, &level);
+			MPI_Init_thread(&argc, &argv, MPI_THREAD_SERIALIZED, &thread_level);
 		#endif
 
-		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-		MPI_Comm_size(MPI_COMM_WORLD, &size);
+		MPI_Comm_rank(MPI_COMM_WORLD, &this_rank);
+		MPI_Comm_size(MPI_COMM_WORLD, &comm_size);
 	}
 	#endif
 }
@@ -250,9 +200,9 @@ bool mpi_using_slepc()
 
 /******************************************************************************
 
- Function mpi_end(): finalizes the use of MPI and no calls to MPI functions
- should be done after. It also finalizes PETSc and/or SLEPc libraries if
- USE_PETSC and/or USE_SLEPC macros are defined during compilation.
+ Function mpi_end(): finalizes the use of MPI and calls to MPI functions shall
+ not be done after. It also finalizes PETSc and/or SLEPc libraries if USE_PETSC
+ and USE_SLEPC macros are defined during compilation.
 
 ******************************************************************************/
 
@@ -281,19 +231,17 @@ void mpi_end()
 		CHECK_PETSC_ERROR("PetscFinalize()", info, false)
 	}
 	#endif
-
-	return;
 }
 
 /******************************************************************************
 
- Function mpi_rank(): returns the ID of the current MPI process.
+ Function mpi_rank(): returns the rank ID of the current MPI process.
 
 ******************************************************************************/
 
 int mpi_rank()
 {
-	return rank;
+	return this_rank;
 }
 
 /******************************************************************************
@@ -305,24 +253,24 @@ int mpi_rank()
 
 int mpi_comm_size()
 {
-	return size;
+	return comm_size;
 }
 
 /******************************************************************************
 
- Function mpi_thread_level(): returns the thread level used.
+ Function mpi_thread_level(): returns the level of thread support used.
 
 ******************************************************************************/
 
 int mpi_thread_level()
 {
-	return level;
+	return thread_level;
 }
 
 /******************************************************************************
 
- Function mpi_barrier(): blocks until all processes and all its threads in the
- communicator have reached this routine.
+ Function mpi_barrier(): blocks until all MPI processes in the communicator,
+ one thread at the time, have reached this routine.
 
 ******************************************************************************/
 
@@ -338,9 +286,10 @@ void mpi_barrier()
 
 /******************************************************************************
 
- Function mpi_set_tasks(): divides a number of tasks among all processes by
- setting a minimum and maximum task index later returned by mpi_first_task()
- and mpi_last_task().
+ Function mpi_set_tasks(): divides a given number of tasks among all MPI
+ processes by setting a minimum and maximum task index that are later returned
+ by mpi_first_task() and mpi_last_task(). Each process shall have a different
+ set of indices depending on its own rank.
 
 ******************************************************************************/
 
@@ -349,8 +298,8 @@ void mpi_set_tasks(const int max_task)
 	ASSERT(max_task > 0)
 
 	tasks = max_task;
-	chunk_size = max_task/size;
-	last_rank_index = (size - 1)*chunk_size + (chunk_size - 1);
+	chunk_size = max_task/comm_size;
+	last_rank_index = (comm_size - 1)*chunk_size + (chunk_size - 1);
 	extra_tasks = (max_task - 1) - last_rank_index;
 
 	ASSERT(extra_tasks >= 0)
@@ -358,44 +307,55 @@ void mpi_set_tasks(const int max_task)
 
 /******************************************************************************
 
- Function mpi_first_task(): returns the index of a first task for this process.
+ Function mpi_first_task(): returns the index of a first task for the process
+ that calls it.
+
+ NOTE: mpi_first_task() shall return 0 when called by the MPI process 0.
 
 ******************************************************************************/
 
 int mpi_first_task()
 {
-	return rank*chunk_size;
+	return this_rank*chunk_size;
 }
 
 /******************************************************************************
 
- Function mpi_first_task(): returns the index of a last task for this process.
+ Function mpi_first_task(): returns the index of a last task for the process
+ that calls it.
+
+ NOTE: mpi_first_task() shall return max_task from mpi_set_tasks() when called
+ by the last MPI process.
 
 ******************************************************************************/
 
 int mpi_last_task()
 {
-	return rank*chunk_size + (chunk_size - 1);
+	return this_rank*chunk_size + (chunk_size - 1);
 }
 
 /******************************************************************************
 
- Function mpi_first_task(): returns the index of an extra task for this process
- or zero if no extra tasks are scheduled.
+ Function mpi_extra_task(): returns the index of an extra task for the process
+ that calls it, if max_task from mpi_set_tasks() is not divisible by the
+ number of MPI processes. It returns 0 if there is no extra task.
+
+ NOTE: if extra tasks are available they are given to those lower-rank MPI
+ processes starting from 0.
 
 ******************************************************************************/
 
 int mpi_extra_task()
 {
-	const int index = (extra_tasks > 0? last_rank_index + rank + 1 : 0);
+	const int index = (extra_tasks > 0? last_rank_index + this_rank + 1 : 0);
 
 	return (index < tasks? index : 0);
 }
 
 /******************************************************************************
 
- Function mpi_check(): returns true if there is a message from a given source
- process and tag.
+ Function mpi_check(): returns true if there is a message from a given MPI
+ process.
 
 ******************************************************************************/
 
@@ -417,26 +377,46 @@ bool mpi_check(const int from)
 
 /******************************************************************************
 
- Function mpi_send(): sends n elements, up to n_max, from the current process
- to another.
+ Function mpi_send(): sends n elements from the current MPI process to another.
+ Where, type is one of: 'i' for int, 'c' for char, 'f' for float or 'd' for
+ double.
 
 ******************************************************************************/
 
-void mpi_send(const int to, const int n_max, const c_type c, void *data)
+void mpi_send(const int to, const int n, const char type, void *data)
 {
+	ASSERT(n > 0)
 	ASSERT_RANK(to)
-	ASSERT(n_max > 0)
 	ASSERT(data != NULL)
-	ASSERT(c != type_unknown)
+	ASSERT(type == type)
 
 	#if defined(USE_MPI)
 	{
 		#pragma omp critical
-		{
-			const MPI_Datatype type_name = mpi_type(c);
+		MPI_Send(&n, 1, MPI_INT, to, 666, MPI_COMM_WORLD);
 
-			MPI_Send(&n_max, 1, MPI_INT, to, 666, MPI_COMM_WORLD);
-			MPI_Send(data, n_max, type_name, to, 667, MPI_COMM_WORLD);
+		#pragma omp critical
+		switch (type)
+		{
+			case 'i':
+				MPI_Send(data, n, MPI_INT, to, 667, MPI_COMM_WORLD);
+				break;
+
+			case 'c':
+				MPI_Send(data, n, MPI_CHAR, to, 667, MPI_COMM_WORLD);
+				break;
+
+			case 'f':
+				MPI_Send(data, n, MPI_FLOAT, to, 667, MPI_COMM_WORLD);
+				break;
+
+			case 'd':
+				MPI_Send(data, n, MPI_DOUBLE, to, 667, MPI_COMM_WORLD);
+				break;
+
+			default:
+				PRINT_ERROR("invalid type %c\n", type)
+				exit(EXIT_FAILURE);
 		}
 	}
 	#endif
@@ -444,32 +424,53 @@ void mpi_send(const int to, const int n_max, const c_type c, void *data)
 
 /******************************************************************************
 
- Function mpi_receive(): receives n elements, up to n_max, from other process.
+ Function mpi_receive(): receives n elements sent by mpi_send() from another
+ MPI process. Where, type is one of: 'i' for int, 'c' for char, 'f' for float
+ or 'd' for double.
+
+ NOTE: n from the sender can be different from that in the receiver, n', which
+ receives only min(n, n').
 
 ******************************************************************************/
 
-void mpi_receive(const int from, const int n_max, const c_type c, void *data)
+void mpi_receive(const int from, const int n, const char type, void *data)
 {
+	ASSERT(n > 0)
 	ASSERT_RANK(from)
-	ASSERT(n_max > 0)
 	ASSERT(data != NULL)
-	ASSERT(c != type_unknown)
+	ASSERT(type == type)
 
 	#if defined(USE_MPI)
 	{
+		int m = 0;
+
 		#pragma omp critical
+		MPI_Recv(&m, 1, MPI_INT, from, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+		m = min(n, m);
+
+		#pragma omp critical
+		switch (type)
 		{
-			const MPI_Datatype type_name = mpi_type(c);
+			case 'i':
+				MPI_Recv(data, m, MPI_INT, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				break;
 
-			int m_max = 0;
+			case 'c':
+				MPI_Recv(data, m, MPI_CHAR, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				break;
 
-			MPI_Recv(&m_max, 1,
-			         MPI_INT, from, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			case 'f':
+				MPI_Recv(data, m, MPI_FLOAT, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				break;
 
-			m_max = min(n_max, m_max);
+			case 'd':
+				MPI_Recv(data, m, MPI_DOUBLE, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				break;
 
-			MPI_Recv(data, m_max,
-			         type_name, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			default:
+				PRINT_ERROR("invalid type %c\n", type)
+				exit(EXIT_FAILURE);
 		}
 	}
 	#endif
@@ -480,8 +481,11 @@ void mpi_receive(const int from, const int n_max, const c_type c, void *data)
  Function mpi_print(): prints a formatted message from a given process (master
  thread) in the C stdout of process 0 (master thread).
 
+ TODO: re-checking stopped here.
+
 ******************************************************************************/
 
+/*
 void mpi_printf(const char line[])
 {
 	ASSERT(line != NULL)
@@ -538,19 +542,7 @@ void mpi_printf(const char line[])
 
 	return;
 }
-
-/******************************************************************************
-
- Function mpi_set_stream(): to set a disk stream for readings and writings done
- by process 0 (master thread) on behalf of all other processes.
-
-******************************************************************************/
-
-void mpi_set_stream(FILE *new_stream)
-{
-	ASSERT(new_stream != NULL);
-	stream = new_stream;
-}
+*/
 
 /******************************************************************************
 
@@ -560,6 +552,7 @@ void mpi_set_stream(FILE *new_stream)
 
 ******************************************************************************/
 
+/*
 void mpi_fwrite(const int length, const c_type c, const void *array)
 {
 	ASSERT(length > 0)
@@ -626,6 +619,7 @@ void mpi_fwrite(const int length, const c_type c, const void *array)
 
 	return;
 }
+*/
 
 /******************************************************************************
 
@@ -906,8 +900,13 @@ void mpi_vector_build(mpi_vector *v)
 int mpi_matrix_sparse_eigen(mpi_matrix *m, const int n,
                             const int max_step, const double tol, const bool up)
 {
-	ASSERT(m != NULL)
 	ASSERT(n > 0)
+	ASSERT(m != NULL)
+	ASSERT(max_step > 0)
+
+	/* NOTE: to avoid 'unused parameter' warns during compilation of the dummy version. */
+	ASSERT(up == up)
+	ASSERT(tol == tol)
 
 	#if defined(USE_PETSC) && defined(USE_SLEPC)
 	{
@@ -1063,7 +1062,7 @@ void mpi_vector_write(const mpi_vector *v,
 			{
 				while (mpi_check(from))
 				{
-					mpi_receive(from, 1, type_double, &value);
+					mpi_receive(from, 1, 'd', &value);
 					fwrite(&value, sizeof(double), 1, stream);
 				}
 			}
@@ -1078,7 +1077,7 @@ void mpi_vector_write(const mpi_vector *v,
 
 				CHECK_PETSC_ERROR("VecGetValues()", info, true)
 
-				mpi_send(0, 1, type_double, &value);
+				mpi_send(0, 1, 'd', &value);
 			}
 		}
 	}

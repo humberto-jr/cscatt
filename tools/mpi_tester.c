@@ -15,17 +15,17 @@ int main(int argc, char *argv[])
 
 		printf("# Rank 0 created tag %f\n", tag);
 
-		if (mpi_comm_size() > 1) mpi_send(1, 1, type_double, &tag);
+		if (mpi_comm_size() > 1) mpi_send(1, 1, 'd', &tag);
 	}
 	else
 	{
 		double tag = 0.0;
 
-		mpi_receive(mpi_rank() - 1, 1, type_double, &tag);
+		mpi_receive(mpi_rank() - 1, 1, 'd', &tag);
 
 		printf("# Rank %d received tag %f from rank %d\n", mpi_rank(), tag, mpi_rank() - 1);
 
-		if (mpi_rank() < last_rank) mpi_send(mpi_rank() + 1, 1, type_double, &tag);
+		if (mpi_rank() < last_rank) mpi_send(mpi_rank() + 1, 1, 'd', &tag);
 	}
 
 	mpi_end();
