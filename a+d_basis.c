@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
 		const int info
 			= mpi_matrix_sparse_eigen(fgh, v_max + 1, max_step, tol, false);
 
-		if (info < (v_max + 1))
+		if (info < (v_max + 1) && mpi_rank() == 0)
 		{
 			PRINT_ERROR("only %d/%d solutions converged for j = %d\n", info, v_max + 1, j)
 			exit(EXIT_FAILURE);
@@ -305,7 +305,7 @@ int main(int argc, char *argv[])
 						const int start = n*n_counter;
 						const int end = start + n_counter;
 
-						/* NOTE: all pieces of the v-th eigenvector, per CPU, should collapse on the same file written by CPU 0. */
+						/* NOTE: all pieces of the v-th eigenvector, per CPU, should collapse into the same file written by CPU 0. */
 						mpi_vector_write(eigenvec, start, end, output);
 
 						if (mpi_rank() == 0) file_close(&output);

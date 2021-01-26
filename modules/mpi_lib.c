@@ -157,10 +157,16 @@ void mpi_init(int argc, char *argv[])
 	#if defined(USE_MPI)
 	{
 		#if !defined(USE_PETSC)
+		{
+			#pragma omp master
 			MPI_Init_thread(&argc, &argv, MPI_THREAD_SERIALIZED, &thread_level);
+		}
 		#endif
 
+		#pragma omp master
 		MPI_Comm_rank(MPI_COMM_WORLD, &this_rank);
+
+		#pragma omp master
 		MPI_Comm_size(MPI_COMM_WORLD, &comm_size);
 	}
 	#endif
@@ -208,7 +214,7 @@ bool mpi_using_slepc()
 
 void mpi_end()
 {
-	#if defined(USE_MPI)
+	#if defined(USE_MPI) && !defined(USE_PETSC)
 	{
 		#pragma omp master
 		{
@@ -354,12 +360,12 @@ int mpi_extra_task()
 
 /******************************************************************************
 
- Function mpi_check(): returns true if there is a message from a given MPI
+ Function mpi_inbox(): returns true if there is a message from a given MPI
  process.
 
 ******************************************************************************/
 
-bool mpi_check(const int from)
+bool mpi_inbox(const int from)
 {
 	ASSERT_RANK(from)
 
@@ -388,6 +394,8 @@ void mpi_send(const int to, const int n, const char type, void *data)
 	ASSERT(n > 0)
 	ASSERT_RANK(to)
 	ASSERT(data != NULL)
+
+	/* NOTE: to avoid 'unused parameter' warns during compilation of the dummy version. */
 	ASSERT(type == type)
 
 	#if defined(USE_MPI)
@@ -438,6 +446,8 @@ void mpi_receive(const int from, const int n, const char type, void *data)
 	ASSERT(n > 0)
 	ASSERT_RANK(from)
 	ASSERT(data != NULL)
+
+	/* NOTE: to avoid 'unused parameter' warns during compilation of the dummy version. */
 	ASSERT(type == type)
 
 	#if defined(USE_MPI)
@@ -733,8 +743,8 @@ void mpi_matrix_free(mpi_matrix *m)
 
 /******************************************************************************
 
- Function mpi_matrix_set(): stores all non-zero elements that will be used by
- mpi_matrix_build() to construct a sparse matrix among all MPI processes.
+ Function mpi_matrix_set(): stores each non-zero pq-element that will be used
+ by mpi_matrix_build() to construct a sparse matrix among all MPI processes.
 
  NOTE: it requires the PETSc library by defining the USE_PETSC macro during
  compilation. Otherwise, this is a dummy function.
@@ -747,6 +757,9 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 	ASSERT_ROW_INDEX(m, p)
 	ASSERT_COL_INDEX(m, q)
 
+	/* NOTE: to avoid 'unused parameter' warns during compilation of the dummy version. */
+	ASSERT(x == x)
+
 	#if defined(USE_PETSC)
 	{
 		if ((p >= m->first) && (p < m->last))
@@ -754,11 +767,6 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 			const int info = MatSetValue(m->data, p, q, x, INSERT_VALUES);
 			CHECK_PETSC_ERROR("MatSetValue()", info, true)
 		}
-	}
-	#else
-	{
-		ASSERT(x == x)
-		PRINT_ERROR("%s\n", "the PETSc library is required")
 	}
 	#endif
 }
@@ -1060,7 +1068,7 @@ void mpi_vector_write(const mpi_vector *v,
 
 			for (int from = 1; from < mpi_comm_size(); ++from)
 			{
-				while (mpi_check(from))
+				while (mpi_inbox(from))
 				{
 					mpi_receive(from, 1, 'd', &value);
 					fwrite(&value, sizeof(double), 1, stream);

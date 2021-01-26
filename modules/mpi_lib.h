@@ -30,7 +30,7 @@
 
 	int mpi_extra_task();
 
-	bool mpi_check(const int from);
+	bool mpi_inbox(const int from);
 
 	void mpi_send(const int to, const int n, const char type, void *data);
 

@@ -38,6 +38,10 @@
 	#include <gsl/gsl_monte_miser.h>
 	#include <gsl/gsl_monte_vegas.h>
 
+	/* interpolation */
+	#include <gsl/gsl_interp.h>
+	#include <gsl/gsl_spline.h>
+
 	/* numerical integration */
 	#include <gsl/gsl_integration.h>
 #endif
