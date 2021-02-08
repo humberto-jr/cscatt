@@ -77,33 +77,21 @@ ifeq ($(CC), mpiicc)
 endif
 
 #
-# IBM xlc compiler:
+# IBM xlc and mpixlc compilers:
 #
 
 ifeq ($(CC), xlc)
 	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
 endif
 
-#
-# IBM xlc_r compiler:
-#
-
 ifeq ($(CC), xlc_r)
 	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
 endif
-
-#
-# IBM mpixlc compiler:
-#
 
 ifeq ($(CC), mpixlc)
 	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
 	USE_MPI = yes
 endif
-
-#
-# IBM mpixlc_r compiler:
-#
 
 ifeq ($(CC), mpixlc_r)
 	override CFLAGS = -std=c99 -q64 -qstrict -qsmp=omp -qthreaded -O5 -I$(GSL_DIR)/include
@@ -115,7 +103,7 @@ endif
 #
 
 ifeq ($(CC), pgcc)
-	override CFLAGS = -mp -O3 -I$(GSL_DIR)/include
+	override CFLAGS = -Xc -mp -O3 -I$(GSL_DIR)/include
 endif
 
 #
