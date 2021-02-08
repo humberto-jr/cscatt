@@ -3,8 +3,16 @@
 
 	typedef struct spline spline;
 
+	struct spline_handle
+	{
+		spline *s;
+		double *x, *f;
+	};
+
+	typedef struct spline_handle spline_handle;
+
 	spline *spline_alloc(const int grid_size,
-	                     const double f[], const double x[], const char type);
+	                     const double x[], const double f[], const char type);
 
 	void spline_free(spline *s);
 

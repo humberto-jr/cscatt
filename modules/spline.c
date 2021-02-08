@@ -15,7 +15,8 @@
 struct spline
 {
 	int grid_size;
-	double *x, *f;
+	const double *x, *f;
+
 	gsl_interp *data;
 	gsl_interp_accel *state;
 };
@@ -26,14 +27,17 @@ struct spline
  for a given set of tabulated values of f and x. Where, type is one of: 'a' for
  Akima spline, 'c' for cubic spline or 's' for Steffen spline.
 
+ NOTE: internal pointers pointing to x and f are used, thus they should not be
+ freed while the spline is used.
+
 ******************************************************************************/
 
 spline *spline_alloc(const int grid_size,
-                     const double f[], const double x[], const char type)
+                     const double x[], const double f[], const char type)
 {
-	ASSERT(f != NULL)
 	ASSERT(x != NULL)
-	ASSERT(grid_size > 0)
+	ASSERT(f != NULL)
+	ASSERT(grid_size > 6)
 
 	spline *s = allocate(1, sizeof(struct spline), true);
 
@@ -62,15 +66,8 @@ spline *spline_alloc(const int grid_size,
 
 	ASSERT(s->state != NULL)
 
-	s->x = allocate(grid_size, sizeof(double), false);
-	s->f = allocate(grid_size, sizeof(double), false);
-
-	for (int n = 0; n < grid_size; ++n)
-	{
-		s->x[n] = x[n];
-		s->f[n] = f[n];
-	}
-
+	s->x = x;
+	s->f = f;
 	s->grid_size = grid_size;
 
 	const int info = gsl_interp_init(s->data, s->x, s->f, s->grid_size);
@@ -96,8 +93,6 @@ void spline_free(spline *s)
 
 	gsl_interp_accel_free(s->state);
 	gsl_interp_free(s->data);
-	free(s->f);
-	free(s->x);
 	free(s);
 }
 

@@ -1340,7 +1340,8 @@ matrix *matrix_read(FILE *input, const int max_row, const int max_col)
 	rewind(input);
 	char line[MAX_LINE_LENGTH] = "\n";
 
-	for (int p = 0; p < max_row; ++p)
+	int p = 0;
+	while (p < max_row)
 	{
 		if (fgets(line, sizeof(line), input) == NULL) break;
 
@@ -1353,6 +1354,8 @@ matrix *matrix_read(FILE *input, const int max_row, const int max_col)
 				if (token != NULL) DATA_OFFSET(m, p, q) = atof(token);
 				token = strtok(NULL, " \t");
 			}
+
+			++p;
 		}
 	}
 

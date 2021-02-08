@@ -610,6 +610,11 @@ simpson: $(TOOLS_DIR)/simpson.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o file.o math.o $(LDFLAGS)
 	@echo
 
+file_spline: $(TOOLS_DIR)/file_spline.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/spline.h $(MODULES_DIR)/file.h
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out matrix.o spline.o file.o $(LDFLAGS)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
