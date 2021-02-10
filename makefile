@@ -58,7 +58,7 @@ GSL_DIR = /usr/local
 # C compilers: GNU gcc is used as default option (no MPI). However, rules using
 # Intel icc, PGI pgcc and IBM xlc are triggered by setting the CC variable. The
 # same for their MPI wrappers. The use of OpenMP and GSL are always implied.
-# Example: make CC=pgcc. 
+# Example: make CC=pgcc.
 #
 
 CC = gcc
@@ -105,7 +105,9 @@ ifeq ($(CC), mpixlc_r)
 endif
 
 #
-# PGI pgcc compiler:
+# PGI pgcc compiler: the MPI wrapper mpicc (just as for GNU compilers) is used
+# to invoke MPI compilations with pgcc. The variable LDFLAGS is identical to
+# that used by either GNU gcc or Intel icc.
 #
 
 ifeq ($(CC), pgcc)

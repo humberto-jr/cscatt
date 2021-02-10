@@ -145,6 +145,7 @@ void file_init_stdout(const char filename[])
 char *file_find(FILE *input, const char pattern[])
 {
 	ASSERT(input != NULL)
+	ASSERT(pattern != NULL)
 
 	char *line = allocate(MAX_LINE_LENGTH, sizeof(char), false);
 
@@ -153,8 +154,9 @@ char *file_find(FILE *input, const char pattern[])
 	while (fgets(line, MAX_LINE_LENGTH, input) != NULL)
 		if (line[0] != '#' && strstr(line, pattern) != NULL) return line;
 
-	free(line);
-	return "\n";
+	line[0] = '\0';
+
+	return line;
 }
 
 /******************************************************************************
@@ -207,33 +209,39 @@ double file_keyword(FILE *input, const char key[],
 
 ******************************************************************************/
 
-char *file_string_keyword(FILE *input, const char key[], char default_value[])
+char *file_string_keyword(FILE *input, const char key[], char replacement[])
 {
-	char *line = file_find(input, key);
-	char *token = strtok(line, "=");
+	ASSERT(replacement != NULL)
+
+	char *line = file_find(input, key), *token = NULL;
+
+	if (line[0] != '\0') token = strtok(line, "=");
 
 	if (token != NULL)
 	{
+		token = trim(token);
+
 		if (strcmp(token, key) == 0)
 		{
 			token = strtok(NULL, "=");
 
-			if (token == NULL)
-			{
-				if (line != NULL) free(line);
-				return default_value;
-			}
-
-			char *value = allocate(strlen(token) + 1, sizeof(char), false);
-
-			strcpy(value, token);
-			if (line != NULL) free(line);
-
-			return value;
+			if (token != NULL)
+				token = trim(token);
+			else
+				token = replacement;
 		}
 	}
+	else
+	{
+		token = replacement;
+	}
 
-	return default_value;
+	char *value = allocate(strlen(token) + 1, sizeof(char), false);
+
+	strcpy(value, token);
+	free(line);
+
+	return value;
 }
 
 /******************************************************************************
