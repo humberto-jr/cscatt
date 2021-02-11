@@ -23,6 +23,18 @@
 	double file_keyword(FILE *input, const char key[], const double min,
 	                    const double max, const double default_value);
 
+	double file_real_keyword(FILE *input,
+	                         const char key[],
+	                         const double min,
+	                         const double max,
+	                         const double default_value);
+
+	int file_integer_keyword(FILE *input,
+	                         const char key[],
+	                         const int min,
+	                         const int max,
+	                         const int default_value);
+
 	char *file_string_keyword(FILE *input,
 	                          const char key[], char replacement[]);
 

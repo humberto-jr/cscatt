@@ -134,9 +134,9 @@ void file_init_stdout(const char filename[])
 
 /******************************************************************************
 
- Function file_find(): scans a given input file searching for the first
- occurrence of a given pattern. It shall return the whole line, if found, or
- an empty string otherwise.
+ Function file_find(): scan a given input file searching for the 1st occurrence
+ of a given pattern. It returns the whole line, if found, or an empty string
+ otherwise.
 
  NOTE: Lines starting by '#' are ignored.
 
@@ -200,10 +200,102 @@ double file_keyword(FILE *input, const char key[],
 
 /******************************************************************************
 
- Function file_keyword(): scans a given input file searching for the first
- occurrence of a keyword with format "[key] = [value]". If found, and if [min]
- <= [value] <= [max], it shall return [value]. Otherwise, it returns a default
- value.
+ Function file_real_keyword(): scan a given input file and search for the 1st
+ occurrence of a keyword with format "[key] = [value]". Where, [value] is an
+ real number, min < [value] < max. Return [value] if found or a default value
+ otherwise.
+
+ NOTE: Lines starting by '#' are ignored.
+
+******************************************************************************/
+
+double file_real_keyword(FILE *input, const char key[],
+                         const double min, const double max, const double default_value)
+{
+	ASSERT(max >= min)
+
+	char *line = file_find(input, key), *token = NULL;
+
+	if (line[0] != '\0') token = strtok(line, "=");
+
+	if (token != NULL)
+	{
+		token = trim(token);
+
+		if (strcmp(token, key) == 0)
+		{
+			token = strtok(NULL, "=");
+
+			if (token == NULL) return default_value;
+
+			const double value = atof(token);
+			free(line);
+
+			if (value < min)
+				return min;
+			else if (value > max)
+				return max;
+			else
+				return value;
+		}
+	}
+
+	free(line);
+	return default_value;
+}
+
+/******************************************************************************
+
+ Function file_integer_keyword(): scan a given input file and search for the
+ 1st occurrence of a keyword with format "[key] = [value]". Where, [value] is
+ an integer, min < [value] < max. Return [value] if found or a default value
+ otherwise.
+
+ NOTE: Lines starting by '#' are ignored.
+
+******************************************************************************/
+
+int file_integer_keyword(FILE *input, const char key[],
+                         const int min, const int max, const int default_value)
+{
+	ASSERT(max >= min)
+
+	char *line = file_find(input, key), *token = NULL;
+
+	if (line[0] != '\0') token = strtok(line, "=");
+
+	if (token != NULL)
+	{
+		token = trim(token);
+
+		if (strcmp(token, key) == 0)
+		{
+			token = strtok(NULL, "=");
+
+			if (token == NULL) return default_value;
+
+			const int value = atoi(token);
+			free(line);
+
+			if (value < min)
+				return min;
+			else if (value > max)
+				return max;
+			else
+				return value;
+		}
+	}
+
+	free(line);
+	return default_value;
+}
+
+/******************************************************************************
+
+ Function file_string_keyword(): scan a given input file and search for the 1st
+ occurrence of a keyword with format "[key] = [value]". Where, [value] is a
+ string with up to MAX_LINE_LENGTH characters. Return [value] if found or
+ the content stored in replacement otherwise.
 
  NOTE: Lines starting by '#' are ignored.
 
