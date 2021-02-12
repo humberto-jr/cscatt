@@ -147,7 +147,7 @@ char *file_find(FILE *input, const char pattern[])
 	ASSERT(input != NULL)
 	ASSERT(pattern != NULL)
 
-	char *line = allocate(MAX_LINE_LENGTH, sizeof(char), false);
+	char *line = allocate(MAX_LINE_LENGTH + 1, sizeof(char), false);
 
 	rewind(input);
 
@@ -200,17 +200,20 @@ double file_keyword(FILE *input, const char key[],
 
 /******************************************************************************
 
- Function file_real_keyword(): scan a given input file and search for the 1st
- occurrence of a keyword with format "[key] = [value]". Where, [value] is an
- real number, min < [value] < max. Return [value] if found or a default value
- otherwise.
+ Function file_read_dbl_keyword(): scan a given input file and search for the
+ 1st occurrence of a keyword in the format "[key] = [value]". Where, [value]
+ is a real number such that min < [value] < max. Return [value] if found or
+ a default value otherwise.
 
  NOTE: Lines starting by '#' are ignored.
 
 ******************************************************************************/
 
-double file_real_keyword(FILE *input, const char key[],
-                         const double min, const double max, const double default_value)
+double file_read_dbl_keyword(FILE *input,
+                             const char key[],
+                             const double min,
+                             const double max,
+                             const double default_value)
 {
 	ASSERT(max >= min)
 
@@ -226,9 +229,7 @@ double file_real_keyword(FILE *input, const char key[],
 		{
 			token = strtok(NULL, "=");
 
-			if (token == NULL) return default_value;
-
-			const double value = atof(token);
+			const double value = (token != NULL? atof(token) : default_value);
 			free(line);
 
 			if (value < min)
@@ -246,17 +247,17 @@ double file_real_keyword(FILE *input, const char key[],
 
 /******************************************************************************
 
- Function file_integer_keyword(): scan a given input file and search for the
- 1st occurrence of a keyword with format "[key] = [value]". Where, [value] is
- an integer, min < [value] < max. Return [value] if found or a default value
- otherwise.
+ Function file_read_int_keyword(): scan a given input file and search for the
+ 1st occurrence of a keyword in the format "[key] = [value]". Where, [value]
+ is an integer number such that min < [value] < max. Return [value] if found
+ or a default value otherwise.
 
  NOTE: Lines starting by '#' are ignored.
 
 ******************************************************************************/
 
-int file_integer_keyword(FILE *input, const char key[],
-                         const int min, const int max, const int default_value)
+int file_read_int_keyword(FILE *input, const char key[],
+                          const int min, const int max, const int default_value)
 {
 	ASSERT(max >= min)
 
@@ -272,9 +273,7 @@ int file_integer_keyword(FILE *input, const char key[],
 		{
 			token = strtok(NULL, "=");
 
-			if (token == NULL) return default_value;
-
-			const int value = atoi(token);
+			const int value = (token != NULL? atoi(token) : default_value);
 			free(line);
 
 			if (value < min)
@@ -292,16 +291,16 @@ int file_integer_keyword(FILE *input, const char key[],
 
 /******************************************************************************
 
- Function file_string_keyword(): scan a given input file and search for the 1st
- occurrence of a keyword with format "[key] = [value]". Where, [value] is a
- string with up to MAX_LINE_LENGTH characters. Return [value] if found or
- the content stored in replacement otherwise.
+ Function file_read_str_keyword(): scan a given input file and search for the
+ 1st occurrence of a keyword in the format "[key] = [value]". Where, [value]
+ is a string with up to MAX_LINE_LENGTH characters. Return [value] if found
+ or the content pointed by replacement.
 
  NOTE: Lines starting by '#' are ignored.
 
 ******************************************************************************/
 
-char *file_string_keyword(FILE *input, const char key[], char replacement[])
+char *file_read_str_keyword(FILE *input, const char key[], char replacement[])
 {
 	ASSERT(replacement != NULL)
 
