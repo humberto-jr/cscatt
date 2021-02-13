@@ -344,7 +344,7 @@ USE_MACRO = DUMMY_MACRO
 
 all: modules drivers
 modules: utils matrix nist johnson pes file math mpi_lib fgh spline
-drivers: d_basis pes_print b_print c_print m_print a+d_basis a+d_multipole a+d_cmatrix pec_print b_resize about
+drivers: d_fgh_basis pes_print b_print c_print m_print a+d_basis a+d_multipole a+d_cmatrix pec_print b_resize about
 
 #
 # Rules for modules:
@@ -412,7 +412,7 @@ spline: $(MODULES_DIR)/spline.c $(MODULES_DIR)/spline.h $(MODULES_DIR)/gsl_lib.h
 # Rules for drivers:
 #
 
-d_basis: d_basis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/fgh.h $(MODULES_DIR)/pes.h $(PES_OBJECT) nist.o mpi_lib.o
+d_fgh_basis: d_fgh_basis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/fgh.h $(MODULES_DIR)/pes.h $(PES_OBJECT) nist.o mpi_lib.o
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o math.o fgh.o pes.o nist.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo

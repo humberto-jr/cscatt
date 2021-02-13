@@ -33,59 +33,66 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J_min = (int) file_keyword(stdin, "J_min", 0.0, INF, 0.0);
+	const int J_min
+		= file_read_int_keyword(stdin, "J_min", 0, 10000, 0);
 
-	const int J_max = (int) file_keyword(stdin, "J_max", 0.0, INF, 0.0);
+	const int J_max
+		= file_read_int_keyword(stdin, "J_max", J_min, 10000, J_min);
 
-	const int J_step = (int) file_keyword(stdin, "J_step", 1.0, INF, 0.0);
+	const int J_step
+		= file_read_int_keyword(stdin, "J_step", 1, 10000, 1);
 
-	const int J_parity = (int) file_keyword(stdin, "parity", -1.0, 1.0, 0.0);
-
-	ASSERT(J_max >= J_min)
+	const int J_parity
+		= file_read_int_keyword(stdin, "J_parity", -1, 1, 0);
 
 /*
  *	Vibrational quantum numbers, v:
  */
 
-	const int v_min = (int) file_keyword(stdin, "v_min", 0.0, INF, 0.0);
+	const int v_min
+		= file_read_int_keyword(stdin, "v_min", 0, 10000, 0);
 
-	const int v_max = (int) file_keyword(stdin, "v_max", 0.0, INF, 0.0);
+	const int v_max
+		= file_read_int_keyword(stdin, "v_max", v_min, 10000, v_min);
 
-	const int v_step = (int) file_keyword(stdin, "v_step", 1.0, INF, 1.0);
-
-	ASSERT(v_max >= v_min)
+	const int v_step
+		= file_read_int_keyword(stdin, "v_step", 1, 10000, 1);
 
 /*
  *	Rotational quantum numbers, j:
  */
 
-	const int j_min = (int) file_keyword(stdin, "j_min", 0.0, INF, 0.0);
+	const int j_min
+		= file_read_int_keyword(stdin, "j_min", 0, 10000, 0);
 
-	const int j_max = (int) file_keyword(stdin, "j_max", 0.0, INF, 0.0);
+	const int j_max
+		= file_read_int_keyword(stdin, "j_max", j_min, 10000, j_min);
 
-	const int j_step = (int) file_keyword(stdin, "j_step", 1.0, INF, 1.0);
-
-	ASSERT(j_max >= j_min)
+	const int j_step
+		= file_read_int_keyword(stdin, "j_step", 1, 10000, 1);
 
 /*
  *	Vibrational grid:
  */
 
-	const int n_max = (int) file_keyword(stdin, "rovib_grid_size", 1.0, INF, 500.0);
+	const int n_max
+		= file_read_int_keyword(stdin, "rovib_grid_size", v_max + 1, 1000000, 1000);
 
-	const double r_min = file_keyword(stdin, "r_min", 0.0, INF, 0.5);
+	const double r_min
+		= file_read_dbl_keyword(stdin, "r_min", 0.0, INF, 0.5);
 
-	const double r_max = file_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
+	const double r_max =
+		file_read_dbl_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
 
-	const double r_step = (r_max - r_min)/as_double(n_max);
-
-	ASSERT(n_max >= v_max + 1)
+	const double r_step
+		= (r_max - r_min)/as_double(n_max);
 
 /*
  *	Arrangement (a = 1, b = 2, c = 3), atomic masses and PES:
  */
 
-	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
+	const char arrang
+		= 96 + file_read_int_keyword(stdin, "arrang", 1, 3, 1);
 
 	pes_init_mass(stdin, 'a');
 	pes_init_mass(stdin, 'b');
