@@ -54,6 +54,8 @@ void file_close(FILE **stream)
 
 bool file_exist(const char filename[])
 {
+	ASSERT(filename != NULL)
+
 	return (access(filename, F_OK) == 0);
 }
 

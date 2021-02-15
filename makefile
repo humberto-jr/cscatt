@@ -344,7 +344,7 @@ USE_MACRO = DUMMY_MACRO
 
 all: modules drivers
 modules: utils matrix nist johnson pes file math mpi_lib fgh spline
-drivers: d_fgh_basis pes_print b_print c_print m_print a+d_basis a+d_multipole a+d_cmatrix pec_print b_resize about
+drivers: d_fgh_basis pes_print basis_print c_print m_print a+d_basis a+d_multipole a+d_cmatrix pec_print b_resize about
 
 #
 # Rules for modules:
@@ -427,7 +427,7 @@ pes_print: pes_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-b_print: b_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h mpi_lib.o
+basis_print: basis_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h mpi_lib.o
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o fgh.o mpi_lib.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo

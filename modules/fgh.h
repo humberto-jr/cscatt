@@ -39,9 +39,9 @@
 
 	double *fgh_eigenvec(const matrix *fgh, const int v, const double grid_step);
 
-	int fgh_basis_count(const char arrang, const int J);
+	int fgh_basis_count(const char dir[], const char arrang, const int J);
 
-	FILE *fgh_basis_file(const char arrang, const int n,
+	FILE *fgh_basis_file(const char dir[], const char arrang, const int n,
 	                     const int J, const char mode[], const bool verbose);
 
 	void fgh_basis_write(const fgh_basis *b, FILE *output);

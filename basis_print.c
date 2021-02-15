@@ -16,19 +16,33 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J_min = (int) file_keyword(stdin, "J_min", 0.0, INF, 0.0);
+	const int J_min
+		= file_read_int_keyword(stdin, "J_min", 0, 10000, 0);
 
-	const int J_max = (int) file_keyword(stdin, "J_max", 0.0, INF, 0.0);
+	const int J_max
+		= file_read_int_keyword(stdin, "J_max", J_min, 10000, J_min);
 
-	const int J_step = (int) file_keyword(stdin, "J_step", 1.0, INF, 0.0);
-
-	ASSERT(J_max >= J_min)
+	const int J_step
+		= file_read_int_keyword(stdin, "J_step", 1, 10000, 1);
 
 /*
  *	Arrangement (a = 1, b = 2, c = 3):
  */
 
-	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
+	const char arrang
+		= 96 + file_read_int_keyword(stdin, "arrang", 1, 3, 1);
+
+/*
+ *	Directory to load all basis functions from:
+ */
+
+	char *dir = file_read_str_keyword(stdin, "basis_dir", ".");
+
+	if (!file_exist(dir) && dir[0] != '.')
+	{
+		PRINT_ERROR("%s does not exist\n", dir)
+		exit(EXIT_FAILURE);
+	}
 
 /*
  *	Print the basis functions for each J:
@@ -36,26 +50,25 @@ int main(int argc, char *argv[])
 
 	for (int J = J_min; J <= J_max; J += J_step)
 	{
-		const int max_ch = fgh_basis_count(arrang, J);
+		const int max_channel = fgh_basis_count(dir, arrang, J);
 
-		for (int ch = 0; ch < max_ch; ++ch)
+		for (int ch = 0; ch < max_channel; ++ch)
 		{
 			fgh_basis b;
 
-			FILE *input = fgh_basis_file(arrang, ch, J, "rb", true);
+			FILE *input = fgh_basis_file(dir, arrang, ch, J, "rb", true);
 
 			fgh_basis_read(&b, input);
 
-			fclose(input);
+			file_close(&input);
 
-			FILE *output = fgh_basis_file(arrang, ch, J, "w", true);
+			FILE *output = fgh_basis_file(dir, arrang, ch, J, "w", true);
 
 			ASSERT(output != NULL)
 
 			fprintf(output, "# v = %d\n", b.v);
 			fprintf(output, "# j = %d\n", b.j);
 			fprintf(output, "# l = %d\n", b.l);
-
 			fprintf(output, "# Component  = %d\n", b.n);
 			fprintf(output, "# Eigenvalue = % -8e\n", b.eigenval);
 			fprintf(output, "# File created at %s\n", time_stamp());
@@ -70,10 +83,11 @@ int main(int argc, char *argv[])
 				fprintf(output, "%06f\t % -8e\t\n", r, b.eigenvec[n]);
 			}
 
-			fclose(output);
+			file_close(&output);
 			free(b.eigenvec);
 		}
 	}
 
+	free(dir);
 	return EXIT_SUCCESS;
 }

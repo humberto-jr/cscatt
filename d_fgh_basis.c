@@ -81,8 +81,8 @@ int main(int argc, char *argv[])
 	const double r_min
 		= file_read_dbl_keyword(stdin, "r_min", 0.0, INF, 0.5);
 
-	const double r_max =
-		file_read_dbl_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
+	const double r_max
+		= file_read_dbl_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
 
 	const double r_step
 		= (r_max - r_min)/as_double(n_max);
@@ -125,6 +125,18 @@ int main(int argc, char *argv[])
 	}
 
 	ASSERT(mass != 0.0)
+
+/*
+ *	Directory to store all basis functions:
+ */
+
+	char *dir = file_read_str_keyword(stdin, "basis_dir", ".");
+
+	if (!file_exist(dir) && dir[0] != '.')
+	{
+		PRINT_ERROR("%s does not exist\n", dir)
+		exit(EXIT_FAILURE);
+	}
 
 /*
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
@@ -198,7 +210,7 @@ int main(int argc, char *argv[])
  *					channels.
  */
 
-					FILE *output = fgh_basis_file(arrang, ch_counter[J], J, "wb", false);
+					FILE *output = fgh_basis_file(dir, arrang, ch_counter[J], J, "wb", false);
 
 					fgh_basis_write(&basis, output);
 
@@ -215,6 +227,7 @@ int main(int argc, char *argv[])
 		free(eigenval);
 	}
 
+	free(dir);
 	free(ch_counter);
 
 	matrix_end_gpu();

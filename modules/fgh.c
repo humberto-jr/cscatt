@@ -15,7 +15,7 @@
 #include "fgh.h"
 
 #if !defined(FGH_BASIS_FORMAT)
-	#define FGH_BASIS_FORMAT "basis_arrang=%c_ch=%d_J=%d.%s"
+	#define FGH_BASIS_FORMAT "%s/basis_arrang=%c_ch=%d_J=%d.%s"
 #endif
 
 /******************************************************************************
@@ -386,17 +386,17 @@ void dvr_multich_fgh_norm(matrix *fgh, const int max_ch,
 
 ******************************************************************************/
 
-int fgh_basis_count(const char arrang, const int J)
+int fgh_basis_count(const char dir[], const char arrang, const int J)
 {
 	char filename[MAX_LINE_LENGTH];
 
 	int counter = 0;
-	sprintf(filename, FGH_BASIS_FORMAT, arrang, counter, J, "bin");
+	sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, counter, J, "bin");
 
 	while (file_exist(filename))
 	{
 		++counter;
-		sprintf(filename, FGH_BASIS_FORMAT, arrang, counter, J, "bin");
+		sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, counter, J, "bin");
 	}
 
 	return counter;
@@ -413,7 +413,7 @@ int fgh_basis_count(const char arrang, const int J)
 
 ******************************************************************************/
 
-FILE *fgh_basis_file(const char arrang, const int n,
+FILE *fgh_basis_file(const char dir[], const char arrang, const int n,
                      const int J, const char mode[], const bool verbose)
 {
 	char filename[MAX_LINE_LENGTH], ext[4];
@@ -423,7 +423,7 @@ FILE *fgh_basis_file(const char arrang, const int n,
 	else
 		sprintf(ext, "%s", "dat");
 
-	sprintf(filename, FGH_BASIS_FORMAT, arrang, n, J, ext);
+	sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, n, J, ext);
 
 	FILE *stream = fopen(filename, mode);
 
