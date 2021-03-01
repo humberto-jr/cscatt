@@ -614,6 +614,11 @@ file_spline: $(TOOLS_DIR)/file_spline.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o spline.o file.o $(LDFLAGS)
 	@echo
 
+wigner_d: $(TOOLS_DIR)/wigner_d.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
