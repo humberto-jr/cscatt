@@ -9,11 +9,11 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	const double k = atoi(argv[1]);
-	const double m = atoi(argv[2]);
-	const double j_max = atoi(argv[3]);
+	const double k = atof(argv[1]);
+	const double m = atof(argv[2]);
+	const double j_max = atof(argv[3]);
 	const double beta_min = atof(argv[4]);
-	const double beta_max = atoi(argv[5]);
+	const double beta_max = atof(argv[5]);
 	const int n_max = atoi(argv[6]);
 
 	const double beta_step = (beta_max - beta_min)/as_double(n_max);

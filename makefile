@@ -619,6 +619,11 @@ wigner_d: $(TOOLS_DIR)/wigner_d.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
+mm_csection: $(TOOLS_DIR)/mm_csection.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h file.o math.o
+	@echo "\033[31m$<\033[0m"
+	$(CC) $(CFLAGS) $< -o $@.out file.o math.o $(LDFLAGS)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
