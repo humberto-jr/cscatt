@@ -2,63 +2,130 @@
 #include "modules/file.h"
 #include "modules/globals.h"
 
+struct data
+{
+	int m, size;
+	double *coll_energy, *sigma;
+};
+
+FILE *open_input(const int v_in,
+                 const int j_in,
+                 const int m_in,
+                 const int v_out,
+                 const int j_out,
+                 const int m_out)
+{
+	char filename[MAX_LINE_LENGTH];
+
+	sprintf(filename, "int_csection_iv=%d_ij=%d_im=%d_fv=%d_fj=%d_fm=%d.dat", v_in, j_in, m_in, v_out, j_out, m_out);
+
+	return file_open(filename, "r");
+}
+
+void read_csection(FILE *input, struct data *d)
+{
+	ASSERT(input != NULL)
+	ASSERT(d->sigma == NULL);
+	ASSERT(d->coll_energy == NULL);
+
+	d->size = 0;
+	char line[MAX_LINE_LENGTH];
+
+	while (fgets(line, sizeof(line), input) != NULL)
+	{
+		char *token = strtok(line, " \t");
+
+		if (token == NULL)
+		{
+			PRINT_ERROR("invalid entry at line '%s' (1)\n", line)
+			exit(EXIT_FAILURE);
+		}
+
+		d->coll_energy = realloc(d->coll_energy, sizeof(double)*(d->size + 1));
+
+		d->coll_energy[d->size] = atof(token);
+
+		token = strtok(NULL, " \t");
+
+		if (token == NULL)
+		{
+			PRINT_ERROR("invalid entry at line '%s' (2)\n", line)
+			exit(EXIT_FAILURE);
+		}
+
+		d->sigma = realloc(d->sigma, sizeof(double)*(d->size + 1));
+
+		d->sigma[d->size] = atof(token);
+		d->size += 1;
+	}
+
+	ASSERT(d->size > 0)
+}
+
+struct data *read_all(const int v_in,
+                      const int j_in,
+                      const int v_out,
+                      const int j_out,
+                      const int m_out)
+{
+	struct data *d = allocate(2*j_in + 1, sizeof(struct data), true);
+
+	int counter = 0;
+	for (int m = -j_in; m <= j_in; ++m)
+	{
+		FILE *input = open_input(v_in, j_in, m, v_out, j_out, m_out);
+
+		read_csection(input, &d[counter]);
+		d[counter].m = m;
+
+		fclose(input);
+		++counter;
+	}
+
+	ASSERT((2*j_in + 1) == counter)
+
+	return d;
+}
+
 int main(int argc, char *argv[])
 {
-	if (argc != 5)
+	if (argc != 8)
 	{
-		PRINT_ERROR("%d arguments given. Usage: %s [j, in] [m, in] [beta] [filename]\n", argc - 1, argv[0])
+		PRINT_ERROR("%d arguments given. Usage: %s [v, in] [j, in] [m, in] [v, out] [j, out] [m, out] [beta]\n", argc - 1, argv[0])
 		return EXIT_FAILURE;
 	}
 
-	const double j_in = atoi(argv[1]);
-	const double m_in = atoi(argv[2]);
-	const double beta = atof(argv[3]);
-	const int j = as_int(j_in);
+	const int v_in = atoi(argv[1]);
+	const int j_in = atoi(argv[2]);
+	const int m_in = atoi(argv[3]);
+	const int v_out = atoi(argv[4]);
+	const int j_out = atoi(argv[5]);
+	const int m_out = atoi(argv[6]);
+	const double beta = atof(argv[7]);
 
-	FILE *input = file_open(argv[4], "r");
+	struct data *d = read_all(v_in, j_in, v_out, j_out, m_out);
 
-	char line[MAX_LINE_LENGTH];
-	while (fgets(line, sizeof(line), input) != NULL)
+	for (int n = 0; n < d[0].size; ++n)
 	{
-		if ((line[0] != '#') && (line[0] != '\n') && (line[0] != '\0'))
+		double sum = 0.0;
+		for (int counter = 0; counter < (2*j_in + 1); ++counter)
 		{
-			char *token = strtok(line, " \t");
+			double *wigner_d = NULL;
+			const int m = d[counter].m;
 
-			if (token == NULL)
-			{
-				PRINT_ERROR("invalid entry at line '%s' (1)\n", line)
-				exit(EXIT_FAILURE);
-			}
+			if (m_in > m)
+				wigner_d = math_wigner_d(as_double(m_in), as_double(m), as_double(j_in), beta);
+			else
+				wigner_d = math_wigner_d(as_double(m), as_double(m_in), as_double(j_in), beta);
 
-			const double coll_energy = atof(token);
+			sum += d[counter].sigma[n]*pow(wigner_d[j_in], 2);
 
-			token = strtok(NULL, " \t");
-
-			if (token == NULL)
-			{
-				PRINT_ERROR("invalid entry at line '%s' (2)\n", line)
-				exit(EXIT_FAILURE);
-			}
-
-			const double sigma = atof(token);
-
-			double sum = 0.0;
-			for (int m = 0; m <= j; ++m)
-			{
-				double *d = math_wigner_d(m_in, as_double(m), j_in, beta);
-
-				if (m == 0)
-					sum += sigma*pow(d[j], 2);
-				else
-					sum += sigma*pow(d[j], 2)*2.0;
-
-				free(d);
-			}
-
-			printf("% -8e\t % -8e\t % -8e\n", coll_energy*(1.160451812E4), sigma, sum);
+			free(wigner_d);
 		}
+
+		printf("% -8e\t % -8e\n", d[0].coll_energy[n]*(1.160451812E4), sum);
 	}
 
-	fclose(input);
+	free(d);
 	return EXIT_SUCCESS;
 }
