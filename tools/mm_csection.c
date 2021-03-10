@@ -18,6 +18,7 @@ FILE *open_input(const int v_in,
 	char filename[MAX_LINE_LENGTH];
 
 	sprintf(filename, "int_csection_iv=%d_ij=%d_im=%d_fv=%d_fj=%d_fm=%d.dat", v_in, j_in, m_in, v_out, j_out, m_out);
+	printf("# Using %s\n", filename);
 
 	return file_open(filename, "r");
 }
@@ -105,25 +106,30 @@ int main(int argc, char *argv[])
 
 	struct data *d = read_all(v_in, j_in, v_out, j_out, m_out);
 
+	const double a = (double) abs(m_in);
+
 	for (int n = 0; n < d[0].size; ++n)
 	{
+		printf("% -8e", d[0].coll_energy[n]*1.160451812E4);
+
 		double sum = 0.0;
 		for (int counter = 0; counter < (2*j_in + 1); ++counter)
 		{
 			double *wigner_d = NULL;
-			const int m = d[counter].m;
+			const double b = (double) abs(d[counter].m);
 
-			if (m_in > m)
-				wigner_d = math_wigner_d(as_double(m_in), as_double(m), as_double(j_in), beta);
+			if (a > b)
+				wigner_d = math_wigner_d(a, b, as_double(j_in), beta);
 			else
-				wigner_d = math_wigner_d(as_double(m), as_double(m_in), as_double(j_in), beta);
+				wigner_d = math_wigner_d(b, a, as_double(j_in), beta);
 
 			sum += d[counter].sigma[n]*pow(wigner_d[j_in], 2);
 
 			free(wigner_d);
+			printf("\t % -8e", d[counter].sigma[n]);
 		}
 
-		printf("% -8e\t % -8e\n", d[0].coll_energy[n]*(1.160451812E4), sum);
+		printf("\t % -8e\n", sum);
 	}
 
 	free(d);
