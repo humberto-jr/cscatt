@@ -2,16 +2,13 @@
 #include "modules/file.h"
 #include "modules/globals.h"
 
-/******************************************************************************
-******************************************************************************/
-
 int main(int argc, char *argv[])
 {
 	ASSERT(argc > 1)
 
 	file_init_stdin(argv[1]);
 
-	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
+	const char arrang = 96 + read_int_keyword(stdin, "arrang", 1, 3, 1);
 
 	int n = 0;
 	FILE *input = NULL;
@@ -43,9 +40,8 @@ int main(int argc, char *argv[])
 		}
 
 		pes_multipole_free(&m);
-		fclose(output);
-		fclose(input);
-		input = NULL;
+		file_close(&output);
+		file_close(&input);
 		++n;
 	}
 

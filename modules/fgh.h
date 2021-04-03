@@ -37,6 +37,12 @@
 	                                     const tensor pot_energy[],
 	                                     const double mass);
 
+	double fgh_interpolation(const int grid_size,
+	                         const double r_min,
+	                         const double r_max,
+	                         const double r_new,
+	                         const double eigenvec[]);
+
 	double *fgh_eigenvec(const matrix *fgh, const int v, const double grid_step);
 
 	int fgh_basis_count(const char dir[], const char arrang, const int J);

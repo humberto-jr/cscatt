@@ -126,6 +126,8 @@
 
 	int *math_bubble_sort(const int n_max, const double x[]);
 
+	double math_factorial(const int n);
+
 	double math_gauss_legendre(const double a,
 	                           const double b,
 	                           const int order,
@@ -133,6 +135,28 @@
 	                           double (*f)(const double x, const void *params));
 
 	void math_about(FILE *output);
+
+	/******************************************************************************
+
+	 Function math_sinc(): returns sin(x)/x for a given x.
+
+	******************************************************************************/
+
+	inline static double math_sinc(const double x)
+	{
+		return sin(x)/x;
+	}
+
+	/******************************************************************************
+
+	 Function math_sigmoid(): return the sigmoid function at x.
+
+	******************************************************************************/
+
+	inline static double math_sigmoid(const double x)
+	{
+		return 1.0/(1.0 + exp(-x));
+	}
 
 	/******************************************************************************
 

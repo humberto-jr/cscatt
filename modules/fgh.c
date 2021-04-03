@@ -12,6 +12,7 @@
 #include "mpi_lib.h"
 #include "matrix.h"
 #include "file.h"
+#include "math.h"
 #include "fgh.h"
 
 #if !defined(FGH_BASIS_FORMAT)
@@ -226,36 +227,34 @@ matrix *dvr_multich_fgh_comp(matrix *fgh,
 
 /******************************************************************************
 
- Function dvr_fgh_wavef(): interpolate the eigenvector a of the Hamiltonian
- built by dvr_fgh(), using Eq. (4.1) of Ref. [3], and return its amplitude
- value at a given new r.
+ Function fgh_interpolation(): interpolate the eigenvector of the Hamiltonian
+ built by fgh_dense_single_channel(), using Eq. (4.1) of Ref. [3], and return
+ its amplitude value at a given new r.
 
 ******************************************************************************/
-/*
-double dvr_fgh_wavef(const matrix *fgh, const int a,
-                     const double r_min, const double r_max, const double r_new)
+
+double fgh_interpolation(const int grid_size,
+                         const double r_min,
+                         const double r_max,
+                         const double r_new,
+                         const double eigenvec[])
 {
-	const int n_max = matrix_row(fgh);
+	ASSERT(grid_size > 0)
+	ASSERT(eigenvec != NULL)
 
-	ASSERT(a > -1)
-	ASSERT(a < n_max)
-
-	const double r_step = (r_max - r_min)/as_double(n_max);
+	const double r_step = (r_max - r_min)/as_double(grid_size);
 
 	double result = 0.0;
-
-	for (int n = 0; n < n_max; ++n)
+	for (int n = 0; n < grid_size; ++n)
 	{
-		const double wavef_a = matrix_get(fgh, n, a);
-
 		const double r_old = r_min + as_double(n)*r_step;
 		const double param = M_PI*(r_new - r_old)/r_step;
 
-		result += (fabs(param) > 1.0E-7? wavef_a*sinc(param) : wavef_a);
+		result += (fabs(param) > 1.0E-7? eigenvec[n]*math_sinc(param) : eigenvec[n]);
 	}
 
 	return result;
-}*/
+}
 
 /******************************************************************************
 

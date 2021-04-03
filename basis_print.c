@@ -3,9 +3,6 @@
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-/******************************************************************************
-******************************************************************************/
-
 int main(int argc, char *argv[])
 {
 	ASSERT(argc > 1)
@@ -17,26 +14,26 @@ int main(int argc, char *argv[])
  */
 
 	const int J_min
-		= file_read_int_keyword(stdin, "J_min", 0, 10000, 0);
+		= read_int_keyword(stdin, "J_min", 0, 10000, 0);
 
 	const int J_max
-		= file_read_int_keyword(stdin, "J_max", J_min, 10000, J_min);
+		= read_int_keyword(stdin, "J_max", J_min, 10000, J_min);
 
 	const int J_step
-		= file_read_int_keyword(stdin, "J_step", 1, 10000, 1);
+		= read_int_keyword(stdin, "J_step", 1, 10000, 1);
 
 /*
  *	Arrangement (a = 1, b = 2, c = 3):
  */
 
 	const char arrang
-		= 96 + file_read_int_keyword(stdin, "arrang", 1, 3, 1);
+		= 96 + read_int_keyword(stdin, "arrang", 1, 3, 1);
 
 /*
  *	Directory to load all basis functions from:
  */
 
-	char *dir = file_read_str_keyword(stdin, "basis_dir", ".");
+	char *dir = read_str_keyword(stdin, "basis_dir", ".");
 
 	if (!file_exist(dir) && dir[0] != '.')
 	{
@@ -62,7 +59,7 @@ int main(int argc, char *argv[])
 
 			file_close(&input);
 
-			FILE *output = fgh_basis_file(dir, arrang, ch, J, "w", true);
+			FILE *output = fgh_basis_file(".", arrang, ch, J, "w", true);
 
 			ASSERT(output != NULL)
 
