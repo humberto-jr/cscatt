@@ -622,7 +622,7 @@ wigner_d: $(TOOLS_DIR)/wigner_d.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h
 mm_csection: $(TOOLS_DIR)/mm_csection.c $(TOOLS_DIR)/mm_dcsection.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h file.o math.o
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) $< -o $@.out file.o math.o $(LDFLAGS)
-	$(CC) $(CFLAGS) $(TOOLS_DIR)/mm_dcsection.c -o $@.out file.o math.o $(LDFLAGS)
+	$(CC) $(CFLAGS) $(TOOLS_DIR)/mm_dcsection.c -o mm_dcsection.out file.o math.o $(LDFLAGS)
 	@echo
 
 #
