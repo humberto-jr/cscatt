@@ -5,7 +5,7 @@
 struct data
 {
 	int m, size;
-	double *coll_energy, *sigma;
+	double *theta, *sigma;
 };
 
 FILE *open_input(const int v_in,
@@ -17,17 +17,17 @@ FILE *open_input(const int v_in,
 {
 	char filename[MAX_LINE_LENGTH];
 
-	sprintf(filename, "int_csection_iv=%d_ij=%d_im=%d_fv=%d_fj=%d_fm=%d_J=%d.dat", v_in, j_in, m_in, v_out, j_out, m_out, J);
+	sprintf(filename, "dif_csection_iv=%d_ij=%d_im=%d_fv=%d_fj=%d_fm=%d_J=%d.dat", v_in, j_in, m_in, v_out, j_out, m_out, J);
 	printf("# Using %s\n", filename);
 
 	return file_open(filename, "r");
 }
 
-void read_csection(FILE *input, struct data *d)
+void read_csection(FILE *input, const double coll_energy, struct data *d)
 {
 	ASSERT(input != NULL)
 	ASSERT(d->sigma == NULL);
-	ASSERT(d->coll_energy == NULL);
+	ASSERT(d->theta == NULL);
 
 	d->size = 0;
 	char line[MAX_LINE_LENGTH];
@@ -42,9 +42,7 @@ void read_csection(FILE *input, struct data *d)
 			exit(EXIT_FAILURE);
 		}
 
-		d->coll_energy = realloc(d->coll_energy, sizeof(double)*(d->size + 1));
-
-		d->coll_energy[d->size] = atof(token);
+		if (atof(token) != coll_energy) continue;
 
 		token = strtok(NULL, " \t");
 
@@ -54,124 +52,100 @@ void read_csection(FILE *input, struct data *d)
 			exit(EXIT_FAILURE);
 		}
 
+		d->theta = realloc(d->theta, sizeof(double)*(d->size + 1));
+
+		d->theta[d->size] = atof(token);
+
+		token = strtok(NULL, " \t");
+
+		if (token == NULL)
+		{
+			PRINT_ERROR("invalid entry at line '%s' (3)\n", line)
+			exit(EXIT_FAILURE);
+		}
+
 		d->sigma = realloc(d->sigma, sizeof(double)*(d->size + 1));
 
 		d->sigma[d->size] = atof(token);
+
 		d->size += 1;
 	}
 
-	ASSERT(d->size > 0)
+	if (d->size == 0)
+	{
+		PRINT_ERROR("no data read for E = %f\n", coll_energy)
+		exit(EXIT_FAILURE);
+	}
 }
 
 void sum_csection(struct data *a, const struct data *b)
 {
-	ASSERT(a->size == b->size)
 	ASSERT(a->sigma != NULL)
 	ASSERT(b->sigma != NULL)
-	ASSERT(a->coll_energy != NULL)
-	ASSERT(b->coll_energy != NULL)
+	ASSERT(a->theta != NULL)
+	ASSERT(b->theta != NULL)
+	ASSERT(a->size == b->size)
 
 	for (int n = 0; n < a->size; ++n)
 	{
 		a->sigma[n] += b->sigma[n];
-		ASSERT(a->coll_energy[n] == b->coll_energy[n])
+		ASSERT(a->theta[n] == b->theta[n])
 	}
 }
-/*
-struct data *read_all(const int v_in,
-                      const int j_in,
-                      const int v_out,
-                      const int j_out,
-                      const int m_out,
-                      const int J_max)
-{
-	struct data *d = allocate(2*j_in + 1, sizeof(struct data), true);
-
-	for (int J = 0; J <= J_max; ++J)
-	{
-		int counter = 0;
-		for (int m = -j_in; m <= j_in; ++m)
-		{
-			FILE *input = open_input(v_in, j_in, m, v_out, j_out, m_out, J);
-
-			struct data temp = {.coll_energy = NULL, .sigma = NULL};
-
-			read_csection(input, &temp);
-
-			if (J == 0)
-			{
-				d[counter].size = temp.size;
-				d[counter].sigma = allocate(temp.size, sizeof(double), true);
-				d[counter].coll_energy = allocate(temp.size, sizeof(double), true);
-
-				for (int n = 0; n < temp.size; ++n)
-					d[counter].coll_energy[n] = temp.coll_energy[n];
-			}
-
-			sum_csection(&d[counter], &temp);
-			d[counter].m = m;
-
-			free(temp.coll_energy);
-			free(temp.sigma);
-
-			fclose(input);
-			++counter;
-		}
-
-		ASSERT((2*j_in + 1) == counter)
-	}
-
-	return d;
-}*/
 
 struct data *read_all(const int v_in,
                       const int j_in,
                       const int v_out,
                       const int j_out,
                       const int m_out,
-                      const int J_max)
+                      const int J_max,
+											const double coll_energy)
 {
 	struct data *d = allocate(2*j_in + 1, sizeof(struct data), true);
 
 	int counter = 0;
 	for (int m = -j_in; m <= j_in; ++m)
 	{
+		/* NOTE: each count is for one m-value summed over all J-values. */
+
 		d[counter].m = m;
 
+		/* J = 0 only */
 		FILE *input = open_input(v_in, j_in, m, v_out, j_out, m_out, 0);
 
-		struct data temp = {.coll_energy = NULL, .sigma = NULL};
+		struct data temp = {.theta = NULL, .sigma = NULL};
 
-		read_csection(input, &temp);
+		read_csection(input, coll_energy, &temp);
 
 		fclose(input);
 
 		d[counter].size = temp.size;
 		d[counter].sigma = allocate(temp.size, sizeof(double), true);
-		d[counter].coll_energy = allocate(temp.size, sizeof(double), true);
+		d[counter].theta = allocate(temp.size, sizeof(double), true);
 
 		for (int n = 0; n < temp.size; ++n)
-			d[counter].coll_energy[n] = temp.coll_energy[n];
+			d[counter].theta[n] = temp.theta[n];
 
 		sum_csection(&d[counter], &temp);
 
-		free(temp.coll_energy);
+		free(temp.theta);
 		free(temp.sigma);
 
+		/* J > 0 */
 		for (int J = 1; J <= J_max; ++J)
 		{
 			temp.sigma = NULL;
-			temp.coll_energy = NULL;
+			temp.theta = NULL;
 
 			input = open_input(v_in, j_in, m, v_out, j_out, m_out, J);
 
-			read_csection(input, &temp);
+			read_csection(input, coll_energy, &temp);
 
 			fclose(input);
 
 			sum_csection(&d[counter], &temp);
 
-			free(temp.coll_energy);
+			free(temp.theta);
 			free(temp.sigma);
 		}
 
@@ -185,9 +159,9 @@ struct data *read_all(const int v_in,
 
 int main(int argc, char *argv[])
 {
-	if (argc != 9)
+	if (argc != 10)
 	{
-		PRINT_ERROR("%d arguments given. Usage: %s [v, in] [j, in] [m, exp] [v, out] [j, out] [m, out] [J, max] [beta]\n", argc - 1, argv[0])
+		PRINT_ERROR("%d arguments given. Usage: %s [v, in] [j, in] [m, exp] [v, out] [j, out] [m, out] [J, max] [coll. energy, eV] [beta]\n", argc - 1, argv[0])
 		return EXIT_FAILURE;
 	}
 
@@ -198,15 +172,16 @@ int main(int argc, char *argv[])
 	const int j_out = atoi(argv[5]);
 	const int m_out = atoi(argv[6]);
 	const int J_max = atoi(argv[7]);
-	const double beta = atof(argv[8]);
+	const double coll_energy = atof(argv[8]);
+	const double beta = atof(argv[9]);
 
-	struct data *d = read_all(v_in, j_in, v_out, j_out, m_out, J_max);
+	struct data *d = read_all(v_in, j_in, v_out, j_out, m_out, J_max, coll_energy);
 
 	const double a = (double) abs(m_exp);
 
 	for (int n = 0; n < d[0].size; ++n)
 	{
-		printf("% -8e", d[0].coll_energy[n]*1.160451812E4);
+		printf("% -8e", d[0].theta[n]);
 
 		double sum = 0.0;
 		for (int counter = 0; counter < (2*j_in + 1); ++counter)
