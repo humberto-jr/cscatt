@@ -56,14 +56,14 @@ GSL_DIR = /usr/local
 
 #
 # C compilers: GNU gcc is used as default option (no MPI). However, rules using
-# Intel icc, PGI pgcc and IBM xlc are triggered by setting the CC variable. The
-# same for their MPI wrappers. The use of OpenMP and GSL are always implied.
-# Example: make CC=pgcc.
+# Intel icc, PGI pgcc and IBM xlc etc are triggered by setting the CC variable.
+# The same for their MPI wrappers. The use of OpenMP and GSL are always
+# implied. Example: make CC=pgcc.
 #
 
 CC = gcc
-CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSL_DIR)/include
 LDFLAGS = -L$(GSL_DIR)/lib -lgsl -lgslcblas -lm
+CFLAGS = -W -Wall -std=c99 -pedantic -fopenmp -O3 -I$(GSL_DIR)/include
 
 #
 # MPI wrappers: if the CC variable is defined as a MPI wrapper for a given
@@ -619,9 +619,10 @@ wigner_d: $(TOOLS_DIR)/wigner_d.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
-mm_csection: $(TOOLS_DIR)/mm_csection.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h file.o math.o
+mm_csection: $(TOOLS_DIR)/mm_csection.c $(TOOLS_DIR)/mm_dcsection.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h file.o math.o
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) $< -o $@.out file.o math.o $(LDFLAGS)
+	$(CC) $(CFLAGS) $(TOOLS_DIR)/mm_dcsection.c -o $@.out file.o math.o $(LDFLAGS)
 	@echo
 
 #
