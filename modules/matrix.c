@@ -424,11 +424,11 @@ void matrix_set_all(matrix *m, const double x, const bool use_omp)
 
 /******************************************************************************
 
- Function matrix_diag_set(): set x to the p-th diagonal element of matrix m.
+ Function matrix_set_diag(): set x to the p-th diagonal element of matrix m.
 
 ******************************************************************************/
 
-void matrix_diag_set(matrix *m, const int p, const double x)
+void matrix_set_diag(matrix *m, const int p, const double x)
 {
 	ASSERT_ROW_INDEX(m, p)
 
@@ -463,6 +463,69 @@ void matrix_symm_set(matrix *m, const int p, const int q, const double x)
 
 	DATA_OFFSET(m, p, q) = x;
 	DATA_OFFSET(m, q, p) = x;
+}
+
+/******************************************************************************
+
+ Function matrix_set_row(): the same as matrix_set() but to set the p-th row of
+ matrix m.
+
+******************************************************************************/
+
+void matrix_set_row(matrix *m, const int p, const double x, const bool use_omp)
+{
+	ASSERT(m != NULL)
+
+	ASSERT_ROW_INDEX(m, p)
+
+	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
+	for (int q = 0; q < m->max_col; ++q)
+		DATA_OFFSET(m, p, q) = x;
+}
+
+/******************************************************************************
+
+ Function matrix_set_col(): the same as matrix_set() but to set the q-th column
+ of matrix m.
+
+******************************************************************************/
+
+void matrix_set_col(matrix *m, const int q, const double x, const bool use_omp)
+{
+	ASSERT(m != NULL)
+
+	ASSERT_COL_INDEX(m, q)
+
+	#pragma omp parallel for default(none) shared(m) schedule(static) if(use_omp)
+	for (int p = 0; p < m->max_row; ++p)
+		DATA_OFFSET(m, p, q) = x;
+}
+
+/******************************************************************************
+
+ Function matrix_set_block(): the same as matrix_set() but to set a block of
+ matrix m.
+
+******************************************************************************/
+
+void matrix_set_block(matrix *m,
+                      const int row_min,
+                      const int row_max,
+                      const int col_min,
+                      const int col_max,
+                      const double x)
+{
+	ASSERT(m != NULL)
+
+	ASSERT(row_max >= row_min)
+	ASSERT(col_max >= col_min)
+
+	ASSERT_ROW_INDEX(m, row_max)
+	ASSERT_COL_INDEX(m, col_max)
+
+	for (int p = row_min; p <= row_max; ++p)
+		for (int q = col_min; q <= col_max; ++q)
+			DATA_OFFSET(m, p, q) = x;
 }
 
 /******************************************************************************
@@ -619,22 +682,6 @@ double *matrix_raw_col(const matrix *m, const int q, const bool use_omp)
 		col[p] = DATA_OFFSET(m, p, q);
 
 	return col;
-}
-
-/******************************************************************************
-
- Function matrix_get_pow(): return the pq-element of matrix m raised to a given
- power.
-
-******************************************************************************/
-
-double matrix_get_pow(const matrix *m,
-                      const int p, const int q, const double power)
-{
-	ASSERT_ROW_INDEX(m, p)
-	ASSERT_COL_INDEX(m, q)
-
-	return pow(DATA_OFFSET(m, p, q), power);
 }
 
 /******************************************************************************

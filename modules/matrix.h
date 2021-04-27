@@ -26,11 +26,24 @@
 
 	void matrix_set_all(matrix *m, const double x, const bool use_omp);
 
-	void matrix_diag_set(matrix *m, const int p, const double x);
+	void matrix_set_diag(matrix *m, const int p, const double x);
 
 	void matrix_diag_set_all(matrix *m, const double x, const bool use_omp);
 
 	void matrix_symm_set(matrix *m, const int p, const int q, const double x);
+
+	void matrix_set_row(matrix *m,
+	                    const int p, const double x, const bool use_omp);
+
+	void matrix_set_col(matrix *m,
+	                    const int q, const double x, const bool use_omp);
+
+	void matrix_set_block(matrix *m,
+	                      const int row_min,
+	                      const int row_max,
+	                      const int col_min,
+	                      const int col_max,
+	                      const double x);
 
 	double matrix_get(const matrix *m, const int p, const int q);
 
@@ -47,9 +60,6 @@
 	double *matrix_raw_row(const matrix *m, const int p, const bool use_omp);
 
 	double *matrix_raw_col(const matrix *m, const int q, const bool use_omp);
-
-	double matrix_get_pow(const matrix *m,
-	                      const int p, const int q, const double power);
 
 	int matrix_row(const matrix *m);
 
