@@ -24,19 +24,15 @@
 
 	void matrix_set(matrix *m, const int p, const int q, const double x);
 
-	void matrix_set_all(matrix *m, const double x, const bool use_omp);
+	void matrix_set_all(matrix *m, const double x);
 
 	void matrix_set_diag(matrix *m, const int p, const double x);
 
-	void matrix_diag_set_all(matrix *m, const double x, const bool use_omp);
+	void matrix_set_symm(matrix *m, const int p, const int q, const double x);
 
-	void matrix_symm_set(matrix *m, const int p, const int q, const double x);
+	void matrix_set_row(matrix *m, const int p, const double x);
 
-	void matrix_set_row(matrix *m,
-	                    const int p, const double x, const bool use_omp);
-
-	void matrix_set_col(matrix *m,
-	                    const int q, const double x, const bool use_omp);
+	void matrix_set_col(matrix *m, const int q, const double x);
 
 	void matrix_set_block(matrix *m,
 	                      const int row_min,
@@ -45,61 +41,61 @@
 	                      const int col_max,
 	                      const double x);
 
+	void matrix_set_random(matrix *m);
+
+	void matrix_set_zero(matrix *m);
+
 	double matrix_get(const matrix *m, const int p, const int q);
 
-	matrix *matrix_get_row(const matrix *m, const int p, const bool use_omp);
+	matrix *matrix_get_row(const matrix *m, const int p);
 
-	matrix *matrix_get_col(const matrix *m, const int q, const bool use_omp);
+	matrix *matrix_get_col(const matrix *m, const int q);
 
-	matrix *matrix_get_diag(const matrix *m, const bool use_omp);
+	matrix *matrix_get_diag(const matrix *m);
 
 	matrix *matrix_get_block(const matrix *m,
 	                         const int row_min, const int row_max,
 	                         const int col_min, const int col_max);
 
-	double *matrix_raw_row(const matrix *m, const int p, const bool use_omp);
+	double *matrix_get_raw_row(const matrix *m, const int p);
 
-	double *matrix_raw_col(const matrix *m, const int q, const bool use_omp);
+	double *matrix_get_raw_col(const matrix *m, const int q);
 
-	int matrix_row(const matrix *m);
+	int matrix_rows(const matrix *m);
 
-	int matrix_col(const matrix *m);
-
-	void matrix_set_random(matrix *m, const bool use_omp);
+	int matrix_cols(const matrix *m);
 
 	void matrix_incr(matrix *m, const int p, const int q, const double x);
 
-	void matrix_incr_all(matrix *m, const double x, const bool use_omp);
+	void matrix_incr_all(matrix *m, const double x);
 
 	void matrix_decr(matrix *m, const int p, const int q, const double x);
 
-	void matrix_decr_all(matrix *m, const double x, const bool use_omp);
+	void matrix_decr_all(matrix *m, const double x);
 
 	void matrix_scale(matrix *m, const int p, const int q, const double x);
 
-	void matrix_scale_all(matrix *m, const double x, const bool use_omp);
+	void matrix_scale_all(matrix *m, const double x);
 
-	void matrix_row_scale(matrix *m,
-	                      const int p, const double x, const bool use_omp);
+	void matrix_scale_row(matrix *m, const int p, const double x);
 
-	void matrix_col_scale(matrix *m,
-	                      const int q, const double x, const bool use_omp);
+	void matrix_scale_col(matrix *m, const int q, const double x);
 
 	void matrix_copy_element(matrix *a, const int p, const int q,
 	                         const matrix *b, const int l, const int k);
 
-	void matrix_copy(matrix *a, const matrix *b, const double alpha,
-	                 const double beta, const bool use_omp);
+	void matrix_copy(matrix *a,
+	                 const matrix *b, const double alpha, const double beta);
 
 	void matrix_swap(matrix *a, matrix *b);
 
-	double matrix_trace(const matrix *m, const bool use_omp);
+	double matrix_trace(const matrix *m);
 
-	double matrix_sum(const matrix *m, const bool use_omp);
+	double matrix_sum(const matrix *m);
 
-	double matrix_row_sum(const matrix *m, const int p, const bool use_omp);
+	double matrix_sum_row(const matrix *m, const int p);
 
-	double matrix_col_sum(const matrix *m, const int q, const bool use_omp);
+	double matrix_sum_col(const matrix *m, const int q);
 
 	double matrix_min(const matrix *m);
 
@@ -108,11 +104,11 @@
 	void matrix_multiply(const double alpha, const matrix *a,
 	                     const matrix *b, const double beta, matrix *c);
 
-	void matrix_add(const double alpha, const matrix *a, const double beta,
-	                const matrix *b, matrix *c, const bool use_omp);
+	void matrix_add(const double alpha, const matrix *a,
+	                const double beta, const matrix *b, matrix *c);
 
-	void matrix_sub(const double alpha, const matrix *a, const double beta,
-	                const matrix *b, matrix *c, const bool use_omp);
+	void matrix_sub(const double alpha, const matrix *a,
+	                const double beta, const matrix *b, matrix *c);
 
 	void matrix_inverse(matrix *m);
 
@@ -142,6 +138,8 @@
 	                  FILE *output, const int max_row, const int max_col);
 
 	size_t matrix_sizeof(const matrix *m);
+
+	void matrix_use_omp(matrix *m, const bool use);
 
 	void matrix_about(FILE *output);
 #endif
