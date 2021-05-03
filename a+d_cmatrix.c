@@ -120,11 +120,11 @@ void driver(const int J,
 	if (job->a == job->b)
 	{
 		result += job->basis_a->eigenval + centr_term(job->basis_a->l, mass, m->R);
-		matrix_diag_set(c, job->a, result);
+		matrix_set_diag(c, job->a, result);
 	}
 	else
 	{
-		matrix_symm_set(c, job->a, job->b, result);
+		matrix_set_symm(c, job->a, job->b, result);
 	}
 
 	#pragma omp critical
@@ -160,8 +160,7 @@ int main(int argc, char *argv[])
  *	Arrangement (a = 1, b = 2, c = 3) and atomic masses:
  */
 
-	const char arrang
-		= 96 + file_read_int_keyword(stdin, "arrang", 1, 3, 1);
+	const char arrang = 96 + read_int_keyword(stdin, "arrang", 1, 3, 1);
 
 	pes_init_mass(stdin, 'a');
 	pes_init_mass(stdin, 'b');
@@ -173,7 +172,19 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J = file_read_int_keyword(stdin, "J", 0, 10000, 0);
+	const int J = read_int_keyword(stdin, "J", 0, 10000, 0);
+
+/*
+ * Directory to read in all basis functions from:
+ */
+
+	char *dir = read_str_keyword(stdin, "basis_dir", ".");
+
+	if (!file_exist(dir) && dir[0] != '.')
+	{
+		PRINT_ERROR("%s does not exist\n", dir)
+		exit(EXIT_FAILURE);
+	}
 
 /*
  *	Scattering grid:
@@ -189,7 +200,7 @@ int main(int argc, char *argv[])
 
 	const bool use_omp = file_read_int_keyword(stdin, "use_omp", 0, 1, 0);
 
-	const int max_channel = fgh_basis_count(arrang, J);
+	const int max_channel = fgh_basis_count(dir, arrang, J);
 
 	const int max_task = max_channel*(max_channel + 1)/2;
 
@@ -197,7 +208,7 @@ int main(int argc, char *argv[])
 
 	for (int n = 0; n < max_channel; ++n)
 	{
-		FILE *input = fgh_basis_file(arrang, n, J, "rb", false);
+		FILE *input = fgh_basis_file(dir, arrang, n, J, "rb", false);
 
 		fgh_basis_read(&basis[n], input);
 
