@@ -319,9 +319,9 @@ double *fgh_eigenvec(const matrix *fgh, const int v, const double grid_step)
 	double *eigenvec = NULL;
 
 	if (matrix_using_magma())
-		eigenvec = matrix_get_raw_row(fgh, v, false);
+		eigenvec = matrix_get_raw_row(fgh, v);
 	else
-		eigenvec = matrix_get_raw_col(fgh, v, false);
+		eigenvec = matrix_get_raw_col(fgh, v);
 
 	ASSERT(eigenvec != NULL)
 
