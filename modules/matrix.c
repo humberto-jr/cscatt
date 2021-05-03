@@ -61,7 +61,7 @@
 
 struct matrix
 {
-	double *data;
+	double *restrict data;
 	int max_row, max_col, use_omp;
 };
 

@@ -160,7 +160,8 @@ int main(int argc, char *argv[])
  *	Arrangement (a = 1, b = 2, c = 3) and atomic masses:
  */
 
-	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
+	const char arrang
+		= 96 + file_read_int_keyword(stdin, "arrang", 1, 3, 1);
 
 	pes_init_mass(stdin, 'a');
 	pes_init_mass(stdin, 'b');
@@ -172,7 +173,7 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J = (int) file_keyword(stdin, "J", 0.0, INF, 0.0);
+	const int J = file_read_int_keyword(stdin, "J", 0, 10000, 0);
 
 /*
  *	Scattering grid:
@@ -186,7 +187,7 @@ int main(int argc, char *argv[])
  *	coupling matrix. Thus, a better workload of tasks per thread, if any.
  */
 
-	const bool use_omp = (bool) file_keyword(stdin, "use_omp", 0.0, 1.0, 1.0);
+	const bool use_omp = file_read_int_keyword(stdin, "use_omp", 0, 1, 0);
 
 	const int max_channel = fgh_basis_count(arrang, J);
 

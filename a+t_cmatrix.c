@@ -225,11 +225,11 @@ void driver(const int J, const double mass,
 		const double mass = pes_mass_abcd();
 
 		result += t->basis_a->eigenval + centr_term(t->basis_a->l, mass, m_list->R);
-		matrix_diag_set(c, t->a, result);
+		matrix_set_diag(c, t->a, result);
 	}
 	else
 	{
-		matrix_symm_set(c, t->a, t->b, result);
+		matrix_set_symm(c, t->a, t->b, result);
 	}
 
 	#pragma omp critical

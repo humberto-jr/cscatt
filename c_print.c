@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 		double *eigenval = NULL;
 		if (adiabatic) eigenval = matrix_symm_eigen(c, 'n');
 
-		for (int a = 0; a < matrix_row(c); ++a)
+		for (int a = 0; a < matrix_rows(c); ++a)
 		{
 			FILE *output = coupling_datafile(arrang, a, J, false, "a");
 
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 			{
 				fprintf(output, "% -8e\t", (matrix_get(c, a, a) + shift)*scale);
 
-				for (int b = (a + 1); b < matrix_col(c); ++b)
+				for (int b = (a + 1); b < matrix_cols(c); ++b)
 				{
 					fprintf(output, "% -8e\t", matrix_get(c, a, b)*scale);
 				}

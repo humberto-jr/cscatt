@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
 
 			if (n_counter > 0)
 			{
-				ASSERT(matrix_row(pot_energy[n_counter - 1].value) == matrix_row(pot_energy[n_counter].value))
+				ASSERT(matrix_rows(pot_energy[n_counter - 1].value) == matrix_rows(pot_energy[n_counter].value))
 			}
 
 			++n_counter;
@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
  *		eigenvectos is named max_state and it is equal ch_counter from dbasis driver.
  */
 
-		const int max_state = matrix_row(pot_energy[0].value);
+		const int max_state = matrix_rows(pot_energy[0].value);
 
 		mpi_matrix *fgh
 			= fgh_multich_matrix(max_state, n_counter, R_step, pot_energy, mass);

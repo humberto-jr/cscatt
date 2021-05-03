@@ -67,10 +67,10 @@ int main()
 	printf(" %f\n", matrix_sum(a, false));
 
 	printf("\nmatrix_col_sum(a, 2, false);\n");
-	printf(" %f\n", matrix_col_sum(a, 2, false));
+	printf(" %f\n", matrix_sum_col(a, 2, false));
 
 	printf("\nmatrix_row_sum(a, 3, false);\n");
-	printf(" %f\n", matrix_row_sum(a, 3, false));
+	printf(" %f\n", matrix_sum_row(a, 3, false));
 
 	printf("\nmatrix_set(a, 3, 0, 1.0);\n");
 	matrix_set(a, 3, 0, 1.0);
@@ -79,7 +79,7 @@ int main()
 	matrix_write(a, stdout, 5, 3);
 
 	printf("\nmatrix_row_sum(a, 3, false);\n");
-	printf(" %f\n", matrix_row_sum(a, 3, false));
+	printf(" %f\n", matrix_sum_row(a, 3, false));
 
 	printf("\nmatrix_incr_all(a, 1.0, false);\n");
 	matrix_incr_all(a, 1.0, false);
@@ -122,10 +122,10 @@ int main()
 
 	printf("\nmatrix_positive(c);\n");
 	printf(" %s\n", (matrix_positive(c)? "true" : "false"));
-
+/*
 	printf("\nmatrix_diag_set_all(c, 1.0, false);\n");
 	matrix_diag_set_all(c, 1.0, false);
-
+*/
 	printf("\nmatrix_write(c, stdout, 9, 9);\n");
 	matrix_write(c, stdout, 9, 9);
 
@@ -145,7 +145,7 @@ int main()
 	printf(" %f\n", matrix_sum(c, false));
 
 	printf("\nmatrix_symm_set(c, 5, 7, 3.14);\n");
-	matrix_symm_set(c, 5, 7, 3.14);
+	matrix_set_symm(c, 5, 7, 3.14);
 
 	printf("\nmatrix_write(c, stdout, 9, 9);\n");
 	matrix_write(c, stdout, 9, 9);
@@ -277,28 +277,6 @@ int main()
 
 	printf("z.x = %f, z.y = %f, z.z = %f\n", z.x, z.y, z.z);
 
-	printf("\n");
-	printf("Timing for integral_benchmark(simpson_1st, n, &error, &time) for n points; n vs. error, time\n");
-
-	for (int n = 100; n < 1000; n += 50)
-	{
-		double error = 0.0, time = 0.0;
-
-		integral_benchmark(simpson_1st, n, &error, &time);
-		printf("%4d\t % -8e\t % -8e\t\n", n, error, time);
-	}
-
-	printf("\n");
-	printf("Timing for integral_benchmark(simpson_2nd, n, &error, &time) for n points; n vs. error, time\n");
-
-	for (int n = 100; n < 1000; n += 50)
-	{
-		double error = 0.0, time = 0.0;
-
-		integral_benchmark(simpson_2nd, n, &error, &time);
-		printf("%4d\t % -8e\t % -8e\t\n", n, error, time);
-	}
-
 /*
 	printf("\n");
 	printf("# Test of matrix_inv() #######################################\n");
@@ -368,47 +346,6 @@ int main()
 		}
 	}
 */
-	printf("\n");
-	printf("Timing for matrix_multiply(1.0, a, b, 1.0, c); n-by-n; n vs. wall time (s)\n");
-
-	for (int n = 128; n < 2560; n += 32)
-	{
-		a = matrix_alloc(n, n, false);
-		b = matrix_alloc(n, n, false);
-		c = matrix_alloc(n, n, false);
-
-		matrix_set_all(a, 1.0, false);
-		matrix_set_all(b, 2.0, false);
-		matrix_set_all(c, 3.0, false);
-
-		const double result = as_double(n)*2.0 + 3.0;
-
-		const double start_time = wall_time();
-
-		matrix_multiply(1.0, a, b, 1.0, c);
-
-		const double end_time = wall_time();
-
-		for (int p = 0; p < n; ++p)
-		{
-			for (int q = 0; q < n; ++q)
-			{
-				const double error = fabs(matrix_get(c, p, q) - result);
-
-				if (error > 1.0E-8)
-				{
-					PRINT_ERROR("%s", "matrix_multiply() failed with abs. error = ")
-					PRINT_ERROR("%-8e\n at (%d, %d)\n", error, p, q)
-				}
-			}
-		}
-
-		printf("%4d\t%f\n", n, end_time - start_time);
-
-		matrix_free(a);
-		matrix_free(b);
-		matrix_free(c);
-	}
 
 /*
 	printf("\n");
