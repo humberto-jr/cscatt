@@ -47,7 +47,7 @@ matrix *fgh_dense_single_channel(const int grid_size,
 
 	for (int n = 0; n < grid_size; ++n)
 	{
-		matrix_diag_set(result, n, nn_term + pot_energy[n]);
+		matrix_set_diag(result, n, nn_term + pot_energy[n]);
 
 		for (int m = (n + 1); m < grid_size; ++m)
 		{
@@ -55,7 +55,7 @@ matrix *fgh_dense_single_channel(const int grid_size,
 
 			const double nm_term = sin(nm*M_PI/as_double(grid_size));
 
-			matrix_symm_set(result, n, m, pow(-1.0, nm)*factor/pow(nm_term, 2));
+			matrix_set_symm(result, n, m, pow(-1.0, nm)*factor/pow(nm_term, 2));
 		}
 	}
 
@@ -220,7 +220,7 @@ matrix *dvr_multich_fgh_comp(matrix *fgh,
                              const int max_ch, const int n, const int v)
 {
 	ASSERT(n < max_ch)
-	const int grid_size = matrix_row(fgh)/max_ch;
+	const int grid_size = matrix_rows(fgh)/max_ch;
 
 	return matrix_get_block(fgh, n*grid_size, n*grid_size + (grid_size - 1), v, v);
 }*/
@@ -266,7 +266,7 @@ double fgh_interpolation(const int grid_size,
 double dvr_fgh_product(const matrix *fgh, const int a, const int b,
                        const double r_min, const double r_max, const double r_new)
 {
-	const int n_max = matrix_row(fgh);
+	const int n_max = matrix_rows(fgh);
 
 	ASSERT(a > -1)
 	ASSERT(a < n_max)
@@ -313,15 +313,15 @@ double *fgh_eigenvec(const matrix *fgh, const int v, const double grid_step)
 	ASSERT(v > -1)
 	ASSERT(fgh != NULL)
 
-	const int grid_size = matrix_row(fgh);
+	const int grid_size = matrix_rows(fgh);
 	const int n_max = (grid_size%2 == 0? grid_size : grid_size - 1);
 
 	double *eigenvec = NULL;
 
 	if (matrix_using_magma())
-		eigenvec = matrix_raw_row(fgh, v, false);
+		eigenvec = matrix_get_raw_row(fgh, v, false);
 	else
-		eigenvec = matrix_raw_col(fgh, v, false);
+		eigenvec = matrix_get_raw_col(fgh, v, false);
 
 	ASSERT(eigenvec != NULL)
 
