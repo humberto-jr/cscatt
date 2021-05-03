@@ -250,12 +250,12 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 
 	matrix *w = pot_energy;
 
-	for (int n = 0; n < matrix_row(pot_energy); ++n)
+	for (int n = 0; n < matrix_rows(pot_energy); ++n)
 	{
 		double t = factor*(tot_energy - matrix_get(pot_energy, n, n));
 		matrix_set(w, n, n, 1.0 - t);
 
-		for (int m = (n + 1); m < matrix_col(pot_energy); ++m)
+		for (int m = (n + 1); m < matrix_cols(pot_energy); ++m)
 		{
 			t = factor*(0.0 - matrix_get(pot_energy, n, m));
 			matrix_set(w, n, m, 0.0 - t);
@@ -271,12 +271,12 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 
 	matrix_inverse(w);
 
-	for (int n = 0; n < matrix_row(pot_energy); ++n)
+	for (int n = 0; n < matrix_rows(pot_energy); ++n)
 	{
 		double u = 12.0*matrix_get(w, n, n) - 10.0;
 		matrix_set(ratio, n, n, u - matrix_get(ratio, n, n));
 
-		for (int m = (n + 1); m < matrix_col(pot_energy); ++m)
+		for (int m = (n + 1); m < matrix_cols(pot_energy); ++m)
 		{
 			u = 12.0*matrix_get(w, n, m);
 			matrix_set(ratio, n, m, u - matrix_get(ratio, n, m));
@@ -308,7 +308,7 @@ void johnson_jcp73_logd(const int n, const int grid_size,
 	ASSERT(pot_energy != NULL)
 	ASSERT(GSL_IS_ODD(grid_size) == 1)
 
-	const int max_ch = matrix_row(pot_energy);
+	const int max_ch = matrix_rows(pot_energy);
 
 	/* NOTE: a = (I + hY)^-1 from the left term of Eq. (6). */
 	matrix *a = matrix_alloc(max_ch, max_ch, false);
@@ -381,7 +381,7 @@ void johnson_jcp73_logd(const int n, const int grid_size,
  *	Solve Eq. (6) of Ref. [4]:
  */
 
-	matrix_sub(1.0, eq6_left_term, 1.0, eq6_right_term, y, max_ch > 100);
+	matrix_sub(1.0, eq6_left_term, 1.0, eq6_right_term, y);
 
 	matrix_free(eq6_left_term);
 	matrix_free(eq6_right_term);
@@ -411,7 +411,7 @@ matrix *johnson_kmatrix(const int l[],
 	ASSERT(ratio != NULL)
 	ASSERT(level != NULL)
 
-	const int max_ch = matrix_row(ratio);
+	const int max_ch = matrix_rows(ratio);
 
 /*
  *	NOTE: from Eq. (2) and (17) of Ref. [1] the following numerical factor is
@@ -527,7 +527,7 @@ matrix *johnson_kmatrix(const int l[],
 
 smatrix *johnson_smatrix(const matrix *k)
 {
-	const int max_ch = matrix_row(k);
+	const int max_ch = matrix_rows(k);
 
 	matrix *a = matrix_alloc(max_ch, max_ch, false);
 	matrix *b = matrix_alloc(max_ch, max_ch, false);
@@ -541,13 +541,13 @@ smatrix *johnson_smatrix(const matrix *k)
 
 	for (int n = 0; n < max_ch; ++n)
 	{
-		matrix_diag_set(b, n, 1.0 + matrix_get(a, n, n));
-		matrix_diag_set(c, n, 1.0 - matrix_get(a, n, n));
+		matrix_set_diag(b, n, 1.0 + matrix_get(a, n, n));
+		matrix_set_diag(c, n, 1.0 - matrix_get(a, n, n));
 
 		for (int m = (n + 1); m < max_ch; ++m)
 		{
-			matrix_symm_set(b, n, m, 0.0 + matrix_get(a, n, m));
-			matrix_symm_set(c, n, m, 0.0 - matrix_get(a, n, m));
+			matrix_set_symm(b, n, m, 0.0 + matrix_get(a, n, m));
+			matrix_set_symm(c, n, m, 0.0 - matrix_get(a, n, m));
 		}
 	}
 
