@@ -827,7 +827,7 @@ int mpi_matrix_sparse_eigen(mpi_matrix *m, const int n,
 	}
 	#else
 	{
-		m->eigenval = matrix_symm_eigen(m->data, "v");
+		m->eigenval = matrix_symm_eigen(m->data, 'v');
 		return matrix_rows(m->data);
 	}
 	#endif
