@@ -27,6 +27,9 @@
 	#include "slepceps.h"
 #endif
 
+/* NOTE: forward declaration of matrix to avoid including matrix.h header. */
+typedef struct matrix matrix;
+
 static int this_rank = 0, comm_size = 1, thread_level = 0;
 
 static int chunk_size = 1, tasks = 1, extra_tasks = 0, last_rank_index = 0;
@@ -44,13 +47,15 @@ struct mpi_matrix
 {
 	#if defined(USE_PETSC)
 		Mat data;
+		int max_row, max_col, first, last;
+	#else
+		matrix *data;
+		double *eigenval;
 	#endif
 
-	#if defined(USE_SLEPC)
+	#if defined(USE_PETSC) && defined(USE_SLEPC)
 		EPS solver;
 	#endif
-
-	int max_row, max_col, first, last;
 };
 
 /******************************************************************************
@@ -66,6 +71,8 @@ struct mpi_vector
 {
 	#if defined(USE_PETSC)
 		Vec data;
+	#else
+		double *data;
 	#endif
 
 	int length, first, last;
@@ -652,35 +659,14 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 	ASSERT(non_zeros[0] >= 0)
 	ASSERT(non_zeros[1] >= 0)
 
+	mpi_matrix *pointer = allocate(1, sizeof(struct mpi_matrix), true);
+
 	#if defined(USE_PETSC)
 	{
 		int info;
 
-		mpi_matrix *pointer = allocate(1, sizeof(struct mpi_matrix), true);
-
 		pointer->max_row = max_row;
 		pointer->max_col = max_col;
-
-/*
-		info = MatCreate(MPI_COMM_WORLD, &pointer->data);
-
-		CHECK_PETSC_ERROR("MatCreate()", info, true)
-
-		info = MatSetType(pointer->data, MATAIJ);
-
-		CHECK_PETSC_ERROR("MatSetType()", info, true)
-
-		info = MatSetSizes(pointer->data, PETSC_DECIDE, PETSC_DECIDE, max_row, max_col);
-
-		CHECK_PETSC_ERROR("MatSetSizes()", info, true)
-
-		info = MatSetUp(pointer->data);
-
-		CHECK_PETSC_ERROR("MatSetUp()", info, true)
-
-		info = MatMPIAIJSetPreallocation(pointer->data,
-		                                 non_zeros[0], NULL, non_zeros[1], NULL);
-*/
 
 		if (mpi_comm_size() > 1)
 		{
@@ -714,9 +700,12 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 
 		return pointer;
 	}
+	#else
+	{
+		pointer->data = matrix_alloc(max_row, max_col, false);
+		return pointer;
+	}
 	#endif
-
-	return NULL;
 }
 
 /******************************************************************************
@@ -738,6 +727,10 @@ void mpi_matrix_free(mpi_matrix *m)
 		CHECK_PETSC_ERROR("MatDestroy()", info, true)
 		free(m);
 	}
+	#else
+	{
+		matrix_free(m->data);
+	}
 	#endif
 }
 
@@ -757,9 +750,6 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 	ASSERT_ROW_INDEX(m, p)
 	ASSERT_COL_INDEX(m, q)
 
-	/* NOTE: to avoid 'unused parameter' warns during compilation of the dummy version. */
-	ASSERT(x == x)
-
 	#if defined(USE_PETSC)
 	{
 		if ((p >= m->first) && (p < m->last))
@@ -767,6 +757,10 @@ void mpi_matrix_set(mpi_matrix *m, const int p, const int q, const double x)
 			const int info = MatSetValue(m->data, p, q, x, INSERT_VALUES);
 			CHECK_PETSC_ERROR("MatSetValue()", info, true)
 		}
+	}
+	#else
+	{
+		matrix_set(m->data, p, q, x);
 	}
 	#endif
 }
@@ -811,11 +805,11 @@ mpi_vector *mpi_vector_alloc(const int length)
 {
 	ASSERT(length > 0)
 
+	mpi_vector *pointer = allocate(1, sizeof(mpi_vector), true);
+
 	#if defined(USE_PETSC)
 	{
 		int info;
-
-		mpi_vector *pointer = allocate(1, sizeof(mpi_vector), true);
 
 		info = VecCreate(MPI_COMM_WORLD, &pointer->data);
 
@@ -833,9 +827,13 @@ mpi_vector *mpi_vector_alloc(const int length)
 
 		return pointer;
 	}
+	#else
+	{
+		pointer->data = allocate(length, sizeof(double), false);
+		pointer->length = length;
+		return pointer;
+	}
 	#endif
-
-	return NULL;
 }
 
 /******************************************************************************
@@ -855,6 +853,11 @@ void mpi_vector_free(mpi_vector *v)
 	{
 		const int info = VecDestroy(&v->data);
 		CHECK_PETSC_ERROR("VecDestroy()", info, true)
+		free(v);
+	}
+	#else
+	{
+		free(v->data);
 		free(v);
 	}
 	#endif
@@ -959,9 +962,12 @@ int mpi_matrix_sparse_eigen(mpi_matrix *m, const int n,
 
 		return n_max;
 	}
+	#else
+	{
+		m->eigenval = matrix_symm_eigen(m->data, "v");
+		return matrix_rows(m->data);
+	}
 	#endif
-
-	return 0;
 }
 
 /******************************************************************************

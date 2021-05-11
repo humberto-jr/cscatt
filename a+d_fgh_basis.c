@@ -1,12 +1,15 @@
 #include "modules/pes.h"
+#include "modules/fgh.h"
 #include "modules/file.h"
 #include "modules/matrix.h"
 #include "modules/mpi_lib.h"
 #include "modules/globals.h"
 
-#include "utils.h"
-
 #define FORMAT "# %5d   %5d   %5d   %5d   %5d   %+5d   %5d     % -8e  % -8e  % -8e\n"
+
+#if !defined(COUPLING_MATRIX_FILE_FORMAT)
+	#define COUPLING_MATRIX_FILE_FORMAT "cmatrix_arrang=%c_n=%d_J=%d.bin"
+#endif
 
 /******************************************************************************
 
@@ -22,79 +25,21 @@ inline static int parity(const int l)
 
 /******************************************************************************
 
- Function fgh_multich_matrix(): the same as fgh_matrix(), except that the
- potential energy is the one of a problem with max_ch channels within grid_size
- points. For details see Eq. (19a), Eq. (19b) and Eq. (19c) of Ref. [2].
+ Function read_coupling(): load from the disk a set of multipole terms for the
+ n-th grid point index, arrangement and total angular momentum, J.
 
 ******************************************************************************/
 
-mpi_matrix *fgh_multich_matrix(const int max_ch,
-                               const int grid_size,
-                               const double grid_step,
-                               const tensor pot_energy[],
-                               const double mass)
+matrix *read_coupling(const char arrang, const int n, const int J)
 {
-	ASSERT(max_ch > 0)
-	ASSERT(pot_energy != NULL)
+	char filename[MAX_LINE_LENGTH];
+	sprintf(filename, COUPLING_MATRIX_FILE_FORMAT, arrang, n, J);
 
-	const int size = grid_size*max_ch;
-
-	const int non_zeros[2] = {1, 1};
-
-	mpi_matrix *result = mpi_matrix_alloc(size, size, non_zeros);
-
-	const double box_length = as_double(grid_size - 1)*grid_step;
-
-	const double factor = (M_PI*M_PI)/(mass*box_length*box_length);
-
-	const double nn_term = factor*as_double(grid_size*grid_size + 2)/6.0;
-
-	int row = 0;
-	for (int p = 0; p < max_ch; ++p)
-	{
-		for (int n = 0; n < grid_size; ++n)
-		{
-			int col = 0;
-			for (int q = 0; q < max_ch; ++q)
-			{
-				for (int m = 0; m < grid_size; ++m)
-				{
-					double pnqm = 0.0;
-
-					if (n == m && p == q)
-					{
-						pnqm = nn_term
-						     + matrix_get(pot_energy[n].value, p, p);
-					}
-
-					if (n != m && p == q)
-					{
-						const double nm = as_double((n + 1) - (m + 1));
-
-						const double nm_term = sin(nm*M_PI/as_double(grid_size));
-
-						pnqm = pow(-1.0, nm)*factor/pow(nm_term, 2);
-					}
-
-					if (n == m && p != q)
-					{
-						pnqm = matrix_get(pot_energy[n].value, p, q);
-					}
-
-					if (pnqm != 0.0) mpi_matrix_set(result, row, col, pnqm);
-					++col;
-				}
-			}
-
-			++row;
-		}
-	}
-
-	mpi_barrier();
-	mpi_matrix_build(result);
-
-	return result;
+	return matrix_load(filename);
 }
+
+/******************************************************************************
+******************************************************************************/
 
 int main(int argc, char *argv[])
 {
@@ -106,60 +51,54 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J_min = (int) file_keyword(stdin, "J_min", 0.0, INF, 0.0);
+	const int J_min = read_int_keyword(stdin, "J_min", 0, 10000, 0);
 
-	const int J_max = (int) file_keyword(stdin, "J_max", 0.0, INF, 0.0);
+	const int J_max = read_int_keyword(stdin, "J_max", J_min, 10000, J_min);
 
-	const int J_step = (int) file_keyword(stdin, "J_step", 1.0, INF, 0.0);
+	const int J_step = read_int_keyword(stdin, "J_step", 1, 10000, 1);
 
-	const int J_parity = (int) file_keyword(stdin, "parity", -1.0, 1.0, 0.0);
-
-	ASSERT(J_max >= J_min)
+	const int J_parity = read_int_keyword(stdin, "parity", -1, 1, 0);
 
 /*
  *	Vibrational quantum numbers, v:
  */
 
-	const int v_min = (int) file_keyword(stdin, "v_min", 0.0, INF, 0.0);
+	const int v_min = read_int_keyword(stdin, "v_min", 0, 10000, 0);
 
-	const int v_max = (int) file_keyword(stdin, "v_max", 0.0, INF, 0.0);
+	const int v_max = read_int_keyword(stdin, "v_max", v_min, 10000, v_min);
 
-	const int v_step = (int) file_keyword(stdin, "v_step", 1.0, INF, 1.0);
-
-	ASSERT(v_max >= v_min)
+	const int v_step = read_int_keyword(stdin, "v_step", 1, 10000, 1);
 
 /*
  *	Rotational quantum numbers, j:
  */
 
-	const int j_min = (int) file_keyword(stdin, "j_min", 0.0, INF, 0.0);
+	const int j_min = read_int_keyword(stdin, "j_min", 0, 10000, 0);
 
-	const int j_max = (int) file_keyword(stdin, "j_max", 0.0, INF, 0.0);
+	const int j_max = read_int_keyword(stdin, "j_max", j_min, 10000, j_min);
 
-	const int j_step = (int) file_keyword(stdin, "j_step", 1.0, INF, 1.0);
-
-	ASSERT(j_max >= j_min)
+	const int j_step = read_int_keyword(stdin, "j_step", 1, 10000, 1);
 
 /*
- *	Vibrational grid:
+ *	Vibrational grid, R:
  */
 
-	int n_max = (int) file_keyword(stdin, "scatt_grid_size", 1.0, INF, 500.0);
+	int n_max = read_int_keyword(stdin, "scatt_grid_size", 1, 1000000, 500);
 
-	double R_min = file_keyword(stdin, "R_min", 0.0, INF, 0.5);
+	double R_min = read_dbl_keyword(stdin, "R_min", 0.0, INF, 0.5);
 
-	double R_max = file_keyword(stdin, "R_max", R_min, INF, R_min + 100.0);
+	double R_max = read_dbl_keyword(stdin, "R_max", R_min, INF, R_min + 30.0);
 
 	const double R_step = (R_max - R_min)/as_double(n_max);
 
 /*
  *	Redefine the vibrational grid if working on a smaller range of pre-computed
- *	data:
+ *	data, i.e. n_min > 0 and n_max < scatt_grid_size.
  */
 
-	const int n_min = (int) file_keyword(stdin, "n_min", 0.0, as_double(n_max), 0.0);
+	const int n_min = read_int_keyword(stdin, "n_min", 0, n_max, 0);
 
-	n_max = (int) file_keyword(stdin, "n_max", as_double(n_min), as_double(n_max), as_double(n_max));
+	n_max = read_int_keyword(stdin, "n_max", n_min, n_max, n_max);
 
 	R_min = R_min + as_double(n_min)*R_step;
 
@@ -168,10 +107,10 @@ int main(int argc, char *argv[])
 	ASSERT(n_max >= v_max + 1)
 
 /*
- *	Arrangement (a = 1, b = 2, c = 3), atomic masses:
+ *	Arrangement (a = 1, b = 2, c = 3) and atomic masses:
  */
 
-	const char arrang = 96 + (int) file_keyword(stdin, "arrang", 1.0, 3.0, 1.0);
+	const char arrang = 96 + read_int_keyword(stdin, "arrang", 1, 3, 1);
 
 	pes_init_mass(stdin, 'a');
 	pes_init_mass(stdin, 'b');
@@ -182,12 +121,12 @@ int main(int argc, char *argv[])
 	ASSERT(mass != 0.0)
 
 /*
- *	Number of iterations used in the eigensolver:
+ *	Number of iterations and tolerance (tol) used by the eigensolver:
  */
 
-	const int max_step = (int) file_keyword(stdin, "max_step", 1.0, INF, 300.0);
+	const int max_step = read_int_keyword(stdin, "max_step", 1, 1000000, 20000);
 
-	const double tol = file_keyword(stdin, "tolerance", -INF, INF, 1.0E-8);
+	const double tol = read_dbl_keyword(stdin, "tolerance", -INF, INF, 1.0E-6);
 
 /*
  *	Resolve the triatomic eigenvalues for each j-case and sort results as scatt. channels:
@@ -200,12 +139,6 @@ int main(int argc, char *argv[])
 		printf("# -----------------------------------------------------------------------------------------------------\n");
 	}
 
-/*
- *	Step 1: loop over rotational states j of the triatom and solve a multichannel
- *	eigenvalue problem using the Fourier grid Hamiltonian discrete variable
- *	representation (FGH-DVR) method.
- */
-
 	int *ch_counter = allocate(J_max + 1, sizeof(int), true);
 
 	for (int j = j_min; j <= j_max; j += j_step)
@@ -215,7 +148,7 @@ int main(int argc, char *argv[])
 		int n_counter = 0;
 		for (int n = n_min; n < n_max; ++n)
 		{
-			pot_energy[n_counter].value = coupling_read(arrang, n, false, j);
+			pot_energy[n_counter].value = read_coupling(arrang, n, j);
 
 			if (n_counter > 0)
 			{
@@ -230,10 +163,11 @@ int main(int argc, char *argv[])
  *		eigenvectos is named max_state and it is equal ch_counter from dbasis driver.
  */
 
-		const int max_state = matrix_rows(pot_energy[0].value);
+		const int max_state
+			= matrix_rows(pot_energy[0].value);
 
 		mpi_matrix *fgh
-			= fgh_multich_matrix(max_state, n_counter, R_step, pot_energy, mass);
+			= fgh_sparse_multi_channel(max_state, n_counter, R_step, pot_energy, mass);
 
 		for (int n = 0; n < n_counter; ++n)
 			matrix_free(pot_energy[n].value);
@@ -249,19 +183,11 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 
-/*
- *		Step 2: loop over the vibrational states v of the triatom, solutions of
- *		step 1, and select only those of interest.
- */
-
 		for (int v = v_min; v <= v_max; v += v_step)
 		{
 			double eigenval = 0.0;
 			mpi_vector *eigenvec = mpi_matrix_eigenpair(fgh, v, &eigenval);
-/*
- *			Step 3: loop over all partial waves l of the atom around the triatom
- *			given by the respective J and j.
- */
+
 			for (int J = J_min; J <= J_max; J += J_step)
 			{
 				for (int l = abs(J - j); l <= (J + j); ++l)
@@ -270,10 +196,6 @@ int main(int argc, char *argv[])
 
 					for (int n = 0; n < max_state; ++n)
 					{
-/*
- *						Step 4: save each basis function |vjln> in the disk and increment
- *						the counter of atom-triatom channels.
- */
 						FILE *output = NULL;
 
 						if (eigenval != 0.0)
@@ -286,7 +208,7 @@ int main(int argc, char *argv[])
 
 						if (mpi_rank() == 0)
 						{
-							output = basis_file(arrang, ch_counter[J], J, "wb", false);
+							output = fgh_basis_file(".", arrang, ch_counter[J], J, "wb", false);
 
 							file_write(&v, sizeof(int), 1, output);
 							file_write(&j, sizeof(int), 1, output);
