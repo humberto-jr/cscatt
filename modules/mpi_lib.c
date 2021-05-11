@@ -100,11 +100,15 @@ struct mpi_vector
 
 ******************************************************************************/
 
-#define ASSERT_ROW_INDEX(pointer, p) \
-{                                    \
-  ASSERT((p) > -1)                   \
-  ASSERT((p) < pointer->max_row)     \
-}
+#if defined(USE_PETSC)
+  #define ASSERT_ROW_INDEX(pointer, p) \
+  {                                    \
+    ASSERT((p) > -1)                   \
+    ASSERT((p) < pointer->max_row)     \
+  }
+#else
+  #define ASSERT_ROW_INDEX(pointer, p)
+#endif
 
 /******************************************************************************
 
@@ -113,11 +117,15 @@ struct mpi_vector
 
 ******************************************************************************/
 
-#define ASSERT_COL_INDEX(pointer, q) \
-{                                    \
-  ASSERT((q) > -1)                   \
-  ASSERT((q) < pointer->max_col)     \
-}
+#if defined(USE_PETSC)
+  #define ASSERT_COL_INDEX(pointer, q) \
+  {                                    \
+    ASSERT((q) > -1)                   \
+    ASSERT((q) < pointer->max_col)     \
+  }
+#else
+  #define ASSERT_COL_INDEX(pointer, q)
+#endif
 
 /******************************************************************************
 
@@ -900,7 +908,7 @@ void mpi_vector_write(const mpi_vector *v,
 	ASSERT(v != NULL)
 	ASSERT(n_min > -1)
 	ASSERT(n_max > n_min)
-	ASSERT(n_max < v->lenght)
+	ASSERT(n_max < v->length)
 
 	if (mpi_rank() == 0)
 	{
