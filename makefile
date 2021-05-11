@@ -383,7 +383,7 @@ math: $(MODULES_DIR)/math.c $(MODULES_DIR)/math.h $(MODULES_DIR)/globals.h
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
-mpi_lib: $(MODULES_DIR)/mpi_lib.c $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/c_lib.h $(MODULES_DIR)/globals.h
+mpi_lib: $(MODULES_DIR)/mpi_lib.c $(MODULES_DIR)/matrix.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/c_lib.h $(MODULES_DIR)/globals.h
 	@echo "\033[31m$<\033[0m"
 	$(CC) $(CFLAGS) $(MPI_INC) $(PETSC_INC) $(SLEPC_INC) -c $<
 	@echo

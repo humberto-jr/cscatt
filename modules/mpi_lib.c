@@ -11,6 +11,7 @@
 
 ******************************************************************************/
 
+#include "matrix.h"
 #include "mpi_lib.h"
 #include "globals.h"
 
@@ -26,9 +27,6 @@
 #if defined(USE_PETSC) && defined(USE_SLEPC)
 	#include "slepceps.h"
 #endif
-
-/* NOTE: forward declaration of matrix to avoid including matrix.h header. */
-typedef struct matrix matrix;
 
 static int this_rank = 0, comm_size = 1, thread_level = 0;
 
@@ -154,7 +152,7 @@ void mpi_init(int argc, char *argv[])
 	}
 	#endif
 
-	#if defined(USE_SLEPC)
+	#if defined(USE_PETSC) && defined(USE_SLEPC)
 	{
 		const int info = SlepcInitialize(&argc, &argv, NULL, NULL);
 		CHECK_PETSC_ERROR("SlepcInitialize()", info, true)
@@ -204,7 +202,7 @@ bool mpi_using_petsc()
 
 bool mpi_using_slepc()
 {
-	#if defined(USE_SLEPC)
+	#if defined(USE_PETSC) && defined(USE_SLEPC)
 		return true;
 	#else
 		return false;
@@ -231,7 +229,7 @@ void mpi_end()
 	}
 	#endif
 
-	#if defined(USE_SLEPC)
+	#if defined(USE_PETSC) && defined(USE_SLEPC)
 	{
 		const int info = SlepcFinalize();
 		CHECK_PETSC_ERROR("SlepcFinalize()", info, false)
@@ -408,30 +406,31 @@ void mpi_send(const int to, const int n, const char type, void *data)
 	#if defined(USE_MPI)
 	{
 		#pragma omp critical
-		MPI_Send(&n, 1, MPI_INT, to, 666, MPI_COMM_WORLD);
-
-		#pragma omp critical
-		switch (type)
 		{
-			case 'i':
-				MPI_Send(data, n, MPI_INT, to, 667, MPI_COMM_WORLD);
-				break;
+			MPI_Send(&n, 1, MPI_INT, to, 666, MPI_COMM_WORLD);
 
-			case 'c':
-				MPI_Send(data, n, MPI_CHAR, to, 667, MPI_COMM_WORLD);
-				break;
+			switch (type)
+			{
+				case 'i':
+					MPI_Send(data, n, MPI_INT, to, 667, MPI_COMM_WORLD);
+					break;
 
-			case 'f':
-				MPI_Send(data, n, MPI_FLOAT, to, 667, MPI_COMM_WORLD);
-				break;
+				case 'c':
+					MPI_Send(data, n, MPI_CHAR, to, 667, MPI_COMM_WORLD);
+					break;
 
-			case 'd':
-				MPI_Send(data, n, MPI_DOUBLE, to, 667, MPI_COMM_WORLD);
-				break;
+				case 'f':
+					MPI_Send(data, n, MPI_FLOAT, to, 667, MPI_COMM_WORLD);
+					break;
 
-			default:
-				PRINT_ERROR("invalid type %c\n", type)
-				exit(EXIT_FAILURE);
+				case 'd':
+					MPI_Send(data, n, MPI_DOUBLE, to, 667, MPI_COMM_WORLD);
+					break;
+
+				default:
+					PRINT_ERROR("invalid type %c\n", type)
+					exit(EXIT_FAILURE);
+			}
 		}
 	}
 	#endif
@@ -459,184 +458,40 @@ void mpi_receive(const int from, const int n, const char type, void *data)
 
 	#if defined(USE_MPI)
 	{
-		int m = 0;
-
 		#pragma omp critical
-		MPI_Recv(&m, 1, MPI_INT, from, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-		m = min(n, m);
-
-		#pragma omp critical
-		switch (type)
 		{
-			case 'i':
-				MPI_Recv(data, m, MPI_INT, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				break;
+			int m = 0;
 
-			case 'c':
-				MPI_Recv(data, m, MPI_CHAR, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				break;
+			MPI_Recv(&m, 1, MPI_INT, from, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-			case 'f':
-				MPI_Recv(data, m, MPI_FLOAT, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				break;
+			m = min(n, m);
 
-			case 'd':
-				MPI_Recv(data, m, MPI_DOUBLE, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				break;
+			switch (type)
+			{
+				case 'i':
+					MPI_Recv(data, m, MPI_INT, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+					break;
 
-			default:
-				PRINT_ERROR("invalid type %c\n", type)
-				exit(EXIT_FAILURE);
+				case 'c':
+					MPI_Recv(data, m, MPI_CHAR, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+					break;
+
+				case 'f':
+					MPI_Recv(data, m, MPI_FLOAT, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+					break;
+
+				case 'd':
+					MPI_Recv(data, m, MPI_DOUBLE, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+					break;
+
+				default:
+					PRINT_ERROR("invalid type %c\n", type)
+					exit(EXIT_FAILURE);
+			}
 		}
 	}
 	#endif
 }
-
-/******************************************************************************
-
- Function mpi_print(): prints a formatted message from a given process (master
- thread) in the C stdout of process 0 (master thread).
-
- TODO: re-checking stopped here.
-
-******************************************************************************/
-
-/*
-void mpi_printf(const char line[])
-{
-	ASSERT(line != NULL)
-
-	#pragma omp critical
-	{
-		#if defined(USE_MPI)
-			const int tag_a = 803 + thread_id();
-			const int tag_b = 997 + thread_id();
-
-			if (rank == 0)
-			{
-				printf("%s", line);
-
-				for (int source = 1; source < size; ++source)
-				{
-					int message_sent = (int) false;
-
-					MPI_Iprobe(source, tag_a,
-					           MPI_COMM_WORLD, &message_sent, MPI_STATUS_IGNORE);
-
-					if (message_sent)
-					{
-						int length = 0;
-
-						MPI_Recv(&length, 1, MPI_INT,
-						         source, tag_a, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-						char *new_line = allocate(length, sizeof(char), false);
-
-						MPI_Recv(new_line, length, MPI_CHAR,
-						         source, tag_b, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-						printf("%s", new_line);
-
-						free(new_line);
-					}
-				}
-			}
-			else
-			{
-				const int length = strlen(line);
-
-				MPI_Request info;
-
-				MPI_Isend(&length, 1, MPI_INT, 0, tag_a, MPI_COMM_WORLD, &info);
-
-				MPI_Isend(line, length, MPI_CHAR, 0, tag_b, MPI_COMM_WORLD, &info);
-			}
-		#else
-			printf("%s", line);
-		#endif
-	}
-
-	return;
-}
-*/
-
-/******************************************************************************
-
- Function mpi_fwrite(): process 0 (master thread) writes in the disk stream
- provided to mpi_set_stream() an array of data with a given lenght from all
- other processes, in ascending order of ranks.
-
-******************************************************************************/
-
-/*
-void mpi_fwrite(const int length, const c_type c, const void *array)
-{
-	ASSERT(length > 0)
-	ASSERT(array != NULL)
-	ASSERT(stream != NULL)
-
-	const int data_size = mpi_sizeof(c);
-
-	#pragma omp critical
-	{
-		#if defined(USE_MPI)
-			const MPI_Datatype type_name = mpi_type(c);
-
-			if (rank == 0)
-			{
-				if(fwrite(array, length, data_size, stream) != (size_t) length)
-				{
-					PRINT_ERROR("unable to write %d elements from process 0\n", length)
-				}
-
-				for (int source = 1; source < size; ++source)
-				{
-					int message_sent = (int) false;
-
-					MPI_Iprobe(source, 731,
-					           MPI_COMM_WORLD, &message_sent, MPI_STATUS_IGNORE);
-
-					if (message_sent)
-					{
-						int length = 0;
-
-						MPI_Recv(&length, 1, MPI_INT,
-						         source, 731, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-						void *new_array = allocate(length, data_size, false);
-
-						MPI_Recv(new_array, length, type_name,
-						         source, 732, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-						if(fwrite(array, length, data_size, stream) != (size_t) length)
-						{
-							PRINT_ERROR("unable to write %d elements from process %d\n", length, source)
-						}
-
-						free(new_array);
-					}
-				}
-			}
-			else
-			{
-				MPI_Request info;
-
-				MPI_Isend(&length, 1, MPI_INT, 0, 731, MPI_COMM_WORLD, &info);
-
-				MPI_Isend(array, length, type_name, 0, 732, MPI_COMM_WORLD, &info);
-			}
-		#else
-			if(fwrite(array, length, data_size, stream) != (size_t) length)
-			{
-				PRINT_ERROR("unable to write %d elements from process 0\n", length)
-			}
-		#endif
-	}
-
-	return;
-}
-*/
 
 /******************************************************************************
 
@@ -989,10 +844,10 @@ mpi_vector *mpi_matrix_eigenpair(const mpi_matrix *m,
 	ASSERT(m != NULL)
 	ASSERT_COL_INDEX(m, n)
 
+	mpi_vector *eigenvec = allocate(1, sizeof(struct mpi_vector), true);
+
 	#if defined(USE_PETSC) && defined(USE_SLEPC)
 	{
-		mpi_vector *eigenvec = allocate(1, sizeof(struct mpi_vector), true);
-
 		int info = MatCreateVecs(m->data, NULL, &eigenvec->data);
 
 		CHECK_PETSC_ERROR("MatCreateVecs()", info, true)
@@ -1011,10 +866,21 @@ mpi_vector *mpi_matrix_eigenpair(const mpi_matrix *m,
 
 		return eigenvec;
 	}
-	#endif
+	#else
+	{
+		ASSERT(m->eigenval != NULL)
 
-	*eigenval = 0.0;
-	return NULL;
+		*eigenval = m->eigenval[n];
+
+		if (matrix_using_magma())
+			eigenvec->data = matrix_get_raw_row(m->data, n);
+		else
+			eigenvec->data = matrix_get_raw_col(m->data, n);
+
+		eigenvec->length = matrix_rows(m->data);
+		return eigenvec;
+	}
+	#endif
 }
 
 /******************************************************************************
@@ -1034,6 +900,7 @@ void mpi_vector_write(const mpi_vector *v,
 	ASSERT(v != NULL)
 	ASSERT(n_min > -1)
 	ASSERT(n_max > n_min)
+	ASSERT(n_max < v->lenght)
 
 	if (mpi_rank() == 0)
 	{
@@ -1065,9 +932,9 @@ void mpi_vector_write(const mpi_vector *v,
 			else
 			{
 /*
- *				NOTE: when this if-block is false a delay is used to make sure other
- *				processes had enough time to send at least the first data received
- *				by the for-block below. Ten milliseconds are used.
+ *			NOTE: when this if-block is false a delay is used to make sure other
+ *			processes had enough time to send at least the first data received
+ *			by the for-block below. Ten milliseconds are used.
  */
 				sleep(0.010);
 			}
@@ -1094,6 +961,10 @@ void mpi_vector_write(const mpi_vector *v,
 				mpi_send(0, 1, 'd', &value);
 			}
 		}
+	}
+	#else
+	{
+		fwrite(v->data + n_min, sizeof(double), n_max, stream);
 	}
 	#endif
 }
