@@ -287,6 +287,76 @@ double *math_wigner_d(const double k_in,
 
 /******************************************************************************
 
+ Function math_wigner_d(): returns the km matrix element of a Wigner d function
+ as function of an angle beta, in degree, for all j values in [0, j_in]. The
+ returned pointer points to 2*j_in elements. The algorithm is a port of a
+ Fortran version available from Ref. [1]. Half-integer input parameters
+ are accepted.
+
+ NOTE: undefined results are considered zero.
+
+ NOTE: the maximum j-value considered is 46340.
+
+******************************************************************************/
+
+double math_wigner_d2(const double n,
+                      const double m,
+                      const double j,
+                      const double beta)
+{
+	ASSERT(n >= m)
+	ASSERT(m >= 0)
+	ASSERT(j > -1.0)
+	ASSERT(j < 46340.0)
+
+	const int nm_sum = as_int(n + m);
+
+	const int nm_sub = as_int(n - m);
+
+	const double x = beta*M_PI/180.0;
+
+	const double cosx = cos(x/2.0);
+
+	const double sinx = sin(x/2.0);
+
+	/* Eq. (20) */
+	const double seed_c = pow(cosx, nm_sum);
+
+	/* Eq. (20) */
+	const double seed_s = pow(sinx, nm_sub);
+
+	/* Eq. (21) */
+	const double seed_e = sqrt(math_factorial(n)/(math_factorial(nm_sum)*math_factorial(nm_sub)));
+
+	const double seed = seed_c*seed_s*seed_e;
+
+	if (j <= n) return seed;
+
+	const double t = 2.0*pow(sinx, 2);
+
+	const double i = n*m;
+
+	const double h = j*(j - 2.0);
+
+	const double g = j + n;
+
+	const double f = j - n;
+
+	const double e = j + m;
+
+	const double d = j - m;
+
+	const double c = 1.0/((j - 2.0)*sqrt(g*f*e*d));
+
+	const double b = c*j*sqrt((g - 2.0)*(f - 2.0)*(e - 2.0)*(d - 2.0));
+
+	const double a = c*(2.0*j - 2.0)*((h - i) - h*t);
+
+	return a*seed*sqrt((j - 1.0)/(e*d))*(d - j*t) - b*seed;
+}
+
+/******************************************************************************
+
  Function math_integral_yyy(): Eq. (4.34), Pag 62.
 
 ******************************************************************************/
@@ -728,15 +798,14 @@ double math_miser_mcarlo(const int n,
 
 ******************************************************************************/
 
-int *math_bubble_sort(const int n_max, const double x[])
+size_t *math_bubble_sort(const size_t n_max, const double x[])
 {
-	ASSERT(n_max > 0)
 	ASSERT(x != NULL)
 
-	int *index = allocate(n_max, sizeof(int), false);
+	size_t *index = allocate(n_max, sizeof(size_t), false);
 
-	for (int n = (n_max - 2); n > -1; --n)
-		for (int m = 0; m <= n; ++m)
+	for (size_t n = (n_max - 2); n < n_max; --n)
+		for (size_t m = 0; m <= n; ++m)
 			if (x[m] > x[m + 1])
 			{
 				index[m] = m + 1;

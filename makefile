@@ -353,53 +353,53 @@ drivers: d_fgh_basis pes_print basis_print c_print multipole_print a+d_fgh_basis
 
 MODULES_DIR = modules
 
-matrix: $(MODULES_DIR)/matrix.c $(MODULES_DIR)/matrix.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
+matrix: $(MODULES_DIR)/matrix.c $(MODULES_DIR)/matrix.h $(MODULES_DIR)/gsl_lib.h $(MODULES_DIR)/globals.h
+	@echo "$<:"
 	$(CC) $(CFLAGS) $(LINEAR_ALGEBRA_INC) -D$(USE_MACRO) -c $<
 	@echo
 
 nist: $(MODULES_DIR)/nist.c $(MODULES_DIR)/nist.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
 johnson: $(MODULES_DIR)/johnson.c $(MODULES_DIR)/johnson.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
 pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/math.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/cartesian.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $(PES_MACRO) -c $<
 	@echo
 
 file: $(MODULES_DIR)/file.c $(MODULES_DIR)/file.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
 math: $(MODULES_DIR)/math.c $(MODULES_DIR)/math.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
 mpi_lib: $(MODULES_DIR)/mpi_lib.c $(MODULES_DIR)/matrix.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/c_lib.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $(MPI_INC) $(PETSC_INC) $(SLEPC_INC) -c $<
 	@echo
 
 blas_lib: $(MODULES_DIR)/blas_lib.c $(MODULES_DIR)/blas_lib.h $(MODULES_DIR)/gsl_lib.h $(MODULES_DIR)/c_lib.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
 fgh: $(MODULES_DIR)/fgh.c $(MODULES_DIR)/fgh.h $(MODULES_DIR)/file.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
 spline: $(MODULES_DIR)/spline.c $(MODULES_DIR)/spline.h $(MODULES_DIR)/gsl_lib.h $(MODULES_DIR)/globals.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
@@ -413,93 +413,93 @@ spline: $(MODULES_DIR)/spline.c $(MODULES_DIR)/spline.h $(MODULES_DIR)/gsl_lib.h
 #
 
 d_fgh_basis: d_fgh_basis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/fgh.h $(MODULES_DIR)/pes.h $(PES_OBJECT) nist.o mpi_lib.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o math.o fgh.o pes.o nist.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/spline.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/nist.h $(MODULES_DIR)/pes.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o mpi_lib.o pes.o spline.o file.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 pes_print: pes_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 basis_print: basis_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h mpi_lib.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o fgh.o mpi_lib.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 c_print: c_print.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 m_basis_std: m_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o mpi_lib.o matrix.o file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 a+d_fgh_basis: a+d_fgh_basis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h $(MODULES_DIR)/pes.h math.o nist.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out mpi_lib.o matrix.o file.o fgh.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h matrix.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 test_suit: test_suit.c $(MODULES_DIR)/matrix.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o math.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 a+d_multipole: a+d_multipole.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 multipole_print: multipole_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h nist.o math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o pes.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 utils: utils.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -c
 	@echo
 
 # TODO: abcd_pes_print driver is a temporary driver.
 abcd_pes_print: abcd_pes_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h $(MODULES_DIR)/pes.h math.o nist.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 a+d_cmatrix: a+d_cmatrix.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h nist.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out mpi_lib.o matrix.o math.o file.o fgh.o pes.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 pec_print: pec_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 basis_resize: basis_resize.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h matrix.o file.o fgh.o mpi_lib.o math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o fgh.o mpi_lib.o math.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 a+t_multipole: a+t_multipole.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 numerov: numerov.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT) math.o nist.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out utils.o matrix.o file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
@@ -535,94 +535,99 @@ setup:
 TOOLS_DIR = tools
 
 3j: $(TOOLS_DIR)/3j.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 6j: $(TOOLS_DIR)/6j.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 9j: $(TOOLS_DIR)/9j.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 sphe_harmonics: $(TOOLS_DIR)/sphe_harmonics.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 percival_seaton: $(TOOLS_DIR)/percival_seaton.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 sparse_eigen: $(TOOLS_DIR)/sparse_eigen.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out mpi_lib.o matrix.o file.o $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 dgemm_timer: $(TOOLS_DIR)/dgemm_timer.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 gaunt: $(TOOLS_DIR)/gaunt.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 mass: $(TOOLS_DIR)/mass.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/nist.h nist.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out nist.o $(LDFLAGS)
 	@echo
 
 simpson_timer: $(TOOLS_DIR)/simpson_timer.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 gauss_legendre_timer: $(TOOLS_DIR)/gauss_legendre_timer.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 legendre_poly: $(TOOLS_DIR)/legendre_poly.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 mpi_tester: $(TOOLS_DIR)/mpi_tester.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out mpi_lib.o $(LDFLAGS)
 	@echo
 
 multipole_integrand: $(TOOLS_DIR)/multipole_integrand.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/pes.h $(PES_OBJECT) nist.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(FORT_LIB)
 	@echo
 
 simpson: $(TOOLS_DIR)/simpson.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o file.o math.o $(LDFLAGS)
 	@echo
 
 file_spline: $(TOOLS_DIR)/file_spline.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/spline.h $(MODULES_DIR)/file.h
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o spline.o file.o $(LDFLAGS)
 	@echo
 
 wigner_d: $(TOOLS_DIR)/wigner_d.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/math.h math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out math.o $(LDFLAGS)
 	@echo
 
 mm_csection: $(TOOLS_DIR)/mm_csection.c $(TOOLS_DIR)/mm_dcsection.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h file.o math.o
-	@echo "\033[31m$<\033[0m"
+	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out file.o math.o $(LDFLAGS)
 	$(CC) $(CFLAGS) $(TOOLS_DIR)/mm_dcsection.c -o mm_dcsection.out file.o math.o $(LDFLAGS)
+	@echo
+
+cmatrix_check: $(TOOLS_DIR)/cmatrix_check.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
+	@echo "$<:"
+	$(CC) $(CFLAGS) $< -o $@.out matrix.o file.o $(LDFLAGS)
 	@echo
 
 #

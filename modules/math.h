@@ -71,6 +71,11 @@
 	                      const double j_in,
 	                      const double beta);
 
+	double math_wigner_d2(const double n,
+	                      const double m,
+	                      const double j,
+	                      const double beta);
+
 	double math_integral_yyy(const int j1, const int j2, const int j3,
 	                         const int m1, const int m2, const int m3);
 
@@ -124,7 +129,7 @@
 	                         void *params,
 	                         double (*f)(double x[], size_t n, void *params));
 
-	int *math_bubble_sort(const int n_max, const double x[]);
+	size_t *math_bubble_sort(const size_t n_max, const double x[]);
 
 	double math_factorial(const int n);
 
