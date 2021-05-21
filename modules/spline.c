@@ -10,11 +10,10 @@
 
 #include "spline.h"
 #include "gsl_lib.h"
-#include "globals.h"
 
 struct spline
 {
-	int grid_size;
+	size_t grid_size;
 	const double *x, *f;
 
 	gsl_interp *data;
@@ -32,7 +31,7 @@ struct spline
 
 ******************************************************************************/
 
-spline *spline_alloc(const int grid_size,
+spline *spline_alloc(const size_t grid_size,
                      const double x[], const double f[], const char type)
 {
 	ASSERT(x != NULL)
@@ -117,7 +116,7 @@ double spline_value(const spline *s, const double x)
 
 ******************************************************************************/
 
-double spline_derivative(const spline *s, const int order, const double x)
+double spline_derivative(const spline *s, const size_t order, const double x)
 {
 	ASSERT(s != NULL)
 
@@ -127,7 +126,7 @@ double spline_derivative(const spline *s, const int order, const double x)
 		case 2: return gsl_interp_eval_deriv2(s->data, s->x, s->f, x, s->state);
 
 		default:
-			PRINT_ERROR("invalid order %d\n", order)
+			PRINT_ERROR("invalid order %d\n", (int) order)
 			exit(EXIT_FAILURE);
 	}
 }
