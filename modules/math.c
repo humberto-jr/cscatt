@@ -13,6 +13,9 @@
 
  [1] fukushima2016
 
+ [2] B. R. Johnson J. Comp. Phys. 13, 445-449 (1973)
+     doi: https://doi.org/10.1016/0021-9991(73)90049-1
+
 ******************************************************************************/
 
 #include "math.h"
@@ -24,15 +27,12 @@ static double abs_error = 1.0E-6;
 /******************************************************************************
 
  Function math_legendre_poly(): returns a Legendre polynomial of order l at x
- in [-1, 1].
-
- NOTE: l is non-negative.
+ in [-1, 1]. Where, l is positive.
 
 ******************************************************************************/
 
-double math_legendre_poly(const int l, const double x)
+double math_legendre_poly(const size_t l, const double x)
 {
-	ASSERT(l >= 0)
 	ASSERT(fabs(x) <= 1.0)
 
 	return gsl_sf_legendre_Pl(l, x);
@@ -103,6 +103,32 @@ double math_wigner_9j(const int a, const int b, const int c,
 
 {
 	return gsl_sf_coupling_9j(2*a, 2*b, 2*c, 2*d, 2*e, 2*f, 2*g, 2*h, 2*i);
+}
+
+/******************************************************************************
+
+ Function math_sphe_bessel(): returns four types of spherical Bessel functions;
+ regular function j(l, x) if type = 'j'; irregular function y(l, x) if type =
+ 'y'; modified regular function i(l, x) if type = 'i'; modified irregular
+ function k(l, x) if type = 'k'. Where, l and x are positive.
+
+******************************************************************************/
+
+double math_sphe_bessel(const char type, const size_t l, const double x)
+{
+	ASSERT(x >= 0.0)
+
+	switch (type)
+	{
+		case 'j': return gsl_sf_bessel_jl(l, x);
+		case 'y': return gsl_sf_bessel_yl(l, x);
+		case 'i': return gsl_sf_bessel_il_scaled(l, x);
+		case 'k': return gsl_sf_bessel_kl_scaled(l, x);
+
+		default:
+			PRINT_ERROR("invalid type %c\n", type)
+			exit(EXIT_FAILURE);
+	}
 }
 
 /******************************************************************************
@@ -523,8 +549,7 @@ double math_simpson_array(const double a,
 
 double math_qag(const double a,
                 const double b,
-                void *params,
-                double (*f)(double x, void *params))
+                void *params, double (*f)(double x, void *params))
 {
 	gsl_function gsl_f =
 	{
@@ -541,43 +566,6 @@ double math_qag(const double a,
 
 	const int info = gsl_integration_qag(&gsl_f, a, b, abs_error, 0.0,
 	                                     workspace_size, GSL_INTEG_GAUSS61, work, &result, &error);
-
-	gsl_integration_workspace_free(work);
-
-	if (info != 0)
-	{
-		PRINT_ERROR("%s; error = %f\n", gsl_strerror(info), error)
-	}
-
-	return result;
-}
-
-/******************************************************************************
-
- Function math_qag(): returns the integral of f = f(x) from a to b, using a 61
- point Gauss-Kronrod rule in a QAG framework. Where, f and all parameters upon
- which it depends are given using a math_qag_integrand object.
-
-******************************************************************************/
-
-double _math_qag(const math_qag_integrand *job)
-{
-	ASSERT(job != NULL)
-
-	gsl_function f =
-	{
-		.params = job->params,
-		.function = job->integrand
-	};
-
-	gsl_integration_workspace *work = gsl_integration_workspace_alloc(job->size);
-
-	ASSERT(work != NULL)
-
-	double result = 0.0, error = 0.0;
-
-	const int info = gsl_integration_qag(&f, job->a, job->b, job->error, 0.0,
-	                                     job->size, GSL_INTEG_GAUSS61, work, &result, &error);
 
 	gsl_integration_workspace_free(work);
 
@@ -615,42 +603,6 @@ double math_qags(const double a,
 
 	const int info = gsl_integration_qags(&gsl_f, a, b, abs_error, 0.0,
 	                                      workspace_size, work, &result, &error);
-
-	gsl_integration_workspace_free(work);
-
-	if (info != 0)
-	{
-		PRINT_ERROR("%s; error = %f\n", gsl_strerror(info), error)
-	}
-
-	return result;
-}
-
-/******************************************************************************
-
- Function math_qags(): the same as math_qag() but using a smaller order in the
- Gauss-Kronrod rule (21) and assuming that f may be singular.
-
-******************************************************************************/
-
-double _math_qags(const math_qag_integrand *job)
-{
-	ASSERT(job != NULL)
-
-	gsl_function f =
-	{
-		.params = job->params,
-		.function = job->integrand
-	};
-
-	gsl_integration_workspace *work = gsl_integration_workspace_alloc(job->size);
-
-	ASSERT(work != NULL)
-
-	double result = 0.0, error = 0.0;
-
-	const int info = gsl_integration_qags(&f, job->a, job->b, job->error,
-	                                      0.0, job->size, work, &result, &error);
 
 	gsl_integration_workspace_free(work);
 

@@ -2,27 +2,7 @@
 	#define MATH_HEADER
 	#include "globals.h"
 
-	struct math_qag_integrand
-	{
-		int size;
-		void *params;
-		double a, b, error;
-		double (*integrand)(double x, void *params);
-	};
-
-	typedef struct math_qag_integrand math_qag_integrand;
-
-	struct math_lanczos_setup
-	{
-		void *params;
-		int n, n_max, max_step;
-		double *start_vector, *eigenval, *eigenvec;
-		void (*product)(const int, const double *, double *, void *);
-	};
-
-	typedef struct math_lanczos_setup math_lanczos_setup;
-
-	double math_legendre_poly(const int l, const double x);
+	double math_legendre_poly(const size_t l, const double x);
 
 	double math_sphe_harmonics(const int l, const int m,
 	                           const double theta, const double phi);
@@ -36,6 +16,8 @@
 	double math_wigner_9j(const int a, const int b, const int c,
 	                      const int d, const int e, const int f,
 	                      const int g, const int h, const int i);
+
+	double math_sphe_bessel(const char type, const size_t l, const double x);
 
 	double math_clebsch_gordan(const int j1, const int j2, const int j3,
 	                           const int m1, const int m2, const int m3);
