@@ -1,5 +1,3 @@
-#include "c_lib.h"
-#include "utils.h"
 #include "string.h"
 
 #define STRING_DEFAULT_LENGTH 1024
@@ -10,7 +8,14 @@ struct string
 	size_t length, max_length, counter;
 };
 
-void string_increase_storage(string *s)
+/******************************************************************************
+
+ Function string_increase_storage(): auxiliar function to increase the internal
+ maximum length of the internal string array.
+
+******************************************************************************/
+
+static void string_increase_storage(string *s)
 {
 	s->max_length += STRING_DEFAULT_LENGTH + 1;
 
@@ -18,6 +23,12 @@ void string_increase_storage(string *s)
 
 	ASSERT(s->array != NULL)
 }
+
+/******************************************************************************
+
+ Function string_alloc(): allocate resources for a new string.
+
+******************************************************************************/
 
 string *string_alloc()
 {
@@ -28,6 +39,12 @@ string *string_alloc()
 	return s;
 }
 
+/******************************************************************************
+
+ Function string_free(): release resources allocated by string_alloc().
+
+******************************************************************************/
+
 void string_free(string *s)
 {
 	if (s->token != NULL) free(s->token);
@@ -36,6 +53,12 @@ void string_free(string *s)
 
 	free(s);
 }
+
+/******************************************************************************
+
+ Function string_set():
+
+******************************************************************************/
 
 void string_set(string *s, const char text[])
 {
@@ -54,15 +77,34 @@ void string_set(string *s, const char text[])
 	s->length = length;
 }
 
+/******************************************************************************
+
+ Function string_length(): return the length of a string s.
+
+******************************************************************************/
+
 size_t string_length(const string *s)
 {
 	return s->length;
 }
 
-int string_max_length(const string *s)
+/******************************************************************************
+
+ Function string_max_length(): return the physical maximum length of a string s
+ that may be bigger than the actual length of the string.
+
+******************************************************************************/
+
+size_t string_max_length(const string *s)
 {
 	return s->max_length;
 }
+
+/******************************************************************************
+
+ Function string_swap(): swap the content of strings a and b.
+
+******************************************************************************/
 
 void string_swap(string *a, string *b)
 {
@@ -84,6 +126,13 @@ void string_swap(string *a, string *b)
 	a->counter = b_counter;
 	a->max_length = b_max_length;
 }
+
+/******************************************************************************
+
+ Function string_substring(): returns a substring of a string s from a starting
+ to an ending character.
+
+******************************************************************************/
 
 string *string_substring(const string *s, const size_t start, const size_t end)
 {
@@ -107,15 +156,22 @@ string *string_substring(const string *s, const size_t start, const size_t end)
 	return new_s;
 }
 
+/******************************************************************************
+
+ Function string_crop(): cuts a string s from a starting to an ending character.
+
+******************************************************************************/
+
 void string_crop(string *s, const size_t start, const size_t end)
 {
 	if (start == 0)
 	{
+		ASSERT(end < s->length)
+
 		s->length = end + 1;
 		s->array[end + 1] = '\0';
 	}
-
-	else if (start > 0)
+	else
 	{
 		string *new_s = string_substring(s, start, end);
 
@@ -125,10 +181,23 @@ void string_crop(string *s, const size_t start, const size_t end)
 	}
 }
 
+/******************************************************************************
+
+ Function string_copy(): returns a copy of a string s.
+
+******************************************************************************/
+
 string *string_copy(const string *s)
 {
 	return string_substring(s, 0, s->length - 1);
 }
+
+/******************************************************************************
+
+ Function string_append(): appends a given text to the actual content of a
+ string s.
+
+******************************************************************************/
 
 void string_append(string *s, const char text[])
 {
@@ -147,6 +216,13 @@ void string_append(string *s, const char text[])
 	s->array[s->length] = '\0';
 }
 
+/******************************************************************************
+
+ Function string_print(): prints the content of a given string s in a stream.
+ Where, end_line = true adds '\n' at the end.
+
+******************************************************************************/
+
 void string_print(const string *s, FILE *stream, const bool end_line)
 {
 	ASSERT(stream != NULL)
@@ -157,7 +233,14 @@ void string_print(const string *s, FILE *stream, const bool end_line)
 		fprintf(stream, "%s", s->array);
 }
 
-int string_count(const string *s, const char pattern[])
+/******************************************************************************
+
+ Function string_count(): counts all occurrences of a given pattern in a string
+ s.
+
+******************************************************************************/
+
+size_t string_count(const string *s, const char pattern[])
 {
 	ASSERT(pattern != NULL)
 
@@ -170,6 +253,13 @@ int string_count(const string *s, const char pattern[])
 
 	return counter;
 }
+
+/******************************************************************************
+
+ Function string_insert(): inserts a given text at the n-th character of a
+ string s.
+
+******************************************************************************/
 
 void string_insert(string *s, const size_t n, const char text[])
 {
@@ -186,6 +276,13 @@ void string_insert(string *s, const size_t n, const char text[])
 	string_free(old_s);
 }
 
+/******************************************************************************
+
+ Function string_remove(): removes a substring of a string s from a starting to
+ an ending character.
+
+******************************************************************************/
+
 void string_remove(string *s, const size_t start, const size_t end)
 {
 	ASSERT(end >= start)
@@ -200,6 +297,12 @@ void string_remove(string *s, const size_t start, const size_t end)
 
 	string_free(old_s);
 }
+
+/******************************************************************************
+
+ Function string_replace_all():
+
+******************************************************************************/
 
 void string_replace_all(string *s, const char pattern[], const char insert[])
 {
@@ -239,11 +342,18 @@ void string_replace_all(string *s, const char pattern[], const char insert[])
 	}
 }
 
+/******************************************************************************
+
+ Function string_replace_all():
+
+******************************************************************************/
+
 void string_replace_at(string *s,
                        const char pattern[], const char insert[], const size_t n)
 {
 	ASSERT(insert != NULL)
 	ASSERT(pattern != NULL)
+
 	ASSERT(n < s->length)
 	ASSERT(strlen(pattern) == strlen(insert))
 
@@ -252,6 +362,12 @@ void string_replace_at(string *s,
 	if (strncmp(s->array + n, pattern, length) == 0)
 		strncpy(s->array + n, insert, length);
 }
+
+/******************************************************************************
+
+ Function string_right_trim():
+
+******************************************************************************/
 
 void string_right_trim(string *s)
 {
@@ -269,6 +385,12 @@ void string_right_trim(string *s)
 
 	s->array[s->length] = '\0';
 }
+
+/******************************************************************************
+
+ Function string_left_trim():
+
+******************************************************************************/
 
 void string_left_trim(string *s)
 {
@@ -288,11 +410,23 @@ void string_left_trim(string *s)
 		s->array[n] = s->array[counter + n];
 }
 
+/******************************************************************************
+
+ Function string_trim():
+
+******************************************************************************/
+
 void string_trim(string *s)
 {
 	string_right_trim(s);
 	string_left_trim(s);
 }
+
+/******************************************************************************
+
+ Function string_reset():
+
+******************************************************************************/
 
 void string_reset(string *s)
 {
@@ -307,12 +441,24 @@ void string_reset(string *s)
 	}
 }
 
+/******************************************************************************
+
+ Function string_at():
+
+******************************************************************************/
+
 char string_at(string *s, const size_t n)
 {
 	ASSERT(n < s->length)
 
 	return s->array[n];
 }
+
+/******************************************************************************
+
+ Function string_read_file():
+
+******************************************************************************/
 
 void string_read_file(string *s, const char filename[])
 {
@@ -345,11 +491,35 @@ void string_read_file(string *s, const char filename[])
 	fclose(stream);
 }
 
+/******************************************************************************
+
+ Function string_set_lower():
+
+******************************************************************************/
+
 void string_set_lower(string *s)
 {
 	for (size_t n = 0; n < s->length; ++n)
 		s->array[n] = tolower(s->array[n]);
 }
+
+/******************************************************************************
+
+ Function string_set_upper():
+
+******************************************************************************/
+
+void string_set_upper(string *s)
+{
+	for (size_t n = 0; n < s->length; ++n)
+		s->array[n] = toupper(s->array[n]);
+}
+
+/******************************************************************************
+
+ Function string_file_line():
+
+******************************************************************************/
 
 string *string_file_line(const string *s, const size_t n)
 {
@@ -384,11 +554,11 @@ string *string_file_line(const string *s, const size_t n)
 	return line;
 }
 
-void string_set_upper(string *s)
-{
-	for (size_t n = 0; n < s->length; ++n)
-		s->array[n] = toupper(s->array[n]);
-}
+/******************************************************************************
+
+ Function string_compare():
+
+******************************************************************************/
 
 bool string_compare(const string *a, const string *b)
 {
@@ -397,6 +567,12 @@ bool string_compare(const string *a, const string *b)
 	else
 		return false;
 }
+
+/******************************************************************************
+
+ Function string_find_first():
+
+******************************************************************************/
 
 int string_find_first(const string *s, const char pattern[])
 {
@@ -409,6 +585,12 @@ int string_find_first(const string *s, const char pattern[])
 
 	return -1;
 }
+
+/******************************************************************************
+
+ Function string_find_from():
+
+******************************************************************************/
 
 int string_find_from(const string *s, const char pattern[], const size_t start)
 {
@@ -423,10 +605,22 @@ int string_find_from(const string *s, const char pattern[], const size_t start)
 	return -1;
 }
 
+/******************************************************************************
+
+ Function string_concatenate():
+
+******************************************************************************/
+
 void string_concatenate(string *a, const string *b)
 {
 	string_append(a, b->array);
 }
+
+/******************************************************************************
+
+ Function string_as_array():
+
+******************************************************************************/
 
 char *string_as_array(const string *s)
 {
@@ -538,4 +732,20 @@ size_t string_token_length(string *s, const size_t n)
 	ASSERT(n < s->counter)
 
 	return strlen(s->token[n]);
+}
+
+/******************************************************************************
+
+ Function string_about(): prints in a given output file the conditions in which
+ the module was compiled.
+
+******************************************************************************/
+
+void string_about(FILE *output)
+{
+	ASSERT(output != NULL)
+
+	fprintf(output, "# build date  = %s\n", __DATE__);
+	fprintf(output, "# source code = %s\n", __FILE__);
+	fprintf(output, "# base length = %d\n", STRING_DEFAULT_LENGTH);
 }

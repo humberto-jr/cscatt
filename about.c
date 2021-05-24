@@ -2,6 +2,7 @@
 #include "modules/nist.h"
 #include "modules/math.h"
 #include "modules/file.h"
+#include "modules/string.h"
 #include "modules/spline.h"
 #include "modules/matrix.h"
 #include "modules/mpi_lib.h"
@@ -35,6 +36,9 @@ int main()
 
 	printf("\n");
 	spline_about(stdout);
+
+	printf("\n");
+	string_about(stdout);
 
 	return EXIT_SUCCESS;
 }

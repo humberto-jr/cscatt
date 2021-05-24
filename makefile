@@ -343,7 +343,7 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: utils matrix nist johnson pes file math mpi_lib fgh spline
+modules: utils matrix nist johnson pes file math mpi_lib fgh spline string
 drivers: d_fgh_basis pes_print basis_print c_print multipole_print a+d_fgh_basis a+d_multipole a+d_cmatrix pec_print basis_resize about
 
 #
@@ -399,6 +399,11 @@ fgh: $(MODULES_DIR)/fgh.c $(MODULES_DIR)/fgh.h $(MODULES_DIR)/file.h $(MODULES_D
 	@echo
 
 spline: $(MODULES_DIR)/spline.c $(MODULES_DIR)/spline.h $(MODULES_DIR)/gsl_lib.h $(MODULES_DIR)/globals.h
+	@echo "$<:"
+	$(CC) $(CFLAGS) -c $<
+	@echo
+
+string: $(MODULES_DIR)/string.c $(MODULES_DIR)/string.h $(MODULES_DIR)/globals.h
 	@echo "$<:"
 	$(CC) $(CFLAGS) -c $<
 	@echo

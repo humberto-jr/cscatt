@@ -1,9 +1,8 @@
 #if !defined(STRING_HEADER)
 	#define STRING_HEADER
+	#include "globals.h"
 
 	typedef struct string string;
-
-	void string_increase_storage(string *s);
 
 	string *string_alloc();
 
@@ -28,7 +27,7 @@
 
 	void string_print(const string *s, FILE *stream, const bool end_line);
 
-	int string_count(const string *s, const char pattern[]);
+	size_t string_count(const string *s, const char pattern[]);
 
 	void string_insert(string *s, const size_t n, const char text[]);
 
@@ -90,4 +89,6 @@
 	                              const char pattern[], const char insert[]);
 
 	size_t string_token_length(string *s, const size_t n);
+
+	void string_about(FILE *output);
 #endif
