@@ -88,10 +88,10 @@ spline *spline_alloc(const size_t grid_size,
 
 void spline_free(spline *s)
 {
-	ASSERT(s != NULL)
-
 	gsl_interp_accel_free(s->state);
 	gsl_interp_free(s->data);
+	s->x = NULL;
+	s->f = NULL;
 	free(s);
 }
 
@@ -104,7 +104,8 @@ void spline_free(spline *s)
 
 double spline_value(const spline *s, const double x)
 {
-	ASSERT(s != NULL)
+	ASSERT(s->x != NULL)
+	ASSERT(s->f != NULL)
 
 	return gsl_interp_eval(s->data, s->x, s->f, x, s->state);
 }
@@ -118,7 +119,8 @@ double spline_value(const spline *s, const double x)
 
 double spline_derivative(const spline *s, const size_t order, const double x)
 {
-	ASSERT(s != NULL)
+	ASSERT(s->x != NULL)
+	ASSERT(s->f != NULL)
 
 	switch (order)
 	{
@@ -140,7 +142,8 @@ double spline_derivative(const spline *s, const size_t order, const double x)
 
 double spline_integral(const spline *s, const double a, const double b)
 {
-	ASSERT(s != NULL)
+	ASSERT(s->x != NULL)
+	ASSERT(s->f != NULL)
 
 	return gsl_interp_eval_integ(s->data, s->x, s->f, a, b, s->state);
 }

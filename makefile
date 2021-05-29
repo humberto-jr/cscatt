@@ -422,9 +422,9 @@ d_fgh_basis: d_fgh_basis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MO
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o math.o fgh.o pes.o nist.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/spline.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/nist.h $(MODULES_DIR)/pes.h
+about: about.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/spline.h $(MODULES_DIR)/string.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/nist.h $(MODULES_DIR)/pes.h
 	@echo "$<:"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o mpi_lib.o pes.o spline.o file.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o mpi_lib.o pes.o spline.o string.o file.o nist.o math.o $(PES_OBJECT) $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 pes_print: pes_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o
