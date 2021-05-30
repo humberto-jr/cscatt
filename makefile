@@ -368,7 +368,7 @@ johnson: $(MODULES_DIR)/johnson.c $(MODULES_DIR)/johnson.h $(MODULES_DIR)/matrix
 	$(CC) $(CFLAGS) -c $<
 	@echo
 
-pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/math.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/cartesian.h $(MODULES_DIR)/globals.h
+pes: $(MODULES_DIR)/pes.c $(MODULES_DIR)/pes.h $(MODULES_DIR)/math.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/globals.h
 	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $(PES_MACRO) -c $<
 	@echo

@@ -2,7 +2,43 @@
 	#define MATH_HEADER
 	#include "globals.h"
 
+	#if !defined(MATH_PI)
+		#define MATH_PI 3.14159265358979323846264338328
+	#endif
+
+	#if !defined(MATH_SQRT_2PI)
+		#define MATH_SQRT_2PI 2.5066282746310005024157652848110452530069867406099383166299
+	#endif
+
+	/******************************************************************************
+
+	 Type math_xyz: represents a set of Cartesian coordinates.
+
+	******************************************************************************/
+
+	struct math_xyz
+	{
+		double x, y, z;
+	};
+
+	typedef struct math_xyz math_xyz;
+
+	double math_distance(const math_xyz *a, const math_xyz *b);
+
+	double math_dot_product(const math_xyz *a, const math_xyz *b);
+
+	double math_length(const math_xyz *a);
+
+	void math_spherical_coor(const math_xyz *a,
+	                         double *rho, double *theta, double *phi);
+
+	void math_cartesian_coor(math_xyz *a,
+	                         const double rho, const double theta, const double phi);
+
 	double math_legendre_poly(const size_t l, const double x);
+
+	double math_assoc_legendre_poly(const size_t l,
+	                                const size_t m, const double x);
 
 	double math_sphe_harmonics(const int l, const int m,
 	                           const double theta, const double phi);
@@ -36,13 +72,6 @@
 	                            const int l2,
 	                            const int lambda);
 
-	double math_ps(const int J,
-	                            const int j1,
-	                            const int j2,
-	                            const int l1,
-	                            const int l2,
-	                            const int lambda);
-
 	double math_gaunt(const int k,
 	                  const int j1,
 	                  const int j2,
@@ -67,16 +96,26 @@
 
 	void math_no_gsl_handler();
 
+	double math_sinc(const double x);
+
+	double math_sigmoid(const double x);
+
+	double math_side_c(const double side_a,
+	                   const double side_b, const double angle_c);
+
+	double math_angle_c(const double side_a,
+	                    const double side_b, const double side_c);
+
 	double math_simpson(const double a,
 	                    const double b,
-	                    const int n_max,
+	                    const size_t n_max,
 	                    const void *params,
 	                    const bool use_omp,
 	                    double (*f)(const double x, const void *params));
 
 	double math_simpson_array(const double a,
 	                          const double b,
-	                          const int n_max,
+	                          const size_t n_max,
 	                          const bool use_omp,
 	                          const double array[]);
 
@@ -122,52 +161,4 @@
 	                           double (*f)(const double x, const void *params));
 
 	void math_about(FILE *output);
-
-	/******************************************************************************
-
-	 Function math_sinc(): returns sin(x)/x for a given x.
-
-	******************************************************************************/
-
-	inline static double math_sinc(const double x)
-	{
-		return sin(x)/x;
-	}
-
-	/******************************************************************************
-
-	 Function math_sigmoid(): return the sigmoid function at x.
-
-	******************************************************************************/
-
-	inline static double math_sigmoid(const double x)
-	{
-		return 1.0/(1.0 + exp(-x));
-	}
-
-	/******************************************************************************
-
-	 Function math_side_c() uses the law of cosines to resolve the side c opposite
-	 to the interior angle C (in degrees) of a triangle with sides a, b and c.
-
-	******************************************************************************/
-
-	inline static double math_side_c(const double side_a,
-	                                 const double side_b, const double angle_c)
-	{
-		return sqrt(side_a*side_a + side_b*side_b - 2.0*side_a*side_b*cos(angle_c*M_PI/180.0));
-	}
-
-	/******************************************************************************
-
-	 Function math_angle_c() uses the law of cosines to resolve the angle C (in
-	 degrees) opposite to the side c of a triangle with sides a, b and c.
-
-	******************************************************************************/
-
-	inline static double math_angle_c(const double side_a,
-	                                  const double side_b, const double side_c)
-	{
-		return acos((side_c*side_c - side_a*side_a - side_b*side_b)/(-2.0*side_a*side_b))*180.0/M_PI;
-	}
 #endif

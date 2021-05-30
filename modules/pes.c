@@ -22,14 +22,13 @@
 
 ******************************************************************************/
 
-#include "cartesian.h"
 #include "matrix.h"
 #include "nist.h"
 #include "math.h"
 #include "file.h"
 #include "pes.h"
 
-static double mass_a = 0.0, mass_b = 0.0, mass_c = 0.0, mass_d = 0.0, inf = 1000.0;
+static double mass_a = 0.0, mass_b = 0.0, mass_c = 0.0, mass_d = 0.0, inf = 100.0;
 
 /******************************************************************************
 
@@ -309,51 +308,51 @@ double pes_abc(const char arrang,
 	/* NOTE: bc = 0, ac = 1, ab = 2. */
 	double internuc[3] = {0.0, 0.0, 0.0};
 
-	cartesian a, b, c;
+	math_xyz a, b, c;
 
 	switch (arrang)
 	{
 		case 'a':
 		{
-			c.x = 0.0;
-			c.y = r/2.0;
-			c.z = 0.0;
+			b.x = 0.0;
+			b.y = r/2.0;
+			b.z = 0.0;
 
-			b.x =  0.0;
-			b.y = -c.y;
-			b.z =  0.0;
+			c.x =  0.0;
+			c.y = -b.y;
+			c.z =  0.0;
 
-			const double cb = (c.y*mass_c + b.y*mass_b)/(mass_c + mass_b);
+			const double bc = (b.y*mass_b + c.y*mass_c)/(mass_b + mass_c);
 
 			a.x = 0.0;
-			a.y = cb + R*sin(theta*M_PI/180.0);
+			a.y = bc + R*sin(theta*M_PI/180.0);
 			a.z = R*cos(theta*M_PI/180.0);
 
 			internuc[0] = r;
-			internuc[1] = cartesian_distance(&a, &c);
-			internuc[2] = cartesian_distance(&a, &b);
+			internuc[1] = math_distance(&a, &c);
+			internuc[2] = math_distance(&a, &b);
 		}
 		break;
 
 		case 'b':
 		{
-			c.x = 0.0;
-			c.y = r/2.0;
-			c.z = 0.0;
+			a.x = 0.0;
+			a.y = r/2.0;
+			a.z = 0.0;
 
-			a.x =  0.0;
-			a.y = -c.y;
-			a.z =  0.0;
+			c.x =  0.0;
+			c.y = -a.y;
+			c.z =  0.0;
 
-			const double ca = (c.y*mass_c + a.y*mass_a)/(mass_c + mass_a);
+			const double ac = (a.y*mass_a + c.y*mass_c)/(mass_a + mass_c);
 
 			b.x = 0.0;
-			b.y = ca + R*sin(theta*M_PI/180.0);
+			b.y = ac + R*sin(theta*M_PI/180.0);
 			b.z = R*cos(theta*M_PI/180.0);
 
+			internuc[0] = math_distance(&b, &c);
 			internuc[1] = r;
-			internuc[0] = cartesian_distance(&b, &c);
-			internuc[2] = cartesian_distance(&a, &b);
+			internuc[2] = math_distance(&a, &b);
 		}
 		break;
 
@@ -373,9 +372,9 @@ double pes_abc(const char arrang,
 			c.y = ab + R*sin(theta*M_PI/180.0);
 			c.z = R*cos(theta*M_PI/180.0);
 
+			internuc[0] = math_distance(&b, &c);
+			internuc[1] = math_distance(&a, &c);
 			internuc[2] = r;
-			internuc[0] = cartesian_distance(&b, &c);
-			internuc[1] = cartesian_distance(&a, &c);
 		}
 		break;
 
@@ -429,7 +428,7 @@ double pes_abcd(const double r_bc,
 	/* NOTE: ab = 0, ac = 1, ad = 2, bc = 3, bd = 4, cd = 5. */
 	double internuc[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-	cartesian a, b, c, d, cb, cbd;
+	math_xyz a, b, c, d, cb, cbd;
 
 	c.x = 0.0;
 	c.y = r_bc/2.0;
@@ -466,12 +465,12 @@ double pes_abcd(const double r_bc,
 	}
 	#endif
 
-	internuc[0] = cartesian_distance(&a, &b);
-	internuc[1] = cartesian_distance(&a, &c);
-	internuc[2] = cartesian_distance(&a, &d);
-	internuc[3] = cartesian_distance(&b, &c);
-	internuc[4] = cartesian_distance(&b, &d);
-	internuc[5] = cartesian_distance(&c, &d);
+	internuc[0] = math_distance(&a, &b);
+	internuc[1] = math_distance(&a, &c);
+	internuc[2] = math_distance(&a, &d);
+	internuc[3] = math_distance(&b, &c);
+	internuc[4] = math_distance(&b, &d);
+	internuc[5] = math_distance(&c, &d);
 
 	return EXTERNAL_PES_NAME(internuc);
 }
@@ -830,7 +829,7 @@ void pes_multipole_write(const pes_multipole *m, FILE *output)
 /******************************************************************************
 
  Function pes_multipole_write_all(): the same as pes_multipole_write() but for
- an array of n sets. 
+ an array of n sets.
 
 ******************************************************************************/
 

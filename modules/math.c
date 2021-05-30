@@ -26,8 +26,106 @@ static double abs_error = 1.0E-6;
 
 /******************************************************************************
 
- Function math_legendre_poly(): returns a Legendre polynomial of order l at x
- in [-1, 1]. Where, l is positive.
+ Function math_distance(): resolves the distance between two points, a = (x, y,
+ z) and b = (x', y', z'), in Cartesian coordinates.
+
+******************************************************************************/
+
+double math_distance(const math_xyz *a, const math_xyz *b)
+{
+	const double x = a->x - b->x;
+	const double y = a->y - b->y;
+	const double z = a->z - b->z;
+
+	return sqrt(x*x + y*y + z*z);
+}
+
+/******************************************************************************
+
+ Function math_dot_product(): resolves the dot product between two vectors, a =
+ (x, y, z) and b = (x', y', z'), in Cartesian coordinates.
+
+******************************************************************************/
+
+double math_dot_product(const math_xyz *a, const math_xyz *b)
+{
+	return a->x*b->x + a->y*b->y + a->z*b->z;
+}
+
+/******************************************************************************
+
+ Function math_length(): resolves the length of a vector a = (x, y, z), in
+ Cartesian coordinates, measured from the origin (0, 0, 0).
+
+******************************************************************************/
+
+double math_length(const math_xyz *a)
+{
+	return sqrt(a->x*a->x + a->y*a->y + a->z*a->z);
+}
+
+/******************************************************************************
+
+ Function math_spherical_coor(): resolves a set of spherical coordinates from
+ Cartesian ones, a. If any of the angles or both are needed, NULL can be given
+ as input parameter. Angles are returned in degree.
+
+******************************************************************************/
+
+void math_spherical_coor(const math_xyz *a,
+                         double *rho, double *theta, double *phi)
+{
+	ASSERT(rho != NULL)
+
+	*rho = math_length(a);
+
+	if (*rho == 0.0)
+	{
+		if (theta != NULL) *theta = 0.0;
+		if (phi != NULL) *phi = 0.0;
+		return;
+	}
+
+	if (theta != NULL) *theta = acos(a->z/(*rho))*180.0/M_PI;
+
+	if (phi != NULL)
+	{
+		if (a->x == 0.0 && a->y == 0.0)
+			*phi = 0.0;
+
+		else if (a->x == 0.0 && a->y > 0.0)
+			*phi = 90.0;
+
+		else if (a->x == 0.0 && a->y < 0.0)
+			*phi = 270.0;
+
+		else
+			*phi = atan(a->y/a->x)*180.0/M_PI;
+	}
+}
+
+/******************************************************************************
+
+ Function math_cartesian_coor(): resolves a set of Cartesian coordinates, a,
+ from a set of spherical ones. On entry, angles are in degree.
+
+******************************************************************************/
+
+void math_cartesian_coor(math_xyz *a,
+                         const double rho, const double theta, const double phi)
+{
+	const double th = theta*M_PI/180.0;
+	const double ph = phi*M_PI/180.0;
+
+	a->x = rho*sin(th)*cos(ph);
+	a->y = rho*sin(th)*sin(ph);
+	a->z = rho*cos(th);
+}
+
+/******************************************************************************
+
+ Function math_legendre_poly(): returns a Legendre polynomial of degree l at x
+ in [-1, 1].
 
 ******************************************************************************/
 
@@ -40,25 +138,39 @@ double math_legendre_poly(const size_t l, const double x)
 
 /******************************************************************************
 
- Function math_sphe_harmonics(): returns a spherical harmonics, y, for angular
- momentum l and projection m at x = (theta, phi).
+ Function math_assoc_legendre_poly(): returns a normalized associated Legendre
+ polynomial of degree l and order m at x in [-1, 1]. Where, l >= m.
 
- NOTE: -l <= m <= +l.
+ NOTE: suitable for use in spherical harmonics.
+
+******************************************************************************/
+
+double math_assoc_legendre_poly(const size_t l, const size_t m, const double x)
+{
+	ASSERT(l >= m)
+	ASSERT(l < 2700)
+	ASSERT(fabs(x) <= 1.0)
+
+	return gsl_sf_legendre_sphPlm(l, m, x);
+}
+
+/******************************************************************************
+
+ Function math_sphe_harmonics(): returns a spherical harmonics, y, for angular
+ momentum l and projection m at x = (theta, phi). Where, -l <= m <= +l.
 
 ******************************************************************************/
 
 double math_sphe_harmonics(const int l, const int m,
                            const double theta, const double phi)
 {
-	ASSERT(l >= abs(m))
-
 	const double x = cos(theta*M_PI/180.0);
 
 	const double m_phase = (m > 0? pow(-1.0, m) : 1.0);
 
-	const double theta_wavef = gsl_sf_legendre_sphPlm(l, abs(m), x);
+	const double theta_wavef = math_assoc_legendre_poly(l, abs(m), x);
 
-	const double phi_wavef = exp(as_double(m)*phi*M_PI/180.0)/sqrt(2.0*M_PI);
+	const double phi_wavef = exp(as_double(m)*phi*M_PI/180.0)/MATH_SQRT_2PI;
 
 	/* NOTE: see Eq. 1.43 (pag. 8) of Angular Momentum by Richard N. Zare. */
 	return m_phase*theta_wavef*phi_wavef;
@@ -108,9 +220,9 @@ double math_wigner_9j(const int a, const int b, const int c,
 /******************************************************************************
 
  Function math_sphe_bessel(): returns four types of spherical Bessel functions;
- regular function j(l, x) if type = 'j'; irregular function y(l, x) if type =
- 'y'; modified regular function i(l, x) if type = 'i'; modified irregular
- function k(l, x) if type = 'k'. Where, l and x are positive.
+ the regular function j(l, x) if type = 'j'; the irregular function y(l, x) if
+ type = 'y'; the modified regular function i(l, x) if type = 'i'; the modified
+ irregular function k(l, x) if type = 'k'. Where, x is positive.
 
 ******************************************************************************/
 
@@ -134,8 +246,8 @@ double math_sphe_bessel(const char type, const size_t l, const double x)
 /******************************************************************************
 
  Function math_clebsch_gordan(): returns a Clebsch-Gordan coefficient for the
- angular momentum coupling of j1 and j2 to result in j3. Where, the m-terms are
- the respective projection.
+ angular momentum coupling of j1 and j2 to result in j3. Where, the m-terms
+ are the respective projections.
 
 ******************************************************************************/
 
@@ -445,6 +557,54 @@ void math_no_gsl_handler()
 
 /******************************************************************************
 
+ Function math_sinc(): returns sin(x)/x for a given x.
+
+******************************************************************************/
+
+double math_sinc(const double x)
+{
+	return sin(x)/x;
+}
+
+/******************************************************************************
+
+ Function math_sigmoid(): return the sigmoid function at x.
+
+******************************************************************************/
+
+double math_sigmoid(const double x)
+{
+	return 1.0/(1.0 + exp(-x));
+}
+
+/******************************************************************************
+
+ Function math_side_c() uses the law of cosines to resolve the side c opposite
+ to the interior angle C (in degrees) of a triangle with sides a, b and c.
+
+******************************************************************************/
+
+double math_side_c(const double side_a,
+                   const double side_b, const double angle_c)
+{
+	return sqrt(side_a*side_a + side_b*side_b - 2.0*side_a*side_b*cos(angle_c*M_PI/180.0));
+}
+
+/******************************************************************************
+
+ Function math_angle_c() uses the law of cosines to resolve the angle C (in
+ degrees) opposite to the side c of a triangle with sides a, b and c.
+
+******************************************************************************/
+
+double math_angle_c(const double side_a,
+                    const double side_b, const double side_c)
+{
+	return acos((side_c*side_c - side_a*side_a - side_b*side_b)/(-2.0*side_a*side_b))*180.0/M_PI;
+}
+
+/******************************************************************************
+
  Function math_simpson(): return the integral of f(x) from a to b, using the
  Simpson quadrature rule. Where, values of f are evaluated in a grid of n_max
  points and params is a struct of parameters that f may depend on (NULL if not
@@ -454,7 +614,7 @@ void math_no_gsl_handler()
 
 double math_simpson(const double a,
                     const double b,
-                    const int n_max,
+                    const size_t n_max,
                     const void *params,
                     const bool use_omp,
                     double (*f)(const double x, const void *params))
@@ -466,7 +626,7 @@ double math_simpson(const double a,
 	if (n_max%3 == 0)
 	{
 		#pragma omp parallel for default(none) shared(f, params) reduction(+:sum) if(use_omp)
-		for (int n = 1; n < (n_max - 3); n += 3)
+		for (size_t n = 1; n < (n_max - 3); n += 3)
 		{
 			sum += 3.0*f(a + as_double(n)*grid_step, params);
 			sum += 3.0*f(a + as_double(n + 1)*grid_step, params);
@@ -481,7 +641,7 @@ double math_simpson(const double a,
 	else if (n_max%2 == 0)
 	{
 		#pragma omp parallel for default(none) shared(f, params) reduction(+:sum) if(use_omp)
-		for (int n = 1; n < (n_max - 1); n += 2)
+		for (size_t n = 1; n < (n_max - 1); n += 2)
 		{
 			sum += 4.0*f(a + as_double(n)*grid_step, params);
 			sum += 2.0*f(a + as_double(n + 1)*grid_step, params);
@@ -502,7 +662,7 @@ double math_simpson(const double a,
 
 double math_simpson_array(const double a,
                           const double b,
-                          const int n_max,
+                          const size_t n_max,
                           const bool use_omp,
                           const double array[])
 {
@@ -518,7 +678,7 @@ double math_simpson_array(const double a,
 	if (n_max%3 == 0)
 	{
 		#pragma omp parallel for default(none) shared(array) reduction(+:sum) if(use_omp)
-		for (int n = 1; n < (n_max - 4); n += 3)
+		for (size_t n = 1; n < (n_max - 4); n += 3)
 			sum += 3.0*array[n] + 3.0*array[n + 1] + 2.0*array[n + 2];
 
 		sum += 3.0*array[n_max - 2];
@@ -529,7 +689,7 @@ double math_simpson_array(const double a,
 	else if (n_max%2 == 0)
 	{
 		#pragma omp parallel for default(none) shared(array) reduction(+:sum) if(use_omp)
-		for (int n = 1; n < (n_max - 2); n += 2)
+		for (size_t n = 1; n < (n_max - 2); n += 2)
 			sum += 4.0*array[n] + 2.0*array[n + 1];
 
 		return grid_step*sum/3.0;
