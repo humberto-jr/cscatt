@@ -3397,5 +3397,9 @@
 
 	isotope nist_isotope(const char s[]);
 
+	size_t nist_atomic_number(const isotope a);
+
+	size_t nist_atomic_orbitals(const isotope a);
+
 	void nist_about(FILE *output);
 #endif

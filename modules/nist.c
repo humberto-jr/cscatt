@@ -6757,7 +6757,7 @@ const char *nist_atomic_symbol(const isotope a)
 
 isotope nist_isotope(const char s[])
 {
-	for (int n = 0; n < 3352; ++n)
+	for (size_t n = 0; n < 3352; ++n)
 	{
 		const isotope enum_n = (isotope) n;
 		if (strcmp(nist_atomic_symbol(enum_n), s) == 0) return enum_n;
@@ -6765,6 +6765,6746 @@ isotope nist_isotope(const char s[])
 
 	PRINT_ERROR("invalid atomic symbol s = %s\n", s)
 	exit(EXIT_FAILURE);
+}
+
+/******************************************************************************
+
+ Function nist_atomic_number(): returns the atomic number for a given isotope.
+ See the isotope enumeration in the header file for details.
+
+******************************************************************************/
+
+size_t nist_atomic_number(const isotope a)
+{
+	switch (a)
+	{
+		case    0: return 1;    // 1H
+		case    1: return 1;    // 2H
+		case    2: return 1;    // 3H
+		case    3: return 1;    // 4H
+		case    4: return 1;    // 5H
+		case    5: return 1;    // 6H
+		case    6: return 1;    // 7H
+		case    7: return 2;    // 3He
+		case    8: return 2;    // 4He
+		case    9: return 2;    // 5He
+		case   10: return 2;    // 6He
+		case   11: return 2;    // 7He
+		case   12: return 2;    // 8He
+		case   13: return 2;    // 9He
+		case   14: return 2;    // 10He
+		case   15: return 3;    // 3Li
+		case   16: return 3;    // 4Li
+		case   17: return 3;    // 5Li
+		case   18: return 3;    // 6Li
+		case   19: return 3;    // 7Li
+		case   20: return 3;    // 8Li
+		case   21: return 3;    // 9Li
+		case   22: return 3;    // 10Li
+		case   23: return 3;    // 11Li
+		case   24: return 3;    // 12Li
+		case   25: return 3;    // 13Li
+		case   26: return 4;    // 5Be
+		case   27: return 4;    // 6Be
+		case   28: return 4;    // 7Be
+		case   29: return 4;    // 8Be
+		case   30: return 4;    // 9Be
+		case   31: return 4;    // 10Be
+		case   32: return 4;    // 11Be
+		case   33: return 4;    // 12Be
+		case   34: return 4;    // 13Be
+		case   35: return 4;    // 14Be
+		case   36: return 4;    // 15Be
+		case   37: return 4;    // 16Be
+		case   38: return 5;    // 6B
+		case   39: return 5;    // 7B
+		case   40: return 5;    // 8B
+		case   41: return 5;    // 9B
+		case   42: return 5;    // 10B
+		case   43: return 5;    // 11B
+		case   44: return 5;    // 12B
+		case   45: return 5;    // 13B
+		case   46: return 5;    // 14B
+		case   47: return 5;    // 15B
+		case   48: return 5;    // 16B
+		case   49: return 5;    // 17B
+		case   50: return 5;    // 18B
+		case   51: return 5;    // 19B
+		case   52: return 5;    // 20B
+		case   53: return 5;    // 21B
+		case   54: return 6;    // 8C
+		case   55: return 6;    // 9C
+		case   56: return 6;    // 10C
+		case   57: return 6;    // 11C
+		case   58: return 6;    // 12C
+		case   59: return 6;    // 13C
+		case   60: return 6;    // 14C
+		case   61: return 6;    // 15C
+		case   62: return 6;    // 16C
+		case   63: return 6;    // 17C
+		case   64: return 6;    // 18C
+		case   65: return 6;    // 19C
+		case   66: return 6;    // 20C
+		case   67: return 6;    // 21C
+		case   68: return 6;    // 22C
+		case   69: return 6;    // 23C
+		case   70: return 7;    // 10N
+		case   71: return 7;    // 11N
+		case   72: return 7;    // 12N
+		case   73: return 7;    // 13N
+		case   74: return 7;    // 14N
+		case   75: return 7;    // 15N
+		case   76: return 7;    // 16N
+		case   77: return 7;    // 17N
+		case   78: return 7;    // 18N
+		case   79: return 7;    // 19N
+		case   80: return 7;    // 20N
+		case   81: return 7;    // 21N
+		case   82: return 7;    // 22N
+		case   83: return 7;    // 23N
+		case   84: return 7;    // 24N
+		case   85: return 7;    // 25N
+		case   86: return 8;    // 12O
+		case   87: return 8;    // 13O
+		case   88: return 8;    // 14O
+		case   89: return 8;    // 15O
+		case   90: return 8;    // 16O
+		case   91: return 8;    // 17O
+		case   92: return 8;    // 18O
+		case   93: return 8;    // 19O
+		case   94: return 8;    // 20O
+		case   95: return 8;    // 21O
+		case   96: return 8;    // 22O
+		case   97: return 8;    // 23O
+		case   98: return 8;    // 24O
+		case   99: return 8;    // 25O
+		case  100: return 8;    // 26O
+		case  101: return 8;    // 27O
+		case  102: return 8;    // 28O
+		case  103: return 9;    // 14F
+		case  104: return 9;    // 15F
+		case  105: return 9;    // 16F
+		case  106: return 9;    // 17F
+		case  107: return 9;    // 18F
+		case  108: return 9;    // 19F
+		case  109: return 9;    // 20F
+		case  110: return 9;    // 21F
+		case  111: return 9;    // 22F
+		case  112: return 9;    // 23F
+		case  113: return 9;    // 24F
+		case  114: return 9;    // 25F
+		case  115: return 9;    // 26F
+		case  116: return 9;    // 27F
+		case  117: return 9;    // 28F
+		case  118: return 9;    // 29F
+		case  119: return 9;    // 30F
+		case  120: return 9;    // 31F
+		case  121: return 10;   // 16Ne
+		case  122: return 10;   // 17Ne
+		case  123: return 10;   // 18Ne
+		case  124: return 10;   // 19Ne
+		case  125: return 10;   // 20Ne
+		case  126: return 10;   // 21Ne
+		case  127: return 10;   // 22Ne
+		case  128: return 10;   // 23Ne
+		case  129: return 10;   // 24Ne
+		case  130: return 10;   // 25Ne
+		case  131: return 10;   // 26Ne
+		case  132: return 10;   // 27Ne
+		case  133: return 10;   // 28Ne
+		case  134: return 10;   // 29Ne
+		case  135: return 10;   // 30Ne
+		case  136: return 10;   // 31Ne
+		case  137: return 10;   // 32Ne
+		case  138: return 10;   // 33Ne
+		case  139: return 10;   // 34Ne
+		case  140: return 11;   // 18Na
+		case  141: return 11;   // 19Na
+		case  142: return 11;   // 20Na
+		case  143: return 11;   // 21Na
+		case  144: return 11;   // 22Na
+		case  145: return 11;   // 23Na
+		case  146: return 11;   // 24Na
+		case  147: return 11;   // 25Na
+		case  148: return 11;   // 26Na
+		case  149: return 11;   // 27Na
+		case  150: return 11;   // 28Na
+		case  151: return 11;   // 29Na
+		case  152: return 11;   // 30Na
+		case  153: return 11;   // 31Na
+		case  154: return 11;   // 32Na
+		case  155: return 11;   // 33Na
+		case  156: return 11;   // 34Na
+		case  157: return 11;   // 35Na
+		case  158: return 11;   // 36Na
+		case  159: return 11;   // 37Na
+		case  160: return 12;   // 19Mg
+		case  161: return 12;   // 20Mg
+		case  162: return 12;   // 21Mg
+		case  163: return 12;   // 22Mg
+		case  164: return 12;   // 23Mg
+		case  165: return 12;   // 24Mg
+		case  166: return 12;   // 25Mg
+		case  167: return 12;   // 26Mg
+		case  168: return 12;   // 27Mg
+		case  169: return 12;   // 28Mg
+		case  170: return 12;   // 29Mg
+		case  171: return 12;   // 30Mg
+		case  172: return 12;   // 31Mg
+		case  173: return 12;   // 32Mg
+		case  174: return 12;   // 33Mg
+		case  175: return 12;   // 34Mg
+		case  176: return 12;   // 35Mg
+		case  177: return 12;   // 36Mg
+		case  178: return 12;   // 37Mg
+		case  179: return 12;   // 38Mg
+		case  180: return 12;   // 39Mg
+		case  181: return 12;   // 40Mg
+		case  182: return 13;   // 21Al
+		case  183: return 13;   // 22Al
+		case  184: return 13;   // 23Al
+		case  185: return 13;   // 24Al
+		case  186: return 13;   // 25Al
+		case  187: return 13;   // 26Al
+		case  188: return 13;   // 27Al
+		case  189: return 13;   // 28Al
+		case  190: return 13;   // 29Al
+		case  191: return 13;   // 30Al
+		case  192: return 13;   // 31Al
+		case  193: return 13;   // 32Al
+		case  194: return 13;   // 33Al
+		case  195: return 13;   // 34Al
+		case  196: return 13;   // 35Al
+		case  197: return 13;   // 36Al
+		case  198: return 13;   // 37Al
+		case  199: return 13;   // 38Al
+		case  200: return 13;   // 39Al
+		case  201: return 13;   // 40Al
+		case  202: return 13;   // 41Al
+		case  203: return 13;   // 42Al
+		case  204: return 13;   // 43Al
+		case  205: return 14;   // 22Si
+		case  206: return 14;   // 23Si
+		case  207: return 14;   // 24Si
+		case  208: return 14;   // 25Si
+		case  209: return 14;   // 26Si
+		case  210: return 14;   // 27Si
+		case  211: return 14;   // 28Si
+		case  212: return 14;   // 29Si
+		case  213: return 14;   // 30Si
+		case  214: return 14;   // 31Si
+		case  215: return 14;   // 32Si
+		case  216: return 14;   // 33Si
+		case  217: return 14;   // 34Si
+		case  218: return 14;   // 35Si
+		case  219: return 14;   // 36Si
+		case  220: return 14;   // 37Si
+		case  221: return 14;   // 38Si
+		case  222: return 14;   // 39Si
+		case  223: return 14;   // 40Si
+		case  224: return 14;   // 41Si
+		case  225: return 14;   // 42Si
+		case  226: return 14;   // 43Si
+		case  227: return 14;   // 44Si
+		case  228: return 14;   // 45Si
+		case  229: return 15;   // 24P
+		case  230: return 15;   // 25P
+		case  231: return 15;   // 26P
+		case  232: return 15;   // 27P
+		case  233: return 15;   // 28P
+		case  234: return 15;   // 29P
+		case  235: return 15;   // 30P
+		case  236: return 15;   // 31P
+		case  237: return 15;   // 32P
+		case  238: return 15;   // 33P
+		case  239: return 15;   // 34P
+		case  240: return 15;   // 35P
+		case  241: return 15;   // 36P
+		case  242: return 15;   // 37P
+		case  243: return 15;   // 38P
+		case  244: return 15;   // 39P
+		case  245: return 15;   // 40P
+		case  246: return 15;   // 41P
+		case  247: return 15;   // 42P
+		case  248: return 15;   // 43P
+		case  249: return 15;   // 44P
+		case  250: return 15;   // 45P
+		case  251: return 15;   // 46P
+		case  252: return 15;   // 47P
+		case  253: return 16;   // 26S
+		case  254: return 16;   // 27S
+		case  255: return 16;   // 28S
+		case  256: return 16;   // 29S
+		case  257: return 16;   // 30S
+		case  258: return 16;   // 31S
+		case  259: return 16;   // 32S
+		case  260: return 16;   // 33S
+		case  261: return 16;   // 34S
+		case  262: return 16;   // 35S
+		case  263: return 16;   // 36S
+		case  264: return 16;   // 37S
+		case  265: return 16;   // 38S
+		case  266: return 16;   // 39S
+		case  267: return 16;   // 40S
+		case  268: return 16;   // 41S
+		case  269: return 16;   // 42S
+		case  270: return 16;   // 43S
+		case  271: return 16;   // 44S
+		case  272: return 16;   // 45S
+		case  273: return 16;   // 46S
+		case  274: return 16;   // 47S
+		case  275: return 16;   // 48S
+		case  276: return 16;   // 49S
+		case  277: return 17;   // 28Cl
+		case  278: return 17;   // 29Cl
+		case  279: return 17;   // 30Cl
+		case  280: return 17;   // 31Cl
+		case  281: return 17;   // 32Cl
+		case  282: return 17;   // 33Cl
+		case  283: return 17;   // 34Cl
+		case  284: return 17;   // 35Cl
+		case  285: return 17;   // 36Cl
+		case  286: return 17;   // 37Cl
+		case  287: return 17;   // 38Cl
+		case  288: return 17;   // 39Cl
+		case  289: return 17;   // 40Cl
+		case  290: return 17;   // 41Cl
+		case  291: return 17;   // 42Cl
+		case  292: return 17;   // 43Cl
+		case  293: return 17;   // 44Cl
+		case  294: return 17;   // 45Cl
+		case  295: return 17;   // 46Cl
+		case  296: return 17;   // 47Cl
+		case  297: return 17;   // 48Cl
+		case  298: return 17;   // 49Cl
+		case  299: return 17;   // 50Cl
+		case  300: return 17;   // 51Cl
+		case  301: return 18;   // 30Ar
+		case  302: return 18;   // 31Ar
+		case  303: return 18;   // 32Ar
+		case  304: return 18;   // 33Ar
+		case  305: return 18;   // 34Ar
+		case  306: return 18;   // 35Ar
+		case  307: return 18;   // 36Ar
+		case  308: return 18;   // 37Ar
+		case  309: return 18;   // 38Ar
+		case  310: return 18;   // 39Ar
+		case  311: return 18;   // 40Ar
+		case  312: return 18;   // 41Ar
+		case  313: return 18;   // 42Ar
+		case  314: return 18;   // 43Ar
+		case  315: return 18;   // 44Ar
+		case  316: return 18;   // 45Ar
+		case  317: return 18;   // 46Ar
+		case  318: return 18;   // 47Ar
+		case  319: return 18;   // 48Ar
+		case  320: return 18;   // 49Ar
+		case  321: return 18;   // 50Ar
+		case  322: return 18;   // 51Ar
+		case  323: return 18;   // 52Ar
+		case  324: return 18;   // 53Ar
+		case  325: return 19;   // 32K
+		case  326: return 19;   // 33K
+		case  327: return 19;   // 34K
+		case  328: return 19;   // 35K
+		case  329: return 19;   // 36K
+		case  330: return 19;   // 37K
+		case  331: return 19;   // 38K
+		case  332: return 19;   // 39K
+		case  333: return 19;   // 40K
+		case  334: return 19;   // 41K
+		case  335: return 19;   // 42K
+		case  336: return 19;   // 43K
+		case  337: return 19;   // 44K
+		case  338: return 19;   // 45K
+		case  339: return 19;   // 46K
+		case  340: return 19;   // 47K
+		case  341: return 19;   // 48K
+		case  342: return 19;   // 49K
+		case  343: return 19;   // 50K
+		case  344: return 19;   // 51K
+		case  345: return 19;   // 52K
+		case  346: return 19;   // 53K
+		case  347: return 19;   // 54K
+		case  348: return 19;   // 55K
+		case  349: return 19;   // 56K
+		case  350: return 20;   // 34Ca
+		case  351: return 20;   // 35Ca
+		case  352: return 20;   // 36Ca
+		case  353: return 20;   // 37Ca
+		case  354: return 20;   // 38Ca
+		case  355: return 20;   // 39Ca
+		case  356: return 20;   // 40Ca
+		case  357: return 20;   // 41Ca
+		case  358: return 20;   // 42Ca
+		case  359: return 20;   // 43Ca
+		case  360: return 20;   // 44Ca
+		case  361: return 20;   // 45Ca
+		case  362: return 20;   // 46Ca
+		case  363: return 20;   // 47Ca
+		case  364: return 20;   // 48Ca
+		case  365: return 20;   // 49Ca
+		case  366: return 20;   // 50Ca
+		case  367: return 20;   // 51Ca
+		case  368: return 20;   // 52Ca
+		case  369: return 20;   // 53Ca
+		case  370: return 20;   // 54Ca
+		case  371: return 20;   // 55Ca
+		case  372: return 20;   // 56Ca
+		case  373: return 20;   // 57Ca
+		case  374: return 20;   // 58Ca
+		case  375: return 21;   // 36Sc
+		case  376: return 21;   // 37Sc
+		case  377: return 21;   // 38Sc
+		case  378: return 21;   // 39Sc
+		case  379: return 21;   // 40Sc
+		case  380: return 21;   // 41Sc
+		case  381: return 21;   // 42Sc
+		case  382: return 21;   // 43Sc
+		case  383: return 21;   // 44Sc
+		case  384: return 21;   // 45Sc
+		case  385: return 21;   // 46Sc
+		case  386: return 21;   // 47Sc
+		case  387: return 21;   // 48Sc
+		case  388: return 21;   // 49Sc
+		case  389: return 21;   // 50Sc
+		case  390: return 21;   // 51Sc
+		case  391: return 21;   // 52Sc
+		case  392: return 21;   // 53Sc
+		case  393: return 21;   // 54Sc
+		case  394: return 21;   // 55Sc
+		case  395: return 21;   // 56Sc
+		case  396: return 21;   // 57Sc
+		case  397: return 21;   // 58Sc
+		case  398: return 21;   // 59Sc
+		case  399: return 21;   // 60Sc
+		case  400: return 21;   // 61Sc
+		case  401: return 22;   // 38Ti
+		case  402: return 22;   // 39Ti
+		case  403: return 22;   // 40Ti
+		case  404: return 22;   // 41Ti
+		case  405: return 22;   // 42Ti
+		case  406: return 22;   // 43Ti
+		case  407: return 22;   // 44Ti
+		case  408: return 22;   // 45Ti
+		case  409: return 22;   // 46Ti
+		case  410: return 22;   // 47Ti
+		case  411: return 22;   // 48Ti
+		case  412: return 22;   // 49Ti
+		case  413: return 22;   // 50Ti
+		case  414: return 22;   // 51Ti
+		case  415: return 22;   // 52Ti
+		case  416: return 22;   // 53Ti
+		case  417: return 22;   // 54Ti
+		case  418: return 22;   // 55Ti
+		case  419: return 22;   // 56Ti
+		case  420: return 22;   // 57Ti
+		case  421: return 22;   // 58Ti
+		case  422: return 22;   // 59Ti
+		case  423: return 22;   // 60Ti
+		case  424: return 22;   // 61Ti
+		case  425: return 22;   // 62Ti
+		case  426: return 22;   // 63Ti
+		case  427: return 23;   // 40V
+		case  428: return 23;   // 41V
+		case  429: return 23;   // 42V
+		case  430: return 23;   // 43V
+		case  431: return 23;   // 44V
+		case  432: return 23;   // 45V
+		case  433: return 23;   // 46V
+		case  434: return 23;   // 47V
+		case  435: return 23;   // 48V
+		case  436: return 23;   // 49V
+		case  437: return 23;   // 50V
+		case  438: return 23;   // 51V
+		case  439: return 23;   // 52V
+		case  440: return 23;   // 53V
+		case  441: return 23;   // 54V
+		case  442: return 23;   // 55V
+		case  443: return 23;   // 56V
+		case  444: return 23;   // 57V
+		case  445: return 23;   // 58V
+		case  446: return 23;   // 59V
+		case  447: return 23;   // 60V
+		case  448: return 23;   // 61V
+		case  449: return 23;   // 62V
+		case  450: return 23;   // 63V
+		case  451: return 23;   // 64V
+		case  452: return 23;   // 65V
+		case  453: return 23;   // 66V
+		case  454: return 24;   // 42Cr
+		case  455: return 24;   // 43Cr
+		case  456: return 24;   // 44Cr
+		case  457: return 24;   // 45Cr
+		case  458: return 24;   // 46Cr
+		case  459: return 24;   // 47Cr
+		case  460: return 24;   // 48Cr
+		case  461: return 24;   // 49Cr
+		case  462: return 24;   // 50Cr
+		case  463: return 24;   // 51Cr
+		case  464: return 24;   // 52Cr
+		case  465: return 24;   // 53Cr
+		case  466: return 24;   // 54Cr
+		case  467: return 24;   // 55Cr
+		case  468: return 24;   // 56Cr
+		case  469: return 24;   // 57Cr
+		case  470: return 24;   // 58Cr
+		case  471: return 24;   // 59Cr
+		case  472: return 24;   // 60Cr
+		case  473: return 24;   // 61Cr
+		case  474: return 24;   // 62Cr
+		case  475: return 24;   // 63Cr
+		case  476: return 24;   // 64Cr
+		case  477: return 24;   // 65Cr
+		case  478: return 24;   // 66Cr
+		case  479: return 24;   // 67Cr
+		case  480: return 24;   // 68Cr
+		case  481: return 25;   // 44Mn
+		case  482: return 25;   // 45Mn
+		case  483: return 25;   // 46Mn
+		case  484: return 25;   // 47Mn
+		case  485: return 25;   // 48Mn
+		case  486: return 25;   // 49Mn
+		case  487: return 25;   // 50Mn
+		case  488: return 25;   // 51Mn
+		case  489: return 25;   // 52Mn
+		case  490: return 25;   // 53Mn
+		case  491: return 25;   // 54Mn
+		case  492: return 25;   // 55Mn
+		case  493: return 25;   // 56Mn
+		case  494: return 25;   // 57Mn
+		case  495: return 25;   // 58Mn
+		case  496: return 25;   // 59Mn
+		case  497: return 25;   // 60Mn
+		case  498: return 25;   // 61Mn
+		case  499: return 25;   // 62Mn
+		case  500: return 25;   // 63Mn
+		case  501: return 25;   // 64Mn
+		case  502: return 25;   // 65Mn
+		case  503: return 25;   // 66Mn
+		case  504: return 25;   // 67Mn
+		case  505: return 25;   // 68Mn
+		case  506: return 25;   // 69Mn
+		case  507: return 25;   // 70Mn
+		case  508: return 25;   // 71Mn
+		case  509: return 26;   // 45Fe
+		case  510: return 26;   // 46Fe
+		case  511: return 26;   // 47Fe
+		case  512: return 26;   // 48Fe
+		case  513: return 26;   // 49Fe
+		case  514: return 26;   // 50Fe
+		case  515: return 26;   // 51Fe
+		case  516: return 26;   // 52Fe
+		case  517: return 26;   // 53Fe
+		case  518: return 26;   // 54Fe
+		case  519: return 26;   // 55Fe
+		case  520: return 26;   // 56Fe
+		case  521: return 26;   // 57Fe
+		case  522: return 26;   // 58Fe
+		case  523: return 26;   // 59Fe
+		case  524: return 26;   // 60Fe
+		case  525: return 26;   // 61Fe
+		case  526: return 26;   // 62Fe
+		case  527: return 26;   // 63Fe
+		case  528: return 26;   // 64Fe
+		case  529: return 26;   // 65Fe
+		case  530: return 26;   // 66Fe
+		case  531: return 26;   // 67Fe
+		case  532: return 26;   // 68Fe
+		case  533: return 26;   // 69Fe
+		case  534: return 26;   // 70Fe
+		case  535: return 26;   // 71Fe
+		case  536: return 26;   // 72Fe
+		case  537: return 26;   // 73Fe
+		case  538: return 26;   // 74Fe
+		case  539: return 27;   // 47Co
+		case  540: return 27;   // 48Co
+		case  541: return 27;   // 49Co
+		case  542: return 27;   // 50Co
+		case  543: return 27;   // 51Co
+		case  544: return 27;   // 52Co
+		case  545: return 27;   // 53Co
+		case  546: return 27;   // 54Co
+		case  547: return 27;   // 55Co
+		case  548: return 27;   // 56Co
+		case  549: return 27;   // 57Co
+		case  550: return 27;   // 58Co
+		case  551: return 27;   // 59Co
+		case  552: return 27;   // 60Co
+		case  553: return 27;   // 61Co
+		case  554: return 27;   // 62Co
+		case  555: return 27;   // 63Co
+		case  556: return 27;   // 64Co
+		case  557: return 27;   // 65Co
+		case  558: return 27;   // 66Co
+		case  559: return 27;   // 67Co
+		case  560: return 27;   // 68Co
+		case  561: return 27;   // 69Co
+		case  562: return 27;   // 70Co
+		case  563: return 27;   // 71Co
+		case  564: return 27;   // 72Co
+		case  565: return 27;   // 73Co
+		case  566: return 27;   // 74Co
+		case  567: return 27;   // 75Co
+		case  568: return 27;   // 76Co
+		case  569: return 28;   // 48Ni
+		case  570: return 28;   // 49Ni
+		case  571: return 28;   // 50Ni
+		case  572: return 28;   // 51Ni
+		case  573: return 28;   // 52Ni
+		case  574: return 28;   // 53Ni
+		case  575: return 28;   // 54Ni
+		case  576: return 28;   // 55Ni
+		case  577: return 28;   // 56Ni
+		case  578: return 28;   // 57Ni
+		case  579: return 28;   // 58Ni
+		case  580: return 28;   // 59Ni
+		case  581: return 28;   // 60Ni
+		case  582: return 28;   // 61Ni
+		case  583: return 28;   // 62Ni
+		case  584: return 28;   // 63Ni
+		case  585: return 28;   // 64Ni
+		case  586: return 28;   // 65Ni
+		case  587: return 28;   // 66Ni
+		case  588: return 28;   // 67Ni
+		case  589: return 28;   // 68Ni
+		case  590: return 28;   // 69Ni
+		case  591: return 28;   // 70Ni
+		case  592: return 28;   // 71Ni
+		case  593: return 28;   // 72Ni
+		case  594: return 28;   // 73Ni
+		case  595: return 28;   // 74Ni
+		case  596: return 28;   // 75Ni
+		case  597: return 28;   // 76Ni
+		case  598: return 28;   // 77Ni
+		case  599: return 28;   // 78Ni
+		case  600: return 28;   // 79Ni
+		case  601: return 29;   // 52Cu
+		case  602: return 29;   // 53Cu
+		case  603: return 29;   // 54Cu
+		case  604: return 29;   // 55Cu
+		case  605: return 29;   // 56Cu
+		case  606: return 29;   // 57Cu
+		case  607: return 29;   // 58Cu
+		case  608: return 29;   // 59Cu
+		case  609: return 29;   // 60Cu
+		case  610: return 29;   // 61Cu
+		case  611: return 29;   // 62Cu
+		case  612: return 29;   // 63Cu
+		case  613: return 29;   // 64Cu
+		case  614: return 29;   // 65Cu
+		case  615: return 29;   // 66Cu
+		case  616: return 29;   // 67Cu
+		case  617: return 29;   // 68Cu
+		case  618: return 29;   // 69Cu
+		case  619: return 29;   // 70Cu
+		case  620: return 29;   // 71Cu
+		case  621: return 29;   // 72Cu
+		case  622: return 29;   // 73Cu
+		case  623: return 29;   // 74Cu
+		case  624: return 29;   // 75Cu
+		case  625: return 29;   // 76Cu
+		case  626: return 29;   // 77Cu
+		case  627: return 29;   // 78Cu
+		case  628: return 29;   // 79Cu
+		case  629: return 29;   // 80Cu
+		case  630: return 29;   // 81Cu
+		case  631: return 29;   // 82Cu
+		case  632: return 30;   // 54Zn
+		case  633: return 30;   // 55Zn
+		case  634: return 30;   // 56Zn
+		case  635: return 30;   // 57Zn
+		case  636: return 30;   // 58Zn
+		case  637: return 30;   // 59Zn
+		case  638: return 30;   // 60Zn
+		case  639: return 30;   // 61Zn
+		case  640: return 30;   // 62Zn
+		case  641: return 30;   // 63Zn
+		case  642: return 30;   // 64Zn
+		case  643: return 30;   // 65Zn
+		case  644: return 30;   // 66Zn
+		case  645: return 30;   // 67Zn
+		case  646: return 30;   // 68Zn
+		case  647: return 30;   // 69Zn
+		case  648: return 30;   // 70Zn
+		case  649: return 30;   // 71Zn
+		case  650: return 30;   // 72Zn
+		case  651: return 30;   // 73Zn
+		case  652: return 30;   // 74Zn
+		case  653: return 30;   // 75Zn
+		case  654: return 30;   // 76Zn
+		case  655: return 30;   // 77Zn
+		case  656: return 30;   // 78Zn
+		case  657: return 30;   // 79Zn
+		case  658: return 30;   // 80Zn
+		case  659: return 30;   // 81Zn
+		case  660: return 30;   // 82Zn
+		case  661: return 30;   // 83Zn
+		case  662: return 30;   // 84Zn
+		case  663: return 30;   // 85Zn
+		case  664: return 31;   // 56Ga
+		case  665: return 31;   // 57Ga
+		case  666: return 31;   // 58Ga
+		case  667: return 31;   // 59Ga
+		case  668: return 31;   // 60Ga
+		case  669: return 31;   // 61Ga
+		case  670: return 31;   // 62Ga
+		case  671: return 31;   // 63Ga
+		case  672: return 31;   // 64Ga
+		case  673: return 31;   // 65Ga
+		case  674: return 31;   // 66Ga
+		case  675: return 31;   // 67Ga
+		case  676: return 31;   // 68Ga
+		case  677: return 31;   // 69Ga
+		case  678: return 31;   // 70Ga
+		case  679: return 31;   // 71Ga
+		case  680: return 31;   // 72Ga
+		case  681: return 31;   // 73Ga
+		case  682: return 31;   // 74Ga
+		case  683: return 31;   // 75Ga
+		case  684: return 31;   // 76Ga
+		case  685: return 31;   // 77Ga
+		case  686: return 31;   // 78Ga
+		case  687: return 31;   // 79Ga
+		case  688: return 31;   // 80Ga
+		case  689: return 31;   // 81Ga
+		case  690: return 31;   // 82Ga
+		case  691: return 31;   // 83Ga
+		case  692: return 31;   // 84Ga
+		case  693: return 31;   // 85Ga
+		case  694: return 31;   // 86Ga
+		case  695: return 31;   // 87Ga
+		case  696: return 32;   // 58Ge
+		case  697: return 32;   // 59Ge
+		case  698: return 32;   // 60Ge
+		case  699: return 32;   // 61Ge
+		case  700: return 32;   // 62Ge
+		case  701: return 32;   // 63Ge
+		case  702: return 32;   // 64Ge
+		case  703: return 32;   // 65Ge
+		case  704: return 32;   // 66Ge
+		case  705: return 32;   // 67Ge
+		case  706: return 32;   // 68Ge
+		case  707: return 32;   // 69Ge
+		case  708: return 32;   // 70Ge
+		case  709: return 32;   // 71Ge
+		case  710: return 32;   // 72Ge
+		case  711: return 32;   // 73Ge
+		case  712: return 32;   // 74Ge
+		case  713: return 32;   // 75Ge
+		case  714: return 32;   // 76Ge
+		case  715: return 32;   // 77Ge
+		case  716: return 32;   // 78Ge
+		case  717: return 32;   // 79Ge
+		case  718: return 32;   // 80Ge
+		case  719: return 32;   // 81Ge
+		case  720: return 32;   // 82Ge
+		case  721: return 32;   // 83Ge
+		case  722: return 32;   // 84Ge
+		case  723: return 32;   // 85Ge
+		case  724: return 32;   // 86Ge
+		case  725: return 32;   // 87Ge
+		case  726: return 32;   // 88Ge
+		case  727: return 32;   // 89Ge
+		case  728: return 32;   // 90Ge
+		case  729: return 33;   // 60As
+		case  730: return 33;   // 61As
+		case  731: return 33;   // 62As
+		case  732: return 33;   // 63As
+		case  733: return 33;   // 64As
+		case  734: return 33;   // 65As
+		case  735: return 33;   // 66As
+		case  736: return 33;   // 67As
+		case  737: return 33;   // 68As
+		case  738: return 33;   // 69As
+		case  739: return 33;   // 70As
+		case  740: return 33;   // 71As
+		case  741: return 33;   // 72As
+		case  742: return 33;   // 73As
+		case  743: return 33;   // 74As
+		case  744: return 33;   // 75As
+		case  745: return 33;   // 76As
+		case  746: return 33;   // 77As
+		case  747: return 33;   // 78As
+		case  748: return 33;   // 79As
+		case  749: return 33;   // 80As
+		case  750: return 33;   // 81As
+		case  751: return 33;   // 82As
+		case  752: return 33;   // 83As
+		case  753: return 33;   // 84As
+		case  754: return 33;   // 85As
+		case  755: return 33;   // 86As
+		case  756: return 33;   // 87As
+		case  757: return 33;   // 88As
+		case  758: return 33;   // 89As
+		case  759: return 33;   // 90As
+		case  760: return 33;   // 91As
+		case  761: return 33;   // 92As
+		case  762: return 34;   // 64Se
+		case  763: return 34;   // 65Se
+		case  764: return 34;   // 66Se
+		case  765: return 34;   // 67Se
+		case  766: return 34;   // 68Se
+		case  767: return 34;   // 69Se
+		case  768: return 34;   // 70Se
+		case  769: return 34;   // 71Se
+		case  770: return 34;   // 72Se
+		case  771: return 34;   // 73Se
+		case  772: return 34;   // 74Se
+		case  773: return 34;   // 75Se
+		case  774: return 34;   // 76Se
+		case  775: return 34;   // 77Se
+		case  776: return 34;   // 78Se
+		case  777: return 34;   // 79Se
+		case  778: return 34;   // 80Se
+		case  779: return 34;   // 81Se
+		case  780: return 34;   // 82Se
+		case  781: return 34;   // 83Se
+		case  782: return 34;   // 84Se
+		case  783: return 34;   // 85Se
+		case  784: return 34;   // 86Se
+		case  785: return 34;   // 87Se
+		case  786: return 34;   // 88Se
+		case  787: return 34;   // 89Se
+		case  788: return 34;   // 90Se
+		case  789: return 34;   // 91Se
+		case  790: return 34;   // 92Se
+		case  791: return 34;   // 93Se
+		case  792: return 34;   // 94Se
+		case  793: return 34;   // 95Se
+		case  794: return 35;   // 67Br
+		case  795: return 35;   // 68Br
+		case  796: return 35;   // 69Br
+		case  797: return 35;   // 70Br
+		case  798: return 35;   // 71Br
+		case  799: return 35;   // 72Br
+		case  800: return 35;   // 73Br
+		case  801: return 35;   // 74Br
+		case  802: return 35;   // 75Br
+		case  803: return 35;   // 76Br
+		case  804: return 35;   // 77Br
+		case  805: return 35;   // 78Br
+		case  806: return 35;   // 79Br
+		case  807: return 35;   // 80Br
+		case  808: return 35;   // 81Br
+		case  809: return 35;   // 82Br
+		case  810: return 35;   // 83Br
+		case  811: return 35;   // 84Br
+		case  812: return 35;   // 85Br
+		case  813: return 35;   // 86Br
+		case  814: return 35;   // 87Br
+		case  815: return 35;   // 88Br
+		case  816: return 35;   // 89Br
+		case  817: return 35;   // 90Br
+		case  818: return 35;   // 91Br
+		case  819: return 35;   // 92Br
+		case  820: return 35;   // 93Br
+		case  821: return 35;   // 94Br
+		case  822: return 35;   // 95Br
+		case  823: return 35;   // 96Br
+		case  824: return 35;   // 97Br
+		case  825: return 35;   // 98Br
+		case  826: return 36;   // 69Kr
+		case  827: return 36;   // 70Kr
+		case  828: return 36;   // 71Kr
+		case  829: return 36;   // 72Kr
+		case  830: return 36;   // 73Kr
+		case  831: return 36;   // 74Kr
+		case  832: return 36;   // 75Kr
+		case  833: return 36;   // 76Kr
+		case  834: return 36;   // 77Kr
+		case  835: return 36;   // 78Kr
+		case  836: return 36;   // 79Kr
+		case  837: return 36;   // 80Kr
+		case  838: return 36;   // 81Kr
+		case  839: return 36;   // 82Kr
+		case  840: return 36;   // 83Kr
+		case  841: return 36;   // 84Kr
+		case  842: return 36;   // 85Kr
+		case  843: return 36;   // 86Kr
+		case  844: return 36;   // 87Kr
+		case  845: return 36;   // 88Kr
+		case  846: return 36;   // 89Kr
+		case  847: return 36;   // 90Kr
+		case  848: return 36;   // 91Kr
+		case  849: return 36;   // 92Kr
+		case  850: return 36;   // 93Kr
+		case  851: return 36;   // 94Kr
+		case  852: return 36;   // 95Kr
+		case  853: return 36;   // 96Kr
+		case  854: return 36;   // 97Kr
+		case  855: return 36;   // 98Kr
+		case  856: return 36;   // 99Kr
+		case  857: return 36;   // 100Kr
+		case  858: return 36;   // 101Kr
+		case  859: return 37;   // 71Rb
+		case  860: return 37;   // 72Rb
+		case  861: return 37;   // 73Rb
+		case  862: return 37;   // 74Rb
+		case  863: return 37;   // 75Rb
+		case  864: return 37;   // 76Rb
+		case  865: return 37;   // 77Rb
+		case  866: return 37;   // 78Rb
+		case  867: return 37;   // 79Rb
+		case  868: return 37;   // 80Rb
+		case  869: return 37;   // 81Rb
+		case  870: return 37;   // 82Rb
+		case  871: return 37;   // 83Rb
+		case  872: return 37;   // 84Rb
+		case  873: return 37;   // 85Rb
+		case  874: return 37;   // 86Rb
+		case  875: return 37;   // 87Rb
+		case  876: return 37;   // 88Rb
+		case  877: return 37;   // 89Rb
+		case  878: return 37;   // 90Rb
+		case  879: return 37;   // 91Rb
+		case  880: return 37;   // 92Rb
+		case  881: return 37;   // 93Rb
+		case  882: return 37;   // 94Rb
+		case  883: return 37;   // 95Rb
+		case  884: return 37;   // 96Rb
+		case  885: return 37;   // 97Rb
+		case  886: return 37;   // 98Rb
+		case  887: return 37;   // 99Rb
+		case  888: return 37;   // 100Rb
+		case  889: return 37;   // 101Rb
+		case  890: return 37;   // 102Rb
+		case  891: return 37;   // 103Rb
+		case  892: return 38;   // 73Sr
+		case  893: return 38;   // 74Sr
+		case  894: return 38;   // 75Sr
+		case  895: return 38;   // 76Sr
+		case  896: return 38;   // 77Sr
+		case  897: return 38;   // 78Sr
+		case  898: return 38;   // 79Sr
+		case  899: return 38;   // 80Sr
+		case  900: return 38;   // 81Sr
+		case  901: return 38;   // 82Sr
+		case  902: return 38;   // 83Sr
+		case  903: return 38;   // 84Sr
+		case  904: return 38;   // 85Sr
+		case  905: return 38;   // 86Sr
+		case  906: return 38;   // 87Sr
+		case  907: return 38;   // 88Sr
+		case  908: return 38;   // 89Sr
+		case  909: return 38;   // 90Sr
+		case  910: return 38;   // 91Sr
+		case  911: return 38;   // 92Sr
+		case  912: return 38;   // 93Sr
+		case  913: return 38;   // 94Sr
+		case  914: return 38;   // 95Sr
+		case  915: return 38;   // 96Sr
+		case  916: return 38;   // 97Sr
+		case  917: return 38;   // 98Sr
+		case  918: return 38;   // 99Sr
+		case  919: return 38;   // 100Sr
+		case  920: return 38;   // 101Sr
+		case  921: return 38;   // 102Sr
+		case  922: return 38;   // 103Sr
+		case  923: return 38;   // 104Sr
+		case  924: return 38;   // 105Sr
+		case  925: return 38;   // 106Sr
+		case  926: return 38;   // 107Sr
+		case  927: return 39;   // 76Y
+		case  928: return 39;   // 77Y
+		case  929: return 39;   // 78Y
+		case  930: return 39;   // 79Y
+		case  931: return 39;   // 80Y
+		case  932: return 39;   // 81Y
+		case  933: return 39;   // 82Y
+		case  934: return 39;   // 83Y
+		case  935: return 39;   // 84Y
+		case  936: return 39;   // 85Y
+		case  937: return 39;   // 86Y
+		case  938: return 39;   // 87Y
+		case  939: return 39;   // 88Y
+		case  940: return 39;   // 89Y
+		case  941: return 39;   // 90Y
+		case  942: return 39;   // 91Y
+		case  943: return 39;   // 92Y
+		case  944: return 39;   // 93Y
+		case  945: return 39;   // 94Y
+		case  946: return 39;   // 95Y
+		case  947: return 39;   // 96Y
+		case  948: return 39;   // 97Y
+		case  949: return 39;   // 98Y
+		case  950: return 39;   // 99Y
+		case  951: return 39;   // 100Y
+		case  952: return 39;   // 101Y
+		case  953: return 39;   // 102Y
+		case  954: return 39;   // 103Y
+		case  955: return 39;   // 104Y
+		case  956: return 39;   // 105Y
+		case  957: return 39;   // 106Y
+		case  958: return 39;   // 107Y
+		case  959: return 39;   // 108Y
+		case  960: return 39;   // 109Y
+		case  961: return 40;   // 78Zr
+		case  962: return 40;   // 79Zr
+		case  963: return 40;   // 80Zr
+		case  964: return 40;   // 81Zr
+		case  965: return 40;   // 82Zr
+		case  966: return 40;   // 83Zr
+		case  967: return 40;   // 84Zr
+		case  968: return 40;   // 85Zr
+		case  969: return 40;   // 86Zr
+		case  970: return 40;   // 87Zr
+		case  971: return 40;   // 88Zr
+		case  972: return 40;   // 89Zr
+		case  973: return 40;   // 90Zr
+		case  974: return 40;   // 91Zr
+		case  975: return 40;   // 92Zr
+		case  976: return 40;   // 93Zr
+		case  977: return 40;   // 94Zr
+		case  978: return 40;   // 95Zr
+		case  979: return 40;   // 96Zr
+		case  980: return 40;   // 97Zr
+		case  981: return 40;   // 98Zr
+		case  982: return 40;   // 99Zr
+		case  983: return 40;   // 100Zr
+		case  984: return 40;   // 101Zr
+		case  985: return 40;   // 102Zr
+		case  986: return 40;   // 103Zr
+		case  987: return 40;   // 104Zr
+		case  988: return 40;   // 105Zr
+		case  989: return 40;   // 106Zr
+		case  990: return 40;   // 107Zr
+		case  991: return 40;   // 108Zr
+		case  992: return 40;   // 109Zr
+		case  993: return 40;   // 110Zr
+		case  994: return 40;   // 111Zr
+		case  995: return 40;   // 112Zr
+		case  996: return 41;   // 81Nb
+		case  997: return 41;   // 82Nb
+		case  998: return 41;   // 83Nb
+		case  999: return 41;   // 84Nb
+		case 1000: return 41;   // 85Nb
+		case 1001: return 41;   // 86Nb
+		case 1002: return 41;   // 87Nb
+		case 1003: return 41;   // 88Nb
+		case 1004: return 41;   // 89Nb
+		case 1005: return 41;   // 90Nb
+		case 1006: return 41;   // 91Nb
+		case 1007: return 41;   // 92Nb
+		case 1008: return 41;   // 93Nb
+		case 1009: return 41;   // 94Nb
+		case 1010: return 41;   // 95Nb
+		case 1011: return 41;   // 96Nb
+		case 1012: return 41;   // 97Nb
+		case 1013: return 41;   // 98Nb
+		case 1014: return 41;   // 99Nb
+		case 1015: return 41;   // 100Nb
+		case 1016: return 41;   // 101Nb
+		case 1017: return 41;   // 102Nb
+		case 1018: return 41;   // 103Nb
+		case 1019: return 41;   // 104Nb
+		case 1020: return 41;   // 105Nb
+		case 1021: return 41;   // 106Nb
+		case 1022: return 41;   // 107Nb
+		case 1023: return 41;   // 108Nb
+		case 1024: return 41;   // 109Nb
+		case 1025: return 41;   // 110Nb
+		case 1026: return 41;   // 111Nb
+		case 1027: return 41;   // 112Nb
+		case 1028: return 41;   // 113Nb
+		case 1029: return 41;   // 114Nb
+		case 1030: return 41;   // 115Nb
+		case 1031: return 42;   // 83Mo
+		case 1032: return 42;   // 84Mo
+		case 1033: return 42;   // 85Mo
+		case 1034: return 42;   // 86Mo
+		case 1035: return 42;   // 87Mo
+		case 1036: return 42;   // 88Mo
+		case 1037: return 42;   // 89Mo
+		case 1038: return 42;   // 90Mo
+		case 1039: return 42;   // 91Mo
+		case 1040: return 42;   // 92Mo
+		case 1041: return 42;   // 93Mo
+		case 1042: return 42;   // 94Mo
+		case 1043: return 42;   // 95Mo
+		case 1044: return 42;   // 96Mo
+		case 1045: return 42;   // 97Mo
+		case 1046: return 42;   // 98Mo
+		case 1047: return 42;   // 99Mo
+		case 1048: return 42;   // 100Mo
+		case 1049: return 42;   // 101Mo
+		case 1050: return 42;   // 102Mo
+		case 1051: return 42;   // 103Mo
+		case 1052: return 42;   // 104Mo
+		case 1053: return 42;   // 105Mo
+		case 1054: return 42;   // 106Mo
+		case 1055: return 42;   // 107Mo
+		case 1056: return 42;   // 108Mo
+		case 1057: return 42;   // 109Mo
+		case 1058: return 42;   // 110Mo
+		case 1059: return 42;   // 111Mo
+		case 1060: return 42;   // 112Mo
+		case 1061: return 42;   // 113Mo
+		case 1062: return 42;   // 114Mo
+		case 1063: return 42;   // 115Mo
+		case 1064: return 42;   // 116Mo
+		case 1065: return 42;   // 117Mo
+		case 1066: return 43;   // 85Tc
+		case 1067: return 43;   // 86Tc
+		case 1068: return 43;   // 87Tc
+		case 1069: return 43;   // 88Tc
+		case 1070: return 43;   // 89Tc
+		case 1071: return 43;   // 90Tc
+		case 1072: return 43;   // 91Tc
+		case 1073: return 43;   // 92Tc
+		case 1074: return 43;   // 93Tc
+		case 1075: return 43;   // 94Tc
+		case 1076: return 43;   // 95Tc
+		case 1077: return 43;   // 96Tc
+		case 1078: return 43;   // 97Tc
+		case 1079: return 43;   // 98Tc
+		case 1080: return 43;   // 99Tc
+		case 1081: return 43;   // 100Tc
+		case 1082: return 43;   // 101Tc
+		case 1083: return 43;   // 102Tc
+		case 1084: return 43;   // 103Tc
+		case 1085: return 43;   // 104Tc
+		case 1086: return 43;   // 105Tc
+		case 1087: return 43;   // 106Tc
+		case 1088: return 43;   // 107Tc
+		case 1089: return 43;   // 108Tc
+		case 1090: return 43;   // 109Tc
+		case 1091: return 43;   // 110Tc
+		case 1092: return 43;   // 111Tc
+		case 1093: return 43;   // 112Tc
+		case 1094: return 43;   // 113Tc
+		case 1095: return 43;   // 114Tc
+		case 1096: return 43;   // 115Tc
+		case 1097: return 43;   // 116Tc
+		case 1098: return 43;   // 117Tc
+		case 1099: return 43;   // 118Tc
+		case 1100: return 43;   // 119Tc
+		case 1101: return 43;   // 120Tc
+		case 1102: return 44;   // 87Ru
+		case 1103: return 44;   // 88Ru
+		case 1104: return 44;   // 89Ru
+		case 1105: return 44;   // 90Ru
+		case 1106: return 44;   // 91Ru
+		case 1107: return 44;   // 92Ru
+		case 1108: return 44;   // 93Ru
+		case 1109: return 44;   // 94Ru
+		case 1110: return 44;   // 95Ru
+		case 1111: return 44;   // 96Ru
+		case 1112: return 44;   // 97Ru
+		case 1113: return 44;   // 98Ru
+		case 1114: return 44;   // 99Ru
+		case 1115: return 44;   // 100Ru
+		case 1116: return 44;   // 101Ru
+		case 1117: return 44;   // 102Ru
+		case 1118: return 44;   // 103Ru
+		case 1119: return 44;   // 104Ru
+		case 1120: return 44;   // 105Ru
+		case 1121: return 44;   // 106Ru
+		case 1122: return 44;   // 107Ru
+		case 1123: return 44;   // 108Ru
+		case 1124: return 44;   // 109Ru
+		case 1125: return 44;   // 110Ru
+		case 1126: return 44;   // 111Ru
+		case 1127: return 44;   // 112Ru
+		case 1128: return 44;   // 113Ru
+		case 1129: return 44;   // 114Ru
+		case 1130: return 44;   // 115Ru
+		case 1131: return 44;   // 116Ru
+		case 1132: return 44;   // 117Ru
+		case 1133: return 44;   // 118Ru
+		case 1134: return 44;   // 119Ru
+		case 1135: return 44;   // 120Ru
+		case 1136: return 44;   // 121Ru
+		case 1137: return 44;   // 122Ru
+		case 1138: return 44;   // 123Ru
+		case 1139: return 44;   // 124Ru
+		case 1140: return 45;   // 89Rh
+		case 1141: return 45;   // 90Rh
+		case 1142: return 45;   // 91Rh
+		case 1143: return 45;   // 92Rh
+		case 1144: return 45;   // 93Rh
+		case 1145: return 45;   // 94Rh
+		case 1146: return 45;   // 95Rh
+		case 1147: return 45;   // 96Rh
+		case 1148: return 45;   // 97Rh
+		case 1149: return 45;   // 98Rh
+		case 1150: return 45;   // 99Rh
+		case 1151: return 45;   // 100Rh
+		case 1152: return 45;   // 101Rh
+		case 1153: return 45;   // 102Rh
+		case 1154: return 45;   // 103Rh
+		case 1155: return 45;   // 104Rh
+		case 1156: return 45;   // 105Rh
+		case 1157: return 45;   // 106Rh
+		case 1158: return 45;   // 107Rh
+		case 1159: return 45;   // 108Rh
+		case 1160: return 45;   // 109Rh
+		case 1161: return 45;   // 110Rh
+		case 1162: return 45;   // 111Rh
+		case 1163: return 45;   // 112Rh
+		case 1164: return 45;   // 113Rh
+		case 1165: return 45;   // 114Rh
+		case 1166: return 45;   // 115Rh
+		case 1167: return 45;   // 116Rh
+		case 1168: return 45;   // 117Rh
+		case 1169: return 45;   // 118Rh
+		case 1170: return 45;   // 119Rh
+		case 1171: return 45;   // 120Rh
+		case 1172: return 45;   // 121Rh
+		case 1173: return 45;   // 122Rh
+		case 1174: return 45;   // 123Rh
+		case 1175: return 45;   // 124Rh
+		case 1176: return 45;   // 125Rh
+		case 1177: return 45;   // 126Rh
+		case 1178: return 46;   // 91Pd
+		case 1179: return 46;   // 92Pd
+		case 1180: return 46;   // 93Pd
+		case 1181: return 46;   // 94Pd
+		case 1182: return 46;   // 95Pd
+		case 1183: return 46;   // 96Pd
+		case 1184: return 46;   // 97Pd
+		case 1185: return 46;   // 98Pd
+		case 1186: return 46;   // 99Pd
+		case 1187: return 46;   // 100Pd
+		case 1188: return 46;   // 101Pd
+		case 1189: return 46;   // 102Pd
+		case 1190: return 46;   // 103Pd
+		case 1191: return 46;   // 104Pd
+		case 1192: return 46;   // 105Pd
+		case 1193: return 46;   // 106Pd
+		case 1194: return 46;   // 107Pd
+		case 1195: return 46;   // 108Pd
+		case 1196: return 46;   // 109Pd
+		case 1197: return 46;   // 110Pd
+		case 1198: return 46;   // 111Pd
+		case 1199: return 46;   // 112Pd
+		case 1200: return 46;   // 113Pd
+		case 1201: return 46;   // 114Pd
+		case 1202: return 46;   // 115Pd
+		case 1203: return 46;   // 116Pd
+		case 1204: return 46;   // 117Pd
+		case 1205: return 46;   // 118Pd
+		case 1206: return 46;   // 119Pd
+		case 1207: return 46;   // 120Pd
+		case 1208: return 46;   // 121Pd
+		case 1209: return 46;   // 122Pd
+		case 1210: return 46;   // 123Pd
+		case 1211: return 46;   // 124Pd
+		case 1212: return 46;   // 125Pd
+		case 1213: return 46;   // 126Pd
+		case 1214: return 46;   // 127Pd
+		case 1215: return 46;   // 128Pd
+		case 1216: return 47;   // 93Ag
+		case 1217: return 47;   // 94Ag
+		case 1218: return 47;   // 95Ag
+		case 1219: return 47;   // 96Ag
+		case 1220: return 47;   // 97Ag
+		case 1221: return 47;   // 98Ag
+		case 1222: return 47;   // 99Ag
+		case 1223: return 47;   // 100Ag
+		case 1224: return 47;   // 101Ag
+		case 1225: return 47;   // 102Ag
+		case 1226: return 47;   // 103Ag
+		case 1227: return 47;   // 104Ag
+		case 1228: return 47;   // 105Ag
+		case 1229: return 47;   // 106Ag
+		case 1230: return 47;   // 107Ag
+		case 1231: return 47;   // 108Ag
+		case 1232: return 47;   // 109Ag
+		case 1233: return 47;   // 110Ag
+		case 1234: return 47;   // 111Ag
+		case 1235: return 47;   // 112Ag
+		case 1236: return 47;   // 113Ag
+		case 1237: return 47;   // 114Ag
+		case 1238: return 47;   // 115Ag
+		case 1239: return 47;   // 116Ag
+		case 1240: return 47;   // 117Ag
+		case 1241: return 47;   // 118Ag
+		case 1242: return 47;   // 119Ag
+		case 1243: return 47;   // 120Ag
+		case 1244: return 47;   // 121Ag
+		case 1245: return 47;   // 122Ag
+		case 1246: return 47;   // 123Ag
+		case 1247: return 47;   // 124Ag
+		case 1248: return 47;   // 125Ag
+		case 1249: return 47;   // 126Ag
+		case 1250: return 47;   // 127Ag
+		case 1251: return 47;   // 128Ag
+		case 1252: return 47;   // 129Ag
+		case 1253: return 47;   // 130Ag
+		case 1254: return 48;   // 95Cd
+		case 1255: return 48;   // 96Cd
+		case 1256: return 48;   // 97Cd
+		case 1257: return 48;   // 98Cd
+		case 1258: return 48;   // 99Cd
+		case 1259: return 48;   // 100Cd
+		case 1260: return 48;   // 101Cd
+		case 1261: return 48;   // 102Cd
+		case 1262: return 48;   // 103Cd
+		case 1263: return 48;   // 104Cd
+		case 1264: return 48;   // 105Cd
+		case 1265: return 48;   // 106Cd
+		case 1266: return 48;   // 107Cd
+		case 1267: return 48;   // 108Cd
+		case 1268: return 48;   // 109Cd
+		case 1269: return 48;   // 110Cd
+		case 1270: return 48;   // 111Cd
+		case 1271: return 48;   // 112Cd
+		case 1272: return 48;   // 113Cd
+		case 1273: return 48;   // 114Cd
+		case 1274: return 48;   // 115Cd
+		case 1275: return 48;   // 116Cd
+		case 1276: return 48;   // 117Cd
+		case 1277: return 48;   // 118Cd
+		case 1278: return 48;   // 119Cd
+		case 1279: return 48;   // 120Cd
+		case 1280: return 48;   // 121Cd
+		case 1281: return 48;   // 122Cd
+		case 1282: return 48;   // 123Cd
+		case 1283: return 48;   // 124Cd
+		case 1284: return 48;   // 125Cd
+		case 1285: return 48;   // 126Cd
+		case 1286: return 48;   // 127Cd
+		case 1287: return 48;   // 128Cd
+		case 1288: return 48;   // 129Cd
+		case 1289: return 48;   // 130Cd
+		case 1290: return 48;   // 131Cd
+		case 1291: return 48;   // 132Cd
+		case 1292: return 48;   // 133Cd
+		case 1293: return 49;   // 97In
+		case 1294: return 49;   // 98In
+		case 1295: return 49;   // 99In
+		case 1296: return 49;   // 100In
+		case 1297: return 49;   // 101In
+		case 1298: return 49;   // 102In
+		case 1299: return 49;   // 103In
+		case 1300: return 49;   // 104In
+		case 1301: return 49;   // 105In
+		case 1302: return 49;   // 106In
+		case 1303: return 49;   // 107In
+		case 1304: return 49;   // 108In
+		case 1305: return 49;   // 109In
+		case 1306: return 49;   // 110In
+		case 1307: return 49;   // 111In
+		case 1308: return 49;   // 112In
+		case 1309: return 49;   // 113In
+		case 1310: return 49;   // 114In
+		case 1311: return 49;   // 115In
+		case 1312: return 49;   // 116In
+		case 1313: return 49;   // 117In
+		case 1314: return 49;   // 118In
+		case 1315: return 49;   // 119In
+		case 1316: return 49;   // 120In
+		case 1317: return 49;   // 121In
+		case 1318: return 49;   // 122In
+		case 1319: return 49;   // 123In
+		case 1320: return 49;   // 124In
+		case 1321: return 49;   // 125In
+		case 1322: return 49;   // 126In
+		case 1323: return 49;   // 127In
+		case 1324: return 49;   // 128In
+		case 1325: return 49;   // 129In
+		case 1326: return 49;   // 130In
+		case 1327: return 49;   // 131In
+		case 1328: return 49;   // 132In
+		case 1329: return 49;   // 133In
+		case 1330: return 49;   // 134In
+		case 1331: return 49;   // 135In
+		case 1332: return 50;   // 99Sn
+		case 1333: return 50;   // 100Sn
+		case 1334: return 50;   // 101Sn
+		case 1335: return 50;   // 102Sn
+		case 1336: return 50;   // 103Sn
+		case 1337: return 50;   // 104Sn
+		case 1338: return 50;   // 105Sn
+		case 1339: return 50;   // 106Sn
+		case 1340: return 50;   // 107Sn
+		case 1341: return 50;   // 108Sn
+		case 1342: return 50;   // 109Sn
+		case 1343: return 50;   // 110Sn
+		case 1344: return 50;   // 111Sn
+		case 1345: return 50;   // 112Sn
+		case 1346: return 50;   // 113Sn
+		case 1347: return 50;   // 114Sn
+		case 1348: return 50;   // 115Sn
+		case 1349: return 50;   // 116Sn
+		case 1350: return 50;   // 117Sn
+		case 1351: return 50;   // 118Sn
+		case 1352: return 50;   // 119Sn
+		case 1353: return 50;   // 120Sn
+		case 1354: return 50;   // 121Sn
+		case 1355: return 50;   // 122Sn
+		case 1356: return 50;   // 123Sn
+		case 1357: return 50;   // 124Sn
+		case 1358: return 50;   // 125Sn
+		case 1359: return 50;   // 126Sn
+		case 1360: return 50;   // 127Sn
+		case 1361: return 50;   // 128Sn
+		case 1362: return 50;   // 129Sn
+		case 1363: return 50;   // 130Sn
+		case 1364: return 50;   // 131Sn
+		case 1365: return 50;   // 132Sn
+		case 1366: return 50;   // 133Sn
+		case 1367: return 50;   // 134Sn
+		case 1368: return 50;   // 135Sn
+		case 1369: return 50;   // 136Sn
+		case 1370: return 50;   // 137Sn
+		case 1371: return 50;   // 138Sn
+		case 1372: return 51;   // 103Sb
+		case 1373: return 51;   // 104Sb
+		case 1374: return 51;   // 105Sb
+		case 1375: return 51;   // 106Sb
+		case 1376: return 51;   // 107Sb
+		case 1377: return 51;   // 108Sb
+		case 1378: return 51;   // 109Sb
+		case 1379: return 51;   // 110Sb
+		case 1380: return 51;   // 111Sb
+		case 1381: return 51;   // 112Sb
+		case 1382: return 51;   // 113Sb
+		case 1383: return 51;   // 114Sb
+		case 1384: return 51;   // 115Sb
+		case 1385: return 51;   // 116Sb
+		case 1386: return 51;   // 117Sb
+		case 1387: return 51;   // 118Sb
+		case 1388: return 51;   // 119Sb
+		case 1389: return 51;   // 120Sb
+		case 1390: return 51;   // 121Sb
+		case 1391: return 51;   // 122Sb
+		case 1392: return 51;   // 123Sb
+		case 1393: return 51;   // 124Sb
+		case 1394: return 51;   // 125Sb
+		case 1395: return 51;   // 126Sb
+		case 1396: return 51;   // 127Sb
+		case 1397: return 51;   // 128Sb
+		case 1398: return 51;   // 129Sb
+		case 1399: return 51;   // 130Sb
+		case 1400: return 51;   // 131Sb
+		case 1401: return 51;   // 132Sb
+		case 1402: return 51;   // 133Sb
+		case 1403: return 51;   // 134Sb
+		case 1404: return 51;   // 135Sb
+		case 1405: return 51;   // 136Sb
+		case 1406: return 51;   // 137Sb
+		case 1407: return 51;   // 138Sb
+		case 1408: return 51;   // 139Sb
+		case 1409: return 51;   // 140Sb
+		case 1410: return 52;   // 105Te
+		case 1411: return 52;   // 106Te
+		case 1412: return 52;   // 107Te
+		case 1413: return 52;   // 108Te
+		case 1414: return 52;   // 109Te
+		case 1415: return 52;   // 110Te
+		case 1416: return 52;   // 111Te
+		case 1417: return 52;   // 112Te
+		case 1418: return 52;   // 113Te
+		case 1419: return 52;   // 114Te
+		case 1420: return 52;   // 115Te
+		case 1421: return 52;   // 116Te
+		case 1422: return 52;   // 117Te
+		case 1423: return 52;   // 118Te
+		case 1424: return 52;   // 119Te
+		case 1425: return 52;   // 120Te
+		case 1426: return 52;   // 121Te
+		case 1427: return 52;   // 122Te
+		case 1428: return 52;   // 123Te
+		case 1429: return 52;   // 124Te
+		case 1430: return 52;   // 125Te
+		case 1431: return 52;   // 126Te
+		case 1432: return 52;   // 127Te
+		case 1433: return 52;   // 128Te
+		case 1434: return 52;   // 129Te
+		case 1435: return 52;   // 130Te
+		case 1436: return 52;   // 131Te
+		case 1437: return 52;   // 132Te
+		case 1438: return 52;   // 133Te
+		case 1439: return 52;   // 134Te
+		case 1440: return 52;   // 135Te
+		case 1441: return 52;   // 136Te
+		case 1442: return 52;   // 137Te
+		case 1443: return 52;   // 138Te
+		case 1444: return 52;   // 139Te
+		case 1445: return 52;   // 140Te
+		case 1446: return 52;   // 141Te
+		case 1447: return 52;   // 142Te
+		case 1448: return 52;   // 143Te
+		case 1449: return 53;   // 107I
+		case 1450: return 53;   // 108I
+		case 1451: return 53;   // 109I
+		case 1452: return 53;   // 110I
+		case 1453: return 53;   // 111I
+		case 1454: return 53;   // 112I
+		case 1455: return 53;   // 113I
+		case 1456: return 53;   // 114I
+		case 1457: return 53;   // 115I
+		case 1458: return 53;   // 116I
+		case 1459: return 53;   // 117I
+		case 1460: return 53;   // 118I
+		case 1461: return 53;   // 119I
+		case 1462: return 53;   // 120I
+		case 1463: return 53;   // 121I
+		case 1464: return 53;   // 122I
+		case 1465: return 53;   // 123I
+		case 1466: return 53;   // 124I
+		case 1467: return 53;   // 125I
+		case 1468: return 53;   // 126I
+		case 1469: return 53;   // 127I
+		case 1470: return 53;   // 128I
+		case 1471: return 53;   // 129I
+		case 1472: return 53;   // 130I
+		case 1473: return 53;   // 131I
+		case 1474: return 53;   // 132I
+		case 1475: return 53;   // 133I
+		case 1476: return 53;   // 134I
+		case 1477: return 53;   // 135I
+		case 1478: return 53;   // 136I
+		case 1479: return 53;   // 137I
+		case 1480: return 53;   // 138I
+		case 1481: return 53;   // 139I
+		case 1482: return 53;   // 140I
+		case 1483: return 53;   // 141I
+		case 1484: return 53;   // 142I
+		case 1485: return 53;   // 143I
+		case 1486: return 53;   // 144I
+		case 1487: return 53;   // 145I
+		case 1488: return 54;   // 109Xe
+		case 1489: return 54;   // 110Xe
+		case 1490: return 54;   // 111Xe
+		case 1491: return 54;   // 112Xe
+		case 1492: return 54;   // 113Xe
+		case 1493: return 54;   // 114Xe
+		case 1494: return 54;   // 115Xe
+		case 1495: return 54;   // 116Xe
+		case 1496: return 54;   // 117Xe
+		case 1497: return 54;   // 118Xe
+		case 1498: return 54;   // 119Xe
+		case 1499: return 54;   // 120Xe
+		case 1500: return 54;   // 121Xe
+		case 1501: return 54;   // 122Xe
+		case 1502: return 54;   // 123Xe
+		case 1503: return 54;   // 124Xe
+		case 1504: return 54;   // 125Xe
+		case 1505: return 54;   // 126Xe
+		case 1506: return 54;   // 127Xe
+		case 1507: return 54;   // 128Xe
+		case 1508: return 54;   // 129Xe
+		case 1509: return 54;   // 130Xe
+		case 1510: return 54;   // 131Xe
+		case 1511: return 54;   // 132Xe
+		case 1512: return 54;   // 133Xe
+		case 1513: return 54;   // 134Xe
+		case 1514: return 54;   // 135Xe
+		case 1515: return 54;   // 136Xe
+		case 1516: return 54;   // 137Xe
+		case 1517: return 54;   // 138Xe
+		case 1518: return 54;   // 139Xe
+		case 1519: return 54;   // 140Xe
+		case 1520: return 54;   // 141Xe
+		case 1521: return 54;   // 142Xe
+		case 1522: return 54;   // 143Xe
+		case 1523: return 54;   // 144Xe
+		case 1524: return 54;   // 145Xe
+		case 1525: return 54;   // 146Xe
+		case 1526: return 54;   // 147Xe
+		case 1527: return 54;   // 148Xe
+		case 1528: return 55;   // 112Cs
+		case 1529: return 55;   // 113Cs
+		case 1530: return 55;   // 114Cs
+		case 1531: return 55;   // 115Cs
+		case 1532: return 55;   // 116Cs
+		case 1533: return 55;   // 117Cs
+		case 1534: return 55;   // 118Cs
+		case 1535: return 55;   // 119Cs
+		case 1536: return 55;   // 120Cs
+		case 1537: return 55;   // 121Cs
+		case 1538: return 55;   // 122Cs
+		case 1539: return 55;   // 123Cs
+		case 1540: return 55;   // 124Cs
+		case 1541: return 55;   // 125Cs
+		case 1542: return 55;   // 126Cs
+		case 1543: return 55;   // 127Cs
+		case 1544: return 55;   // 128Cs
+		case 1545: return 55;   // 129Cs
+		case 1546: return 55;   // 130Cs
+		case 1547: return 55;   // 131Cs
+		case 1548: return 55;   // 132Cs
+		case 1549: return 55;   // 133Cs
+		case 1550: return 55;   // 134Cs
+		case 1551: return 55;   // 135Cs
+		case 1552: return 55;   // 136Cs
+		case 1553: return 55;   // 137Cs
+		case 1554: return 55;   // 138Cs
+		case 1555: return 55;   // 139Cs
+		case 1556: return 55;   // 140Cs
+		case 1557: return 55;   // 141Cs
+		case 1558: return 55;   // 142Cs
+		case 1559: return 55;   // 143Cs
+		case 1560: return 55;   // 144Cs
+		case 1561: return 55;   // 145Cs
+		case 1562: return 55;   // 146Cs
+		case 1563: return 55;   // 147Cs
+		case 1564: return 55;   // 148Cs
+		case 1565: return 55;   // 149Cs
+		case 1566: return 55;   // 150Cs
+		case 1567: return 55;   // 151Cs
+		case 1568: return 56;   // 114Ba
+		case 1569: return 56;   // 115Ba
+		case 1570: return 56;   // 116Ba
+		case 1571: return 56;   // 117Ba
+		case 1572: return 56;   // 118Ba
+		case 1573: return 56;   // 119Ba
+		case 1574: return 56;   // 120Ba
+		case 1575: return 56;   // 121Ba
+		case 1576: return 56;   // 122Ba
+		case 1577: return 56;   // 123Ba
+		case 1578: return 56;   // 124Ba
+		case 1579: return 56;   // 125Ba
+		case 1580: return 56;   // 126Ba
+		case 1581: return 56;   // 127Ba
+		case 1582: return 56;   // 128Ba
+		case 1583: return 56;   // 129Ba
+		case 1584: return 56;   // 130Ba
+		case 1585: return 56;   // 131Ba
+		case 1586: return 56;   // 132Ba
+		case 1587: return 56;   // 133Ba
+		case 1588: return 56;   // 134Ba
+		case 1589: return 56;   // 135Ba
+		case 1590: return 56;   // 136Ba
+		case 1591: return 56;   // 137Ba
+		case 1592: return 56;   // 138Ba
+		case 1593: return 56;   // 139Ba
+		case 1594: return 56;   // 140Ba
+		case 1595: return 56;   // 141Ba
+		case 1596: return 56;   // 142Ba
+		case 1597: return 56;   // 143Ba
+		case 1598: return 56;   // 144Ba
+		case 1599: return 56;   // 145Ba
+		case 1600: return 56;   // 146Ba
+		case 1601: return 56;   // 147Ba
+		case 1602: return 56;   // 148Ba
+		case 1603: return 56;   // 149Ba
+		case 1604: return 56;   // 150Ba
+		case 1605: return 56;   // 151Ba
+		case 1606: return 56;   // 152Ba
+		case 1607: return 56;   // 153Ba
+		case 1608: return 57;   // 116La
+		case 1609: return 57;   // 117La
+		case 1610: return 57;   // 118La
+		case 1611: return 57;   // 119La
+		case 1612: return 57;   // 120La
+		case 1613: return 57;   // 121La
+		case 1614: return 57;   // 122La
+		case 1615: return 57;   // 123La
+		case 1616: return 57;   // 124La
+		case 1617: return 57;   // 125La
+		case 1618: return 57;   // 126La
+		case 1619: return 57;   // 127La
+		case 1620: return 57;   // 128La
+		case 1621: return 57;   // 129La
+		case 1622: return 57;   // 130La
+		case 1623: return 57;   // 131La
+		case 1624: return 57;   // 132La
+		case 1625: return 57;   // 133La
+		case 1626: return 57;   // 134La
+		case 1627: return 57;   // 135La
+		case 1628: return 57;   // 136La
+		case 1629: return 57;   // 137La
+		case 1630: return 57;   // 138La
+		case 1631: return 57;   // 139La
+		case 1632: return 57;   // 140La
+		case 1633: return 57;   // 141La
+		case 1634: return 57;   // 142La
+		case 1635: return 57;   // 143La
+		case 1636: return 57;   // 144La
+		case 1637: return 57;   // 145La
+		case 1638: return 57;   // 146La
+		case 1639: return 57;   // 147La
+		case 1640: return 57;   // 148La
+		case 1641: return 57;   // 149La
+		case 1642: return 57;   // 150La
+		case 1643: return 57;   // 151La
+		case 1644: return 57;   // 152La
+		case 1645: return 57;   // 153La
+		case 1646: return 57;   // 154La
+		case 1647: return 57;   // 155La
+		case 1648: return 58;   // 119Ce
+		case 1649: return 58;   // 120Ce
+		case 1650: return 58;   // 121Ce
+		case 1651: return 58;   // 122Ce
+		case 1652: return 58;   // 123Ce
+		case 1653: return 58;   // 124Ce
+		case 1654: return 58;   // 125Ce
+		case 1655: return 58;   // 126Ce
+		case 1656: return 58;   // 127Ce
+		case 1657: return 58;   // 128Ce
+		case 1658: return 58;   // 129Ce
+		case 1659: return 58;   // 130Ce
+		case 1660: return 58;   // 131Ce
+		case 1661: return 58;   // 132Ce
+		case 1662: return 58;   // 133Ce
+		case 1663: return 58;   // 134Ce
+		case 1664: return 58;   // 135Ce
+		case 1665: return 58;   // 136Ce
+		case 1666: return 58;   // 137Ce
+		case 1667: return 58;   // 138Ce
+		case 1668: return 58;   // 139Ce
+		case 1669: return 58;   // 140Ce
+		case 1670: return 58;   // 141Ce
+		case 1671: return 58;   // 142Ce
+		case 1672: return 58;   // 143Ce
+		case 1673: return 58;   // 144Ce
+		case 1674: return 58;   // 145Ce
+		case 1675: return 58;   // 146Ce
+		case 1676: return 58;   // 147Ce
+		case 1677: return 58;   // 148Ce
+		case 1678: return 58;   // 149Ce
+		case 1679: return 58;   // 150Ce
+		case 1680: return 58;   // 151Ce
+		case 1681: return 58;   // 152Ce
+		case 1682: return 58;   // 153Ce
+		case 1683: return 58;   // 154Ce
+		case 1684: return 58;   // 155Ce
+		case 1685: return 58;   // 156Ce
+		case 1686: return 58;   // 157Ce
+		case 1687: return 59;   // 121Pr
+		case 1688: return 59;   // 122Pr
+		case 1689: return 59;   // 123Pr
+		case 1690: return 59;   // 124Pr
+		case 1691: return 59;   // 125Pr
+		case 1692: return 59;   // 126Pr
+		case 1693: return 59;   // 127Pr
+		case 1694: return 59;   // 128Pr
+		case 1695: return 59;   // 129Pr
+		case 1696: return 59;   // 130Pr
+		case 1697: return 59;   // 131Pr
+		case 1698: return 59;   // 132Pr
+		case 1699: return 59;   // 133Pr
+		case 1700: return 59;   // 134Pr
+		case 1701: return 59;   // 135Pr
+		case 1702: return 59;   // 136Pr
+		case 1703: return 59;   // 137Pr
+		case 1704: return 59;   // 138Pr
+		case 1705: return 59;   // 139Pr
+		case 1706: return 59;   // 140Pr
+		case 1707: return 59;   // 141Pr
+		case 1708: return 59;   // 142Pr
+		case 1709: return 59;   // 143Pr
+		case 1710: return 59;   // 144Pr
+		case 1711: return 59;   // 145Pr
+		case 1712: return 59;   // 146Pr
+		case 1713: return 59;   // 147Pr
+		case 1714: return 59;   // 148Pr
+		case 1715: return 59;   // 149Pr
+		case 1716: return 59;   // 150Pr
+		case 1717: return 59;   // 151Pr
+		case 1718: return 59;   // 152Pr
+		case 1719: return 59;   // 153Pr
+		case 1720: return 59;   // 154Pr
+		case 1721: return 59;   // 155Pr
+		case 1722: return 59;   // 156Pr
+		case 1723: return 59;   // 157Pr
+		case 1724: return 59;   // 158Pr
+		case 1725: return 59;   // 159Pr
+		case 1726: return 60;   // 124Nd
+		case 1727: return 60;   // 125Nd
+		case 1728: return 60;   // 126Nd
+		case 1729: return 60;   // 127Nd
+		case 1730: return 60;   // 128Nd
+		case 1731: return 60;   // 129Nd
+		case 1732: return 60;   // 130Nd
+		case 1733: return 60;   // 131Nd
+		case 1734: return 60;   // 132Nd
+		case 1735: return 60;   // 133Nd
+		case 1736: return 60;   // 134Nd
+		case 1737: return 60;   // 135Nd
+		case 1738: return 60;   // 136Nd
+		case 1739: return 60;   // 137Nd
+		case 1740: return 60;   // 138Nd
+		case 1741: return 60;   // 139Nd
+		case 1742: return 60;   // 140Nd
+		case 1743: return 60;   // 141Nd
+		case 1744: return 60;   // 142Nd
+		case 1745: return 60;   // 143Nd
+		case 1746: return 60;   // 144Nd
+		case 1747: return 60;   // 145Nd
+		case 1748: return 60;   // 146Nd
+		case 1749: return 60;   // 147Nd
+		case 1750: return 60;   // 148Nd
+		case 1751: return 60;   // 149Nd
+		case 1752: return 60;   // 150Nd
+		case 1753: return 60;   // 151Nd
+		case 1754: return 60;   // 152Nd
+		case 1755: return 60;   // 153Nd
+		case 1756: return 60;   // 154Nd
+		case 1757: return 60;   // 155Nd
+		case 1758: return 60;   // 156Nd
+		case 1759: return 60;   // 157Nd
+		case 1760: return 60;   // 158Nd
+		case 1761: return 60;   // 159Nd
+		case 1762: return 60;   // 160Nd
+		case 1763: return 60;   // 161Nd
+		case 1764: return 61;   // 126Pm
+		case 1765: return 61;   // 127Pm
+		case 1766: return 61;   // 128Pm
+		case 1767: return 61;   // 129Pm
+		case 1768: return 61;   // 130Pm
+		case 1769: return 61;   // 131Pm
+		case 1770: return 61;   // 132Pm
+		case 1771: return 61;   // 133Pm
+		case 1772: return 61;   // 134Pm
+		case 1773: return 61;   // 135Pm
+		case 1774: return 61;   // 136Pm
+		case 1775: return 61;   // 137Pm
+		case 1776: return 61;   // 138Pm
+		case 1777: return 61;   // 139Pm
+		case 1778: return 61;   // 140Pm
+		case 1779: return 61;   // 141Pm
+		case 1780: return 61;   // 142Pm
+		case 1781: return 61;   // 143Pm
+		case 1782: return 61;   // 144Pm
+		case 1783: return 61;   // 145Pm
+		case 1784: return 61;   // 146Pm
+		case 1785: return 61;   // 147Pm
+		case 1786: return 61;   // 148Pm
+		case 1787: return 61;   // 149Pm
+		case 1788: return 61;   // 150Pm
+		case 1789: return 61;   // 151Pm
+		case 1790: return 61;   // 152Pm
+		case 1791: return 61;   // 153Pm
+		case 1792: return 61;   // 154Pm
+		case 1793: return 61;   // 155Pm
+		case 1794: return 61;   // 156Pm
+		case 1795: return 61;   // 157Pm
+		case 1796: return 61;   // 158Pm
+		case 1797: return 61;   // 159Pm
+		case 1798: return 61;   // 160Pm
+		case 1799: return 61;   // 161Pm
+		case 1800: return 61;   // 162Pm
+		case 1801: return 61;   // 163Pm
+		case 1802: return 62;   // 128Sm
+		case 1803: return 62;   // 129Sm
+		case 1804: return 62;   // 130Sm
+		case 1805: return 62;   // 131Sm
+		case 1806: return 62;   // 132Sm
+		case 1807: return 62;   // 133Sm
+		case 1808: return 62;   // 134Sm
+		case 1809: return 62;   // 135Sm
+		case 1810: return 62;   // 136Sm
+		case 1811: return 62;   // 137Sm
+		case 1812: return 62;   // 138Sm
+		case 1813: return 62;   // 139Sm
+		case 1814: return 62;   // 140Sm
+		case 1815: return 62;   // 141Sm
+		case 1816: return 62;   // 142Sm
+		case 1817: return 62;   // 143Sm
+		case 1818: return 62;   // 144Sm
+		case 1819: return 62;   // 145Sm
+		case 1820: return 62;   // 146Sm
+		case 1821: return 62;   // 147Sm
+		case 1822: return 62;   // 148Sm
+		case 1823: return 62;   // 149Sm
+		case 1824: return 62;   // 150Sm
+		case 1825: return 62;   // 151Sm
+		case 1826: return 62;   // 152Sm
+		case 1827: return 62;   // 153Sm
+		case 1828: return 62;   // 154Sm
+		case 1829: return 62;   // 155Sm
+		case 1830: return 62;   // 156Sm
+		case 1831: return 62;   // 157Sm
+		case 1832: return 62;   // 158Sm
+		case 1833: return 62;   // 159Sm
+		case 1834: return 62;   // 160Sm
+		case 1835: return 62;   // 161Sm
+		case 1836: return 62;   // 162Sm
+		case 1837: return 62;   // 163Sm
+		case 1838: return 62;   // 164Sm
+		case 1839: return 62;   // 165Sm
+		case 1840: return 63;   // 130Eu
+		case 1841: return 63;   // 131Eu
+		case 1842: return 63;   // 132Eu
+		case 1843: return 63;   // 133Eu
+		case 1844: return 63;   // 134Eu
+		case 1845: return 63;   // 135Eu
+		case 1846: return 63;   // 136Eu
+		case 1847: return 63;   // 137Eu
+		case 1848: return 63;   // 138Eu
+		case 1849: return 63;   // 139Eu
+		case 1850: return 63;   // 140Eu
+		case 1851: return 63;   // 141Eu
+		case 1852: return 63;   // 142Eu
+		case 1853: return 63;   // 143Eu
+		case 1854: return 63;   // 144Eu
+		case 1855: return 63;   // 145Eu
+		case 1856: return 63;   // 146Eu
+		case 1857: return 63;   // 147Eu
+		case 1858: return 63;   // 148Eu
+		case 1859: return 63;   // 149Eu
+		case 1860: return 63;   // 150Eu
+		case 1861: return 63;   // 151Eu
+		case 1862: return 63;   // 152Eu
+		case 1863: return 63;   // 153Eu
+		case 1864: return 63;   // 154Eu
+		case 1865: return 63;   // 155Eu
+		case 1866: return 63;   // 156Eu
+		case 1867: return 63;   // 157Eu
+		case 1868: return 63;   // 158Eu
+		case 1869: return 63;   // 159Eu
+		case 1870: return 63;   // 160Eu
+		case 1871: return 63;   // 161Eu
+		case 1872: return 63;   // 162Eu
+		case 1873: return 63;   // 163Eu
+		case 1874: return 63;   // 164Eu
+		case 1875: return 63;   // 165Eu
+		case 1876: return 63;   // 166Eu
+		case 1877: return 63;   // 167Eu
+		case 1878: return 64;   // 133Gd
+		case 1879: return 64;   // 134Gd
+		case 1880: return 64;   // 135Gd
+		case 1881: return 64;   // 136Gd
+		case 1882: return 64;   // 137Gd
+		case 1883: return 64;   // 138Gd
+		case 1884: return 64;   // 139Gd
+		case 1885: return 64;   // 140Gd
+		case 1886: return 64;   // 141Gd
+		case 1887: return 64;   // 142Gd
+		case 1888: return 64;   // 143Gd
+		case 1889: return 64;   // 144Gd
+		case 1890: return 64;   // 145Gd
+		case 1891: return 64;   // 146Gd
+		case 1892: return 64;   // 147Gd
+		case 1893: return 64;   // 148Gd
+		case 1894: return 64;   // 149Gd
+		case 1895: return 64;   // 150Gd
+		case 1896: return 64;   // 151Gd
+		case 1897: return 64;   // 152Gd
+		case 1898: return 64;   // 153Gd
+		case 1899: return 64;   // 154Gd
+		case 1900: return 64;   // 155Gd
+		case 1901: return 64;   // 156Gd
+		case 1902: return 64;   // 157Gd
+		case 1903: return 64;   // 158Gd
+		case 1904: return 64;   // 159Gd
+		case 1905: return 64;   // 160Gd
+		case 1906: return 64;   // 161Gd
+		case 1907: return 64;   // 162Gd
+		case 1908: return 64;   // 163Gd
+		case 1909: return 64;   // 164Gd
+		case 1910: return 64;   // 165Gd
+		case 1911: return 64;   // 166Gd
+		case 1912: return 64;   // 167Gd
+		case 1913: return 64;   // 168Gd
+		case 1914: return 64;   // 169Gd
+		case 1915: return 65;   // 135Tb
+		case 1916: return 65;   // 136Tb
+		case 1917: return 65;   // 137Tb
+		case 1918: return 65;   // 138Tb
+		case 1919: return 65;   // 139Tb
+		case 1920: return 65;   // 140Tb
+		case 1921: return 65;   // 141Tb
+		case 1922: return 65;   // 142Tb
+		case 1923: return 65;   // 143Tb
+		case 1924: return 65;   // 144Tb
+		case 1925: return 65;   // 145Tb
+		case 1926: return 65;   // 146Tb
+		case 1927: return 65;   // 147Tb
+		case 1928: return 65;   // 148Tb
+		case 1929: return 65;   // 149Tb
+		case 1930: return 65;   // 150Tb
+		case 1931: return 65;   // 151Tb
+		case 1932: return 65;   // 152Tb
+		case 1933: return 65;   // 153Tb
+		case 1934: return 65;   // 154Tb
+		case 1935: return 65;   // 155Tb
+		case 1936: return 65;   // 156Tb
+		case 1937: return 65;   // 157Tb
+		case 1938: return 65;   // 158Tb
+		case 1939: return 65;   // 159Tb
+		case 1940: return 65;   // 160Tb
+		case 1941: return 65;   // 161Tb
+		case 1942: return 65;   // 162Tb
+		case 1943: return 65;   // 163Tb
+		case 1944: return 65;   // 164Tb
+		case 1945: return 65;   // 165Tb
+		case 1946: return 65;   // 166Tb
+		case 1947: return 65;   // 167Tb
+		case 1948: return 65;   // 168Tb
+		case 1949: return 65;   // 169Tb
+		case 1950: return 65;   // 170Tb
+		case 1951: return 65;   // 171Tb
+		case 1952: return 66;   // 138Dy
+		case 1953: return 66;   // 139Dy
+		case 1954: return 66;   // 140Dy
+		case 1955: return 66;   // 141Dy
+		case 1956: return 66;   // 142Dy
+		case 1957: return 66;   // 143Dy
+		case 1958: return 66;   // 144Dy
+		case 1959: return 66;   // 145Dy
+		case 1960: return 66;   // 146Dy
+		case 1961: return 66;   // 147Dy
+		case 1962: return 66;   // 148Dy
+		case 1963: return 66;   // 149Dy
+		case 1964: return 66;   // 150Dy
+		case 1965: return 66;   // 151Dy
+		case 1966: return 66;   // 152Dy
+		case 1967: return 66;   // 153Dy
+		case 1968: return 66;   // 154Dy
+		case 1969: return 66;   // 155Dy
+		case 1970: return 66;   // 156Dy
+		case 1971: return 66;   // 157Dy
+		case 1972: return 66;   // 158Dy
+		case 1973: return 66;   // 159Dy
+		case 1974: return 66;   // 160Dy
+		case 1975: return 66;   // 161Dy
+		case 1976: return 66;   // 162Dy
+		case 1977: return 66;   // 163Dy
+		case 1978: return 66;   // 164Dy
+		case 1979: return 66;   // 165Dy
+		case 1980: return 66;   // 166Dy
+		case 1981: return 66;   // 167Dy
+		case 1982: return 66;   // 168Dy
+		case 1983: return 66;   // 169Dy
+		case 1984: return 66;   // 170Dy
+		case 1985: return 66;   // 171Dy
+		case 1986: return 66;   // 172Dy
+		case 1987: return 66;   // 173Dy
+		case 1988: return 67;   // 140Ho
+		case 1989: return 67;   // 141Ho
+		case 1990: return 67;   // 142Ho
+		case 1991: return 67;   // 143Ho
+		case 1992: return 67;   // 144Ho
+		case 1993: return 67;   // 145Ho
+		case 1994: return 67;   // 146Ho
+		case 1995: return 67;   // 147Ho
+		case 1996: return 67;   // 148Ho
+		case 1997: return 67;   // 149Ho
+		case 1998: return 67;   // 150Ho
+		case 1999: return 67;   // 151Ho
+		case 2000: return 67;   // 152Ho
+		case 2001: return 67;   // 153Ho
+		case 2002: return 67;   // 154Ho
+		case 2003: return 67;   // 155Ho
+		case 2004: return 67;   // 156Ho
+		case 2005: return 67;   // 157Ho
+		case 2006: return 67;   // 158Ho
+		case 2007: return 67;   // 159Ho
+		case 2008: return 67;   // 160Ho
+		case 2009: return 67;   // 161Ho
+		case 2010: return 67;   // 162Ho
+		case 2011: return 67;   // 163Ho
+		case 2012: return 67;   // 164Ho
+		case 2013: return 67;   // 165Ho
+		case 2014: return 67;   // 166Ho
+		case 2015: return 67;   // 167Ho
+		case 2016: return 67;   // 168Ho
+		case 2017: return 67;   // 169Ho
+		case 2018: return 67;   // 170Ho
+		case 2019: return 67;   // 171Ho
+		case 2020: return 67;   // 172Ho
+		case 2021: return 67;   // 173Ho
+		case 2022: return 67;   // 174Ho
+		case 2023: return 67;   // 175Ho
+		case 2024: return 68;   // 142Er
+		case 2025: return 68;   // 143Er
+		case 2026: return 68;   // 144Er
+		case 2027: return 68;   // 145Er
+		case 2028: return 68;   // 146Er
+		case 2029: return 68;   // 147Er
+		case 2030: return 68;   // 148Er
+		case 2031: return 68;   // 149Er
+		case 2032: return 68;   // 150Er
+		case 2033: return 68;   // 151Er
+		case 2034: return 68;   // 152Er
+		case 2035: return 68;   // 153Er
+		case 2036: return 68;   // 154Er
+		case 2037: return 68;   // 155Er
+		case 2038: return 68;   // 156Er
+		case 2039: return 68;   // 157Er
+		case 2040: return 68;   // 158Er
+		case 2041: return 68;   // 159Er
+		case 2042: return 68;   // 160Er
+		case 2043: return 68;   // 161Er
+		case 2044: return 68;   // 162Er
+		case 2045: return 68;   // 163Er
+		case 2046: return 68;   // 164Er
+		case 2047: return 68;   // 165Er
+		case 2048: return 68;   // 166Er
+		case 2049: return 68;   // 167Er
+		case 2050: return 68;   // 168Er
+		case 2051: return 68;   // 169Er
+		case 2052: return 68;   // 170Er
+		case 2053: return 68;   // 171Er
+		case 2054: return 68;   // 172Er
+		case 2055: return 68;   // 173Er
+		case 2056: return 68;   // 174Er
+		case 2057: return 68;   // 175Er
+		case 2058: return 68;   // 176Er
+		case 2059: return 68;   // 177Er
+		case 2060: return 69;   // 144Tm
+		case 2061: return 69;   // 145Tm
+		case 2062: return 69;   // 146Tm
+		case 2063: return 69;   // 147Tm
+		case 2064: return 69;   // 148Tm
+		case 2065: return 69;   // 149Tm
+		case 2066: return 69;   // 150Tm
+		case 2067: return 69;   // 151Tm
+		case 2068: return 69;   // 152Tm
+		case 2069: return 69;   // 153Tm
+		case 2070: return 69;   // 154Tm
+		case 2071: return 69;   // 155Tm
+		case 2072: return 69;   // 156Tm
+		case 2073: return 69;   // 157Tm
+		case 2074: return 69;   // 158Tm
+		case 2075: return 69;   // 159Tm
+		case 2076: return 69;   // 160Tm
+		case 2077: return 69;   // 161Tm
+		case 2078: return 69;   // 162Tm
+		case 2079: return 69;   // 163Tm
+		case 2080: return 69;   // 164Tm
+		case 2081: return 69;   // 165Tm
+		case 2082: return 69;   // 166Tm
+		case 2083: return 69;   // 167Tm
+		case 2084: return 69;   // 168Tm
+		case 2085: return 69;   // 169Tm
+		case 2086: return 69;   // 170Tm
+		case 2087: return 69;   // 171Tm
+		case 2088: return 69;   // 172Tm
+		case 2089: return 69;   // 173Tm
+		case 2090: return 69;   // 174Tm
+		case 2091: return 69;   // 175Tm
+		case 2092: return 69;   // 176Tm
+		case 2093: return 69;   // 177Tm
+		case 2094: return 69;   // 178Tm
+		case 2095: return 69;   // 179Tm
+		case 2096: return 70;   // 148Yb
+		case 2097: return 70;   // 149Yb
+		case 2098: return 70;   // 150Yb
+		case 2099: return 70;   // 151Yb
+		case 2100: return 70;   // 152Yb
+		case 2101: return 70;   // 153Yb
+		case 2102: return 70;   // 154Yb
+		case 2103: return 70;   // 155Yb
+		case 2104: return 70;   // 156Yb
+		case 2105: return 70;   // 157Yb
+		case 2106: return 70;   // 158Yb
+		case 2107: return 70;   // 159Yb
+		case 2108: return 70;   // 160Yb
+		case 2109: return 70;   // 161Yb
+		case 2110: return 70;   // 162Yb
+		case 2111: return 70;   // 163Yb
+		case 2112: return 70;   // 164Yb
+		case 2113: return 70;   // 165Yb
+		case 2114: return 70;   // 166Yb
+		case 2115: return 70;   // 167Yb
+		case 2116: return 70;   // 168Yb
+		case 2117: return 70;   // 169Yb
+		case 2118: return 70;   // 170Yb
+		case 2119: return 70;   // 171Yb
+		case 2120: return 70;   // 172Yb
+		case 2121: return 70;   // 173Yb
+		case 2122: return 70;   // 174Yb
+		case 2123: return 70;   // 175Yb
+		case 2124: return 70;   // 176Yb
+		case 2125: return 70;   // 177Yb
+		case 2126: return 70;   // 178Yb
+		case 2127: return 70;   // 179Yb
+		case 2128: return 70;   // 180Yb
+		case 2129: return 70;   // 181Yb
+		case 2130: return 71;   // 150Lu
+		case 2131: return 71;   // 151Lu
+		case 2132: return 71;   // 152Lu
+		case 2133: return 71;   // 153Lu
+		case 2134: return 71;   // 154Lu
+		case 2135: return 71;   // 155Lu
+		case 2136: return 71;   // 156Lu
+		case 2137: return 71;   // 157Lu
+		case 2138: return 71;   // 158Lu
+		case 2139: return 71;   // 159Lu
+		case 2140: return 71;   // 160Lu
+		case 2141: return 71;   // 161Lu
+		case 2142: return 71;   // 162Lu
+		case 2143: return 71;   // 163Lu
+		case 2144: return 71;   // 164Lu
+		case 2145: return 71;   // 165Lu
+		case 2146: return 71;   // 166Lu
+		case 2147: return 71;   // 167Lu
+		case 2148: return 71;   // 168Lu
+		case 2149: return 71;   // 169Lu
+		case 2150: return 71;   // 170Lu
+		case 2151: return 71;   // 171Lu
+		case 2152: return 71;   // 172Lu
+		case 2153: return 71;   // 173Lu
+		case 2154: return 71;   // 174Lu
+		case 2155: return 71;   // 175Lu
+		case 2156: return 71;   // 176Lu
+		case 2157: return 71;   // 177Lu
+		case 2158: return 71;   // 178Lu
+		case 2159: return 71;   // 179Lu
+		case 2160: return 71;   // 180Lu
+		case 2161: return 71;   // 181Lu
+		case 2162: return 71;   // 182Lu
+		case 2163: return 71;   // 183Lu
+		case 2164: return 71;   // 184Lu
+		case 2165: return 71;   // 185Lu
+		case 2166: return 72;   // 153Hf
+		case 2167: return 72;   // 154Hf
+		case 2168: return 72;   // 155Hf
+		case 2169: return 72;   // 156Hf
+		case 2170: return 72;   // 157Hf
+		case 2171: return 72;   // 158Hf
+		case 2172: return 72;   // 159Hf
+		case 2173: return 72;   // 160Hf
+		case 2174: return 72;   // 161Hf
+		case 2175: return 72;   // 162Hf
+		case 2176: return 72;   // 163Hf
+		case 2177: return 72;   // 164Hf
+		case 2178: return 72;   // 165Hf
+		case 2179: return 72;   // 166Hf
+		case 2180: return 72;   // 167Hf
+		case 2181: return 72;   // 168Hf
+		case 2182: return 72;   // 169Hf
+		case 2183: return 72;   // 170Hf
+		case 2184: return 72;   // 171Hf
+		case 2185: return 72;   // 172Hf
+		case 2186: return 72;   // 173Hf
+		case 2187: return 72;   // 174Hf
+		case 2188: return 72;   // 175Hf
+		case 2189: return 72;   // 176Hf
+		case 2190: return 72;   // 177Hf
+		case 2191: return 72;   // 178Hf
+		case 2192: return 72;   // 179Hf
+		case 2193: return 72;   // 180Hf
+		case 2194: return 72;   // 181Hf
+		case 2195: return 72;   // 182Hf
+		case 2196: return 72;   // 183Hf
+		case 2197: return 72;   // 184Hf
+		case 2198: return 72;   // 185Hf
+		case 2199: return 72;   // 186Hf
+		case 2200: return 72;   // 187Hf
+		case 2201: return 72;   // 188Hf
+		case 2202: return 72;   // 189Hf
+		case 2203: return 73;   // 155Ta
+		case 2204: return 73;   // 156Ta
+		case 2205: return 73;   // 157Ta
+		case 2206: return 73;   // 158Ta
+		case 2207: return 73;   // 159Ta
+		case 2208: return 73;   // 160Ta
+		case 2209: return 73;   // 161Ta
+		case 2210: return 73;   // 162Ta
+		case 2211: return 73;   // 163Ta
+		case 2212: return 73;   // 164Ta
+		case 2213: return 73;   // 165Ta
+		case 2214: return 73;   // 166Ta
+		case 2215: return 73;   // 167Ta
+		case 2216: return 73;   // 168Ta
+		case 2217: return 73;   // 169Ta
+		case 2218: return 73;   // 170Ta
+		case 2219: return 73;   // 171Ta
+		case 2220: return 73;   // 172Ta
+		case 2221: return 73;   // 173Ta
+		case 2222: return 73;   // 174Ta
+		case 2223: return 73;   // 175Ta
+		case 2224: return 73;   // 176Ta
+		case 2225: return 73;   // 177Ta
+		case 2226: return 73;   // 178Ta
+		case 2227: return 73;   // 179Ta
+		case 2228: return 73;   // 180Ta
+		case 2229: return 73;   // 181Ta
+		case 2230: return 73;   // 182Ta
+		case 2231: return 73;   // 183Ta
+		case 2232: return 73;   // 184Ta
+		case 2233: return 73;   // 185Ta
+		case 2234: return 73;   // 186Ta
+		case 2235: return 73;   // 187Ta
+		case 2236: return 73;   // 188Ta
+		case 2237: return 73;   // 189Ta
+		case 2238: return 73;   // 190Ta
+		case 2239: return 73;   // 191Ta
+		case 2240: return 73;   // 192Ta
+		case 2241: return 74;   // 157W
+		case 2242: return 74;   // 158W
+		case 2243: return 74;   // 159W
+		case 2244: return 74;   // 160W
+		case 2245: return 74;   // 161W
+		case 2246: return 74;   // 162W
+		case 2247: return 74;   // 163W
+		case 2248: return 74;   // 164W
+		case 2249: return 74;   // 165W
+		case 2250: return 74;   // 166W
+		case 2251: return 74;   // 167W
+		case 2252: return 74;   // 168W
+		case 2253: return 74;   // 169W
+		case 2254: return 74;   // 170W
+		case 2255: return 74;   // 171W
+		case 2256: return 74;   // 172W
+		case 2257: return 74;   // 173W
+		case 2258: return 74;   // 174W
+		case 2259: return 74;   // 175W
+		case 2260: return 74;   // 176W
+		case 2261: return 74;   // 177W
+		case 2262: return 74;   // 178W
+		case 2263: return 74;   // 179W
+		case 2264: return 74;   // 180W
+		case 2265: return 74;   // 181W
+		case 2266: return 74;   // 182W
+		case 2267: return 74;   // 183W
+		case 2268: return 74;   // 184W
+		case 2269: return 74;   // 185W
+		case 2270: return 74;   // 186W
+		case 2271: return 74;   // 187W
+		case 2272: return 74;   // 188W
+		case 2273: return 74;   // 189W
+		case 2274: return 74;   // 190W
+		case 2275: return 74;   // 191W
+		case 2276: return 74;   // 192W
+		case 2277: return 74;   // 193W
+		case 2278: return 74;   // 194W
+		case 2279: return 75;   // 159Re
+		case 2280: return 75;   // 160Re
+		case 2281: return 75;   // 161Re
+		case 2282: return 75;   // 162Re
+		case 2283: return 75;   // 163Re
+		case 2284: return 75;   // 164Re
+		case 2285: return 75;   // 165Re
+		case 2286: return 75;   // 166Re
+		case 2287: return 75;   // 167Re
+		case 2288: return 75;   // 168Re
+		case 2289: return 75;   // 169Re
+		case 2290: return 75;   // 170Re
+		case 2291: return 75;   // 171Re
+		case 2292: return 75;   // 172Re
+		case 2293: return 75;   // 173Re
+		case 2294: return 75;   // 174Re
+		case 2295: return 75;   // 175Re
+		case 2296: return 75;   // 176Re
+		case 2297: return 75;   // 177Re
+		case 2298: return 75;   // 178Re
+		case 2299: return 75;   // 179Re
+		case 2300: return 75;   // 180Re
+		case 2301: return 75;   // 181Re
+		case 2302: return 75;   // 182Re
+		case 2303: return 75;   // 183Re
+		case 2304: return 75;   // 184Re
+		case 2305: return 75;   // 185Re
+		case 2306: return 75;   // 186Re
+		case 2307: return 75;   // 187Re
+		case 2308: return 75;   // 188Re
+		case 2309: return 75;   // 189Re
+		case 2310: return 75;   // 190Re
+		case 2311: return 75;   // 191Re
+		case 2312: return 75;   // 192Re
+		case 2313: return 75;   // 193Re
+		case 2314: return 75;   // 194Re
+		case 2315: return 75;   // 195Re
+		case 2316: return 75;   // 196Re
+		case 2317: return 75;   // 197Re
+		case 2318: return 75;   // 198Re
+		case 2319: return 76;   // 161Os
+		case 2320: return 76;   // 162Os
+		case 2321: return 76;   // 163Os
+		case 2322: return 76;   // 164Os
+		case 2323: return 76;   // 165Os
+		case 2324: return 76;   // 166Os
+		case 2325: return 76;   // 167Os
+		case 2326: return 76;   // 168Os
+		case 2327: return 76;   // 169Os
+		case 2328: return 76;   // 170Os
+		case 2329: return 76;   // 171Os
+		case 2330: return 76;   // 172Os
+		case 2331: return 76;   // 173Os
+		case 2332: return 76;   // 174Os
+		case 2333: return 76;   // 175Os
+		case 2334: return 76;   // 176Os
+		case 2335: return 76;   // 177Os
+		case 2336: return 76;   // 178Os
+		case 2337: return 76;   // 179Os
+		case 2338: return 76;   // 180Os
+		case 2339: return 76;   // 181Os
+		case 2340: return 76;   // 182Os
+		case 2341: return 76;   // 183Os
+		case 2342: return 76;   // 184Os
+		case 2343: return 76;   // 185Os
+		case 2344: return 76;   // 186Os
+		case 2345: return 76;   // 187Os
+		case 2346: return 76;   // 188Os
+		case 2347: return 76;   // 189Os
+		case 2348: return 76;   // 190Os
+		case 2349: return 76;   // 191Os
+		case 2350: return 76;   // 192Os
+		case 2351: return 76;   // 193Os
+		case 2352: return 76;   // 194Os
+		case 2353: return 76;   // 195Os
+		case 2354: return 76;   // 196Os
+		case 2355: return 76;   // 197Os
+		case 2356: return 76;   // 198Os
+		case 2357: return 76;   // 199Os
+		case 2358: return 76;   // 200Os
+		case 2359: return 76;   // 201Os
+		case 2360: return 76;   // 202Os
+		case 2361: return 77;   // 164Ir
+		case 2362: return 77;   // 165Ir
+		case 2363: return 77;   // 166Ir
+		case 2364: return 77;   // 167Ir
+		case 2365: return 77;   // 168Ir
+		case 2366: return 77;   // 169Ir
+		case 2367: return 77;   // 170Ir
+		case 2368: return 77;   // 171Ir
+		case 2369: return 77;   // 172Ir
+		case 2370: return 77;   // 173Ir
+		case 2371: return 77;   // 174Ir
+		case 2372: return 77;   // 175Ir
+		case 2373: return 77;   // 176Ir
+		case 2374: return 77;   // 177Ir
+		case 2375: return 77;   // 178Ir
+		case 2376: return 77;   // 179Ir
+		case 2377: return 77;   // 180Ir
+		case 2378: return 77;   // 181Ir
+		case 2379: return 77;   // 182Ir
+		case 2380: return 77;   // 183Ir
+		case 2381: return 77;   // 184Ir
+		case 2382: return 77;   // 185Ir
+		case 2383: return 77;   // 186Ir
+		case 2384: return 77;   // 187Ir
+		case 2385: return 77;   // 188Ir
+		case 2386: return 77;   // 189Ir
+		case 2387: return 77;   // 190Ir
+		case 2388: return 77;   // 191Ir
+		case 2389: return 77;   // 192Ir
+		case 2390: return 77;   // 193Ir
+		case 2391: return 77;   // 194Ir
+		case 2392: return 77;   // 195Ir
+		case 2393: return 77;   // 196Ir
+		case 2394: return 77;   // 197Ir
+		case 2395: return 77;   // 198Ir
+		case 2396: return 77;   // 199Ir
+		case 2397: return 77;   // 200Ir
+		case 2398: return 77;   // 201Ir
+		case 2399: return 77;   // 202Ir
+		case 2400: return 77;   // 203Ir
+		case 2401: return 77;   // 204Ir
+		case 2402: return 78;   // 166Pt
+		case 2403: return 78;   // 167Pt
+		case 2404: return 78;   // 168Pt
+		case 2405: return 78;   // 169Pt
+		case 2406: return 78;   // 170Pt
+		case 2407: return 78;   // 171Pt
+		case 2408: return 78;   // 172Pt
+		case 2409: return 78;   // 173Pt
+		case 2410: return 78;   // 174Pt
+		case 2411: return 78;   // 175Pt
+		case 2412: return 78;   // 176Pt
+		case 2413: return 78;   // 177Pt
+		case 2414: return 78;   // 178Pt
+		case 2415: return 78;   // 179Pt
+		case 2416: return 78;   // 180Pt
+		case 2417: return 78;   // 181Pt
+		case 2418: return 78;   // 182Pt
+		case 2419: return 78;   // 183Pt
+		case 2420: return 78;   // 184Pt
+		case 2421: return 78;   // 185Pt
+		case 2422: return 78;   // 186Pt
+		case 2423: return 78;   // 187Pt
+		case 2424: return 78;   // 188Pt
+		case 2425: return 78;   // 189Pt
+		case 2426: return 78;   // 190Pt
+		case 2427: return 78;   // 191Pt
+		case 2428: return 78;   // 192Pt
+		case 2429: return 78;   // 193Pt
+		case 2430: return 78;   // 194Pt
+		case 2431: return 78;   // 195Pt
+		case 2432: return 78;   // 196Pt
+		case 2433: return 78;   // 197Pt
+		case 2434: return 78;   // 198Pt
+		case 2435: return 78;   // 199Pt
+		case 2436: return 78;   // 200Pt
+		case 2437: return 78;   // 201Pt
+		case 2438: return 78;   // 202Pt
+		case 2439: return 78;   // 203Pt
+		case 2440: return 78;   // 204Pt
+		case 2441: return 78;   // 205Pt
+		case 2442: return 78;   // 206Pt
+		case 2443: return 79;   // 169Au
+		case 2444: return 79;   // 170Au
+		case 2445: return 79;   // 171Au
+		case 2446: return 79;   // 172Au
+		case 2447: return 79;   // 173Au
+		case 2448: return 79;   // 174Au
+		case 2449: return 79;   // 175Au
+		case 2450: return 79;   // 176Au
+		case 2451: return 79;   // 177Au
+		case 2452: return 79;   // 178Au
+		case 2453: return 79;   // 179Au
+		case 2454: return 79;   // 180Au
+		case 2455: return 79;   // 181Au
+		case 2456: return 79;   // 182Au
+		case 2457: return 79;   // 183Au
+		case 2458: return 79;   // 184Au
+		case 2459: return 79;   // 185Au
+		case 2460: return 79;   // 186Au
+		case 2461: return 79;   // 187Au
+		case 2462: return 79;   // 188Au
+		case 2463: return 79;   // 189Au
+		case 2464: return 79;   // 190Au
+		case 2465: return 79;   // 191Au
+		case 2466: return 79;   // 192Au
+		case 2467: return 79;   // 193Au
+		case 2468: return 79;   // 194Au
+		case 2469: return 79;   // 195Au
+		case 2470: return 79;   // 196Au
+		case 2471: return 79;   // 197Au
+		case 2472: return 79;   // 198Au
+		case 2473: return 79;   // 199Au
+		case 2474: return 79;   // 200Au
+		case 2475: return 79;   // 201Au
+		case 2476: return 79;   // 202Au
+		case 2477: return 79;   // 203Au
+		case 2478: return 79;   // 204Au
+		case 2479: return 79;   // 205Au
+		case 2480: return 79;   // 206Au
+		case 2481: return 79;   // 207Au
+		case 2482: return 79;   // 208Au
+		case 2483: return 79;   // 209Au
+		case 2484: return 79;   // 210Au
+		case 2485: return 80;   // 171Hg
+		case 2486: return 80;   // 172Hg
+		case 2487: return 80;   // 173Hg
+		case 2488: return 80;   // 174Hg
+		case 2489: return 80;   // 175Hg
+		case 2490: return 80;   // 176Hg
+		case 2491: return 80;   // 177Hg
+		case 2492: return 80;   // 178Hg
+		case 2493: return 80;   // 179Hg
+		case 2494: return 80;   // 180Hg
+		case 2495: return 80;   // 181Hg
+		case 2496: return 80;   // 182Hg
+		case 2497: return 80;   // 183Hg
+		case 2498: return 80;   // 184Hg
+		case 2499: return 80;   // 185Hg
+		case 2500: return 80;   // 186Hg
+		case 2501: return 80;   // 187Hg
+		case 2502: return 80;   // 188Hg
+		case 2503: return 80;   // 189Hg
+		case 2504: return 80;   // 190Hg
+		case 2505: return 80;   // 191Hg
+		case 2506: return 80;   // 192Hg
+		case 2507: return 80;   // 193Hg
+		case 2508: return 80;   // 194Hg
+		case 2509: return 80;   // 195Hg
+		case 2510: return 80;   // 196Hg
+		case 2511: return 80;   // 197Hg
+		case 2512: return 80;   // 198Hg
+		case 2513: return 80;   // 199Hg
+		case 2514: return 80;   // 200Hg
+		case 2515: return 80;   // 201Hg
+		case 2516: return 80;   // 202Hg
+		case 2517: return 80;   // 203Hg
+		case 2518: return 80;   // 204Hg
+		case 2519: return 80;   // 205Hg
+		case 2520: return 80;   // 206Hg
+		case 2521: return 80;   // 207Hg
+		case 2522: return 80;   // 208Hg
+		case 2523: return 80;   // 209Hg
+		case 2524: return 80;   // 210Hg
+		case 2525: return 80;   // 211Hg
+		case 2526: return 80;   // 212Hg
+		case 2527: return 80;   // 213Hg
+		case 2528: return 80;   // 214Hg
+		case 2529: return 80;   // 215Hg
+		case 2530: return 80;   // 216Hg
+		case 2531: return 81;   // 176Tl
+		case 2532: return 81;   // 177Tl
+		case 2533: return 81;   // 178Tl
+		case 2534: return 81;   // 179Tl
+		case 2535: return 81;   // 180Tl
+		case 2536: return 81;   // 181Tl
+		case 2537: return 81;   // 182Tl
+		case 2538: return 81;   // 183Tl
+		case 2539: return 81;   // 184Tl
+		case 2540: return 81;   // 185Tl
+		case 2541: return 81;   // 186Tl
+		case 2542: return 81;   // 187Tl
+		case 2543: return 81;   // 188Tl
+		case 2544: return 81;   // 189Tl
+		case 2545: return 81;   // 190Tl
+		case 2546: return 81;   // 191Tl
+		case 2547: return 81;   // 192Tl
+		case 2548: return 81;   // 193Tl
+		case 2549: return 81;   // 194Tl
+		case 2550: return 81;   // 195Tl
+		case 2551: return 81;   // 196Tl
+		case 2552: return 81;   // 197Tl
+		case 2553: return 81;   // 198Tl
+		case 2554: return 81;   // 199Tl
+		case 2555: return 81;   // 200Tl
+		case 2556: return 81;   // 201Tl
+		case 2557: return 81;   // 202Tl
+		case 2558: return 81;   // 203Tl
+		case 2559: return 81;   // 204Tl
+		case 2560: return 81;   // 205Tl
+		case 2561: return 81;   // 206Tl
+		case 2562: return 81;   // 207Tl
+		case 2563: return 81;   // 208Tl
+		case 2564: return 81;   // 209Tl
+		case 2565: return 81;   // 210Tl
+		case 2566: return 81;   // 211Tl
+		case 2567: return 81;   // 212Tl
+		case 2568: return 81;   // 213Tl
+		case 2569: return 81;   // 214Tl
+		case 2570: return 81;   // 215Tl
+		case 2571: return 81;   // 216Tl
+		case 2572: return 81;   // 217Tl
+		case 2573: return 81;   // 218Tl
+		case 2574: return 82;   // 178Pb
+		case 2575: return 82;   // 179Pb
+		case 2576: return 82;   // 180Pb
+		case 2577: return 82;   // 181Pb
+		case 2578: return 82;   // 182Pb
+		case 2579: return 82;   // 183Pb
+		case 2580: return 82;   // 184Pb
+		case 2581: return 82;   // 185Pb
+		case 2582: return 82;   // 186Pb
+		case 2583: return 82;   // 187Pb
+		case 2584: return 82;   // 188Pb
+		case 2585: return 82;   // 189Pb
+		case 2586: return 82;   // 190Pb
+		case 2587: return 82;   // 191Pb
+		case 2588: return 82;   // 192Pb
+		case 2589: return 82;   // 193Pb
+		case 2590: return 82;   // 194Pb
+		case 2591: return 82;   // 195Pb
+		case 2592: return 82;   // 196Pb
+		case 2593: return 82;   // 197Pb
+		case 2594: return 82;   // 198Pb
+		case 2595: return 82;   // 199Pb
+		case 2596: return 82;   // 200Pb
+		case 2597: return 82;   // 201Pb
+		case 2598: return 82;   // 202Pb
+		case 2599: return 82;   // 203Pb
+		case 2600: return 82;   // 204Pb
+		case 2601: return 82;   // 205Pb
+		case 2602: return 82;   // 206Pb
+		case 2603: return 82;   // 207Pb
+		case 2604: return 82;   // 208Pb
+		case 2605: return 82;   // 209Pb
+		case 2606: return 82;   // 210Pb
+		case 2607: return 82;   // 211Pb
+		case 2608: return 82;   // 212Pb
+		case 2609: return 82;   // 213Pb
+		case 2610: return 82;   // 214Pb
+		case 2611: return 82;   // 215Pb
+		case 2612: return 82;   // 216Pb
+		case 2613: return 82;   // 217Pb
+		case 2614: return 82;   // 218Pb
+		case 2615: return 82;   // 219Pb
+		case 2616: return 82;   // 220Pb
+		case 2617: return 83;   // 184Bi
+		case 2618: return 83;   // 185Bi
+		case 2619: return 83;   // 186Bi
+		case 2620: return 83;   // 187Bi
+		case 2621: return 83;   // 188Bi
+		case 2622: return 83;   // 189Bi
+		case 2623: return 83;   // 190Bi
+		case 2624: return 83;   // 191Bi
+		case 2625: return 83;   // 192Bi
+		case 2626: return 83;   // 193Bi
+		case 2627: return 83;   // 194Bi
+		case 2628: return 83;   // 195Bi
+		case 2629: return 83;   // 196Bi
+		case 2630: return 83;   // 197Bi
+		case 2631: return 83;   // 198Bi
+		case 2632: return 83;   // 199Bi
+		case 2633: return 83;   // 200Bi
+		case 2634: return 83;   // 201Bi
+		case 2635: return 83;   // 202Bi
+		case 2636: return 83;   // 203Bi
+		case 2637: return 83;   // 204Bi
+		case 2638: return 83;   // 205Bi
+		case 2639: return 83;   // 206Bi
+		case 2640: return 83;   // 207Bi
+		case 2641: return 83;   // 208Bi
+		case 2642: return 83;   // 209Bi
+		case 2643: return 83;   // 210Bi
+		case 2644: return 83;   // 211Bi
+		case 2645: return 83;   // 212Bi
+		case 2646: return 83;   // 213Bi
+		case 2647: return 83;   // 214Bi
+		case 2648: return 83;   // 215Bi
+		case 2649: return 83;   // 216Bi
+		case 2650: return 83;   // 217Bi
+		case 2651: return 83;   // 218Bi
+		case 2652: return 83;   // 219Bi
+		case 2653: return 83;   // 220Bi
+		case 2654: return 83;   // 221Bi
+		case 2655: return 83;   // 222Bi
+		case 2656: return 83;   // 223Bi
+		case 2657: return 83;   // 224Bi
+		case 2658: return 84;   // 186Po
+		case 2659: return 84;   // 187Po
+		case 2660: return 84;   // 188Po
+		case 2661: return 84;   // 189Po
+		case 2662: return 84;   // 190Po
+		case 2663: return 84;   // 191Po
+		case 2664: return 84;   // 192Po
+		case 2665: return 84;   // 193Po
+		case 2666: return 84;   // 194Po
+		case 2667: return 84;   // 195Po
+		case 2668: return 84;   // 196Po
+		case 2669: return 84;   // 197Po
+		case 2670: return 84;   // 198Po
+		case 2671: return 84;   // 199Po
+		case 2672: return 84;   // 200Po
+		case 2673: return 84;   // 201Po
+		case 2674: return 84;   // 202Po
+		case 2675: return 84;   // 203Po
+		case 2676: return 84;   // 204Po
+		case 2677: return 84;   // 205Po
+		case 2678: return 84;   // 206Po
+		case 2679: return 84;   // 207Po
+		case 2680: return 84;   // 208Po
+		case 2681: return 84;   // 209Po
+		case 2682: return 84;   // 210Po
+		case 2683: return 84;   // 211Po
+		case 2684: return 84;   // 212Po
+		case 2685: return 84;   // 213Po
+		case 2686: return 84;   // 214Po
+		case 2687: return 84;   // 215Po
+		case 2688: return 84;   // 216Po
+		case 2689: return 84;   // 217Po
+		case 2690: return 84;   // 218Po
+		case 2691: return 84;   // 219Po
+		case 2692: return 84;   // 220Po
+		case 2693: return 84;   // 221Po
+		case 2694: return 84;   // 222Po
+		case 2695: return 84;   // 223Po
+		case 2696: return 84;   // 224Po
+		case 2697: return 84;   // 225Po
+		case 2698: return 84;   // 226Po
+		case 2699: return 84;   // 227Po
+		case 2700: return 85;   // 191At
+		case 2701: return 85;   // 192At
+		case 2702: return 85;   // 193At
+		case 2703: return 85;   // 194At
+		case 2704: return 85;   // 195At
+		case 2705: return 85;   // 196At
+		case 2706: return 85;   // 197At
+		case 2707: return 85;   // 198At
+		case 2708: return 85;   // 199At
+		case 2709: return 85;   // 200At
+		case 2710: return 85;   // 201At
+		case 2711: return 85;   // 202At
+		case 2712: return 85;   // 203At
+		case 2713: return 85;   // 204At
+		case 2714: return 85;   // 205At
+		case 2715: return 85;   // 206At
+		case 2716: return 85;   // 207At
+		case 2717: return 85;   // 208At
+		case 2718: return 85;   // 209At
+		case 2719: return 85;   // 210At
+		case 2720: return 85;   // 211At
+		case 2721: return 85;   // 212At
+		case 2722: return 85;   // 213At
+		case 2723: return 85;   // 214At
+		case 2724: return 85;   // 215At
+		case 2725: return 85;   // 216At
+		case 2726: return 85;   // 217At
+		case 2727: return 85;   // 218At
+		case 2728: return 85;   // 219At
+		case 2729: return 85;   // 220At
+		case 2730: return 85;   // 221At
+		case 2731: return 85;   // 222At
+		case 2732: return 85;   // 223At
+		case 2733: return 85;   // 224At
+		case 2734: return 85;   // 225At
+		case 2735: return 85;   // 226At
+		case 2736: return 85;   // 227At
+		case 2737: return 85;   // 228At
+		case 2738: return 85;   // 229At
+		case 2739: return 86;   // 193Rn
+		case 2740: return 86;   // 194Rn
+		case 2741: return 86;   // 195Rn
+		case 2742: return 86;   // 196Rn
+		case 2743: return 86;   // 197Rn
+		case 2744: return 86;   // 198Rn
+		case 2745: return 86;   // 199Rn
+		case 2746: return 86;   // 200Rn
+		case 2747: return 86;   // 201Rn
+		case 2748: return 86;   // 202Rn
+		case 2749: return 86;   // 203Rn
+		case 2750: return 86;   // 204Rn
+		case 2751: return 86;   // 205Rn
+		case 2752: return 86;   // 206Rn
+		case 2753: return 86;   // 207Rn
+		case 2754: return 86;   // 208Rn
+		case 2755: return 86;   // 209Rn
+		case 2756: return 86;   // 210Rn
+		case 2757: return 86;   // 211Rn
+		case 2758: return 86;   // 212Rn
+		case 2759: return 86;   // 213Rn
+		case 2760: return 86;   // 214Rn
+		case 2761: return 86;   // 215Rn
+		case 2762: return 86;   // 216Rn
+		case 2763: return 86;   // 217Rn
+		case 2764: return 86;   // 218Rn
+		case 2765: return 86;   // 219Rn
+		case 2766: return 86;   // 220Rn
+		case 2767: return 86;   // 221Rn
+		case 2768: return 86;   // 222Rn
+		case 2769: return 86;   // 223Rn
+		case 2770: return 86;   // 224Rn
+		case 2771: return 86;   // 225Rn
+		case 2772: return 86;   // 226Rn
+		case 2773: return 86;   // 227Rn
+		case 2774: return 86;   // 228Rn
+		case 2775: return 86;   // 229Rn
+		case 2776: return 86;   // 230Rn
+		case 2777: return 86;   // 231Rn
+		case 2778: return 87;   // 199Fr
+		case 2779: return 87;   // 200Fr
+		case 2780: return 87;   // 201Fr
+		case 2781: return 87;   // 202Fr
+		case 2782: return 87;   // 203Fr
+		case 2783: return 87;   // 204Fr
+		case 2784: return 87;   // 205Fr
+		case 2785: return 87;   // 206Fr
+		case 2786: return 87;   // 207Fr
+		case 2787: return 87;   // 208Fr
+		case 2788: return 87;   // 209Fr
+		case 2789: return 87;   // 210Fr
+		case 2790: return 87;   // 211Fr
+		case 2791: return 87;   // 212Fr
+		case 2792: return 87;   // 213Fr
+		case 2793: return 87;   // 214Fr
+		case 2794: return 87;   // 215Fr
+		case 2795: return 87;   // 216Fr
+		case 2796: return 87;   // 217Fr
+		case 2797: return 87;   // 218Fr
+		case 2798: return 87;   // 219Fr
+		case 2799: return 87;   // 220Fr
+		case 2800: return 87;   // 221Fr
+		case 2801: return 87;   // 222Fr
+		case 2802: return 87;   // 223Fr
+		case 2803: return 87;   // 224Fr
+		case 2804: return 87;   // 225Fr
+		case 2805: return 87;   // 226Fr
+		case 2806: return 87;   // 227Fr
+		case 2807: return 87;   // 228Fr
+		case 2808: return 87;   // 229Fr
+		case 2809: return 87;   // 230Fr
+		case 2810: return 87;   // 231Fr
+		case 2811: return 87;   // 232Fr
+		case 2812: return 87;   // 233Fr
+		case 2813: return 88;   // 201Ra
+		case 2814: return 88;   // 202Ra
+		case 2815: return 88;   // 203Ra
+		case 2816: return 88;   // 204Ra
+		case 2817: return 88;   // 205Ra
+		case 2818: return 88;   // 206Ra
+		case 2819: return 88;   // 207Ra
+		case 2820: return 88;   // 208Ra
+		case 2821: return 88;   // 209Ra
+		case 2822: return 88;   // 210Ra
+		case 2823: return 88;   // 211Ra
+		case 2824: return 88;   // 212Ra
+		case 2825: return 88;   // 213Ra
+		case 2826: return 88;   // 214Ra
+		case 2827: return 88;   // 215Ra
+		case 2828: return 88;   // 216Ra
+		case 2829: return 88;   // 217Ra
+		case 2830: return 88;   // 218Ra
+		case 2831: return 88;   // 219Ra
+		case 2832: return 88;   // 220Ra
+		case 2833: return 88;   // 221Ra
+		case 2834: return 88;   // 222Ra
+		case 2835: return 88;   // 223Ra
+		case 2836: return 88;   // 224Ra
+		case 2837: return 88;   // 225Ra
+		case 2838: return 88;   // 226Ra
+		case 2839: return 88;   // 227Ra
+		case 2840: return 88;   // 228Ra
+		case 2841: return 88;   // 229Ra
+		case 2842: return 88;   // 230Ra
+		case 2843: return 88;   // 231Ra
+		case 2844: return 88;   // 232Ra
+		case 2845: return 88;   // 233Ra
+		case 2846: return 88;   // 234Ra
+		case 2847: return 88;   // 235Ra
+		case 2848: return 89;   // 206Ac
+		case 2849: return 89;   // 207Ac
+		case 2850: return 89;   // 208Ac
+		case 2851: return 89;   // 209Ac
+		case 2852: return 89;   // 210Ac
+		case 2853: return 89;   // 211Ac
+		case 2854: return 89;   // 212Ac
+		case 2855: return 89;   // 213Ac
+		case 2856: return 89;   // 214Ac
+		case 2857: return 89;   // 215Ac
+		case 2858: return 89;   // 216Ac
+		case 2859: return 89;   // 217Ac
+		case 2860: return 89;   // 218Ac
+		case 2861: return 89;   // 219Ac
+		case 2862: return 89;   // 220Ac
+		case 2863: return 89;   // 221Ac
+		case 2864: return 89;   // 222Ac
+		case 2865: return 89;   // 223Ac
+		case 2866: return 89;   // 224Ac
+		case 2867: return 89;   // 225Ac
+		case 2868: return 89;   // 226Ac
+		case 2869: return 89;   // 227Ac
+		case 2870: return 89;   // 228Ac
+		case 2871: return 89;   // 229Ac
+		case 2872: return 89;   // 230Ac
+		case 2873: return 89;   // 231Ac
+		case 2874: return 89;   // 232Ac
+		case 2875: return 89;   // 233Ac
+		case 2876: return 89;   // 234Ac
+		case 2877: return 89;   // 235Ac
+		case 2878: return 89;   // 236Ac
+		case 2879: return 89;   // 237Ac
+		case 2880: return 90;   // 208Th
+		case 2881: return 90;   // 209Th
+		case 2882: return 90;   // 210Th
+		case 2883: return 90;   // 211Th
+		case 2884: return 90;   // 212Th
+		case 2885: return 90;   // 213Th
+		case 2886: return 90;   // 214Th
+		case 2887: return 90;   // 215Th
+		case 2888: return 90;   // 216Th
+		case 2889: return 90;   // 217Th
+		case 2890: return 90;   // 218Th
+		case 2891: return 90;   // 219Th
+		case 2892: return 90;   // 220Th
+		case 2893: return 90;   // 221Th
+		case 2894: return 90;   // 222Th
+		case 2895: return 90;   // 223Th
+		case 2896: return 90;   // 224Th
+		case 2897: return 90;   // 225Th
+		case 2898: return 90;   // 226Th
+		case 2899: return 90;   // 227Th
+		case 2900: return 90;   // 228Th
+		case 2901: return 90;   // 229Th
+		case 2902: return 90;   // 230Th
+		case 2903: return 90;   // 231Th
+		case 2904: return 90;   // 232Th
+		case 2905: return 90;   // 233Th
+		case 2906: return 90;   // 234Th
+		case 2907: return 90;   // 235Th
+		case 2908: return 90;   // 236Th
+		case 2909: return 90;   // 237Th
+		case 2910: return 90;   // 238Th
+		case 2911: return 90;   // 239Th
+		case 2912: return 91;   // 212Pa
+		case 2913: return 91;   // 213Pa
+		case 2914: return 91;   // 214Pa
+		case 2915: return 91;   // 215Pa
+		case 2916: return 91;   // 216Pa
+		case 2917: return 91;   // 217Pa
+		case 2918: return 91;   // 218Pa
+		case 2919: return 91;   // 219Pa
+		case 2920: return 91;   // 220Pa
+		case 2921: return 91;   // 221Pa
+		case 2922: return 91;   // 222Pa
+		case 2923: return 91;   // 223Pa
+		case 2924: return 91;   // 224Pa
+		case 2925: return 91;   // 225Pa
+		case 2926: return 91;   // 226Pa
+		case 2927: return 91;   // 227Pa
+		case 2928: return 91;   // 228Pa
+		case 2929: return 91;   // 229Pa
+		case 2930: return 91;   // 230Pa
+		case 2931: return 91;   // 231Pa
+		case 2932: return 91;   // 232Pa
+		case 2933: return 91;   // 233Pa
+		case 2934: return 91;   // 234Pa
+		case 2935: return 91;   // 235Pa
+		case 2936: return 91;   // 236Pa
+		case 2937: return 91;   // 237Pa
+		case 2938: return 91;   // 238Pa
+		case 2939: return 91;   // 239Pa
+		case 2940: return 91;   // 240Pa
+		case 2941: return 91;   // 241Pa
+		case 2942: return 92;   // 217U
+		case 2943: return 92;   // 218U
+		case 2944: return 92;   // 219U
+		case 2945: return 92;   // 220U
+		case 2946: return 92;   // 221U
+		case 2947: return 92;   // 222U
+		case 2948: return 92;   // 223U
+		case 2949: return 92;   // 224U
+		case 2950: return 92;   // 225U
+		case 2951: return 92;   // 226U
+		case 2952: return 92;   // 227U
+		case 2953: return 92;   // 228U
+		case 2954: return 92;   // 229U
+		case 2955: return 92;   // 230U
+		case 2956: return 92;   // 231U
+		case 2957: return 92;   // 232U
+		case 2958: return 92;   // 233U
+		case 2959: return 92;   // 234U
+		case 2960: return 92;   // 235U
+		case 2961: return 92;   // 236U
+		case 2962: return 92;   // 237U
+		case 2963: return 92;   // 238U
+		case 2964: return 92;   // 239U
+		case 2965: return 92;   // 240U
+		case 2966: return 92;   // 241U
+		case 2967: return 92;   // 242U
+		case 2968: return 92;   // 243U
+		case 2969: return 93;   // 219Np
+		case 2970: return 93;   // 220Np
+		case 2971: return 93;   // 221Np
+		case 2972: return 93;   // 222Np
+		case 2973: return 93;   // 223Np
+		case 2974: return 93;   // 224Np
+		case 2975: return 93;   // 225Np
+		case 2976: return 93;   // 226Np
+		case 2977: return 93;   // 227Np
+		case 2978: return 93;   // 228Np
+		case 2979: return 93;   // 229Np
+		case 2980: return 93;   // 230Np
+		case 2981: return 93;   // 231Np
+		case 2982: return 93;   // 232Np
+		case 2983: return 93;   // 233Np
+		case 2984: return 93;   // 234Np
+		case 2985: return 93;   // 235Np
+		case 2986: return 93;   // 236Np
+		case 2987: return 93;   // 237Np
+		case 2988: return 93;   // 238Np
+		case 2989: return 93;   // 239Np
+		case 2990: return 93;   // 240Np
+		case 2991: return 93;   // 241Np
+		case 2992: return 93;   // 242Np
+		case 2993: return 93;   // 243Np
+		case 2994: return 93;   // 244Np
+		case 2995: return 93;   // 245Np
+		case 2996: return 94;   // 228Pu
+		case 2997: return 94;   // 229Pu
+		case 2998: return 94;   // 230Pu
+		case 2999: return 94;   // 231Pu
+		case 3000: return 94;   // 232Pu
+		case 3001: return 94;   // 233Pu
+		case 3002: return 94;   // 234Pu
+		case 3003: return 94;   // 235Pu
+		case 3004: return 94;   // 236Pu
+		case 3005: return 94;   // 237Pu
+		case 3006: return 94;   // 238Pu
+		case 3007: return 94;   // 239Pu
+		case 3008: return 94;   // 240Pu
+		case 3009: return 94;   // 241Pu
+		case 3010: return 94;   // 242Pu
+		case 3011: return 94;   // 243Pu
+		case 3012: return 94;   // 244Pu
+		case 3013: return 94;   // 245Pu
+		case 3014: return 94;   // 246Pu
+		case 3015: return 94;   // 247Pu
+		case 3016: return 95;   // 230Am
+		case 3017: return 95;   // 231Am
+		case 3018: return 95;   // 232Am
+		case 3019: return 95;   // 233Am
+		case 3020: return 95;   // 234Am
+		case 3021: return 95;   // 235Am
+		case 3022: return 95;   // 236Am
+		case 3023: return 95;   // 237Am
+		case 3024: return 95;   // 238Am
+		case 3025: return 95;   // 239Am
+		case 3026: return 95;   // 240Am
+		case 3027: return 95;   // 241Am
+		case 3028: return 95;   // 242Am
+		case 3029: return 95;   // 243Am
+		case 3030: return 95;   // 244Am
+		case 3031: return 95;   // 245Am
+		case 3032: return 95;   // 246Am
+		case 3033: return 95;   // 247Am
+		case 3034: return 95;   // 248Am
+		case 3035: return 95;   // 249Am
+		case 3036: return 96;   // 232Cm
+		case 3037: return 96;   // 233Cm
+		case 3038: return 96;   // 234Cm
+		case 3039: return 96;   // 235Cm
+		case 3040: return 96;   // 236Cm
+		case 3041: return 96;   // 237Cm
+		case 3042: return 96;   // 238Cm
+		case 3043: return 96;   // 239Cm
+		case 3044: return 96;   // 240Cm
+		case 3045: return 96;   // 241Cm
+		case 3046: return 96;   // 242Cm
+		case 3047: return 96;   // 243Cm
+		case 3048: return 96;   // 244Cm
+		case 3049: return 96;   // 245Cm
+		case 3050: return 96;   // 246Cm
+		case 3051: return 96;   // 247Cm
+		case 3052: return 96;   // 248Cm
+		case 3053: return 96;   // 249Cm
+		case 3054: return 96;   // 250Cm
+		case 3055: return 96;   // 251Cm
+		case 3056: return 96;   // 252Cm
+		case 3057: return 97;   // 234Bk
+		case 3058: return 97;   // 235Bk
+		case 3059: return 97;   // 236Bk
+		case 3060: return 97;   // 237Bk
+		case 3061: return 97;   // 238Bk
+		case 3062: return 97;   // 239Bk
+		case 3063: return 97;   // 240Bk
+		case 3064: return 97;   // 241Bk
+		case 3065: return 97;   // 242Bk
+		case 3066: return 97;   // 243Bk
+		case 3067: return 97;   // 244Bk
+		case 3068: return 97;   // 245Bk
+		case 3069: return 97;   // 246Bk
+		case 3070: return 97;   // 247Bk
+		case 3071: return 97;   // 248Bk
+		case 3072: return 97;   // 249Bk
+		case 3073: return 97;   // 250Bk
+		case 3074: return 97;   // 251Bk
+		case 3075: return 97;   // 252Bk
+		case 3076: return 97;   // 253Bk
+		case 3077: return 97;   // 254Bk
+		case 3078: return 98;   // 237Cf
+		case 3079: return 98;   // 238Cf
+		case 3080: return 98;   // 239Cf
+		case 3081: return 98;   // 240Cf
+		case 3082: return 98;   // 241Cf
+		case 3083: return 98;   // 242Cf
+		case 3084: return 98;   // 243Cf
+		case 3085: return 98;   // 244Cf
+		case 3086: return 98;   // 245Cf
+		case 3087: return 98;   // 246Cf
+		case 3088: return 98;   // 247Cf
+		case 3089: return 98;   // 248Cf
+		case 3090: return 98;   // 249Cf
+		case 3091: return 98;   // 250Cf
+		case 3092: return 98;   // 251Cf
+		case 3093: return 98;   // 252Cf
+		case 3094: return 98;   // 253Cf
+		case 3095: return 98;   // 254Cf
+		case 3096: return 98;   // 255Cf
+		case 3097: return 98;   // 256Cf
+		case 3098: return 99;   // 239Es
+		case 3099: return 99;   // 240Es
+		case 3100: return 99;   // 241Es
+		case 3101: return 99;   // 242Es
+		case 3102: return 99;   // 243Es
+		case 3103: return 99;   // 244Es
+		case 3104: return 99;   // 245Es
+		case 3105: return 99;   // 246Es
+		case 3106: return 99;   // 247Es
+		case 3107: return 99;   // 248Es
+		case 3108: return 99;   // 249Es
+		case 3109: return 99;   // 250Es
+		case 3110: return 99;   // 251Es
+		case 3111: return 99;   // 252Es
+		case 3112: return 99;   // 253Es
+		case 3113: return 99;   // 254Es
+		case 3114: return 99;   // 255Es
+		case 3115: return 99;   // 256Es
+		case 3116: return 99;   // 257Es
+		case 3117: return 99;   // 258Es
+		case 3118: return 100;  // 241Fm
+		case 3119: return 100;  // 242Fm
+		case 3120: return 100;  // 243Fm
+		case 3121: return 100;  // 244Fm
+		case 3122: return 100;  // 245Fm
+		case 3123: return 100;  // 246Fm
+		case 3124: return 100;  // 247Fm
+		case 3125: return 100;  // 248Fm
+		case 3126: return 100;  // 249Fm
+		case 3127: return 100;  // 250Fm
+		case 3128: return 100;  // 251Fm
+		case 3129: return 100;  // 252Fm
+		case 3130: return 100;  // 253Fm
+		case 3131: return 100;  // 254Fm
+		case 3132: return 100;  // 255Fm
+		case 3133: return 100;  // 256Fm
+		case 3134: return 100;  // 257Fm
+		case 3135: return 100;  // 258Fm
+		case 3136: return 100;  // 259Fm
+		case 3137: return 100;  // 260Fm
+		case 3138: return 101;  // 245Md
+		case 3139: return 101;  // 246Md
+		case 3140: return 101;  // 247Md
+		case 3141: return 101;  // 248Md
+		case 3142: return 101;  // 249Md
+		case 3143: return 101;  // 250Md
+		case 3144: return 101;  // 251Md
+		case 3145: return 101;  // 252Md
+		case 3146: return 101;  // 253Md
+		case 3147: return 101;  // 254Md
+		case 3148: return 101;  // 255Md
+		case 3149: return 101;  // 256Md
+		case 3150: return 101;  // 257Md
+		case 3151: return 101;  // 258Md
+		case 3152: return 101;  // 259Md
+		case 3153: return 101;  // 260Md
+		case 3154: return 101;  // 261Md
+		case 3155: return 101;  // 262Md
+		case 3156: return 102;  // 248No
+		case 3157: return 102;  // 249No
+		case 3158: return 102;  // 250No
+		case 3159: return 102;  // 251No
+		case 3160: return 102;  // 252No
+		case 3161: return 102;  // 253No
+		case 3162: return 102;  // 254No
+		case 3163: return 102;  // 255No
+		case 3164: return 102;  // 256No
+		case 3165: return 102;  // 257No
+		case 3166: return 102;  // 258No
+		case 3167: return 102;  // 259No
+		case 3168: return 102;  // 260No
+		case 3169: return 102;  // 261No
+		case 3170: return 102;  // 262No
+		case 3171: return 102;  // 263No
+		case 3172: return 102;  // 264No
+		case 3173: return 103;  // 251Lr
+		case 3174: return 103;  // 252Lr
+		case 3175: return 103;  // 253Lr
+		case 3176: return 103;  // 254Lr
+		case 3177: return 103;  // 255Lr
+		case 3178: return 103;  // 256Lr
+		case 3179: return 103;  // 257Lr
+		case 3180: return 103;  // 258Lr
+		case 3181: return 103;  // 259Lr
+		case 3182: return 103;  // 260Lr
+		case 3183: return 103;  // 261Lr
+		case 3184: return 103;  // 262Lr
+		case 3185: return 103;  // 263Lr
+		case 3186: return 103;  // 264Lr
+		case 3187: return 103;  // 265Lr
+		case 3188: return 103;  // 266Lr
+		case 3189: return 104;  // 253Rf
+		case 3190: return 104;  // 254Rf
+		case 3191: return 104;  // 255Rf
+		case 3192: return 104;  // 256Rf
+		case 3193: return 104;  // 257Rf
+		case 3194: return 104;  // 258Rf
+		case 3195: return 104;  // 259Rf
+		case 3196: return 104;  // 260Rf
+		case 3197: return 104;  // 261Rf
+		case 3198: return 104;  // 262Rf
+		case 3199: return 104;  // 263Rf
+		case 3200: return 104;  // 264Rf
+		case 3201: return 104;  // 265Rf
+		case 3202: return 104;  // 266Rf
+		case 3203: return 104;  // 267Rf
+		case 3204: return 104;  // 268Rf
+		case 3205: return 105;  // 255Db
+		case 3206: return 105;  // 256Db
+		case 3207: return 105;  // 257Db
+		case 3208: return 105;  // 258Db
+		case 3209: return 105;  // 259Db
+		case 3210: return 105;  // 260Db
+		case 3211: return 105;  // 261Db
+		case 3212: return 105;  // 262Db
+		case 3213: return 105;  // 263Db
+		case 3214: return 105;  // 264Db
+		case 3215: return 105;  // 265Db
+		case 3216: return 105;  // 266Db
+		case 3217: return 105;  // 267Db
+		case 3218: return 105;  // 268Db
+		case 3219: return 105;  // 269Db
+		case 3220: return 105;  // 270Db
+		case 3221: return 106;  // 258Sg
+		case 3222: return 106;  // 259Sg
+		case 3223: return 106;  // 260Sg
+		case 3224: return 106;  // 261Sg
+		case 3225: return 106;  // 262Sg
+		case 3226: return 106;  // 263Sg
+		case 3227: return 106;  // 264Sg
+		case 3228: return 106;  // 265Sg
+		case 3229: return 106;  // 266Sg
+		case 3230: return 106;  // 267Sg
+		case 3231: return 106;  // 268Sg
+		case 3232: return 106;  // 269Sg
+		case 3233: return 106;  // 270Sg
+		case 3234: return 106;  // 271Sg
+		case 3235: return 106;  // 272Sg
+		case 3236: return 106;  // 273Sg
+		case 3237: return 107;  // 260Bh
+		case 3238: return 107;  // 261Bh
+		case 3239: return 107;  // 262Bh
+		case 3240: return 107;  // 263Bh
+		case 3241: return 107;  // 264Bh
+		case 3242: return 107;  // 265Bh
+		case 3243: return 107;  // 266Bh
+		case 3244: return 107;  // 267Bh
+		case 3245: return 107;  // 268Bh
+		case 3246: return 107;  // 269Bh
+		case 3247: return 107;  // 270Bh
+		case 3248: return 107;  // 271Bh
+		case 3249: return 107;  // 272Bh
+		case 3250: return 107;  // 273Bh
+		case 3251: return 107;  // 274Bh
+		case 3252: return 107;  // 275Bh
+		case 3253: return 108;  // 263Hs
+		case 3254: return 108;  // 264Hs
+		case 3255: return 108;  // 265Hs
+		case 3256: return 108;  // 266Hs
+		case 3257: return 108;  // 267Hs
+		case 3258: return 108;  // 268Hs
+		case 3259: return 108;  // 269Hs
+		case 3260: return 108;  // 270Hs
+		case 3261: return 108;  // 271Hs
+		case 3262: return 108;  // 272Hs
+		case 3263: return 108;  // 273Hs
+		case 3264: return 108;  // 274Hs
+		case 3265: return 108;  // 275Hs
+		case 3266: return 108;  // 276Hs
+		case 3267: return 108;  // 277Hs
+		case 3268: return 109;  // 265Mt
+		case 3269: return 109;  // 266Mt
+		case 3270: return 109;  // 267Mt
+		case 3271: return 109;  // 268Mt
+		case 3272: return 109;  // 269Mt
+		case 3273: return 109;  // 270Mt
+		case 3274: return 109;  // 271Mt
+		case 3275: return 109;  // 272Mt
+		case 3276: return 109;  // 273Mt
+		case 3277: return 109;  // 274Mt
+		case 3278: return 109;  // 275Mt
+		case 3279: return 109;  // 276Mt
+		case 3280: return 109;  // 277Mt
+		case 3281: return 109;  // 278Mt
+		case 3282: return 109;  // 279Mt
+		case 3283: return 110;  // 267Ds
+		case 3284: return 110;  // 268Ds
+		case 3285: return 110;  // 269Ds
+		case 3286: return 110;  // 270Ds
+		case 3287: return 110;  // 271Ds
+		case 3288: return 110;  // 272Ds
+		case 3289: return 110;  // 273Ds
+		case 3290: return 110;  // 274Ds
+		case 3291: return 110;  // 275Ds
+		case 3292: return 110;  // 276Ds
+		case 3293: return 110;  // 277Ds
+		case 3294: return 110;  // 278Ds
+		case 3295: return 110;  // 279Ds
+		case 3296: return 110;  // 280Ds
+		case 3297: return 110;  // 281Ds
+		case 3298: return 111;  // 272Rg
+		case 3299: return 111;  // 273Rg
+		case 3300: return 111;  // 274Rg
+		case 3301: return 111;  // 275Rg
+		case 3302: return 111;  // 276Rg
+		case 3303: return 111;  // 277Rg
+		case 3304: return 111;  // 278Rg
+		case 3305: return 111;  // 279Rg
+		case 3306: return 111;  // 280Rg
+		case 3307: return 111;  // 281Rg
+		case 3308: return 111;  // 282Rg
+		case 3309: return 111;  // 283Rg
+		case 3310: return 112;  // 276Cn
+		case 3311: return 112;  // 277Cn
+		case 3312: return 112;  // 278Cn
+		case 3313: return 112;  // 279Cn
+		case 3314: return 112;  // 280Cn
+		case 3315: return 112;  // 281Cn
+		case 3316: return 112;  // 282Cn
+		case 3317: return 112;  // 283Cn
+		case 3318: return 112;  // 284Cn
+		case 3319: return 112;  // 285Cn
+		case 3320: return 113;  // 278Nh
+		case 3321: return 113;  // 279Nh
+		case 3322: return 113;  // 280Nh
+		case 3323: return 113;  // 281Nh
+		case 3324: return 113;  // 282Nh
+		case 3325: return 113;  // 283Nh
+		case 3326: return 113;  // 284Nh
+		case 3327: return 113;  // 285Nh
+		case 3328: return 113;  // 286Nh
+		case 3329: return 113;  // 287Nh
+		case 3330: return 114;  // 285Fl
+		case 3331: return 114;  // 286Fl
+		case 3332: return 114;  // 287Fl
+		case 3333: return 114;  // 288Fl
+		case 3334: return 114;  // 289Fl
+		case 3335: return 115;  // 287Mc
+		case 3336: return 115;  // 288Mc
+		case 3337: return 115;  // 289Mc
+		case 3338: return 115;  // 290Mc
+		case 3339: return 115;  // 291Uup
+		case 3340: return 116;  // 289Lv
+		case 3341: return 116;  // 290Lv
+		case 3342: return 116;  // 291Lv
+		case 3343: return 116;  // 292Lv
+		case 3344: return 116;  // 293Lv
+		case 3345: return 117;  // 291Ts
+		case 3346: return 117;  // 292Ts
+		case 3347: return 117;  // 293Ts
+		case 3348: return 117;  // 294Uus
+		case 3349: return 118;  // 293Og
+		case 3350: return 118;  // 294Og
+		case 3351: return 118;  // 295Og
+		  default: return 0;
+	}
+}
+
+/******************************************************************************
+
+ Function nist_atomic_orbitals(): returns the number of electronic orbitals for
+ a given isotope. See the isotope enumeration in the header file for details.
+
+******************************************************************************/
+
+size_t nist_atomic_orbitals(const isotope a)
+{
+	if (a > 3204)
+	{
+		PRINT_ERROR("%s\n", "orbitals for isotopes after 268Rf (3240) are not implemented")
+		exit(EXIT_FAILURE);
+	}
+
+	switch (a)
+	{
+		case    0: return 1;   // 1H, Z = 1
+		case    1: return 1;   // 2H, Z = 1
+		case    2: return 1;   // 3H, Z = 1
+		case    3: return 1;   // 4H, Z = 1
+		case    4: return 1;   // 5H, Z = 1
+		case    5: return 1;   // 6H, Z = 1
+		case    6: return 1;   // 7H, Z = 1
+		case    7: return 1;   // 3He, Z = 2
+		case    8: return 1;   // 4He, Z = 2
+		case    9: return 1;   // 5He, Z = 2
+		case   10: return 1;   // 6He, Z = 2
+		case   11: return 1;   // 7He, Z = 2
+		case   12: return 1;   // 8He, Z = 2
+		case   13: return 1;   // 9He, Z = 2
+		case   14: return 1;   // 10He, Z = 2
+		case   15: return 2;   // 3Li, Z = 3
+		case   16: return 2;   // 4Li, Z = 3
+		case   17: return 2;   // 5Li, Z = 3
+		case   18: return 2;   // 6Li, Z = 3
+		case   19: return 2;   // 7Li, Z = 3
+		case   20: return 2;   // 8Li, Z = 3
+		case   21: return 2;   // 9Li, Z = 3
+		case   22: return 2;   // 10Li, Z = 3
+		case   23: return 2;   // 11Li, Z = 3
+		case   24: return 2;   // 12Li, Z = 3
+		case   25: return 2;   // 13Li, Z = 3
+		case   26: return 2;   // 5Be, Z = 4
+		case   27: return 2;   // 6Be, Z = 4
+		case   28: return 2;   // 7Be, Z = 4
+		case   29: return 2;   // 8Be, Z = 4
+		case   30: return 2;   // 9Be, Z = 4
+		case   31: return 2;   // 10Be, Z = 4
+		case   32: return 2;   // 11Be, Z = 4
+		case   33: return 2;   // 12Be, Z = 4
+		case   34: return 2;   // 13Be, Z = 4
+		case   35: return 2;   // 14Be, Z = 4
+		case   36: return 2;   // 15Be, Z = 4
+		case   37: return 2;   // 16Be, Z = 4
+		case   38: return 5;   // 6B, Z = 5
+		case   39: return 5;   // 7B, Z = 5
+		case   40: return 5;   // 8B, Z = 5
+		case   41: return 5;   // 9B, Z = 5
+		case   42: return 5;   // 10B, Z = 5
+		case   43: return 5;   // 11B, Z = 5
+		case   44: return 5;   // 12B, Z = 5
+		case   45: return 5;   // 13B, Z = 5
+		case   46: return 5;   // 14B, Z = 5
+		case   47: return 5;   // 15B, Z = 5
+		case   48: return 5;   // 16B, Z = 5
+		case   49: return 5;   // 17B, Z = 5
+		case   50: return 5;   // 18B, Z = 5
+		case   51: return 5;   // 19B, Z = 5
+		case   52: return 5;   // 20B, Z = 5
+		case   53: return 5;   // 21B, Z = 5
+		case   54: return 5;   // 8C, Z = 6
+		case   55: return 5;   // 9C, Z = 6
+		case   56: return 5;   // 10C, Z = 6
+		case   57: return 5;   // 11C, Z = 6
+		case   58: return 5;   // 12C, Z = 6
+		case   59: return 5;   // 13C, Z = 6
+		case   60: return 5;   // 14C, Z = 6
+		case   61: return 5;   // 15C, Z = 6
+		case   62: return 5;   // 16C, Z = 6
+		case   63: return 5;   // 17C, Z = 6
+		case   64: return 5;   // 18C, Z = 6
+		case   65: return 5;   // 19C, Z = 6
+		case   66: return 5;   // 20C, Z = 6
+		case   67: return 5;   // 21C, Z = 6
+		case   68: return 5;   // 22C, Z = 6
+		case   69: return 5;   // 23C, Z = 6
+		case   70: return 5;   // 10N, Z = 7
+		case   71: return 5;   // 11N, Z = 7
+		case   72: return 5;   // 12N, Z = 7
+		case   73: return 5;   // 13N, Z = 7
+		case   74: return 5;   // 14N, Z = 7
+		case   75: return 5;   // 15N, Z = 7
+		case   76: return 5;   // 16N, Z = 7
+		case   77: return 5;   // 17N, Z = 7
+		case   78: return 5;   // 18N, Z = 7
+		case   79: return 5;   // 19N, Z = 7
+		case   80: return 5;   // 20N, Z = 7
+		case   81: return 5;   // 21N, Z = 7
+		case   82: return 5;   // 22N, Z = 7
+		case   83: return 5;   // 23N, Z = 7
+		case   84: return 5;   // 24N, Z = 7
+		case   85: return 5;   // 25N, Z = 7
+		case   86: return 5;   // 12O, Z = 8
+		case   87: return 5;   // 13O, Z = 8
+		case   88: return 5;   // 14O, Z = 8
+		case   89: return 5;   // 15O, Z = 8
+		case   90: return 5;   // 16O, Z = 8
+		case   91: return 5;   // 17O, Z = 8
+		case   92: return 5;   // 18O, Z = 8
+		case   93: return 5;   // 19O, Z = 8
+		case   94: return 5;   // 20O, Z = 8
+		case   95: return 5;   // 21O, Z = 8
+		case   96: return 5;   // 22O, Z = 8
+		case   97: return 5;   // 23O, Z = 8
+		case   98: return 5;   // 24O, Z = 8
+		case   99: return 5;   // 25O, Z = 8
+		case  100: return 5;   // 26O, Z = 8
+		case  101: return 5;   // 27O, Z = 8
+		case  102: return 5;   // 28O, Z = 8
+		case  103: return 5;   // 14F, Z = 9
+		case  104: return 5;   // 15F, Z = 9
+		case  105: return 5;   // 16F, Z = 9
+		case  106: return 5;   // 17F, Z = 9
+		case  107: return 5;   // 18F, Z = 9
+		case  108: return 5;   // 19F, Z = 9
+		case  109: return 5;   // 20F, Z = 9
+		case  110: return 5;   // 21F, Z = 9
+		case  111: return 5;   // 22F, Z = 9
+		case  112: return 5;   // 23F, Z = 9
+		case  113: return 5;   // 24F, Z = 9
+		case  114: return 5;   // 25F, Z = 9
+		case  115: return 5;   // 26F, Z = 9
+		case  116: return 5;   // 27F, Z = 9
+		case  117: return 5;   // 28F, Z = 9
+		case  118: return 5;   // 29F, Z = 9
+		case  119: return 5;   // 30F, Z = 9
+		case  120: return 5;   // 31F, Z = 9
+		case  121: return 5;   // 16Ne, Z = 10
+		case  122: return 5;   // 17Ne, Z = 10
+		case  123: return 5;   // 18Ne, Z = 10
+		case  124: return 5;   // 19Ne, Z = 10
+		case  125: return 5;   // 20Ne, Z = 10
+		case  126: return 5;   // 21Ne, Z = 10
+		case  127: return 5;   // 22Ne, Z = 10
+		case  128: return 5;   // 23Ne, Z = 10
+		case  129: return 5;   // 24Ne, Z = 10
+		case  130: return 5;   // 25Ne, Z = 10
+		case  131: return 5;   // 26Ne, Z = 10
+		case  132: return 5;   // 27Ne, Z = 10
+		case  133: return 5;   // 28Ne, Z = 10
+		case  134: return 5;   // 29Ne, Z = 10
+		case  135: return 5;   // 30Ne, Z = 10
+		case  136: return 5;   // 31Ne, Z = 10
+		case  137: return 5;   // 32Ne, Z = 10
+		case  138: return 5;   // 33Ne, Z = 10
+		case  139: return 5;   // 34Ne, Z = 10
+		case  140: return 6;   // 18Na, Z = 11
+		case  141: return 6;   // 19Na, Z = 11
+		case  142: return 6;   // 20Na, Z = 11
+		case  143: return 6;   // 21Na, Z = 11
+		case  144: return 6;   // 22Na, Z = 11
+		case  145: return 6;   // 23Na, Z = 11
+		case  146: return 6;   // 24Na, Z = 11
+		case  147: return 6;   // 25Na, Z = 11
+		case  148: return 6;   // 26Na, Z = 11
+		case  149: return 6;   // 27Na, Z = 11
+		case  150: return 6;   // 28Na, Z = 11
+		case  151: return 6;   // 29Na, Z = 11
+		case  152: return 6;   // 30Na, Z = 11
+		case  153: return 6;   // 31Na, Z = 11
+		case  154: return 6;   // 32Na, Z = 11
+		case  155: return 6;   // 33Na, Z = 11
+		case  156: return 6;   // 34Na, Z = 11
+		case  157: return 6;   // 35Na, Z = 11
+		case  158: return 6;   // 36Na, Z = 11
+		case  159: return 6;   // 37Na, Z = 11
+		case  160: return 6;   // 19Mg, Z = 12
+		case  161: return 6;   // 20Mg, Z = 12
+		case  162: return 6;   // 21Mg, Z = 12
+		case  163: return 6;   // 22Mg, Z = 12
+		case  164: return 6;   // 23Mg, Z = 12
+		case  165: return 6;   // 24Mg, Z = 12
+		case  166: return 6;   // 25Mg, Z = 12
+		case  167: return 6;   // 26Mg, Z = 12
+		case  168: return 6;   // 27Mg, Z = 12
+		case  169: return 6;   // 28Mg, Z = 12
+		case  170: return 6;   // 29Mg, Z = 12
+		case  171: return 6;   // 30Mg, Z = 12
+		case  172: return 6;   // 31Mg, Z = 12
+		case  173: return 6;   // 32Mg, Z = 12
+		case  174: return 6;   // 33Mg, Z = 12
+		case  175: return 6;   // 34Mg, Z = 12
+		case  176: return 6;   // 35Mg, Z = 12
+		case  177: return 6;   // 36Mg, Z = 12
+		case  178: return 6;   // 37Mg, Z = 12
+		case  179: return 6;   // 38Mg, Z = 12
+		case  180: return 6;   // 39Mg, Z = 12
+		case  181: return 6;   // 40Mg, Z = 12
+		case  182: return 9;   // 21Al, Z = 13
+		case  183: return 9;   // 22Al, Z = 13
+		case  184: return 9;   // 23Al, Z = 13
+		case  185: return 9;   // 24Al, Z = 13
+		case  186: return 9;   // 25Al, Z = 13
+		case  187: return 9;   // 26Al, Z = 13
+		case  188: return 9;   // 27Al, Z = 13
+		case  189: return 9;   // 28Al, Z = 13
+		case  190: return 9;   // 29Al, Z = 13
+		case  191: return 9;   // 30Al, Z = 13
+		case  192: return 9;   // 31Al, Z = 13
+		case  193: return 9;   // 32Al, Z = 13
+		case  194: return 9;   // 33Al, Z = 13
+		case  195: return 9;   // 34Al, Z = 13
+		case  196: return 9;   // 35Al, Z = 13
+		case  197: return 9;   // 36Al, Z = 13
+		case  198: return 9;   // 37Al, Z = 13
+		case  199: return 9;   // 38Al, Z = 13
+		case  200: return 9;   // 39Al, Z = 13
+		case  201: return 9;   // 40Al, Z = 13
+		case  202: return 9;   // 41Al, Z = 13
+		case  203: return 9;   // 42Al, Z = 13
+		case  204: return 9;   // 43Al, Z = 13
+		case  205: return 9;   // 22Si, Z = 14
+		case  206: return 9;   // 23Si, Z = 14
+		case  207: return 9;   // 24Si, Z = 14
+		case  208: return 9;   // 25Si, Z = 14
+		case  209: return 9;   // 26Si, Z = 14
+		case  210: return 9;   // 27Si, Z = 14
+		case  211: return 9;   // 28Si, Z = 14
+		case  212: return 9;   // 29Si, Z = 14
+		case  213: return 9;   // 30Si, Z = 14
+		case  214: return 9;   // 31Si, Z = 14
+		case  215: return 9;   // 32Si, Z = 14
+		case  216: return 9;   // 33Si, Z = 14
+		case  217: return 9;   // 34Si, Z = 14
+		case  218: return 9;   // 35Si, Z = 14
+		case  219: return 9;   // 36Si, Z = 14
+		case  220: return 9;   // 37Si, Z = 14
+		case  221: return 9;   // 38Si, Z = 14
+		case  222: return 9;   // 39Si, Z = 14
+		case  223: return 9;   // 40Si, Z = 14
+		case  224: return 9;   // 41Si, Z = 14
+		case  225: return 9;   // 42Si, Z = 14
+		case  226: return 9;   // 43Si, Z = 14
+		case  227: return 9;   // 44Si, Z = 14
+		case  228: return 9;   // 45Si, Z = 14
+		case  229: return 9;   // 24P, Z = 15
+		case  230: return 9;   // 25P, Z = 15
+		case  231: return 9;   // 26P, Z = 15
+		case  232: return 9;   // 27P, Z = 15
+		case  233: return 9;   // 28P, Z = 15
+		case  234: return 9;   // 29P, Z = 15
+		case  235: return 9;   // 30P, Z = 15
+		case  236: return 9;   // 31P, Z = 15
+		case  237: return 9;   // 32P, Z = 15
+		case  238: return 9;   // 33P, Z = 15
+		case  239: return 9;   // 34P, Z = 15
+		case  240: return 9;   // 35P, Z = 15
+		case  241: return 9;   // 36P, Z = 15
+		case  242: return 9;   // 37P, Z = 15
+		case  243: return 9;   // 38P, Z = 15
+		case  244: return 9;   // 39P, Z = 15
+		case  245: return 9;   // 40P, Z = 15
+		case  246: return 9;   // 41P, Z = 15
+		case  247: return 9;   // 42P, Z = 15
+		case  248: return 9;   // 43P, Z = 15
+		case  249: return 9;   // 44P, Z = 15
+		case  250: return 9;   // 45P, Z = 15
+		case  251: return 9;   // 46P, Z = 15
+		case  252: return 9;   // 47P, Z = 15
+		case  253: return 9;   // 26S, Z = 16
+		case  254: return 9;   // 27S, Z = 16
+		case  255: return 9;   // 28S, Z = 16
+		case  256: return 9;   // 29S, Z = 16
+		case  257: return 9;   // 30S, Z = 16
+		case  258: return 9;   // 31S, Z = 16
+		case  259: return 9;   // 32S, Z = 16
+		case  260: return 9;   // 33S, Z = 16
+		case  261: return 9;   // 34S, Z = 16
+		case  262: return 9;   // 35S, Z = 16
+		case  263: return 9;   // 36S, Z = 16
+		case  264: return 9;   // 37S, Z = 16
+		case  265: return 9;   // 38S, Z = 16
+		case  266: return 9;   // 39S, Z = 16
+		case  267: return 9;   // 40S, Z = 16
+		case  268: return 9;   // 41S, Z = 16
+		case  269: return 9;   // 42S, Z = 16
+		case  270: return 9;   // 43S, Z = 16
+		case  271: return 9;   // 44S, Z = 16
+		case  272: return 9;   // 45S, Z = 16
+		case  273: return 9;   // 46S, Z = 16
+		case  274: return 9;   // 47S, Z = 16
+		case  275: return 9;   // 48S, Z = 16
+		case  276: return 9;   // 49S, Z = 16
+		case  277: return 9;   // 28Cl, Z = 17
+		case  278: return 9;   // 29Cl, Z = 17
+		case  279: return 9;   // 30Cl, Z = 17
+		case  280: return 9;   // 31Cl, Z = 17
+		case  281: return 9;   // 32Cl, Z = 17
+		case  282: return 9;   // 33Cl, Z = 17
+		case  283: return 9;   // 34Cl, Z = 17
+		case  284: return 9;   // 35Cl, Z = 17
+		case  285: return 9;   // 36Cl, Z = 17
+		case  286: return 9;   // 37Cl, Z = 17
+		case  287: return 9;   // 38Cl, Z = 17
+		case  288: return 9;   // 39Cl, Z = 17
+		case  289: return 9;   // 40Cl, Z = 17
+		case  290: return 9;   // 41Cl, Z = 17
+		case  291: return 9;   // 42Cl, Z = 17
+		case  292: return 9;   // 43Cl, Z = 17
+		case  293: return 9;   // 44Cl, Z = 17
+		case  294: return 9;   // 45Cl, Z = 17
+		case  295: return 9;   // 46Cl, Z = 17
+		case  296: return 9;   // 47Cl, Z = 17
+		case  297: return 9;   // 48Cl, Z = 17
+		case  298: return 9;   // 49Cl, Z = 17
+		case  299: return 9;   // 50Cl, Z = 17
+		case  300: return 9;   // 51Cl, Z = 17
+		case  301: return 9;   // 30Ar, Z = 18
+		case  302: return 9;   // 31Ar, Z = 18
+		case  303: return 9;   // 32Ar, Z = 18
+		case  304: return 9;   // 33Ar, Z = 18
+		case  305: return 9;   // 34Ar, Z = 18
+		case  306: return 9;   // 35Ar, Z = 18
+		case  307: return 9;   // 36Ar, Z = 18
+		case  308: return 9;   // 37Ar, Z = 18
+		case  309: return 9;   // 38Ar, Z = 18
+		case  310: return 9;   // 39Ar, Z = 18
+		case  311: return 9;   // 40Ar, Z = 18
+		case  312: return 9;   // 41Ar, Z = 18
+		case  313: return 9;   // 42Ar, Z = 18
+		case  314: return 9;   // 43Ar, Z = 18
+		case  315: return 9;   // 44Ar, Z = 18
+		case  316: return 9;   // 45Ar, Z = 18
+		case  317: return 9;   // 46Ar, Z = 18
+		case  318: return 9;   // 47Ar, Z = 18
+		case  319: return 9;   // 48Ar, Z = 18
+		case  320: return 9;   // 49Ar, Z = 18
+		case  321: return 9;   // 50Ar, Z = 18
+		case  322: return 9;   // 51Ar, Z = 18
+		case  323: return 9;   // 52Ar, Z = 18
+		case  324: return 9;   // 53Ar, Z = 18
+		case  325: return 10;  // 32K, Z = 19
+		case  326: return 10;  // 33K, Z = 19
+		case  327: return 10;  // 34K, Z = 19
+		case  328: return 10;  // 35K, Z = 19
+		case  329: return 10;  // 36K, Z = 19
+		case  330: return 10;  // 37K, Z = 19
+		case  331: return 10;  // 38K, Z = 19
+		case  332: return 10;  // 39K, Z = 19
+		case  333: return 10;  // 40K, Z = 19
+		case  334: return 10;  // 41K, Z = 19
+		case  335: return 10;  // 42K, Z = 19
+		case  336: return 10;  // 43K, Z = 19
+		case  337: return 10;  // 44K, Z = 19
+		case  338: return 10;  // 45K, Z = 19
+		case  339: return 10;  // 46K, Z = 19
+		case  340: return 10;  // 47K, Z = 19
+		case  341: return 10;  // 48K, Z = 19
+		case  342: return 10;  // 49K, Z = 19
+		case  343: return 10;  // 50K, Z = 19
+		case  344: return 10;  // 51K, Z = 19
+		case  345: return 10;  // 52K, Z = 19
+		case  346: return 10;  // 53K, Z = 19
+		case  347: return 10;  // 54K, Z = 19
+		case  348: return 10;  // 55K, Z = 19
+		case  349: return 10;  // 56K, Z = 19
+		case  350: return 10;  // 34Ca, Z = 20
+		case  351: return 10;  // 35Ca, Z = 20
+		case  352: return 10;  // 36Ca, Z = 20
+		case  353: return 10;  // 37Ca, Z = 20
+		case  354: return 10;  // 38Ca, Z = 20
+		case  355: return 10;  // 39Ca, Z = 20
+		case  356: return 10;  // 40Ca, Z = 20
+		case  357: return 10;  // 41Ca, Z = 20
+		case  358: return 10;  // 42Ca, Z = 20
+		case  359: return 10;  // 43Ca, Z = 20
+		case  360: return 10;  // 44Ca, Z = 20
+		case  361: return 10;  // 45Ca, Z = 20
+		case  362: return 10;  // 46Ca, Z = 20
+		case  363: return 10;  // 47Ca, Z = 20
+		case  364: return 10;  // 48Ca, Z = 20
+		case  365: return 10;  // 49Ca, Z = 20
+		case  366: return 10;  // 50Ca, Z = 20
+		case  367: return 10;  // 51Ca, Z = 20
+		case  368: return 10;  // 52Ca, Z = 20
+		case  369: return 10;  // 53Ca, Z = 20
+		case  370: return 10;  // 54Ca, Z = 20
+		case  371: return 10;  // 55Ca, Z = 20
+		case  372: return 10;  // 56Ca, Z = 20
+		case  373: return 10;  // 57Ca, Z = 20
+		case  374: return 10;  // 58Ca, Z = 20
+		case  375: return 15;  // 36Sc, Z = 21
+		case  376: return 15;  // 37Sc, Z = 21
+		case  377: return 15;  // 38Sc, Z = 21
+		case  378: return 15;  // 39Sc, Z = 21
+		case  379: return 15;  // 40Sc, Z = 21
+		case  380: return 15;  // 41Sc, Z = 21
+		case  381: return 15;  // 42Sc, Z = 21
+		case  382: return 15;  // 43Sc, Z = 21
+		case  383: return 15;  // 44Sc, Z = 21
+		case  384: return 15;  // 45Sc, Z = 21
+		case  385: return 15;  // 46Sc, Z = 21
+		case  386: return 15;  // 47Sc, Z = 21
+		case  387: return 15;  // 48Sc, Z = 21
+		case  388: return 15;  // 49Sc, Z = 21
+		case  389: return 15;  // 50Sc, Z = 21
+		case  390: return 15;  // 51Sc, Z = 21
+		case  391: return 15;  // 52Sc, Z = 21
+		case  392: return 15;  // 53Sc, Z = 21
+		case  393: return 15;  // 54Sc, Z = 21
+		case  394: return 15;  // 55Sc, Z = 21
+		case  395: return 15;  // 56Sc, Z = 21
+		case  396: return 15;  // 57Sc, Z = 21
+		case  397: return 15;  // 58Sc, Z = 21
+		case  398: return 15;  // 59Sc, Z = 21
+		case  399: return 15;  // 60Sc, Z = 21
+		case  400: return 15;  // 61Sc, Z = 21
+		case  401: return 15;  // 38Ti, Z = 22
+		case  402: return 15;  // 39Ti, Z = 22
+		case  403: return 15;  // 40Ti, Z = 22
+		case  404: return 15;  // 41Ti, Z = 22
+		case  405: return 15;  // 42Ti, Z = 22
+		case  406: return 15;  // 43Ti, Z = 22
+		case  407: return 15;  // 44Ti, Z = 22
+		case  408: return 15;  // 45Ti, Z = 22
+		case  409: return 15;  // 46Ti, Z = 22
+		case  410: return 15;  // 47Ti, Z = 22
+		case  411: return 15;  // 48Ti, Z = 22
+		case  412: return 15;  // 49Ti, Z = 22
+		case  413: return 15;  // 50Ti, Z = 22
+		case  414: return 15;  // 51Ti, Z = 22
+		case  415: return 15;  // 52Ti, Z = 22
+		case  416: return 15;  // 53Ti, Z = 22
+		case  417: return 15;  // 54Ti, Z = 22
+		case  418: return 15;  // 55Ti, Z = 22
+		case  419: return 15;  // 56Ti, Z = 22
+		case  420: return 15;  // 57Ti, Z = 22
+		case  421: return 15;  // 58Ti, Z = 22
+		case  422: return 15;  // 59Ti, Z = 22
+		case  423: return 15;  // 60Ti, Z = 22
+		case  424: return 15;  // 61Ti, Z = 22
+		case  425: return 15;  // 62Ti, Z = 22
+		case  426: return 15;  // 63Ti, Z = 22
+		case  427: return 15;  // 40V, Z = 23
+		case  428: return 15;  // 41V, Z = 23
+		case  429: return 15;  // 42V, Z = 23
+		case  430: return 15;  // 43V, Z = 23
+		case  431: return 15;  // 44V, Z = 23
+		case  432: return 15;  // 45V, Z = 23
+		case  433: return 15;  // 46V, Z = 23
+		case  434: return 15;  // 47V, Z = 23
+		case  435: return 15;  // 48V, Z = 23
+		case  436: return 15;  // 49V, Z = 23
+		case  437: return 15;  // 50V, Z = 23
+		case  438: return 15;  // 51V, Z = 23
+		case  439: return 15;  // 52V, Z = 23
+		case  440: return 15;  // 53V, Z = 23
+		case  441: return 15;  // 54V, Z = 23
+		case  442: return 15;  // 55V, Z = 23
+		case  443: return 15;  // 56V, Z = 23
+		case  444: return 15;  // 57V, Z = 23
+		case  445: return 15;  // 58V, Z = 23
+		case  446: return 15;  // 59V, Z = 23
+		case  447: return 15;  // 60V, Z = 23
+		case  448: return 15;  // 61V, Z = 23
+		case  449: return 15;  // 62V, Z = 23
+		case  450: return 15;  // 63V, Z = 23
+		case  451: return 15;  // 64V, Z = 23
+		case  452: return 15;  // 65V, Z = 23
+		case  453: return 15;  // 66V, Z = 23
+		case  454: return 15;  // 42Cr, Z = 24
+		case  455: return 15;  // 43Cr, Z = 24
+		case  456: return 15;  // 44Cr, Z = 24
+		case  457: return 15;  // 45Cr, Z = 24
+		case  458: return 15;  // 46Cr, Z = 24
+		case  459: return 15;  // 47Cr, Z = 24
+		case  460: return 15;  // 48Cr, Z = 24
+		case  461: return 15;  // 49Cr, Z = 24
+		case  462: return 15;  // 50Cr, Z = 24
+		case  463: return 15;  // 51Cr, Z = 24
+		case  464: return 15;  // 52Cr, Z = 24
+		case  465: return 15;  // 53Cr, Z = 24
+		case  466: return 15;  // 54Cr, Z = 24
+		case  467: return 15;  // 55Cr, Z = 24
+		case  468: return 15;  // 56Cr, Z = 24
+		case  469: return 15;  // 57Cr, Z = 24
+		case  470: return 15;  // 58Cr, Z = 24
+		case  471: return 15;  // 59Cr, Z = 24
+		case  472: return 15;  // 60Cr, Z = 24
+		case  473: return 15;  // 61Cr, Z = 24
+		case  474: return 15;  // 62Cr, Z = 24
+		case  475: return 15;  // 63Cr, Z = 24
+		case  476: return 15;  // 64Cr, Z = 24
+		case  477: return 15;  // 65Cr, Z = 24
+		case  478: return 15;  // 66Cr, Z = 24
+		case  479: return 15;  // 67Cr, Z = 24
+		case  480: return 15;  // 68Cr, Z = 24
+		case  481: return 15;  // 44Mn, Z = 25
+		case  482: return 15;  // 45Mn, Z = 25
+		case  483: return 15;  // 46Mn, Z = 25
+		case  484: return 15;  // 47Mn, Z = 25
+		case  485: return 15;  // 48Mn, Z = 25
+		case  486: return 15;  // 49Mn, Z = 25
+		case  487: return 15;  // 50Mn, Z = 25
+		case  488: return 15;  // 51Mn, Z = 25
+		case  489: return 15;  // 52Mn, Z = 25
+		case  490: return 15;  // 53Mn, Z = 25
+		case  491: return 15;  // 54Mn, Z = 25
+		case  492: return 15;  // 55Mn, Z = 25
+		case  493: return 15;  // 56Mn, Z = 25
+		case  494: return 15;  // 57Mn, Z = 25
+		case  495: return 15;  // 58Mn, Z = 25
+		case  496: return 15;  // 59Mn, Z = 25
+		case  497: return 15;  // 60Mn, Z = 25
+		case  498: return 15;  // 61Mn, Z = 25
+		case  499: return 15;  // 62Mn, Z = 25
+		case  500: return 15;  // 63Mn, Z = 25
+		case  501: return 15;  // 64Mn, Z = 25
+		case  502: return 15;  // 65Mn, Z = 25
+		case  503: return 15;  // 66Mn, Z = 25
+		case  504: return 15;  // 67Mn, Z = 25
+		case  505: return 15;  // 68Mn, Z = 25
+		case  506: return 15;  // 69Mn, Z = 25
+		case  507: return 15;  // 70Mn, Z = 25
+		case  508: return 15;  // 71Mn, Z = 25
+		case  509: return 15;  // 45Fe, Z = 26
+		case  510: return 15;  // 46Fe, Z = 26
+		case  511: return 15;  // 47Fe, Z = 26
+		case  512: return 15;  // 48Fe, Z = 26
+		case  513: return 15;  // 49Fe, Z = 26
+		case  514: return 15;  // 50Fe, Z = 26
+		case  515: return 15;  // 51Fe, Z = 26
+		case  516: return 15;  // 52Fe, Z = 26
+		case  517: return 15;  // 53Fe, Z = 26
+		case  518: return 15;  // 54Fe, Z = 26
+		case  519: return 15;  // 55Fe, Z = 26
+		case  520: return 15;  // 56Fe, Z = 26
+		case  521: return 15;  // 57Fe, Z = 26
+		case  522: return 15;  // 58Fe, Z = 26
+		case  523: return 15;  // 59Fe, Z = 26
+		case  524: return 15;  // 60Fe, Z = 26
+		case  525: return 15;  // 61Fe, Z = 26
+		case  526: return 15;  // 62Fe, Z = 26
+		case  527: return 15;  // 63Fe, Z = 26
+		case  528: return 15;  // 64Fe, Z = 26
+		case  529: return 15;  // 65Fe, Z = 26
+		case  530: return 15;  // 66Fe, Z = 26
+		case  531: return 15;  // 67Fe, Z = 26
+		case  532: return 15;  // 68Fe, Z = 26
+		case  533: return 15;  // 69Fe, Z = 26
+		case  534: return 15;  // 70Fe, Z = 26
+		case  535: return 15;  // 71Fe, Z = 26
+		case  536: return 15;  // 72Fe, Z = 26
+		case  537: return 15;  // 73Fe, Z = 26
+		case  538: return 15;  // 74Fe, Z = 26
+		case  539: return 15;  // 47Co, Z = 27
+		case  540: return 15;  // 48Co, Z = 27
+		case  541: return 15;  // 49Co, Z = 27
+		case  542: return 15;  // 50Co, Z = 27
+		case  543: return 15;  // 51Co, Z = 27
+		case  544: return 15;  // 52Co, Z = 27
+		case  545: return 15;  // 53Co, Z = 27
+		case  546: return 15;  // 54Co, Z = 27
+		case  547: return 15;  // 55Co, Z = 27
+		case  548: return 15;  // 56Co, Z = 27
+		case  549: return 15;  // 57Co, Z = 27
+		case  550: return 15;  // 58Co, Z = 27
+		case  551: return 15;  // 59Co, Z = 27
+		case  552: return 15;  // 60Co, Z = 27
+		case  553: return 15;  // 61Co, Z = 27
+		case  554: return 15;  // 62Co, Z = 27
+		case  555: return 15;  // 63Co, Z = 27
+		case  556: return 15;  // 64Co, Z = 27
+		case  557: return 15;  // 65Co, Z = 27
+		case  558: return 15;  // 66Co, Z = 27
+		case  559: return 15;  // 67Co, Z = 27
+		case  560: return 15;  // 68Co, Z = 27
+		case  561: return 15;  // 69Co, Z = 27
+		case  562: return 15;  // 70Co, Z = 27
+		case  563: return 15;  // 71Co, Z = 27
+		case  564: return 15;  // 72Co, Z = 27
+		case  565: return 15;  // 73Co, Z = 27
+		case  566: return 15;  // 74Co, Z = 27
+		case  567: return 15;  // 75Co, Z = 27
+		case  568: return 15;  // 76Co, Z = 27
+		case  569: return 15;  // 48Ni, Z = 28
+		case  570: return 15;  // 49Ni, Z = 28
+		case  571: return 15;  // 50Ni, Z = 28
+		case  572: return 15;  // 51Ni, Z = 28
+		case  573: return 15;  // 52Ni, Z = 28
+		case  574: return 15;  // 53Ni, Z = 28
+		case  575: return 15;  // 54Ni, Z = 28
+		case  576: return 15;  // 55Ni, Z = 28
+		case  577: return 15;  // 56Ni, Z = 28
+		case  578: return 15;  // 57Ni, Z = 28
+		case  579: return 15;  // 58Ni, Z = 28
+		case  580: return 15;  // 59Ni, Z = 28
+		case  581: return 15;  // 60Ni, Z = 28
+		case  582: return 15;  // 61Ni, Z = 28
+		case  583: return 15;  // 62Ni, Z = 28
+		case  584: return 15;  // 63Ni, Z = 28
+		case  585: return 15;  // 64Ni, Z = 28
+		case  586: return 15;  // 65Ni, Z = 28
+		case  587: return 15;  // 66Ni, Z = 28
+		case  588: return 15;  // 67Ni, Z = 28
+		case  589: return 15;  // 68Ni, Z = 28
+		case  590: return 15;  // 69Ni, Z = 28
+		case  591: return 15;  // 70Ni, Z = 28
+		case  592: return 15;  // 71Ni, Z = 28
+		case  593: return 15;  // 72Ni, Z = 28
+		case  594: return 15;  // 73Ni, Z = 28
+		case  595: return 15;  // 74Ni, Z = 28
+		case  596: return 15;  // 75Ni, Z = 28
+		case  597: return 15;  // 76Ni, Z = 28
+		case  598: return 15;  // 77Ni, Z = 28
+		case  599: return 15;  // 78Ni, Z = 28
+		case  600: return 15;  // 79Ni, Z = 28
+		case  601: return 15;  // 52Cu, Z = 29
+		case  602: return 15;  // 53Cu, Z = 29
+		case  603: return 15;  // 54Cu, Z = 29
+		case  604: return 15;  // 55Cu, Z = 29
+		case  605: return 15;  // 56Cu, Z = 29
+		case  606: return 15;  // 57Cu, Z = 29
+		case  607: return 15;  // 58Cu, Z = 29
+		case  608: return 15;  // 59Cu, Z = 29
+		case  609: return 15;  // 60Cu, Z = 29
+		case  610: return 15;  // 61Cu, Z = 29
+		case  611: return 15;  // 62Cu, Z = 29
+		case  612: return 15;  // 63Cu, Z = 29
+		case  613: return 15;  // 64Cu, Z = 29
+		case  614: return 15;  // 65Cu, Z = 29
+		case  615: return 15;  // 66Cu, Z = 29
+		case  616: return 15;  // 67Cu, Z = 29
+		case  617: return 15;  // 68Cu, Z = 29
+		case  618: return 15;  // 69Cu, Z = 29
+		case  619: return 15;  // 70Cu, Z = 29
+		case  620: return 15;  // 71Cu, Z = 29
+		case  621: return 15;  // 72Cu, Z = 29
+		case  622: return 15;  // 73Cu, Z = 29
+		case  623: return 15;  // 74Cu, Z = 29
+		case  624: return 15;  // 75Cu, Z = 29
+		case  625: return 15;  // 76Cu, Z = 29
+		case  626: return 15;  // 77Cu, Z = 29
+		case  627: return 15;  // 78Cu, Z = 29
+		case  628: return 15;  // 79Cu, Z = 29
+		case  629: return 15;  // 80Cu, Z = 29
+		case  630: return 15;  // 81Cu, Z = 29
+		case  631: return 15;  // 82Cu, Z = 29
+		case  632: return 15;  // 54Zn, Z = 30
+		case  633: return 15;  // 55Zn, Z = 30
+		case  634: return 15;  // 56Zn, Z = 30
+		case  635: return 15;  // 57Zn, Z = 30
+		case  636: return 15;  // 58Zn, Z = 30
+		case  637: return 15;  // 59Zn, Z = 30
+		case  638: return 15;  // 60Zn, Z = 30
+		case  639: return 15;  // 61Zn, Z = 30
+		case  640: return 15;  // 62Zn, Z = 30
+		case  641: return 15;  // 63Zn, Z = 30
+		case  642: return 15;  // 64Zn, Z = 30
+		case  643: return 15;  // 65Zn, Z = 30
+		case  644: return 15;  // 66Zn, Z = 30
+		case  645: return 15;  // 67Zn, Z = 30
+		case  646: return 15;  // 68Zn, Z = 30
+		case  647: return 15;  // 69Zn, Z = 30
+		case  648: return 15;  // 70Zn, Z = 30
+		case  649: return 15;  // 71Zn, Z = 30
+		case  650: return 15;  // 72Zn, Z = 30
+		case  651: return 15;  // 73Zn, Z = 30
+		case  652: return 15;  // 74Zn, Z = 30
+		case  653: return 15;  // 75Zn, Z = 30
+		case  654: return 15;  // 76Zn, Z = 30
+		case  655: return 15;  // 77Zn, Z = 30
+		case  656: return 15;  // 78Zn, Z = 30
+		case  657: return 15;  // 79Zn, Z = 30
+		case  658: return 15;  // 80Zn, Z = 30
+		case  659: return 15;  // 81Zn, Z = 30
+		case  660: return 15;  // 82Zn, Z = 30
+		case  661: return 15;  // 83Zn, Z = 30
+		case  662: return 15;  // 84Zn, Z = 30
+		case  663: return 15;  // 85Zn, Z = 30
+		case  664: return 18;  // 56Ga, Z = 31
+		case  665: return 18;  // 57Ga, Z = 31
+		case  666: return 18;  // 58Ga, Z = 31
+		case  667: return 18;  // 59Ga, Z = 31
+		case  668: return 18;  // 60Ga, Z = 31
+		case  669: return 18;  // 61Ga, Z = 31
+		case  670: return 18;  // 62Ga, Z = 31
+		case  671: return 18;  // 63Ga, Z = 31
+		case  672: return 18;  // 64Ga, Z = 31
+		case  673: return 18;  // 65Ga, Z = 31
+		case  674: return 18;  // 66Ga, Z = 31
+		case  675: return 18;  // 67Ga, Z = 31
+		case  676: return 18;  // 68Ga, Z = 31
+		case  677: return 18;  // 69Ga, Z = 31
+		case  678: return 18;  // 70Ga, Z = 31
+		case  679: return 18;  // 71Ga, Z = 31
+		case  680: return 18;  // 72Ga, Z = 31
+		case  681: return 18;  // 73Ga, Z = 31
+		case  682: return 18;  // 74Ga, Z = 31
+		case  683: return 18;  // 75Ga, Z = 31
+		case  684: return 18;  // 76Ga, Z = 31
+		case  685: return 18;  // 77Ga, Z = 31
+		case  686: return 18;  // 78Ga, Z = 31
+		case  687: return 18;  // 79Ga, Z = 31
+		case  688: return 18;  // 80Ga, Z = 31
+		case  689: return 18;  // 81Ga, Z = 31
+		case  690: return 18;  // 82Ga, Z = 31
+		case  691: return 18;  // 83Ga, Z = 31
+		case  692: return 18;  // 84Ga, Z = 31
+		case  693: return 18;  // 85Ga, Z = 31
+		case  694: return 18;  // 86Ga, Z = 31
+		case  695: return 18;  // 87Ga, Z = 31
+		case  696: return 18;  // 58Ge, Z = 32
+		case  697: return 18;  // 59Ge, Z = 32
+		case  698: return 18;  // 60Ge, Z = 32
+		case  699: return 18;  // 61Ge, Z = 32
+		case  700: return 18;  // 62Ge, Z = 32
+		case  701: return 18;  // 63Ge, Z = 32
+		case  702: return 18;  // 64Ge, Z = 32
+		case  703: return 18;  // 65Ge, Z = 32
+		case  704: return 18;  // 66Ge, Z = 32
+		case  705: return 18;  // 67Ge, Z = 32
+		case  706: return 18;  // 68Ge, Z = 32
+		case  707: return 18;  // 69Ge, Z = 32
+		case  708: return 18;  // 70Ge, Z = 32
+		case  709: return 18;  // 71Ge, Z = 32
+		case  710: return 18;  // 72Ge, Z = 32
+		case  711: return 18;  // 73Ge, Z = 32
+		case  712: return 18;  // 74Ge, Z = 32
+		case  713: return 18;  // 75Ge, Z = 32
+		case  714: return 18;  // 76Ge, Z = 32
+		case  715: return 18;  // 77Ge, Z = 32
+		case  716: return 18;  // 78Ge, Z = 32
+		case  717: return 18;  // 79Ge, Z = 32
+		case  718: return 18;  // 80Ge, Z = 32
+		case  719: return 18;  // 81Ge, Z = 32
+		case  720: return 18;  // 82Ge, Z = 32
+		case  721: return 18;  // 83Ge, Z = 32
+		case  722: return 18;  // 84Ge, Z = 32
+		case  723: return 18;  // 85Ge, Z = 32
+		case  724: return 18;  // 86Ge, Z = 32
+		case  725: return 18;  // 87Ge, Z = 32
+		case  726: return 18;  // 88Ge, Z = 32
+		case  727: return 18;  // 89Ge, Z = 32
+		case  728: return 18;  // 90Ge, Z = 32
+		case  729: return 18;  // 60As, Z = 33
+		case  730: return 18;  // 61As, Z = 33
+		case  731: return 18;  // 62As, Z = 33
+		case  732: return 18;  // 63As, Z = 33
+		case  733: return 18;  // 64As, Z = 33
+		case  734: return 18;  // 65As, Z = 33
+		case  735: return 18;  // 66As, Z = 33
+		case  736: return 18;  // 67As, Z = 33
+		case  737: return 18;  // 68As, Z = 33
+		case  738: return 18;  // 69As, Z = 33
+		case  739: return 18;  // 70As, Z = 33
+		case  740: return 18;  // 71As, Z = 33
+		case  741: return 18;  // 72As, Z = 33
+		case  742: return 18;  // 73As, Z = 33
+		case  743: return 18;  // 74As, Z = 33
+		case  744: return 18;  // 75As, Z = 33
+		case  745: return 18;  // 76As, Z = 33
+		case  746: return 18;  // 77As, Z = 33
+		case  747: return 18;  // 78As, Z = 33
+		case  748: return 18;  // 79As, Z = 33
+		case  749: return 18;  // 80As, Z = 33
+		case  750: return 18;  // 81As, Z = 33
+		case  751: return 18;  // 82As, Z = 33
+		case  752: return 18;  // 83As, Z = 33
+		case  753: return 18;  // 84As, Z = 33
+		case  754: return 18;  // 85As, Z = 33
+		case  755: return 18;  // 86As, Z = 33
+		case  756: return 18;  // 87As, Z = 33
+		case  757: return 18;  // 88As, Z = 33
+		case  758: return 18;  // 89As, Z = 33
+		case  759: return 18;  // 90As, Z = 33
+		case  760: return 18;  // 91As, Z = 33
+		case  761: return 18;  // 92As, Z = 33
+		case  762: return 18;  // 64Se, Z = 34
+		case  763: return 18;  // 65Se, Z = 34
+		case  764: return 18;  // 66Se, Z = 34
+		case  765: return 18;  // 67Se, Z = 34
+		case  766: return 18;  // 68Se, Z = 34
+		case  767: return 18;  // 69Se, Z = 34
+		case  768: return 18;  // 70Se, Z = 34
+		case  769: return 18;  // 71Se, Z = 34
+		case  770: return 18;  // 72Se, Z = 34
+		case  771: return 18;  // 73Se, Z = 34
+		case  772: return 18;  // 74Se, Z = 34
+		case  773: return 18;  // 75Se, Z = 34
+		case  774: return 18;  // 76Se, Z = 34
+		case  775: return 18;  // 77Se, Z = 34
+		case  776: return 18;  // 78Se, Z = 34
+		case  777: return 18;  // 79Se, Z = 34
+		case  778: return 18;  // 80Se, Z = 34
+		case  779: return 18;  // 81Se, Z = 34
+		case  780: return 18;  // 82Se, Z = 34
+		case  781: return 18;  // 83Se, Z = 34
+		case  782: return 18;  // 84Se, Z = 34
+		case  783: return 18;  // 85Se, Z = 34
+		case  784: return 18;  // 86Se, Z = 34
+		case  785: return 18;  // 87Se, Z = 34
+		case  786: return 18;  // 88Se, Z = 34
+		case  787: return 18;  // 89Se, Z = 34
+		case  788: return 18;  // 90Se, Z = 34
+		case  789: return 18;  // 91Se, Z = 34
+		case  790: return 18;  // 92Se, Z = 34
+		case  791: return 18;  // 93Se, Z = 34
+		case  792: return 18;  // 94Se, Z = 34
+		case  793: return 18;  // 95Se, Z = 34
+		case  794: return 18;  // 67Br, Z = 35
+		case  795: return 18;  // 68Br, Z = 35
+		case  796: return 18;  // 69Br, Z = 35
+		case  797: return 18;  // 70Br, Z = 35
+		case  798: return 18;  // 71Br, Z = 35
+		case  799: return 18;  // 72Br, Z = 35
+		case  800: return 18;  // 73Br, Z = 35
+		case  801: return 18;  // 74Br, Z = 35
+		case  802: return 18;  // 75Br, Z = 35
+		case  803: return 18;  // 76Br, Z = 35
+		case  804: return 18;  // 77Br, Z = 35
+		case  805: return 18;  // 78Br, Z = 35
+		case  806: return 18;  // 79Br, Z = 35
+		case  807: return 18;  // 80Br, Z = 35
+		case  808: return 18;  // 81Br, Z = 35
+		case  809: return 18;  // 82Br, Z = 35
+		case  810: return 18;  // 83Br, Z = 35
+		case  811: return 18;  // 84Br, Z = 35
+		case  812: return 18;  // 85Br, Z = 35
+		case  813: return 18;  // 86Br, Z = 35
+		case  814: return 18;  // 87Br, Z = 35
+		case  815: return 18;  // 88Br, Z = 35
+		case  816: return 18;  // 89Br, Z = 35
+		case  817: return 18;  // 90Br, Z = 35
+		case  818: return 18;  // 91Br, Z = 35
+		case  819: return 18;  // 92Br, Z = 35
+		case  820: return 18;  // 93Br, Z = 35
+		case  821: return 18;  // 94Br, Z = 35
+		case  822: return 18;  // 95Br, Z = 35
+		case  823: return 18;  // 96Br, Z = 35
+		case  824: return 18;  // 97Br, Z = 35
+		case  825: return 18;  // 98Br, Z = 35
+		case  826: return 18;  // 69Kr, Z = 36
+		case  827: return 18;  // 70Kr, Z = 36
+		case  828: return 18;  // 71Kr, Z = 36
+		case  829: return 18;  // 72Kr, Z = 36
+		case  830: return 18;  // 73Kr, Z = 36
+		case  831: return 18;  // 74Kr, Z = 36
+		case  832: return 18;  // 75Kr, Z = 36
+		case  833: return 18;  // 76Kr, Z = 36
+		case  834: return 18;  // 77Kr, Z = 36
+		case  835: return 18;  // 78Kr, Z = 36
+		case  836: return 18;  // 79Kr, Z = 36
+		case  837: return 18;  // 80Kr, Z = 36
+		case  838: return 18;  // 81Kr, Z = 36
+		case  839: return 18;  // 82Kr, Z = 36
+		case  840: return 18;  // 83Kr, Z = 36
+		case  841: return 18;  // 84Kr, Z = 36
+		case  842: return 18;  // 85Kr, Z = 36
+		case  843: return 18;  // 86Kr, Z = 36
+		case  844: return 18;  // 87Kr, Z = 36
+		case  845: return 18;  // 88Kr, Z = 36
+		case  846: return 18;  // 89Kr, Z = 36
+		case  847: return 18;  // 90Kr, Z = 36
+		case  848: return 18;  // 91Kr, Z = 36
+		case  849: return 18;  // 92Kr, Z = 36
+		case  850: return 18;  // 93Kr, Z = 36
+		case  851: return 18;  // 94Kr, Z = 36
+		case  852: return 18;  // 95Kr, Z = 36
+		case  853: return 18;  // 96Kr, Z = 36
+		case  854: return 18;  // 97Kr, Z = 36
+		case  855: return 18;  // 98Kr, Z = 36
+		case  856: return 18;  // 99Kr, Z = 36
+		case  857: return 18;  // 100Kr, Z = 36
+		case  858: return 18;  // 101Kr, Z = 36
+		case  859: return 19;  // 71Rb, Z = 37
+		case  860: return 19;  // 72Rb, Z = 37
+		case  861: return 19;  // 73Rb, Z = 37
+		case  862: return 19;  // 74Rb, Z = 37
+		case  863: return 19;  // 75Rb, Z = 37
+		case  864: return 19;  // 76Rb, Z = 37
+		case  865: return 19;  // 77Rb, Z = 37
+		case  866: return 19;  // 78Rb, Z = 37
+		case  867: return 19;  // 79Rb, Z = 37
+		case  868: return 19;  // 80Rb, Z = 37
+		case  869: return 19;  // 81Rb, Z = 37
+		case  870: return 19;  // 82Rb, Z = 37
+		case  871: return 19;  // 83Rb, Z = 37
+		case  872: return 19;  // 84Rb, Z = 37
+		case  873: return 19;  // 85Rb, Z = 37
+		case  874: return 19;  // 86Rb, Z = 37
+		case  875: return 19;  // 87Rb, Z = 37
+		case  876: return 19;  // 88Rb, Z = 37
+		case  877: return 19;  // 89Rb, Z = 37
+		case  878: return 19;  // 90Rb, Z = 37
+		case  879: return 19;  // 91Rb, Z = 37
+		case  880: return 19;  // 92Rb, Z = 37
+		case  881: return 19;  // 93Rb, Z = 37
+		case  882: return 19;  // 94Rb, Z = 37
+		case  883: return 19;  // 95Rb, Z = 37
+		case  884: return 19;  // 96Rb, Z = 37
+		case  885: return 19;  // 97Rb, Z = 37
+		case  886: return 19;  // 98Rb, Z = 37
+		case  887: return 19;  // 99Rb, Z = 37
+		case  888: return 19;  // 100Rb, Z = 37
+		case  889: return 19;  // 101Rb, Z = 37
+		case  890: return 19;  // 102Rb, Z = 37
+		case  891: return 19;  // 103Rb, Z = 37
+		case  892: return 19;  // 73Sr, Z = 38
+		case  893: return 19;  // 74Sr, Z = 38
+		case  894: return 19;  // 75Sr, Z = 38
+		case  895: return 19;  // 76Sr, Z = 38
+		case  896: return 19;  // 77Sr, Z = 38
+		case  897: return 19;  // 78Sr, Z = 38
+		case  898: return 19;  // 79Sr, Z = 38
+		case  899: return 19;  // 80Sr, Z = 38
+		case  900: return 19;  // 81Sr, Z = 38
+		case  901: return 19;  // 82Sr, Z = 38
+		case  902: return 19;  // 83Sr, Z = 38
+		case  903: return 19;  // 84Sr, Z = 38
+		case  904: return 19;  // 85Sr, Z = 38
+		case  905: return 19;  // 86Sr, Z = 38
+		case  906: return 19;  // 87Sr, Z = 38
+		case  907: return 19;  // 88Sr, Z = 38
+		case  908: return 19;  // 89Sr, Z = 38
+		case  909: return 19;  // 90Sr, Z = 38
+		case  910: return 19;  // 91Sr, Z = 38
+		case  911: return 19;  // 92Sr, Z = 38
+		case  912: return 19;  // 93Sr, Z = 38
+		case  913: return 19;  // 94Sr, Z = 38
+		case  914: return 19;  // 95Sr, Z = 38
+		case  915: return 19;  // 96Sr, Z = 38
+		case  916: return 19;  // 97Sr, Z = 38
+		case  917: return 19;  // 98Sr, Z = 38
+		case  918: return 19;  // 99Sr, Z = 38
+		case  919: return 19;  // 100Sr, Z = 38
+		case  920: return 19;  // 101Sr, Z = 38
+		case  921: return 19;  // 102Sr, Z = 38
+		case  922: return 19;  // 103Sr, Z = 38
+		case  923: return 19;  // 104Sr, Z = 38
+		case  924: return 19;  // 105Sr, Z = 38
+		case  925: return 19;  // 106Sr, Z = 38
+		case  926: return 19;  // 107Sr, Z = 38
+		case  927: return 24;  // 76Y, Z = 39
+		case  928: return 24;  // 77Y, Z = 39
+		case  929: return 24;  // 78Y, Z = 39
+		case  930: return 24;  // 79Y, Z = 39
+		case  931: return 24;  // 80Y, Z = 39
+		case  932: return 24;  // 81Y, Z = 39
+		case  933: return 24;  // 82Y, Z = 39
+		case  934: return 24;  // 83Y, Z = 39
+		case  935: return 24;  // 84Y, Z = 39
+		case  936: return 24;  // 85Y, Z = 39
+		case  937: return 24;  // 86Y, Z = 39
+		case  938: return 24;  // 87Y, Z = 39
+		case  939: return 24;  // 88Y, Z = 39
+		case  940: return 24;  // 89Y, Z = 39
+		case  941: return 24;  // 90Y, Z = 39
+		case  942: return 24;  // 91Y, Z = 39
+		case  943: return 24;  // 92Y, Z = 39
+		case  944: return 24;  // 93Y, Z = 39
+		case  945: return 24;  // 94Y, Z = 39
+		case  946: return 24;  // 95Y, Z = 39
+		case  947: return 24;  // 96Y, Z = 39
+		case  948: return 24;  // 97Y, Z = 39
+		case  949: return 24;  // 98Y, Z = 39
+		case  950: return 24;  // 99Y, Z = 39
+		case  951: return 24;  // 100Y, Z = 39
+		case  952: return 24;  // 101Y, Z = 39
+		case  953: return 24;  // 102Y, Z = 39
+		case  954: return 24;  // 103Y, Z = 39
+		case  955: return 24;  // 104Y, Z = 39
+		case  956: return 24;  // 105Y, Z = 39
+		case  957: return 24;  // 106Y, Z = 39
+		case  958: return 24;  // 107Y, Z = 39
+		case  959: return 24;  // 108Y, Z = 39
+		case  960: return 24;  // 109Y, Z = 39
+		case  961: return 24;  // 78Zr, Z = 40
+		case  962: return 24;  // 79Zr, Z = 40
+		case  963: return 24;  // 80Zr, Z = 40
+		case  964: return 24;  // 81Zr, Z = 40
+		case  965: return 24;  // 82Zr, Z = 40
+		case  966: return 24;  // 83Zr, Z = 40
+		case  967: return 24;  // 84Zr, Z = 40
+		case  968: return 24;  // 85Zr, Z = 40
+		case  969: return 24;  // 86Zr, Z = 40
+		case  970: return 24;  // 87Zr, Z = 40
+		case  971: return 24;  // 88Zr, Z = 40
+		case  972: return 24;  // 89Zr, Z = 40
+		case  973: return 24;  // 90Zr, Z = 40
+		case  974: return 24;  // 91Zr, Z = 40
+		case  975: return 24;  // 92Zr, Z = 40
+		case  976: return 24;  // 93Zr, Z = 40
+		case  977: return 24;  // 94Zr, Z = 40
+		case  978: return 24;  // 95Zr, Z = 40
+		case  979: return 24;  // 96Zr, Z = 40
+		case  980: return 24;  // 97Zr, Z = 40
+		case  981: return 24;  // 98Zr, Z = 40
+		case  982: return 24;  // 99Zr, Z = 40
+		case  983: return 24;  // 100Zr, Z = 40
+		case  984: return 24;  // 101Zr, Z = 40
+		case  985: return 24;  // 102Zr, Z = 40
+		case  986: return 24;  // 103Zr, Z = 40
+		case  987: return 24;  // 104Zr, Z = 40
+		case  988: return 24;  // 105Zr, Z = 40
+		case  989: return 24;  // 106Zr, Z = 40
+		case  990: return 24;  // 107Zr, Z = 40
+		case  991: return 24;  // 108Zr, Z = 40
+		case  992: return 24;  // 109Zr, Z = 40
+		case  993: return 24;  // 110Zr, Z = 40
+		case  994: return 24;  // 111Zr, Z = 40
+		case  995: return 24;  // 112Zr, Z = 40
+		case  996: return 24;  // 81Nb, Z = 41
+		case  997: return 24;  // 82Nb, Z = 41
+		case  998: return 24;  // 83Nb, Z = 41
+		case  999: return 24;  // 84Nb, Z = 41
+		case 1000: return 24;  // 85Nb, Z = 41
+		case 1001: return 24;  // 86Nb, Z = 41
+		case 1002: return 24;  // 87Nb, Z = 41
+		case 1003: return 24;  // 88Nb, Z = 41
+		case 1004: return 24;  // 89Nb, Z = 41
+		case 1005: return 24;  // 90Nb, Z = 41
+		case 1006: return 24;  // 91Nb, Z = 41
+		case 1007: return 24;  // 92Nb, Z = 41
+		case 1008: return 24;  // 93Nb, Z = 41
+		case 1009: return 24;  // 94Nb, Z = 41
+		case 1010: return 24;  // 95Nb, Z = 41
+		case 1011: return 24;  // 96Nb, Z = 41
+		case 1012: return 24;  // 97Nb, Z = 41
+		case 1013: return 24;  // 98Nb, Z = 41
+		case 1014: return 24;  // 99Nb, Z = 41
+		case 1015: return 24;  // 100Nb, Z = 41
+		case 1016: return 24;  // 101Nb, Z = 41
+		case 1017: return 24;  // 102Nb, Z = 41
+		case 1018: return 24;  // 103Nb, Z = 41
+		case 1019: return 24;  // 104Nb, Z = 41
+		case 1020: return 24;  // 105Nb, Z = 41
+		case 1021: return 24;  // 106Nb, Z = 41
+		case 1022: return 24;  // 107Nb, Z = 41
+		case 1023: return 24;  // 108Nb, Z = 41
+		case 1024: return 24;  // 109Nb, Z = 41
+		case 1025: return 24;  // 110Nb, Z = 41
+		case 1026: return 24;  // 111Nb, Z = 41
+		case 1027: return 24;  // 112Nb, Z = 41
+		case 1028: return 24;  // 113Nb, Z = 41
+		case 1029: return 24;  // 114Nb, Z = 41
+		case 1030: return 24;  // 115Nb, Z = 41
+		case 1031: return 24;  // 83Mo, Z = 42
+		case 1032: return 24;  // 84Mo, Z = 42
+		case 1033: return 24;  // 85Mo, Z = 42
+		case 1034: return 24;  // 86Mo, Z = 42
+		case 1035: return 24;  // 87Mo, Z = 42
+		case 1036: return 24;  // 88Mo, Z = 42
+		case 1037: return 24;  // 89Mo, Z = 42
+		case 1038: return 24;  // 90Mo, Z = 42
+		case 1039: return 24;  // 91Mo, Z = 42
+		case 1040: return 24;  // 92Mo, Z = 42
+		case 1041: return 24;  // 93Mo, Z = 42
+		case 1042: return 24;  // 94Mo, Z = 42
+		case 1043: return 24;  // 95Mo, Z = 42
+		case 1044: return 24;  // 96Mo, Z = 42
+		case 1045: return 24;  // 97Mo, Z = 42
+		case 1046: return 24;  // 98Mo, Z = 42
+		case 1047: return 24;  // 99Mo, Z = 42
+		case 1048: return 24;  // 100Mo, Z = 42
+		case 1049: return 24;  // 101Mo, Z = 42
+		case 1050: return 24;  // 102Mo, Z = 42
+		case 1051: return 24;  // 103Mo, Z = 42
+		case 1052: return 24;  // 104Mo, Z = 42
+		case 1053: return 24;  // 105Mo, Z = 42
+		case 1054: return 24;  // 106Mo, Z = 42
+		case 1055: return 24;  // 107Mo, Z = 42
+		case 1056: return 24;  // 108Mo, Z = 42
+		case 1057: return 24;  // 109Mo, Z = 42
+		case 1058: return 24;  // 110Mo, Z = 42
+		case 1059: return 24;  // 111Mo, Z = 42
+		case 1060: return 24;  // 112Mo, Z = 42
+		case 1061: return 24;  // 113Mo, Z = 42
+		case 1062: return 24;  // 114Mo, Z = 42
+		case 1063: return 24;  // 115Mo, Z = 42
+		case 1064: return 24;  // 116Mo, Z = 42
+		case 1065: return 24;  // 117Mo, Z = 42
+		case 1066: return 24;  // 85Tc, Z = 43
+		case 1067: return 24;  // 86Tc, Z = 43
+		case 1068: return 24;  // 87Tc, Z = 43
+		case 1069: return 24;  // 88Tc, Z = 43
+		case 1070: return 24;  // 89Tc, Z = 43
+		case 1071: return 24;  // 90Tc, Z = 43
+		case 1072: return 24;  // 91Tc, Z = 43
+		case 1073: return 24;  // 92Tc, Z = 43
+		case 1074: return 24;  // 93Tc, Z = 43
+		case 1075: return 24;  // 94Tc, Z = 43
+		case 1076: return 24;  // 95Tc, Z = 43
+		case 1077: return 24;  // 96Tc, Z = 43
+		case 1078: return 24;  // 97Tc, Z = 43
+		case 1079: return 24;  // 98Tc, Z = 43
+		case 1080: return 24;  // 99Tc, Z = 43
+		case 1081: return 24;  // 100Tc, Z = 43
+		case 1082: return 24;  // 101Tc, Z = 43
+		case 1083: return 24;  // 102Tc, Z = 43
+		case 1084: return 24;  // 103Tc, Z = 43
+		case 1085: return 24;  // 104Tc, Z = 43
+		case 1086: return 24;  // 105Tc, Z = 43
+		case 1087: return 24;  // 106Tc, Z = 43
+		case 1088: return 24;  // 107Tc, Z = 43
+		case 1089: return 24;  // 108Tc, Z = 43
+		case 1090: return 24;  // 109Tc, Z = 43
+		case 1091: return 24;  // 110Tc, Z = 43
+		case 1092: return 24;  // 111Tc, Z = 43
+		case 1093: return 24;  // 112Tc, Z = 43
+		case 1094: return 24;  // 113Tc, Z = 43
+		case 1095: return 24;  // 114Tc, Z = 43
+		case 1096: return 24;  // 115Tc, Z = 43
+		case 1097: return 24;  // 116Tc, Z = 43
+		case 1098: return 24;  // 117Tc, Z = 43
+		case 1099: return 24;  // 118Tc, Z = 43
+		case 1100: return 24;  // 119Tc, Z = 43
+		case 1101: return 24;  // 120Tc, Z = 43
+		case 1102: return 24;  // 87Ru, Z = 44
+		case 1103: return 24;  // 88Ru, Z = 44
+		case 1104: return 24;  // 89Ru, Z = 44
+		case 1105: return 24;  // 90Ru, Z = 44
+		case 1106: return 24;  // 91Ru, Z = 44
+		case 1107: return 24;  // 92Ru, Z = 44
+		case 1108: return 24;  // 93Ru, Z = 44
+		case 1109: return 24;  // 94Ru, Z = 44
+		case 1110: return 24;  // 95Ru, Z = 44
+		case 1111: return 24;  // 96Ru, Z = 44
+		case 1112: return 24;  // 97Ru, Z = 44
+		case 1113: return 24;  // 98Ru, Z = 44
+		case 1114: return 24;  // 99Ru, Z = 44
+		case 1115: return 24;  // 100Ru, Z = 44
+		case 1116: return 24;  // 101Ru, Z = 44
+		case 1117: return 24;  // 102Ru, Z = 44
+		case 1118: return 24;  // 103Ru, Z = 44
+		case 1119: return 24;  // 104Ru, Z = 44
+		case 1120: return 24;  // 105Ru, Z = 44
+		case 1121: return 24;  // 106Ru, Z = 44
+		case 1122: return 24;  // 107Ru, Z = 44
+		case 1123: return 24;  // 108Ru, Z = 44
+		case 1124: return 24;  // 109Ru, Z = 44
+		case 1125: return 24;  // 110Ru, Z = 44
+		case 1126: return 24;  // 111Ru, Z = 44
+		case 1127: return 24;  // 112Ru, Z = 44
+		case 1128: return 24;  // 113Ru, Z = 44
+		case 1129: return 24;  // 114Ru, Z = 44
+		case 1130: return 24;  // 115Ru, Z = 44
+		case 1131: return 24;  // 116Ru, Z = 44
+		case 1132: return 24;  // 117Ru, Z = 44
+		case 1133: return 24;  // 118Ru, Z = 44
+		case 1134: return 24;  // 119Ru, Z = 44
+		case 1135: return 24;  // 120Ru, Z = 44
+		case 1136: return 24;  // 121Ru, Z = 44
+		case 1137: return 24;  // 122Ru, Z = 44
+		case 1138: return 24;  // 123Ru, Z = 44
+		case 1139: return 24;  // 124Ru, Z = 44
+		case 1140: return 24;  // 89Rh, Z = 45
+		case 1141: return 24;  // 90Rh, Z = 45
+		case 1142: return 24;  // 91Rh, Z = 45
+		case 1143: return 24;  // 92Rh, Z = 45
+		case 1144: return 24;  // 93Rh, Z = 45
+		case 1145: return 24;  // 94Rh, Z = 45
+		case 1146: return 24;  // 95Rh, Z = 45
+		case 1147: return 24;  // 96Rh, Z = 45
+		case 1148: return 24;  // 97Rh, Z = 45
+		case 1149: return 24;  // 98Rh, Z = 45
+		case 1150: return 24;  // 99Rh, Z = 45
+		case 1151: return 24;  // 100Rh, Z = 45
+		case 1152: return 24;  // 101Rh, Z = 45
+		case 1153: return 24;  // 102Rh, Z = 45
+		case 1154: return 24;  // 103Rh, Z = 45
+		case 1155: return 24;  // 104Rh, Z = 45
+		case 1156: return 24;  // 105Rh, Z = 45
+		case 1157: return 24;  // 106Rh, Z = 45
+		case 1158: return 24;  // 107Rh, Z = 45
+		case 1159: return 24;  // 108Rh, Z = 45
+		case 1160: return 24;  // 109Rh, Z = 45
+		case 1161: return 24;  // 110Rh, Z = 45
+		case 1162: return 24;  // 111Rh, Z = 45
+		case 1163: return 24;  // 112Rh, Z = 45
+		case 1164: return 24;  // 113Rh, Z = 45
+		case 1165: return 24;  // 114Rh, Z = 45
+		case 1166: return 24;  // 115Rh, Z = 45
+		case 1167: return 24;  // 116Rh, Z = 45
+		case 1168: return 24;  // 117Rh, Z = 45
+		case 1169: return 24;  // 118Rh, Z = 45
+		case 1170: return 24;  // 119Rh, Z = 45
+		case 1171: return 24;  // 120Rh, Z = 45
+		case 1172: return 24;  // 121Rh, Z = 45
+		case 1173: return 24;  // 122Rh, Z = 45
+		case 1174: return 24;  // 123Rh, Z = 45
+		case 1175: return 24;  // 124Rh, Z = 45
+		case 1176: return 24;  // 125Rh, Z = 45
+		case 1177: return 24;  // 126Rh, Z = 45
+		case 1178: return 23;  // 91Pd, Z = 46
+		case 1179: return 23;  // 92Pd, Z = 46
+		case 1180: return 23;  // 93Pd, Z = 46
+		case 1181: return 23;  // 94Pd, Z = 46
+		case 1182: return 23;  // 95Pd, Z = 46
+		case 1183: return 23;  // 96Pd, Z = 46
+		case 1184: return 23;  // 97Pd, Z = 46
+		case 1185: return 23;  // 98Pd, Z = 46
+		case 1186: return 23;  // 99Pd, Z = 46
+		case 1187: return 23;  // 100Pd, Z = 46
+		case 1188: return 23;  // 101Pd, Z = 46
+		case 1189: return 23;  // 102Pd, Z = 46
+		case 1190: return 23;  // 103Pd, Z = 46
+		case 1191: return 23;  // 104Pd, Z = 46
+		case 1192: return 23;  // 105Pd, Z = 46
+		case 1193: return 23;  // 106Pd, Z = 46
+		case 1194: return 23;  // 107Pd, Z = 46
+		case 1195: return 23;  // 108Pd, Z = 46
+		case 1196: return 23;  // 109Pd, Z = 46
+		case 1197: return 23;  // 110Pd, Z = 46
+		case 1198: return 23;  // 111Pd, Z = 46
+		case 1199: return 23;  // 112Pd, Z = 46
+		case 1200: return 23;  // 113Pd, Z = 46
+		case 1201: return 23;  // 114Pd, Z = 46
+		case 1202: return 23;  // 115Pd, Z = 46
+		case 1203: return 23;  // 116Pd, Z = 46
+		case 1204: return 23;  // 117Pd, Z = 46
+		case 1205: return 23;  // 118Pd, Z = 46
+		case 1206: return 23;  // 119Pd, Z = 46
+		case 1207: return 23;  // 120Pd, Z = 46
+		case 1208: return 23;  // 121Pd, Z = 46
+		case 1209: return 23;  // 122Pd, Z = 46
+		case 1210: return 23;  // 123Pd, Z = 46
+		case 1211: return 23;  // 124Pd, Z = 46
+		case 1212: return 23;  // 125Pd, Z = 46
+		case 1213: return 23;  // 126Pd, Z = 46
+		case 1214: return 23;  // 127Pd, Z = 46
+		case 1215: return 23;  // 128Pd, Z = 46
+		case 1216: return 24;  // 93Ag, Z = 47
+		case 1217: return 24;  // 94Ag, Z = 47
+		case 1218: return 24;  // 95Ag, Z = 47
+		case 1219: return 24;  // 96Ag, Z = 47
+		case 1220: return 24;  // 97Ag, Z = 47
+		case 1221: return 24;  // 98Ag, Z = 47
+		case 1222: return 24;  // 99Ag, Z = 47
+		case 1223: return 24;  // 100Ag, Z = 47
+		case 1224: return 24;  // 101Ag, Z = 47
+		case 1225: return 24;  // 102Ag, Z = 47
+		case 1226: return 24;  // 103Ag, Z = 47
+		case 1227: return 24;  // 104Ag, Z = 47
+		case 1228: return 24;  // 105Ag, Z = 47
+		case 1229: return 24;  // 106Ag, Z = 47
+		case 1230: return 24;  // 107Ag, Z = 47
+		case 1231: return 24;  // 108Ag, Z = 47
+		case 1232: return 24;  // 109Ag, Z = 47
+		case 1233: return 24;  // 110Ag, Z = 47
+		case 1234: return 24;  // 111Ag, Z = 47
+		case 1235: return 24;  // 112Ag, Z = 47
+		case 1236: return 24;  // 113Ag, Z = 47
+		case 1237: return 24;  // 114Ag, Z = 47
+		case 1238: return 24;  // 115Ag, Z = 47
+		case 1239: return 24;  // 116Ag, Z = 47
+		case 1240: return 24;  // 117Ag, Z = 47
+		case 1241: return 24;  // 118Ag, Z = 47
+		case 1242: return 24;  // 119Ag, Z = 47
+		case 1243: return 24;  // 120Ag, Z = 47
+		case 1244: return 24;  // 121Ag, Z = 47
+		case 1245: return 24;  // 122Ag, Z = 47
+		case 1246: return 24;  // 123Ag, Z = 47
+		case 1247: return 24;  // 124Ag, Z = 47
+		case 1248: return 24;  // 125Ag, Z = 47
+		case 1249: return 24;  // 126Ag, Z = 47
+		case 1250: return 24;  // 127Ag, Z = 47
+		case 1251: return 24;  // 128Ag, Z = 47
+		case 1252: return 24;  // 129Ag, Z = 47
+		case 1253: return 24;  // 130Ag, Z = 47
+		case 1254: return 24;  // 95Cd, Z = 48
+		case 1255: return 24;  // 96Cd, Z = 48
+		case 1256: return 24;  // 97Cd, Z = 48
+		case 1257: return 24;  // 98Cd, Z = 48
+		case 1258: return 24;  // 99Cd, Z = 48
+		case 1259: return 24;  // 100Cd, Z = 48
+		case 1260: return 24;  // 101Cd, Z = 48
+		case 1261: return 24;  // 102Cd, Z = 48
+		case 1262: return 24;  // 103Cd, Z = 48
+		case 1263: return 24;  // 104Cd, Z = 48
+		case 1264: return 24;  // 105Cd, Z = 48
+		case 1265: return 24;  // 106Cd, Z = 48
+		case 1266: return 24;  // 107Cd, Z = 48
+		case 1267: return 24;  // 108Cd, Z = 48
+		case 1268: return 24;  // 109Cd, Z = 48
+		case 1269: return 24;  // 110Cd, Z = 48
+		case 1270: return 24;  // 111Cd, Z = 48
+		case 1271: return 24;  // 112Cd, Z = 48
+		case 1272: return 24;  // 113Cd, Z = 48
+		case 1273: return 24;  // 114Cd, Z = 48
+		case 1274: return 24;  // 115Cd, Z = 48
+		case 1275: return 24;  // 116Cd, Z = 48
+		case 1276: return 24;  // 117Cd, Z = 48
+		case 1277: return 24;  // 118Cd, Z = 48
+		case 1278: return 24;  // 119Cd, Z = 48
+		case 1279: return 24;  // 120Cd, Z = 48
+		case 1280: return 24;  // 121Cd, Z = 48
+		case 1281: return 24;  // 122Cd, Z = 48
+		case 1282: return 24;  // 123Cd, Z = 48
+		case 1283: return 24;  // 124Cd, Z = 48
+		case 1284: return 24;  // 125Cd, Z = 48
+		case 1285: return 24;  // 126Cd, Z = 48
+		case 1286: return 24;  // 127Cd, Z = 48
+		case 1287: return 24;  // 128Cd, Z = 48
+		case 1288: return 24;  // 129Cd, Z = 48
+		case 1289: return 24;  // 130Cd, Z = 48
+		case 1290: return 24;  // 131Cd, Z = 48
+		case 1291: return 24;  // 132Cd, Z = 48
+		case 1292: return 24;  // 133Cd, Z = 48
+		case 1293: return 27;  // 97In, Z = 49
+		case 1294: return 27;  // 98In, Z = 49
+		case 1295: return 27;  // 99In, Z = 49
+		case 1296: return 27;  // 100In, Z = 49
+		case 1297: return 27;  // 101In, Z = 49
+		case 1298: return 27;  // 102In, Z = 49
+		case 1299: return 27;  // 103In, Z = 49
+		case 1300: return 27;  // 104In, Z = 49
+		case 1301: return 27;  // 105In, Z = 49
+		case 1302: return 27;  // 106In, Z = 49
+		case 1303: return 27;  // 107In, Z = 49
+		case 1304: return 27;  // 108In, Z = 49
+		case 1305: return 27;  // 109In, Z = 49
+		case 1306: return 27;  // 110In, Z = 49
+		case 1307: return 27;  // 111In, Z = 49
+		case 1308: return 27;  // 112In, Z = 49
+		case 1309: return 27;  // 113In, Z = 49
+		case 1310: return 27;  // 114In, Z = 49
+		case 1311: return 27;  // 115In, Z = 49
+		case 1312: return 27;  // 116In, Z = 49
+		case 1313: return 27;  // 117In, Z = 49
+		case 1314: return 27;  // 118In, Z = 49
+		case 1315: return 27;  // 119In, Z = 49
+		case 1316: return 27;  // 120In, Z = 49
+		case 1317: return 27;  // 121In, Z = 49
+		case 1318: return 27;  // 122In, Z = 49
+		case 1319: return 27;  // 123In, Z = 49
+		case 1320: return 27;  // 124In, Z = 49
+		case 1321: return 27;  // 125In, Z = 49
+		case 1322: return 27;  // 126In, Z = 49
+		case 1323: return 27;  // 127In, Z = 49
+		case 1324: return 27;  // 128In, Z = 49
+		case 1325: return 27;  // 129In, Z = 49
+		case 1326: return 27;  // 130In, Z = 49
+		case 1327: return 27;  // 131In, Z = 49
+		case 1328: return 27;  // 132In, Z = 49
+		case 1329: return 27;  // 133In, Z = 49
+		case 1330: return 27;  // 134In, Z = 49
+		case 1331: return 27;  // 135In, Z = 49
+		case 1332: return 27;  // 99Sn, Z = 50
+		case 1333: return 27;  // 100Sn, Z = 50
+		case 1334: return 27;  // 101Sn, Z = 50
+		case 1335: return 27;  // 102Sn, Z = 50
+		case 1336: return 27;  // 103Sn, Z = 50
+		case 1337: return 27;  // 104Sn, Z = 50
+		case 1338: return 27;  // 105Sn, Z = 50
+		case 1339: return 27;  // 106Sn, Z = 50
+		case 1340: return 27;  // 107Sn, Z = 50
+		case 1341: return 27;  // 108Sn, Z = 50
+		case 1342: return 27;  // 109Sn, Z = 50
+		case 1343: return 27;  // 110Sn, Z = 50
+		case 1344: return 27;  // 111Sn, Z = 50
+		case 1345: return 27;  // 112Sn, Z = 50
+		case 1346: return 27;  // 113Sn, Z = 50
+		case 1347: return 27;  // 114Sn, Z = 50
+		case 1348: return 27;  // 115Sn, Z = 50
+		case 1349: return 27;  // 116Sn, Z = 50
+		case 1350: return 27;  // 117Sn, Z = 50
+		case 1351: return 27;  // 118Sn, Z = 50
+		case 1352: return 27;  // 119Sn, Z = 50
+		case 1353: return 27;  // 120Sn, Z = 50
+		case 1354: return 27;  // 121Sn, Z = 50
+		case 1355: return 27;  // 122Sn, Z = 50
+		case 1356: return 27;  // 123Sn, Z = 50
+		case 1357: return 27;  // 124Sn, Z = 50
+		case 1358: return 27;  // 125Sn, Z = 50
+		case 1359: return 27;  // 126Sn, Z = 50
+		case 1360: return 27;  // 127Sn, Z = 50
+		case 1361: return 27;  // 128Sn, Z = 50
+		case 1362: return 27;  // 129Sn, Z = 50
+		case 1363: return 27;  // 130Sn, Z = 50
+		case 1364: return 27;  // 131Sn, Z = 50
+		case 1365: return 27;  // 132Sn, Z = 50
+		case 1366: return 27;  // 133Sn, Z = 50
+		case 1367: return 27;  // 134Sn, Z = 50
+		case 1368: return 27;  // 135Sn, Z = 50
+		case 1369: return 27;  // 136Sn, Z = 50
+		case 1370: return 27;  // 137Sn, Z = 50
+		case 1371: return 27;  // 138Sn, Z = 50
+		case 1372: return 27;  // 103Sb, Z = 51
+		case 1373: return 27;  // 104Sb, Z = 51
+		case 1374: return 27;  // 105Sb, Z = 51
+		case 1375: return 27;  // 106Sb, Z = 51
+		case 1376: return 27;  // 107Sb, Z = 51
+		case 1377: return 27;  // 108Sb, Z = 51
+		case 1378: return 27;  // 109Sb, Z = 51
+		case 1379: return 27;  // 110Sb, Z = 51
+		case 1380: return 27;  // 111Sb, Z = 51
+		case 1381: return 27;  // 112Sb, Z = 51
+		case 1382: return 27;  // 113Sb, Z = 51
+		case 1383: return 27;  // 114Sb, Z = 51
+		case 1384: return 27;  // 115Sb, Z = 51
+		case 1385: return 27;  // 116Sb, Z = 51
+		case 1386: return 27;  // 117Sb, Z = 51
+		case 1387: return 27;  // 118Sb, Z = 51
+		case 1388: return 27;  // 119Sb, Z = 51
+		case 1389: return 27;  // 120Sb, Z = 51
+		case 1390: return 27;  // 121Sb, Z = 51
+		case 1391: return 27;  // 122Sb, Z = 51
+		case 1392: return 27;  // 123Sb, Z = 51
+		case 1393: return 27;  // 124Sb, Z = 51
+		case 1394: return 27;  // 125Sb, Z = 51
+		case 1395: return 27;  // 126Sb, Z = 51
+		case 1396: return 27;  // 127Sb, Z = 51
+		case 1397: return 27;  // 128Sb, Z = 51
+		case 1398: return 27;  // 129Sb, Z = 51
+		case 1399: return 27;  // 130Sb, Z = 51
+		case 1400: return 27;  // 131Sb, Z = 51
+		case 1401: return 27;  // 132Sb, Z = 51
+		case 1402: return 27;  // 133Sb, Z = 51
+		case 1403: return 27;  // 134Sb, Z = 51
+		case 1404: return 27;  // 135Sb, Z = 51
+		case 1405: return 27;  // 136Sb, Z = 51
+		case 1406: return 27;  // 137Sb, Z = 51
+		case 1407: return 27;  // 138Sb, Z = 51
+		case 1408: return 27;  // 139Sb, Z = 51
+		case 1409: return 27;  // 140Sb, Z = 51
+		case 1410: return 27;  // 105Te, Z = 52
+		case 1411: return 27;  // 106Te, Z = 52
+		case 1412: return 27;  // 107Te, Z = 52
+		case 1413: return 27;  // 108Te, Z = 52
+		case 1414: return 27;  // 109Te, Z = 52
+		case 1415: return 27;  // 110Te, Z = 52
+		case 1416: return 27;  // 111Te, Z = 52
+		case 1417: return 27;  // 112Te, Z = 52
+		case 1418: return 27;  // 113Te, Z = 52
+		case 1419: return 27;  // 114Te, Z = 52
+		case 1420: return 27;  // 115Te, Z = 52
+		case 1421: return 27;  // 116Te, Z = 52
+		case 1422: return 27;  // 117Te, Z = 52
+		case 1423: return 27;  // 118Te, Z = 52
+		case 1424: return 27;  // 119Te, Z = 52
+		case 1425: return 27;  // 120Te, Z = 52
+		case 1426: return 27;  // 121Te, Z = 52
+		case 1427: return 27;  // 122Te, Z = 52
+		case 1428: return 27;  // 123Te, Z = 52
+		case 1429: return 27;  // 124Te, Z = 52
+		case 1430: return 27;  // 125Te, Z = 52
+		case 1431: return 27;  // 126Te, Z = 52
+		case 1432: return 27;  // 127Te, Z = 52
+		case 1433: return 27;  // 128Te, Z = 52
+		case 1434: return 27;  // 129Te, Z = 52
+		case 1435: return 27;  // 130Te, Z = 52
+		case 1436: return 27;  // 131Te, Z = 52
+		case 1437: return 27;  // 132Te, Z = 52
+		case 1438: return 27;  // 133Te, Z = 52
+		case 1439: return 27;  // 134Te, Z = 52
+		case 1440: return 27;  // 135Te, Z = 52
+		case 1441: return 27;  // 136Te, Z = 52
+		case 1442: return 27;  // 137Te, Z = 52
+		case 1443: return 27;  // 138Te, Z = 52
+		case 1444: return 27;  // 139Te, Z = 52
+		case 1445: return 27;  // 140Te, Z = 52
+		case 1446: return 27;  // 141Te, Z = 52
+		case 1447: return 27;  // 142Te, Z = 52
+		case 1448: return 27;  // 143Te, Z = 52
+		case 1449: return 27;  // 107I, Z = 53
+		case 1450: return 27;  // 108I, Z = 53
+		case 1451: return 27;  // 109I, Z = 53
+		case 1452: return 27;  // 110I, Z = 53
+		case 1453: return 27;  // 111I, Z = 53
+		case 1454: return 27;  // 112I, Z = 53
+		case 1455: return 27;  // 113I, Z = 53
+		case 1456: return 27;  // 114I, Z = 53
+		case 1457: return 27;  // 115I, Z = 53
+		case 1458: return 27;  // 116I, Z = 53
+		case 1459: return 27;  // 117I, Z = 53
+		case 1460: return 27;  // 118I, Z = 53
+		case 1461: return 27;  // 119I, Z = 53
+		case 1462: return 27;  // 120I, Z = 53
+		case 1463: return 27;  // 121I, Z = 53
+		case 1464: return 27;  // 122I, Z = 53
+		case 1465: return 27;  // 123I, Z = 53
+		case 1466: return 27;  // 124I, Z = 53
+		case 1467: return 27;  // 125I, Z = 53
+		case 1468: return 27;  // 126I, Z = 53
+		case 1469: return 27;  // 127I, Z = 53
+		case 1470: return 27;  // 128I, Z = 53
+		case 1471: return 27;  // 129I, Z = 53
+		case 1472: return 27;  // 130I, Z = 53
+		case 1473: return 27;  // 131I, Z = 53
+		case 1474: return 27;  // 132I, Z = 53
+		case 1475: return 27;  // 133I, Z = 53
+		case 1476: return 27;  // 134I, Z = 53
+		case 1477: return 27;  // 135I, Z = 53
+		case 1478: return 27;  // 136I, Z = 53
+		case 1479: return 27;  // 137I, Z = 53
+		case 1480: return 27;  // 138I, Z = 53
+		case 1481: return 27;  // 139I, Z = 53
+		case 1482: return 27;  // 140I, Z = 53
+		case 1483: return 27;  // 141I, Z = 53
+		case 1484: return 27;  // 142I, Z = 53
+		case 1485: return 27;  // 143I, Z = 53
+		case 1486: return 27;  // 144I, Z = 53
+		case 1487: return 27;  // 145I, Z = 53
+		case 1488: return 27;  // 109Xe, Z = 54
+		case 1489: return 27;  // 110Xe, Z = 54
+		case 1490: return 27;  // 111Xe, Z = 54
+		case 1491: return 27;  // 112Xe, Z = 54
+		case 1492: return 27;  // 113Xe, Z = 54
+		case 1493: return 27;  // 114Xe, Z = 54
+		case 1494: return 27;  // 115Xe, Z = 54
+		case 1495: return 27;  // 116Xe, Z = 54
+		case 1496: return 27;  // 117Xe, Z = 54
+		case 1497: return 27;  // 118Xe, Z = 54
+		case 1498: return 27;  // 119Xe, Z = 54
+		case 1499: return 27;  // 120Xe, Z = 54
+		case 1500: return 27;  // 121Xe, Z = 54
+		case 1501: return 27;  // 122Xe, Z = 54
+		case 1502: return 27;  // 123Xe, Z = 54
+		case 1503: return 27;  // 124Xe, Z = 54
+		case 1504: return 27;  // 125Xe, Z = 54
+		case 1505: return 27;  // 126Xe, Z = 54
+		case 1506: return 27;  // 127Xe, Z = 54
+		case 1507: return 27;  // 128Xe, Z = 54
+		case 1508: return 27;  // 129Xe, Z = 54
+		case 1509: return 27;  // 130Xe, Z = 54
+		case 1510: return 27;  // 131Xe, Z = 54
+		case 1511: return 27;  // 132Xe, Z = 54
+		case 1512: return 27;  // 133Xe, Z = 54
+		case 1513: return 27;  // 134Xe, Z = 54
+		case 1514: return 27;  // 135Xe, Z = 54
+		case 1515: return 27;  // 136Xe, Z = 54
+		case 1516: return 27;  // 137Xe, Z = 54
+		case 1517: return 27;  // 138Xe, Z = 54
+		case 1518: return 27;  // 139Xe, Z = 54
+		case 1519: return 27;  // 140Xe, Z = 54
+		case 1520: return 27;  // 141Xe, Z = 54
+		case 1521: return 27;  // 142Xe, Z = 54
+		case 1522: return 27;  // 143Xe, Z = 54
+		case 1523: return 27;  // 144Xe, Z = 54
+		case 1524: return 27;  // 145Xe, Z = 54
+		case 1525: return 27;  // 146Xe, Z = 54
+		case 1526: return 27;  // 147Xe, Z = 54
+		case 1527: return 27;  // 148Xe, Z = 54
+		case 1528: return 28;  // 112Cs, Z = 55
+		case 1529: return 28;  // 113Cs, Z = 55
+		case 1530: return 28;  // 114Cs, Z = 55
+		case 1531: return 28;  // 115Cs, Z = 55
+		case 1532: return 28;  // 116Cs, Z = 55
+		case 1533: return 28;  // 117Cs, Z = 55
+		case 1534: return 28;  // 118Cs, Z = 55
+		case 1535: return 28;  // 119Cs, Z = 55
+		case 1536: return 28;  // 120Cs, Z = 55
+		case 1537: return 28;  // 121Cs, Z = 55
+		case 1538: return 28;  // 122Cs, Z = 55
+		case 1539: return 28;  // 123Cs, Z = 55
+		case 1540: return 28;  // 124Cs, Z = 55
+		case 1541: return 28;  // 125Cs, Z = 55
+		case 1542: return 28;  // 126Cs, Z = 55
+		case 1543: return 28;  // 127Cs, Z = 55
+		case 1544: return 28;  // 128Cs, Z = 55
+		case 1545: return 28;  // 129Cs, Z = 55
+		case 1546: return 28;  // 130Cs, Z = 55
+		case 1547: return 28;  // 131Cs, Z = 55
+		case 1548: return 28;  // 132Cs, Z = 55
+		case 1549: return 28;  // 133Cs, Z = 55
+		case 1550: return 28;  // 134Cs, Z = 55
+		case 1551: return 28;  // 135Cs, Z = 55
+		case 1552: return 28;  // 136Cs, Z = 55
+		case 1553: return 28;  // 137Cs, Z = 55
+		case 1554: return 28;  // 138Cs, Z = 55
+		case 1555: return 28;  // 139Cs, Z = 55
+		case 1556: return 28;  // 140Cs, Z = 55
+		case 1557: return 28;  // 141Cs, Z = 55
+		case 1558: return 28;  // 142Cs, Z = 55
+		case 1559: return 28;  // 143Cs, Z = 55
+		case 1560: return 28;  // 144Cs, Z = 55
+		case 1561: return 28;  // 145Cs, Z = 55
+		case 1562: return 28;  // 146Cs, Z = 55
+		case 1563: return 28;  // 147Cs, Z = 55
+		case 1564: return 28;  // 148Cs, Z = 55
+		case 1565: return 28;  // 149Cs, Z = 55
+		case 1566: return 28;  // 150Cs, Z = 55
+		case 1567: return 28;  // 151Cs, Z = 55
+		case 1568: return 28;  // 114Ba, Z = 56
+		case 1569: return 28;  // 115Ba, Z = 56
+		case 1570: return 28;  // 116Ba, Z = 56
+		case 1571: return 28;  // 117Ba, Z = 56
+		case 1572: return 28;  // 118Ba, Z = 56
+		case 1573: return 28;  // 119Ba, Z = 56
+		case 1574: return 28;  // 120Ba, Z = 56
+		case 1575: return 28;  // 121Ba, Z = 56
+		case 1576: return 28;  // 122Ba, Z = 56
+		case 1577: return 28;  // 123Ba, Z = 56
+		case 1578: return 28;  // 124Ba, Z = 56
+		case 1579: return 28;  // 125Ba, Z = 56
+		case 1580: return 28;  // 126Ba, Z = 56
+		case 1581: return 28;  // 127Ba, Z = 56
+		case 1582: return 28;  // 128Ba, Z = 56
+		case 1583: return 28;  // 129Ba, Z = 56
+		case 1584: return 28;  // 130Ba, Z = 56
+		case 1585: return 28;  // 131Ba, Z = 56
+		case 1586: return 28;  // 132Ba, Z = 56
+		case 1587: return 28;  // 133Ba, Z = 56
+		case 1588: return 28;  // 134Ba, Z = 56
+		case 1589: return 28;  // 135Ba, Z = 56
+		case 1590: return 28;  // 136Ba, Z = 56
+		case 1591: return 28;  // 137Ba, Z = 56
+		case 1592: return 28;  // 138Ba, Z = 56
+		case 1593: return 28;  // 139Ba, Z = 56
+		case 1594: return 28;  // 140Ba, Z = 56
+		case 1595: return 28;  // 141Ba, Z = 56
+		case 1596: return 28;  // 142Ba, Z = 56
+		case 1597: return 28;  // 143Ba, Z = 56
+		case 1598: return 28;  // 144Ba, Z = 56
+		case 1599: return 28;  // 145Ba, Z = 56
+		case 1600: return 28;  // 146Ba, Z = 56
+		case 1601: return 28;  // 147Ba, Z = 56
+		case 1602: return 28;  // 148Ba, Z = 56
+		case 1603: return 28;  // 149Ba, Z = 56
+		case 1604: return 28;  // 150Ba, Z = 56
+		case 1605: return 28;  // 151Ba, Z = 56
+		case 1606: return 28;  // 152Ba, Z = 56
+		case 1607: return 28;  // 153Ba, Z = 56
+		case 1608: return 33;  // 116La, Z = 57
+		case 1609: return 33;  // 117La, Z = 57
+		case 1610: return 33;  // 118La, Z = 57
+		case 1611: return 33;  // 119La, Z = 57
+		case 1612: return 33;  // 120La, Z = 57
+		case 1613: return 33;  // 121La, Z = 57
+		case 1614: return 33;  // 122La, Z = 57
+		case 1615: return 33;  // 123La, Z = 57
+		case 1616: return 33;  // 124La, Z = 57
+		case 1617: return 33;  // 125La, Z = 57
+		case 1618: return 33;  // 126La, Z = 57
+		case 1619: return 33;  // 127La, Z = 57
+		case 1620: return 33;  // 128La, Z = 57
+		case 1621: return 33;  // 129La, Z = 57
+		case 1622: return 33;  // 130La, Z = 57
+		case 1623: return 33;  // 131La, Z = 57
+		case 1624: return 33;  // 132La, Z = 57
+		case 1625: return 33;  // 133La, Z = 57
+		case 1626: return 33;  // 134La, Z = 57
+		case 1627: return 33;  // 135La, Z = 57
+		case 1628: return 33;  // 136La, Z = 57
+		case 1629: return 33;  // 137La, Z = 57
+		case 1630: return 33;  // 138La, Z = 57
+		case 1631: return 33;  // 139La, Z = 57
+		case 1632: return 33;  // 140La, Z = 57
+		case 1633: return 33;  // 141La, Z = 57
+		case 1634: return 33;  // 142La, Z = 57
+		case 1635: return 33;  // 143La, Z = 57
+		case 1636: return 33;  // 144La, Z = 57
+		case 1637: return 33;  // 145La, Z = 57
+		case 1638: return 33;  // 146La, Z = 57
+		case 1639: return 33;  // 147La, Z = 57
+		case 1640: return 33;  // 148La, Z = 57
+		case 1641: return 33;  // 149La, Z = 57
+		case 1642: return 33;  // 150La, Z = 57
+		case 1643: return 33;  // 151La, Z = 57
+		case 1644: return 33;  // 152La, Z = 57
+		case 1645: return 33;  // 153La, Z = 57
+		case 1646: return 33;  // 154La, Z = 57
+		case 1647: return 33;  // 155La, Z = 57
+		case 1648: return 40;  // 119Ce, Z = 58
+		case 1649: return 40;  // 120Ce, Z = 58
+		case 1650: return 40;  // 121Ce, Z = 58
+		case 1651: return 40;  // 122Ce, Z = 58
+		case 1652: return 40;  // 123Ce, Z = 58
+		case 1653: return 40;  // 124Ce, Z = 58
+		case 1654: return 40;  // 125Ce, Z = 58
+		case 1655: return 40;  // 126Ce, Z = 58
+		case 1656: return 40;  // 127Ce, Z = 58
+		case 1657: return 40;  // 128Ce, Z = 58
+		case 1658: return 40;  // 129Ce, Z = 58
+		case 1659: return 40;  // 130Ce, Z = 58
+		case 1660: return 40;  // 131Ce, Z = 58
+		case 1661: return 40;  // 132Ce, Z = 58
+		case 1662: return 40;  // 133Ce, Z = 58
+		case 1663: return 40;  // 134Ce, Z = 58
+		case 1664: return 40;  // 135Ce, Z = 58
+		case 1665: return 40;  // 136Ce, Z = 58
+		case 1666: return 40;  // 137Ce, Z = 58
+		case 1667: return 40;  // 138Ce, Z = 58
+		case 1668: return 40;  // 139Ce, Z = 58
+		case 1669: return 40;  // 140Ce, Z = 58
+		case 1670: return 40;  // 141Ce, Z = 58
+		case 1671: return 40;  // 142Ce, Z = 58
+		case 1672: return 40;  // 143Ce, Z = 58
+		case 1673: return 40;  // 144Ce, Z = 58
+		case 1674: return 40;  // 145Ce, Z = 58
+		case 1675: return 40;  // 146Ce, Z = 58
+		case 1676: return 40;  // 147Ce, Z = 58
+		case 1677: return 40;  // 148Ce, Z = 58
+		case 1678: return 40;  // 149Ce, Z = 58
+		case 1679: return 40;  // 150Ce, Z = 58
+		case 1680: return 40;  // 151Ce, Z = 58
+		case 1681: return 40;  // 152Ce, Z = 58
+		case 1682: return 40;  // 153Ce, Z = 58
+		case 1683: return 40;  // 154Ce, Z = 58
+		case 1684: return 40;  // 155Ce, Z = 58
+		case 1685: return 40;  // 156Ce, Z = 58
+		case 1686: return 40;  // 157Ce, Z = 58
+		case 1687: return 35;  // 121Pr, Z = 59
+		case 1688: return 35;  // 122Pr, Z = 59
+		case 1689: return 35;  // 123Pr, Z = 59
+		case 1690: return 35;  // 124Pr, Z = 59
+		case 1691: return 35;  // 125Pr, Z = 59
+		case 1692: return 35;  // 126Pr, Z = 59
+		case 1693: return 35;  // 127Pr, Z = 59
+		case 1694: return 35;  // 128Pr, Z = 59
+		case 1695: return 35;  // 129Pr, Z = 59
+		case 1696: return 35;  // 130Pr, Z = 59
+		case 1697: return 35;  // 131Pr, Z = 59
+		case 1698: return 35;  // 132Pr, Z = 59
+		case 1699: return 35;  // 133Pr, Z = 59
+		case 1700: return 35;  // 134Pr, Z = 59
+		case 1701: return 35;  // 135Pr, Z = 59
+		case 1702: return 35;  // 136Pr, Z = 59
+		case 1703: return 35;  // 137Pr, Z = 59
+		case 1704: return 35;  // 138Pr, Z = 59
+		case 1705: return 35;  // 139Pr, Z = 59
+		case 1706: return 35;  // 140Pr, Z = 59
+		case 1707: return 35;  // 141Pr, Z = 59
+		case 1708: return 35;  // 142Pr, Z = 59
+		case 1709: return 35;  // 143Pr, Z = 59
+		case 1710: return 35;  // 144Pr, Z = 59
+		case 1711: return 35;  // 145Pr, Z = 59
+		case 1712: return 35;  // 146Pr, Z = 59
+		case 1713: return 35;  // 147Pr, Z = 59
+		case 1714: return 35;  // 148Pr, Z = 59
+		case 1715: return 35;  // 149Pr, Z = 59
+		case 1716: return 35;  // 150Pr, Z = 59
+		case 1717: return 35;  // 151Pr, Z = 59
+		case 1718: return 35;  // 152Pr, Z = 59
+		case 1719: return 35;  // 153Pr, Z = 59
+		case 1720: return 35;  // 154Pr, Z = 59
+		case 1721: return 35;  // 155Pr, Z = 59
+		case 1722: return 35;  // 156Pr, Z = 59
+		case 1723: return 35;  // 157Pr, Z = 59
+		case 1724: return 35;  // 158Pr, Z = 59
+		case 1725: return 35;  // 159Pr, Z = 59
+		case 1726: return 35;  // 124Nd, Z = 60
+		case 1727: return 35;  // 125Nd, Z = 60
+		case 1728: return 35;  // 126Nd, Z = 60
+		case 1729: return 35;  // 127Nd, Z = 60
+		case 1730: return 35;  // 128Nd, Z = 60
+		case 1731: return 35;  // 129Nd, Z = 60
+		case 1732: return 35;  // 130Nd, Z = 60
+		case 1733: return 35;  // 131Nd, Z = 60
+		case 1734: return 35;  // 132Nd, Z = 60
+		case 1735: return 35;  // 133Nd, Z = 60
+		case 1736: return 35;  // 134Nd, Z = 60
+		case 1737: return 35;  // 135Nd, Z = 60
+		case 1738: return 35;  // 136Nd, Z = 60
+		case 1739: return 35;  // 137Nd, Z = 60
+		case 1740: return 35;  // 138Nd, Z = 60
+		case 1741: return 35;  // 139Nd, Z = 60
+		case 1742: return 35;  // 140Nd, Z = 60
+		case 1743: return 35;  // 141Nd, Z = 60
+		case 1744: return 35;  // 142Nd, Z = 60
+		case 1745: return 35;  // 143Nd, Z = 60
+		case 1746: return 35;  // 144Nd, Z = 60
+		case 1747: return 35;  // 145Nd, Z = 60
+		case 1748: return 35;  // 146Nd, Z = 60
+		case 1749: return 35;  // 147Nd, Z = 60
+		case 1750: return 35;  // 148Nd, Z = 60
+		case 1751: return 35;  // 149Nd, Z = 60
+		case 1752: return 35;  // 150Nd, Z = 60
+		case 1753: return 35;  // 151Nd, Z = 60
+		case 1754: return 35;  // 152Nd, Z = 60
+		case 1755: return 35;  // 153Nd, Z = 60
+		case 1756: return 35;  // 154Nd, Z = 60
+		case 1757: return 35;  // 155Nd, Z = 60
+		case 1758: return 35;  // 156Nd, Z = 60
+		case 1759: return 35;  // 157Nd, Z = 60
+		case 1760: return 35;  // 158Nd, Z = 60
+		case 1761: return 35;  // 159Nd, Z = 60
+		case 1762: return 35;  // 160Nd, Z = 60
+		case 1763: return 35;  // 161Nd, Z = 60
+		case 1764: return 35;  // 126Pm, Z = 61
+		case 1765: return 35;  // 127Pm, Z = 61
+		case 1766: return 35;  // 128Pm, Z = 61
+		case 1767: return 35;  // 129Pm, Z = 61
+		case 1768: return 35;  // 130Pm, Z = 61
+		case 1769: return 35;  // 131Pm, Z = 61
+		case 1770: return 35;  // 132Pm, Z = 61
+		case 1771: return 35;  // 133Pm, Z = 61
+		case 1772: return 35;  // 134Pm, Z = 61
+		case 1773: return 35;  // 135Pm, Z = 61
+		case 1774: return 35;  // 136Pm, Z = 61
+		case 1775: return 35;  // 137Pm, Z = 61
+		case 1776: return 35;  // 138Pm, Z = 61
+		case 1777: return 35;  // 139Pm, Z = 61
+		case 1778: return 35;  // 140Pm, Z = 61
+		case 1779: return 35;  // 141Pm, Z = 61
+		case 1780: return 35;  // 142Pm, Z = 61
+		case 1781: return 35;  // 143Pm, Z = 61
+		case 1782: return 35;  // 144Pm, Z = 61
+		case 1783: return 35;  // 145Pm, Z = 61
+		case 1784: return 35;  // 146Pm, Z = 61
+		case 1785: return 35;  // 147Pm, Z = 61
+		case 1786: return 35;  // 148Pm, Z = 61
+		case 1787: return 35;  // 149Pm, Z = 61
+		case 1788: return 35;  // 150Pm, Z = 61
+		case 1789: return 35;  // 151Pm, Z = 61
+		case 1790: return 35;  // 152Pm, Z = 61
+		case 1791: return 35;  // 153Pm, Z = 61
+		case 1792: return 35;  // 154Pm, Z = 61
+		case 1793: return 35;  // 155Pm, Z = 61
+		case 1794: return 35;  // 156Pm, Z = 61
+		case 1795: return 35;  // 157Pm, Z = 61
+		case 1796: return 35;  // 158Pm, Z = 61
+		case 1797: return 35;  // 159Pm, Z = 61
+		case 1798: return 35;  // 160Pm, Z = 61
+		case 1799: return 35;  // 161Pm, Z = 61
+		case 1800: return 35;  // 162Pm, Z = 61
+		case 1801: return 35;  // 163Pm, Z = 61
+		case 1802: return 35;  // 128Sm, Z = 62
+		case 1803: return 35;  // 129Sm, Z = 62
+		case 1804: return 35;  // 130Sm, Z = 62
+		case 1805: return 35;  // 131Sm, Z = 62
+		case 1806: return 35;  // 132Sm, Z = 62
+		case 1807: return 35;  // 133Sm, Z = 62
+		case 1808: return 35;  // 134Sm, Z = 62
+		case 1809: return 35;  // 135Sm, Z = 62
+		case 1810: return 35;  // 136Sm, Z = 62
+		case 1811: return 35;  // 137Sm, Z = 62
+		case 1812: return 35;  // 138Sm, Z = 62
+		case 1813: return 35;  // 139Sm, Z = 62
+		case 1814: return 35;  // 140Sm, Z = 62
+		case 1815: return 35;  // 141Sm, Z = 62
+		case 1816: return 35;  // 142Sm, Z = 62
+		case 1817: return 35;  // 143Sm, Z = 62
+		case 1818: return 35;  // 144Sm, Z = 62
+		case 1819: return 35;  // 145Sm, Z = 62
+		case 1820: return 35;  // 146Sm, Z = 62
+		case 1821: return 35;  // 147Sm, Z = 62
+		case 1822: return 35;  // 148Sm, Z = 62
+		case 1823: return 35;  // 149Sm, Z = 62
+		case 1824: return 35;  // 150Sm, Z = 62
+		case 1825: return 35;  // 151Sm, Z = 62
+		case 1826: return 35;  // 152Sm, Z = 62
+		case 1827: return 35;  // 153Sm, Z = 62
+		case 1828: return 35;  // 154Sm, Z = 62
+		case 1829: return 35;  // 155Sm, Z = 62
+		case 1830: return 35;  // 156Sm, Z = 62
+		case 1831: return 35;  // 157Sm, Z = 62
+		case 1832: return 35;  // 158Sm, Z = 62
+		case 1833: return 35;  // 159Sm, Z = 62
+		case 1834: return 35;  // 160Sm, Z = 62
+		case 1835: return 35;  // 161Sm, Z = 62
+		case 1836: return 35;  // 162Sm, Z = 62
+		case 1837: return 35;  // 163Sm, Z = 62
+		case 1838: return 35;  // 164Sm, Z = 62
+		case 1839: return 35;  // 165Sm, Z = 62
+		case 1840: return 35;  // 130Eu, Z = 63
+		case 1841: return 35;  // 131Eu, Z = 63
+		case 1842: return 35;  // 132Eu, Z = 63
+		case 1843: return 35;  // 133Eu, Z = 63
+		case 1844: return 35;  // 134Eu, Z = 63
+		case 1845: return 35;  // 135Eu, Z = 63
+		case 1846: return 35;  // 136Eu, Z = 63
+		case 1847: return 35;  // 137Eu, Z = 63
+		case 1848: return 35;  // 138Eu, Z = 63
+		case 1849: return 35;  // 139Eu, Z = 63
+		case 1850: return 35;  // 140Eu, Z = 63
+		case 1851: return 35;  // 141Eu, Z = 63
+		case 1852: return 35;  // 142Eu, Z = 63
+		case 1853: return 35;  // 143Eu, Z = 63
+		case 1854: return 35;  // 144Eu, Z = 63
+		case 1855: return 35;  // 145Eu, Z = 63
+		case 1856: return 35;  // 146Eu, Z = 63
+		case 1857: return 35;  // 147Eu, Z = 63
+		case 1858: return 35;  // 148Eu, Z = 63
+		case 1859: return 35;  // 149Eu, Z = 63
+		case 1860: return 35;  // 150Eu, Z = 63
+		case 1861: return 35;  // 151Eu, Z = 63
+		case 1862: return 35;  // 152Eu, Z = 63
+		case 1863: return 35;  // 153Eu, Z = 63
+		case 1864: return 35;  // 154Eu, Z = 63
+		case 1865: return 35;  // 155Eu, Z = 63
+		case 1866: return 35;  // 156Eu, Z = 63
+		case 1867: return 35;  // 157Eu, Z = 63
+		case 1868: return 35;  // 158Eu, Z = 63
+		case 1869: return 35;  // 159Eu, Z = 63
+		case 1870: return 35;  // 160Eu, Z = 63
+		case 1871: return 35;  // 161Eu, Z = 63
+		case 1872: return 35;  // 162Eu, Z = 63
+		case 1873: return 35;  // 163Eu, Z = 63
+		case 1874: return 35;  // 164Eu, Z = 63
+		case 1875: return 35;  // 165Eu, Z = 63
+		case 1876: return 35;  // 166Eu, Z = 63
+		case 1877: return 35;  // 167Eu, Z = 63
+		case 1878: return 40;  // 133Gd, Z = 64
+		case 1879: return 40;  // 134Gd, Z = 64
+		case 1880: return 40;  // 135Gd, Z = 64
+		case 1881: return 40;  // 136Gd, Z = 64
+		case 1882: return 40;  // 137Gd, Z = 64
+		case 1883: return 40;  // 138Gd, Z = 64
+		case 1884: return 40;  // 139Gd, Z = 64
+		case 1885: return 40;  // 140Gd, Z = 64
+		case 1886: return 40;  // 141Gd, Z = 64
+		case 1887: return 40;  // 142Gd, Z = 64
+		case 1888: return 40;  // 143Gd, Z = 64
+		case 1889: return 40;  // 144Gd, Z = 64
+		case 1890: return 40;  // 145Gd, Z = 64
+		case 1891: return 40;  // 146Gd, Z = 64
+		case 1892: return 40;  // 147Gd, Z = 64
+		case 1893: return 40;  // 148Gd, Z = 64
+		case 1894: return 40;  // 149Gd, Z = 64
+		case 1895: return 40;  // 150Gd, Z = 64
+		case 1896: return 40;  // 151Gd, Z = 64
+		case 1897: return 40;  // 152Gd, Z = 64
+		case 1898: return 40;  // 153Gd, Z = 64
+		case 1899: return 40;  // 154Gd, Z = 64
+		case 1900: return 40;  // 155Gd, Z = 64
+		case 1901: return 40;  // 156Gd, Z = 64
+		case 1902: return 40;  // 157Gd, Z = 64
+		case 1903: return 40;  // 158Gd, Z = 64
+		case 1904: return 40;  // 159Gd, Z = 64
+		case 1905: return 40;  // 160Gd, Z = 64
+		case 1906: return 40;  // 161Gd, Z = 64
+		case 1907: return 40;  // 162Gd, Z = 64
+		case 1908: return 40;  // 163Gd, Z = 64
+		case 1909: return 40;  // 164Gd, Z = 64
+		case 1910: return 40;  // 165Gd, Z = 64
+		case 1911: return 40;  // 166Gd, Z = 64
+		case 1912: return 40;  // 167Gd, Z = 64
+		case 1913: return 40;  // 168Gd, Z = 64
+		case 1914: return 40;  // 169Gd, Z = 64
+		case 1915: return 35;  // 135Tb, Z = 65
+		case 1916: return 35;  // 136Tb, Z = 65
+		case 1917: return 35;  // 137Tb, Z = 65
+		case 1918: return 35;  // 138Tb, Z = 65
+		case 1919: return 35;  // 139Tb, Z = 65
+		case 1920: return 35;  // 140Tb, Z = 65
+		case 1921: return 35;  // 141Tb, Z = 65
+		case 1922: return 35;  // 142Tb, Z = 65
+		case 1923: return 35;  // 143Tb, Z = 65
+		case 1924: return 35;  // 144Tb, Z = 65
+		case 1925: return 35;  // 145Tb, Z = 65
+		case 1926: return 35;  // 146Tb, Z = 65
+		case 1927: return 35;  // 147Tb, Z = 65
+		case 1928: return 35;  // 148Tb, Z = 65
+		case 1929: return 35;  // 149Tb, Z = 65
+		case 1930: return 35;  // 150Tb, Z = 65
+		case 1931: return 35;  // 151Tb, Z = 65
+		case 1932: return 35;  // 152Tb, Z = 65
+		case 1933: return 35;  // 153Tb, Z = 65
+		case 1934: return 35;  // 154Tb, Z = 65
+		case 1935: return 35;  // 155Tb, Z = 65
+		case 1936: return 35;  // 156Tb, Z = 65
+		case 1937: return 35;  // 157Tb, Z = 65
+		case 1938: return 35;  // 158Tb, Z = 65
+		case 1939: return 35;  // 159Tb, Z = 65
+		case 1940: return 35;  // 160Tb, Z = 65
+		case 1941: return 35;  // 161Tb, Z = 65
+		case 1942: return 35;  // 162Tb, Z = 65
+		case 1943: return 35;  // 163Tb, Z = 65
+		case 1944: return 35;  // 164Tb, Z = 65
+		case 1945: return 35;  // 165Tb, Z = 65
+		case 1946: return 35;  // 166Tb, Z = 65
+		case 1947: return 35;  // 167Tb, Z = 65
+		case 1948: return 35;  // 168Tb, Z = 65
+		case 1949: return 35;  // 169Tb, Z = 65
+		case 1950: return 35;  // 170Tb, Z = 65
+		case 1951: return 35;  // 171Tb, Z = 65
+		case 1952: return 35;  // 138Dy, Z = 66
+		case 1953: return 35;  // 139Dy, Z = 66
+		case 1954: return 35;  // 140Dy, Z = 66
+		case 1955: return 35;  // 141Dy, Z = 66
+		case 1956: return 35;  // 142Dy, Z = 66
+		case 1957: return 35;  // 143Dy, Z = 66
+		case 1958: return 35;  // 144Dy, Z = 66
+		case 1959: return 35;  // 145Dy, Z = 66
+		case 1960: return 35;  // 146Dy, Z = 66
+		case 1961: return 35;  // 147Dy, Z = 66
+		case 1962: return 35;  // 148Dy, Z = 66
+		case 1963: return 35;  // 149Dy, Z = 66
+		case 1964: return 35;  // 150Dy, Z = 66
+		case 1965: return 35;  // 151Dy, Z = 66
+		case 1966: return 35;  // 152Dy, Z = 66
+		case 1967: return 35;  // 153Dy, Z = 66
+		case 1968: return 35;  // 154Dy, Z = 66
+		case 1969: return 35;  // 155Dy, Z = 66
+		case 1970: return 35;  // 156Dy, Z = 66
+		case 1971: return 35;  // 157Dy, Z = 66
+		case 1972: return 35;  // 158Dy, Z = 66
+		case 1973: return 35;  // 159Dy, Z = 66
+		case 1974: return 35;  // 160Dy, Z = 66
+		case 1975: return 35;  // 161Dy, Z = 66
+		case 1976: return 35;  // 162Dy, Z = 66
+		case 1977: return 35;  // 163Dy, Z = 66
+		case 1978: return 35;  // 164Dy, Z = 66
+		case 1979: return 35;  // 165Dy, Z = 66
+		case 1980: return 35;  // 166Dy, Z = 66
+		case 1981: return 35;  // 167Dy, Z = 66
+		case 1982: return 35;  // 168Dy, Z = 66
+		case 1983: return 35;  // 169Dy, Z = 66
+		case 1984: return 35;  // 170Dy, Z = 66
+		case 1985: return 35;  // 171Dy, Z = 66
+		case 1986: return 35;  // 172Dy, Z = 66
+		case 1987: return 35;  // 173Dy, Z = 66
+		case 1988: return 35;  // 140Ho, Z = 67
+		case 1989: return 35;  // 141Ho, Z = 67
+		case 1990: return 35;  // 142Ho, Z = 67
+		case 1991: return 35;  // 143Ho, Z = 67
+		case 1992: return 35;  // 144Ho, Z = 67
+		case 1993: return 35;  // 145Ho, Z = 67
+		case 1994: return 35;  // 146Ho, Z = 67
+		case 1995: return 35;  // 147Ho, Z = 67
+		case 1996: return 35;  // 148Ho, Z = 67
+		case 1997: return 35;  // 149Ho, Z = 67
+		case 1998: return 35;  // 150Ho, Z = 67
+		case 1999: return 35;  // 151Ho, Z = 67
+		case 2000: return 35;  // 152Ho, Z = 67
+		case 2001: return 35;  // 153Ho, Z = 67
+		case 2002: return 35;  // 154Ho, Z = 67
+		case 2003: return 35;  // 155Ho, Z = 67
+		case 2004: return 35;  // 156Ho, Z = 67
+		case 2005: return 35;  // 157Ho, Z = 67
+		case 2006: return 35;  // 158Ho, Z = 67
+		case 2007: return 35;  // 159Ho, Z = 67
+		case 2008: return 35;  // 160Ho, Z = 67
+		case 2009: return 35;  // 161Ho, Z = 67
+		case 2010: return 35;  // 162Ho, Z = 67
+		case 2011: return 35;  // 163Ho, Z = 67
+		case 2012: return 35;  // 164Ho, Z = 67
+		case 2013: return 35;  // 165Ho, Z = 67
+		case 2014: return 35;  // 166Ho, Z = 67
+		case 2015: return 35;  // 167Ho, Z = 67
+		case 2016: return 35;  // 168Ho, Z = 67
+		case 2017: return 35;  // 169Ho, Z = 67
+		case 2018: return 35;  // 170Ho, Z = 67
+		case 2019: return 35;  // 171Ho, Z = 67
+		case 2020: return 35;  // 172Ho, Z = 67
+		case 2021: return 35;  // 173Ho, Z = 67
+		case 2022: return 35;  // 174Ho, Z = 67
+		case 2023: return 35;  // 175Ho, Z = 67
+		case 2024: return 35;  // 142Er, Z = 68
+		case 2025: return 35;  // 143Er, Z = 68
+		case 2026: return 35;  // 144Er, Z = 68
+		case 2027: return 35;  // 145Er, Z = 68
+		case 2028: return 35;  // 146Er, Z = 68
+		case 2029: return 35;  // 147Er, Z = 68
+		case 2030: return 35;  // 148Er, Z = 68
+		case 2031: return 35;  // 149Er, Z = 68
+		case 2032: return 35;  // 150Er, Z = 68
+		case 2033: return 35;  // 151Er, Z = 68
+		case 2034: return 35;  // 152Er, Z = 68
+		case 2035: return 35;  // 153Er, Z = 68
+		case 2036: return 35;  // 154Er, Z = 68
+		case 2037: return 35;  // 155Er, Z = 68
+		case 2038: return 35;  // 156Er, Z = 68
+		case 2039: return 35;  // 157Er, Z = 68
+		case 2040: return 35;  // 158Er, Z = 68
+		case 2041: return 35;  // 159Er, Z = 68
+		case 2042: return 35;  // 160Er, Z = 68
+		case 2043: return 35;  // 161Er, Z = 68
+		case 2044: return 35;  // 162Er, Z = 68
+		case 2045: return 35;  // 163Er, Z = 68
+		case 2046: return 35;  // 164Er, Z = 68
+		case 2047: return 35;  // 165Er, Z = 68
+		case 2048: return 35;  // 166Er, Z = 68
+		case 2049: return 35;  // 167Er, Z = 68
+		case 2050: return 35;  // 168Er, Z = 68
+		case 2051: return 35;  // 169Er, Z = 68
+		case 2052: return 35;  // 170Er, Z = 68
+		case 2053: return 35;  // 171Er, Z = 68
+		case 2054: return 35;  // 172Er, Z = 68
+		case 2055: return 35;  // 173Er, Z = 68
+		case 2056: return 35;  // 174Er, Z = 68
+		case 2057: return 35;  // 175Er, Z = 68
+		case 2058: return 35;  // 176Er, Z = 68
+		case 2059: return 35;  // 177Er, Z = 68
+		case 2060: return 35;  // 144Tm, Z = 69
+		case 2061: return 35;  // 145Tm, Z = 69
+		case 2062: return 35;  // 146Tm, Z = 69
+		case 2063: return 35;  // 147Tm, Z = 69
+		case 2064: return 35;  // 148Tm, Z = 69
+		case 2065: return 35;  // 149Tm, Z = 69
+		case 2066: return 35;  // 150Tm, Z = 69
+		case 2067: return 35;  // 151Tm, Z = 69
+		case 2068: return 35;  // 152Tm, Z = 69
+		case 2069: return 35;  // 153Tm, Z = 69
+		case 2070: return 35;  // 154Tm, Z = 69
+		case 2071: return 35;  // 155Tm, Z = 69
+		case 2072: return 35;  // 156Tm, Z = 69
+		case 2073: return 35;  // 157Tm, Z = 69
+		case 2074: return 35;  // 158Tm, Z = 69
+		case 2075: return 35;  // 159Tm, Z = 69
+		case 2076: return 35;  // 160Tm, Z = 69
+		case 2077: return 35;  // 161Tm, Z = 69
+		case 2078: return 35;  // 162Tm, Z = 69
+		case 2079: return 35;  // 163Tm, Z = 69
+		case 2080: return 35;  // 164Tm, Z = 69
+		case 2081: return 35;  // 165Tm, Z = 69
+		case 2082: return 35;  // 166Tm, Z = 69
+		case 2083: return 35;  // 167Tm, Z = 69
+		case 2084: return 35;  // 168Tm, Z = 69
+		case 2085: return 35;  // 169Tm, Z = 69
+		case 2086: return 35;  // 170Tm, Z = 69
+		case 2087: return 35;  // 171Tm, Z = 69
+		case 2088: return 35;  // 172Tm, Z = 69
+		case 2089: return 35;  // 173Tm, Z = 69
+		case 2090: return 35;  // 174Tm, Z = 69
+		case 2091: return 35;  // 175Tm, Z = 69
+		case 2092: return 35;  // 176Tm, Z = 69
+		case 2093: return 35;  // 177Tm, Z = 69
+		case 2094: return 35;  // 178Tm, Z = 69
+		case 2095: return 35;  // 179Tm, Z = 69
+		case 2096: return 35;  // 148Yb, Z = 70
+		case 2097: return 35;  // 149Yb, Z = 70
+		case 2098: return 35;  // 150Yb, Z = 70
+		case 2099: return 35;  // 151Yb, Z = 70
+		case 2100: return 35;  // 152Yb, Z = 70
+		case 2101: return 35;  // 153Yb, Z = 70
+		case 2102: return 35;  // 154Yb, Z = 70
+		case 2103: return 35;  // 155Yb, Z = 70
+		case 2104: return 35;  // 156Yb, Z = 70
+		case 2105: return 35;  // 157Yb, Z = 70
+		case 2106: return 35;  // 158Yb, Z = 70
+		case 2107: return 35;  // 159Yb, Z = 70
+		case 2108: return 35;  // 160Yb, Z = 70
+		case 2109: return 35;  // 161Yb, Z = 70
+		case 2110: return 35;  // 162Yb, Z = 70
+		case 2111: return 35;  // 163Yb, Z = 70
+		case 2112: return 35;  // 164Yb, Z = 70
+		case 2113: return 35;  // 165Yb, Z = 70
+		case 2114: return 35;  // 166Yb, Z = 70
+		case 2115: return 35;  // 167Yb, Z = 70
+		case 2116: return 35;  // 168Yb, Z = 70
+		case 2117: return 35;  // 169Yb, Z = 70
+		case 2118: return 35;  // 170Yb, Z = 70
+		case 2119: return 35;  // 171Yb, Z = 70
+		case 2120: return 35;  // 172Yb, Z = 70
+		case 2121: return 35;  // 173Yb, Z = 70
+		case 2122: return 35;  // 174Yb, Z = 70
+		case 2123: return 35;  // 175Yb, Z = 70
+		case 2124: return 35;  // 176Yb, Z = 70
+		case 2125: return 35;  // 177Yb, Z = 70
+		case 2126: return 35;  // 178Yb, Z = 70
+		case 2127: return 35;  // 179Yb, Z = 70
+		case 2128: return 35;  // 180Yb, Z = 70
+		case 2129: return 35;  // 181Yb, Z = 70
+		case 2130: return 40;  // 150Lu, Z = 71
+		case 2131: return 40;  // 151Lu, Z = 71
+		case 2132: return 40;  // 152Lu, Z = 71
+		case 2133: return 40;  // 153Lu, Z = 71
+		case 2134: return 40;  // 154Lu, Z = 71
+		case 2135: return 40;  // 155Lu, Z = 71
+		case 2136: return 40;  // 156Lu, Z = 71
+		case 2137: return 40;  // 157Lu, Z = 71
+		case 2138: return 40;  // 158Lu, Z = 71
+		case 2139: return 40;  // 159Lu, Z = 71
+		case 2140: return 40;  // 160Lu, Z = 71
+		case 2141: return 40;  // 161Lu, Z = 71
+		case 2142: return 40;  // 162Lu, Z = 71
+		case 2143: return 40;  // 163Lu, Z = 71
+		case 2144: return 40;  // 164Lu, Z = 71
+		case 2145: return 40;  // 165Lu, Z = 71
+		case 2146: return 40;  // 166Lu, Z = 71
+		case 2147: return 40;  // 167Lu, Z = 71
+		case 2148: return 40;  // 168Lu, Z = 71
+		case 2149: return 40;  // 169Lu, Z = 71
+		case 2150: return 40;  // 170Lu, Z = 71
+		case 2151: return 40;  // 171Lu, Z = 71
+		case 2152: return 40;  // 172Lu, Z = 71
+		case 2153: return 40;  // 173Lu, Z = 71
+		case 2154: return 40;  // 174Lu, Z = 71
+		case 2155: return 40;  // 175Lu, Z = 71
+		case 2156: return 40;  // 176Lu, Z = 71
+		case 2157: return 40;  // 177Lu, Z = 71
+		case 2158: return 40;  // 178Lu, Z = 71
+		case 2159: return 40;  // 179Lu, Z = 71
+		case 2160: return 40;  // 180Lu, Z = 71
+		case 2161: return 40;  // 181Lu, Z = 71
+		case 2162: return 40;  // 182Lu, Z = 71
+		case 2163: return 40;  // 183Lu, Z = 71
+		case 2164: return 40;  // 184Lu, Z = 71
+		case 2165: return 40;  // 185Lu, Z = 71
+		case 2166: return 40;  // 153Hf, Z = 72
+		case 2167: return 40;  // 154Hf, Z = 72
+		case 2168: return 40;  // 155Hf, Z = 72
+		case 2169: return 40;  // 156Hf, Z = 72
+		case 2170: return 40;  // 157Hf, Z = 72
+		case 2171: return 40;  // 158Hf, Z = 72
+		case 2172: return 40;  // 159Hf, Z = 72
+		case 2173: return 40;  // 160Hf, Z = 72
+		case 2174: return 40;  // 161Hf, Z = 72
+		case 2175: return 40;  // 162Hf, Z = 72
+		case 2176: return 40;  // 163Hf, Z = 72
+		case 2177: return 40;  // 164Hf, Z = 72
+		case 2178: return 40;  // 165Hf, Z = 72
+		case 2179: return 40;  // 166Hf, Z = 72
+		case 2180: return 40;  // 167Hf, Z = 72
+		case 2181: return 40;  // 168Hf, Z = 72
+		case 2182: return 40;  // 169Hf, Z = 72
+		case 2183: return 40;  // 170Hf, Z = 72
+		case 2184: return 40;  // 171Hf, Z = 72
+		case 2185: return 40;  // 172Hf, Z = 72
+		case 2186: return 40;  // 173Hf, Z = 72
+		case 2187: return 40;  // 174Hf, Z = 72
+		case 2188: return 40;  // 175Hf, Z = 72
+		case 2189: return 40;  // 176Hf, Z = 72
+		case 2190: return 40;  // 177Hf, Z = 72
+		case 2191: return 40;  // 178Hf, Z = 72
+		case 2192: return 40;  // 179Hf, Z = 72
+		case 2193: return 40;  // 180Hf, Z = 72
+		case 2194: return 40;  // 181Hf, Z = 72
+		case 2195: return 40;  // 182Hf, Z = 72
+		case 2196: return 40;  // 183Hf, Z = 72
+		case 2197: return 40;  // 184Hf, Z = 72
+		case 2198: return 40;  // 185Hf, Z = 72
+		case 2199: return 40;  // 186Hf, Z = 72
+		case 2200: return 40;  // 187Hf, Z = 72
+		case 2201: return 40;  // 188Hf, Z = 72
+		case 2202: return 40;  // 189Hf, Z = 72
+		case 2203: return 40;  // 155Ta, Z = 73
+		case 2204: return 40;  // 156Ta, Z = 73
+		case 2205: return 40;  // 157Ta, Z = 73
+		case 2206: return 40;  // 158Ta, Z = 73
+		case 2207: return 40;  // 159Ta, Z = 73
+		case 2208: return 40;  // 160Ta, Z = 73
+		case 2209: return 40;  // 161Ta, Z = 73
+		case 2210: return 40;  // 162Ta, Z = 73
+		case 2211: return 40;  // 163Ta, Z = 73
+		case 2212: return 40;  // 164Ta, Z = 73
+		case 2213: return 40;  // 165Ta, Z = 73
+		case 2214: return 40;  // 166Ta, Z = 73
+		case 2215: return 40;  // 167Ta, Z = 73
+		case 2216: return 40;  // 168Ta, Z = 73
+		case 2217: return 40;  // 169Ta, Z = 73
+		case 2218: return 40;  // 170Ta, Z = 73
+		case 2219: return 40;  // 171Ta, Z = 73
+		case 2220: return 40;  // 172Ta, Z = 73
+		case 2221: return 40;  // 173Ta, Z = 73
+		case 2222: return 40;  // 174Ta, Z = 73
+		case 2223: return 40;  // 175Ta, Z = 73
+		case 2224: return 40;  // 176Ta, Z = 73
+		case 2225: return 40;  // 177Ta, Z = 73
+		case 2226: return 40;  // 178Ta, Z = 73
+		case 2227: return 40;  // 179Ta, Z = 73
+		case 2228: return 40;  // 180Ta, Z = 73
+		case 2229: return 40;  // 181Ta, Z = 73
+		case 2230: return 40;  // 182Ta, Z = 73
+		case 2231: return 40;  // 183Ta, Z = 73
+		case 2232: return 40;  // 184Ta, Z = 73
+		case 2233: return 40;  // 185Ta, Z = 73
+		case 2234: return 40;  // 186Ta, Z = 73
+		case 2235: return 40;  // 187Ta, Z = 73
+		case 2236: return 40;  // 188Ta, Z = 73
+		case 2237: return 40;  // 189Ta, Z = 73
+		case 2238: return 40;  // 190Ta, Z = 73
+		case 2239: return 40;  // 191Ta, Z = 73
+		case 2240: return 40;  // 192Ta, Z = 73
+		case 2241: return 40;  // 157W, Z = 74
+		case 2242: return 40;  // 158W, Z = 74
+		case 2243: return 40;  // 159W, Z = 74
+		case 2244: return 40;  // 160W, Z = 74
+		case 2245: return 40;  // 161W, Z = 74
+		case 2246: return 40;  // 162W, Z = 74
+		case 2247: return 40;  // 163W, Z = 74
+		case 2248: return 40;  // 164W, Z = 74
+		case 2249: return 40;  // 165W, Z = 74
+		case 2250: return 40;  // 166W, Z = 74
+		case 2251: return 40;  // 167W, Z = 74
+		case 2252: return 40;  // 168W, Z = 74
+		case 2253: return 40;  // 169W, Z = 74
+		case 2254: return 40;  // 170W, Z = 74
+		case 2255: return 40;  // 171W, Z = 74
+		case 2256: return 40;  // 172W, Z = 74
+		case 2257: return 40;  // 173W, Z = 74
+		case 2258: return 40;  // 174W, Z = 74
+		case 2259: return 40;  // 175W, Z = 74
+		case 2260: return 40;  // 176W, Z = 74
+		case 2261: return 40;  // 177W, Z = 74
+		case 2262: return 40;  // 178W, Z = 74
+		case 2263: return 40;  // 179W, Z = 74
+		case 2264: return 40;  // 180W, Z = 74
+		case 2265: return 40;  // 181W, Z = 74
+		case 2266: return 40;  // 182W, Z = 74
+		case 2267: return 40;  // 183W, Z = 74
+		case 2268: return 40;  // 184W, Z = 74
+		case 2269: return 40;  // 185W, Z = 74
+		case 2270: return 40;  // 186W, Z = 74
+		case 2271: return 40;  // 187W, Z = 74
+		case 2272: return 40;  // 188W, Z = 74
+		case 2273: return 40;  // 189W, Z = 74
+		case 2274: return 40;  // 190W, Z = 74
+		case 2275: return 40;  // 191W, Z = 74
+		case 2276: return 40;  // 192W, Z = 74
+		case 2277: return 40;  // 193W, Z = 74
+		case 2278: return 40;  // 194W, Z = 74
+		case 2279: return 40;  // 159Re, Z = 75
+		case 2280: return 40;  // 160Re, Z = 75
+		case 2281: return 40;  // 161Re, Z = 75
+		case 2282: return 40;  // 162Re, Z = 75
+		case 2283: return 40;  // 163Re, Z = 75
+		case 2284: return 40;  // 164Re, Z = 75
+		case 2285: return 40;  // 165Re, Z = 75
+		case 2286: return 40;  // 166Re, Z = 75
+		case 2287: return 40;  // 167Re, Z = 75
+		case 2288: return 40;  // 168Re, Z = 75
+		case 2289: return 40;  // 169Re, Z = 75
+		case 2290: return 40;  // 170Re, Z = 75
+		case 2291: return 40;  // 171Re, Z = 75
+		case 2292: return 40;  // 172Re, Z = 75
+		case 2293: return 40;  // 173Re, Z = 75
+		case 2294: return 40;  // 174Re, Z = 75
+		case 2295: return 40;  // 175Re, Z = 75
+		case 2296: return 40;  // 176Re, Z = 75
+		case 2297: return 40;  // 177Re, Z = 75
+		case 2298: return 40;  // 178Re, Z = 75
+		case 2299: return 40;  // 179Re, Z = 75
+		case 2300: return 40;  // 180Re, Z = 75
+		case 2301: return 40;  // 181Re, Z = 75
+		case 2302: return 40;  // 182Re, Z = 75
+		case 2303: return 40;  // 183Re, Z = 75
+		case 2304: return 40;  // 184Re, Z = 75
+		case 2305: return 40;  // 185Re, Z = 75
+		case 2306: return 40;  // 186Re, Z = 75
+		case 2307: return 40;  // 187Re, Z = 75
+		case 2308: return 40;  // 188Re, Z = 75
+		case 2309: return 40;  // 189Re, Z = 75
+		case 2310: return 40;  // 190Re, Z = 75
+		case 2311: return 40;  // 191Re, Z = 75
+		case 2312: return 40;  // 192Re, Z = 75
+		case 2313: return 40;  // 193Re, Z = 75
+		case 2314: return 40;  // 194Re, Z = 75
+		case 2315: return 40;  // 195Re, Z = 75
+		case 2316: return 40;  // 196Re, Z = 75
+		case 2317: return 40;  // 197Re, Z = 75
+		case 2318: return 40;  // 198Re, Z = 75
+		case 2319: return 40;  // 161Os, Z = 76
+		case 2320: return 40;  // 162Os, Z = 76
+		case 2321: return 40;  // 163Os, Z = 76
+		case 2322: return 40;  // 164Os, Z = 76
+		case 2323: return 40;  // 165Os, Z = 76
+		case 2324: return 40;  // 166Os, Z = 76
+		case 2325: return 40;  // 167Os, Z = 76
+		case 2326: return 40;  // 168Os, Z = 76
+		case 2327: return 40;  // 169Os, Z = 76
+		case 2328: return 40;  // 170Os, Z = 76
+		case 2329: return 40;  // 171Os, Z = 76
+		case 2330: return 40;  // 172Os, Z = 76
+		case 2331: return 40;  // 173Os, Z = 76
+		case 2332: return 40;  // 174Os, Z = 76
+		case 2333: return 40;  // 175Os, Z = 76
+		case 2334: return 40;  // 176Os, Z = 76
+		case 2335: return 40;  // 177Os, Z = 76
+		case 2336: return 40;  // 178Os, Z = 76
+		case 2337: return 40;  // 179Os, Z = 76
+		case 2338: return 40;  // 180Os, Z = 76
+		case 2339: return 40;  // 181Os, Z = 76
+		case 2340: return 40;  // 182Os, Z = 76
+		case 2341: return 40;  // 183Os, Z = 76
+		case 2342: return 40;  // 184Os, Z = 76
+		case 2343: return 40;  // 185Os, Z = 76
+		case 2344: return 40;  // 186Os, Z = 76
+		case 2345: return 40;  // 187Os, Z = 76
+		case 2346: return 40;  // 188Os, Z = 76
+		case 2347: return 40;  // 189Os, Z = 76
+		case 2348: return 40;  // 190Os, Z = 76
+		case 2349: return 40;  // 191Os, Z = 76
+		case 2350: return 40;  // 192Os, Z = 76
+		case 2351: return 40;  // 193Os, Z = 76
+		case 2352: return 40;  // 194Os, Z = 76
+		case 2353: return 40;  // 195Os, Z = 76
+		case 2354: return 40;  // 196Os, Z = 76
+		case 2355: return 40;  // 197Os, Z = 76
+		case 2356: return 40;  // 198Os, Z = 76
+		case 2357: return 40;  // 199Os, Z = 76
+		case 2358: return 40;  // 200Os, Z = 76
+		case 2359: return 40;  // 201Os, Z = 76
+		case 2360: return 40;  // 202Os, Z = 76
+		case 2361: return 40;  // 164Ir, Z = 77
+		case 2362: return 40;  // 165Ir, Z = 77
+		case 2363: return 40;  // 166Ir, Z = 77
+		case 2364: return 40;  // 167Ir, Z = 77
+		case 2365: return 40;  // 168Ir, Z = 77
+		case 2366: return 40;  // 169Ir, Z = 77
+		case 2367: return 40;  // 170Ir, Z = 77
+		case 2368: return 40;  // 171Ir, Z = 77
+		case 2369: return 40;  // 172Ir, Z = 77
+		case 2370: return 40;  // 173Ir, Z = 77
+		case 2371: return 40;  // 174Ir, Z = 77
+		case 2372: return 40;  // 175Ir, Z = 77
+		case 2373: return 40;  // 176Ir, Z = 77
+		case 2374: return 40;  // 177Ir, Z = 77
+		case 2375: return 40;  // 178Ir, Z = 77
+		case 2376: return 40;  // 179Ir, Z = 77
+		case 2377: return 40;  // 180Ir, Z = 77
+		case 2378: return 40;  // 181Ir, Z = 77
+		case 2379: return 40;  // 182Ir, Z = 77
+		case 2380: return 40;  // 183Ir, Z = 77
+		case 2381: return 40;  // 184Ir, Z = 77
+		case 2382: return 40;  // 185Ir, Z = 77
+		case 2383: return 40;  // 186Ir, Z = 77
+		case 2384: return 40;  // 187Ir, Z = 77
+		case 2385: return 40;  // 188Ir, Z = 77
+		case 2386: return 40;  // 189Ir, Z = 77
+		case 2387: return 40;  // 190Ir, Z = 77
+		case 2388: return 40;  // 191Ir, Z = 77
+		case 2389: return 40;  // 192Ir, Z = 77
+		case 2390: return 40;  // 193Ir, Z = 77
+		case 2391: return 40;  // 194Ir, Z = 77
+		case 2392: return 40;  // 195Ir, Z = 77
+		case 2393: return 40;  // 196Ir, Z = 77
+		case 2394: return 40;  // 197Ir, Z = 77
+		case 2395: return 40;  // 198Ir, Z = 77
+		case 2396: return 40;  // 199Ir, Z = 77
+		case 2397: return 40;  // 200Ir, Z = 77
+		case 2398: return 40;  // 201Ir, Z = 77
+		case 2399: return 40;  // 202Ir, Z = 77
+		case 2400: return 40;  // 203Ir, Z = 77
+		case 2401: return 40;  // 204Ir, Z = 77
+		case 2402: return 40;  // 166Pt, Z = 78
+		case 2403: return 40;  // 167Pt, Z = 78
+		case 2404: return 40;  // 168Pt, Z = 78
+		case 2405: return 40;  // 169Pt, Z = 78
+		case 2406: return 40;  // 170Pt, Z = 78
+		case 2407: return 40;  // 171Pt, Z = 78
+		case 2408: return 40;  // 172Pt, Z = 78
+		case 2409: return 40;  // 173Pt, Z = 78
+		case 2410: return 40;  // 174Pt, Z = 78
+		case 2411: return 40;  // 175Pt, Z = 78
+		case 2412: return 40;  // 176Pt, Z = 78
+		case 2413: return 40;  // 177Pt, Z = 78
+		case 2414: return 40;  // 178Pt, Z = 78
+		case 2415: return 40;  // 179Pt, Z = 78
+		case 2416: return 40;  // 180Pt, Z = 78
+		case 2417: return 40;  // 181Pt, Z = 78
+		case 2418: return 40;  // 182Pt, Z = 78
+		case 2419: return 40;  // 183Pt, Z = 78
+		case 2420: return 40;  // 184Pt, Z = 78
+		case 2421: return 40;  // 185Pt, Z = 78
+		case 2422: return 40;  // 186Pt, Z = 78
+		case 2423: return 40;  // 187Pt, Z = 78
+		case 2424: return 40;  // 188Pt, Z = 78
+		case 2425: return 40;  // 189Pt, Z = 78
+		case 2426: return 40;  // 190Pt, Z = 78
+		case 2427: return 40;  // 191Pt, Z = 78
+		case 2428: return 40;  // 192Pt, Z = 78
+		case 2429: return 40;  // 193Pt, Z = 78
+		case 2430: return 40;  // 194Pt, Z = 78
+		case 2431: return 40;  // 195Pt, Z = 78
+		case 2432: return 40;  // 196Pt, Z = 78
+		case 2433: return 40;  // 197Pt, Z = 78
+		case 2434: return 40;  // 198Pt, Z = 78
+		case 2435: return 40;  // 199Pt, Z = 78
+		case 2436: return 40;  // 200Pt, Z = 78
+		case 2437: return 40;  // 201Pt, Z = 78
+		case 2438: return 40;  // 202Pt, Z = 78
+		case 2439: return 40;  // 203Pt, Z = 78
+		case 2440: return 40;  // 204Pt, Z = 78
+		case 2441: return 40;  // 205Pt, Z = 78
+		case 2442: return 40;  // 206Pt, Z = 78
+		case 2443: return 40;  // 169Au, Z = 79
+		case 2444: return 40;  // 170Au, Z = 79
+		case 2445: return 40;  // 171Au, Z = 79
+		case 2446: return 40;  // 172Au, Z = 79
+		case 2447: return 40;  // 173Au, Z = 79
+		case 2448: return 40;  // 174Au, Z = 79
+		case 2449: return 40;  // 175Au, Z = 79
+		case 2450: return 40;  // 176Au, Z = 79
+		case 2451: return 40;  // 177Au, Z = 79
+		case 2452: return 40;  // 178Au, Z = 79
+		case 2453: return 40;  // 179Au, Z = 79
+		case 2454: return 40;  // 180Au, Z = 79
+		case 2455: return 40;  // 181Au, Z = 79
+		case 2456: return 40;  // 182Au, Z = 79
+		case 2457: return 40;  // 183Au, Z = 79
+		case 2458: return 40;  // 184Au, Z = 79
+		case 2459: return 40;  // 185Au, Z = 79
+		case 2460: return 40;  // 186Au, Z = 79
+		case 2461: return 40;  // 187Au, Z = 79
+		case 2462: return 40;  // 188Au, Z = 79
+		case 2463: return 40;  // 189Au, Z = 79
+		case 2464: return 40;  // 190Au, Z = 79
+		case 2465: return 40;  // 191Au, Z = 79
+		case 2466: return 40;  // 192Au, Z = 79
+		case 2467: return 40;  // 193Au, Z = 79
+		case 2468: return 40;  // 194Au, Z = 79
+		case 2469: return 40;  // 195Au, Z = 79
+		case 2470: return 40;  // 196Au, Z = 79
+		case 2471: return 40;  // 197Au, Z = 79
+		case 2472: return 40;  // 198Au, Z = 79
+		case 2473: return 40;  // 199Au, Z = 79
+		case 2474: return 40;  // 200Au, Z = 79
+		case 2475: return 40;  // 201Au, Z = 79
+		case 2476: return 40;  // 202Au, Z = 79
+		case 2477: return 40;  // 203Au, Z = 79
+		case 2478: return 40;  // 204Au, Z = 79
+		case 2479: return 40;  // 205Au, Z = 79
+		case 2480: return 40;  // 206Au, Z = 79
+		case 2481: return 40;  // 207Au, Z = 79
+		case 2482: return 40;  // 208Au, Z = 79
+		case 2483: return 40;  // 209Au, Z = 79
+		case 2484: return 40;  // 210Au, Z = 79
+		case 2485: return 40;  // 171Hg, Z = 80
+		case 2486: return 40;  // 172Hg, Z = 80
+		case 2487: return 40;  // 173Hg, Z = 80
+		case 2488: return 40;  // 174Hg, Z = 80
+		case 2489: return 40;  // 175Hg, Z = 80
+		case 2490: return 40;  // 176Hg, Z = 80
+		case 2491: return 40;  // 177Hg, Z = 80
+		case 2492: return 40;  // 178Hg, Z = 80
+		case 2493: return 40;  // 179Hg, Z = 80
+		case 2494: return 40;  // 180Hg, Z = 80
+		case 2495: return 40;  // 181Hg, Z = 80
+		case 2496: return 40;  // 182Hg, Z = 80
+		case 2497: return 40;  // 183Hg, Z = 80
+		case 2498: return 40;  // 184Hg, Z = 80
+		case 2499: return 40;  // 185Hg, Z = 80
+		case 2500: return 40;  // 186Hg, Z = 80
+		case 2501: return 40;  // 187Hg, Z = 80
+		case 2502: return 40;  // 188Hg, Z = 80
+		case 2503: return 40;  // 189Hg, Z = 80
+		case 2504: return 40;  // 190Hg, Z = 80
+		case 2505: return 40;  // 191Hg, Z = 80
+		case 2506: return 40;  // 192Hg, Z = 80
+		case 2507: return 40;  // 193Hg, Z = 80
+		case 2508: return 40;  // 194Hg, Z = 80
+		case 2509: return 40;  // 195Hg, Z = 80
+		case 2510: return 40;  // 196Hg, Z = 80
+		case 2511: return 40;  // 197Hg, Z = 80
+		case 2512: return 40;  // 198Hg, Z = 80
+		case 2513: return 40;  // 199Hg, Z = 80
+		case 2514: return 40;  // 200Hg, Z = 80
+		case 2515: return 40;  // 201Hg, Z = 80
+		case 2516: return 40;  // 202Hg, Z = 80
+		case 2517: return 40;  // 203Hg, Z = 80
+		case 2518: return 40;  // 204Hg, Z = 80
+		case 2519: return 40;  // 205Hg, Z = 80
+		case 2520: return 40;  // 206Hg, Z = 80
+		case 2521: return 40;  // 207Hg, Z = 80
+		case 2522: return 40;  // 208Hg, Z = 80
+		case 2523: return 40;  // 209Hg, Z = 80
+		case 2524: return 40;  // 210Hg, Z = 80
+		case 2525: return 40;  // 211Hg, Z = 80
+		case 2526: return 40;  // 212Hg, Z = 80
+		case 2527: return 40;  // 213Hg, Z = 80
+		case 2528: return 40;  // 214Hg, Z = 80
+		case 2529: return 40;  // 215Hg, Z = 80
+		case 2530: return 40;  // 216Hg, Z = 80
+		case 2531: return 43;  // 176Tl, Z = 81
+		case 2532: return 43;  // 177Tl, Z = 81
+		case 2533: return 43;  // 178Tl, Z = 81
+		case 2534: return 43;  // 179Tl, Z = 81
+		case 2535: return 43;  // 180Tl, Z = 81
+		case 2536: return 43;  // 181Tl, Z = 81
+		case 2537: return 43;  // 182Tl, Z = 81
+		case 2538: return 43;  // 183Tl, Z = 81
+		case 2539: return 43;  // 184Tl, Z = 81
+		case 2540: return 43;  // 185Tl, Z = 81
+		case 2541: return 43;  // 186Tl, Z = 81
+		case 2542: return 43;  // 187Tl, Z = 81
+		case 2543: return 43;  // 188Tl, Z = 81
+		case 2544: return 43;  // 189Tl, Z = 81
+		case 2545: return 43;  // 190Tl, Z = 81
+		case 2546: return 43;  // 191Tl, Z = 81
+		case 2547: return 43;  // 192Tl, Z = 81
+		case 2548: return 43;  // 193Tl, Z = 81
+		case 2549: return 43;  // 194Tl, Z = 81
+		case 2550: return 43;  // 195Tl, Z = 81
+		case 2551: return 43;  // 196Tl, Z = 81
+		case 2552: return 43;  // 197Tl, Z = 81
+		case 2553: return 43;  // 198Tl, Z = 81
+		case 2554: return 43;  // 199Tl, Z = 81
+		case 2555: return 43;  // 200Tl, Z = 81
+		case 2556: return 43;  // 201Tl, Z = 81
+		case 2557: return 43;  // 202Tl, Z = 81
+		case 2558: return 43;  // 203Tl, Z = 81
+		case 2559: return 43;  // 204Tl, Z = 81
+		case 2560: return 43;  // 205Tl, Z = 81
+		case 2561: return 43;  // 206Tl, Z = 81
+		case 2562: return 43;  // 207Tl, Z = 81
+		case 2563: return 43;  // 208Tl, Z = 81
+		case 2564: return 43;  // 209Tl, Z = 81
+		case 2565: return 43;  // 210Tl, Z = 81
+		case 2566: return 43;  // 211Tl, Z = 81
+		case 2567: return 43;  // 212Tl, Z = 81
+		case 2568: return 43;  // 213Tl, Z = 81
+		case 2569: return 43;  // 214Tl, Z = 81
+		case 2570: return 43;  // 215Tl, Z = 81
+		case 2571: return 43;  // 216Tl, Z = 81
+		case 2572: return 43;  // 217Tl, Z = 81
+		case 2573: return 43;  // 218Tl, Z = 81
+		case 2574: return 43;  // 178Pb, Z = 82
+		case 2575: return 43;  // 179Pb, Z = 82
+		case 2576: return 43;  // 180Pb, Z = 82
+		case 2577: return 43;  // 181Pb, Z = 82
+		case 2578: return 43;  // 182Pb, Z = 82
+		case 2579: return 43;  // 183Pb, Z = 82
+		case 2580: return 43;  // 184Pb, Z = 82
+		case 2581: return 43;  // 185Pb, Z = 82
+		case 2582: return 43;  // 186Pb, Z = 82
+		case 2583: return 43;  // 187Pb, Z = 82
+		case 2584: return 43;  // 188Pb, Z = 82
+		case 2585: return 43;  // 189Pb, Z = 82
+		case 2586: return 43;  // 190Pb, Z = 82
+		case 2587: return 43;  // 191Pb, Z = 82
+		case 2588: return 43;  // 192Pb, Z = 82
+		case 2589: return 43;  // 193Pb, Z = 82
+		case 2590: return 43;  // 194Pb, Z = 82
+		case 2591: return 43;  // 195Pb, Z = 82
+		case 2592: return 43;  // 196Pb, Z = 82
+		case 2593: return 43;  // 197Pb, Z = 82
+		case 2594: return 43;  // 198Pb, Z = 82
+		case 2595: return 43;  // 199Pb, Z = 82
+		case 2596: return 43;  // 200Pb, Z = 82
+		case 2597: return 43;  // 201Pb, Z = 82
+		case 2598: return 43;  // 202Pb, Z = 82
+		case 2599: return 43;  // 203Pb, Z = 82
+		case 2600: return 43;  // 204Pb, Z = 82
+		case 2601: return 43;  // 205Pb, Z = 82
+		case 2602: return 43;  // 206Pb, Z = 82
+		case 2603: return 43;  // 207Pb, Z = 82
+		case 2604: return 43;  // 208Pb, Z = 82
+		case 2605: return 43;  // 209Pb, Z = 82
+		case 2606: return 43;  // 210Pb, Z = 82
+		case 2607: return 43;  // 211Pb, Z = 82
+		case 2608: return 43;  // 212Pb, Z = 82
+		case 2609: return 43;  // 213Pb, Z = 82
+		case 2610: return 43;  // 214Pb, Z = 82
+		case 2611: return 43;  // 215Pb, Z = 82
+		case 2612: return 43;  // 216Pb, Z = 82
+		case 2613: return 43;  // 217Pb, Z = 82
+		case 2614: return 43;  // 218Pb, Z = 82
+		case 2615: return 43;  // 219Pb, Z = 82
+		case 2616: return 43;  // 220Pb, Z = 82
+		case 2617: return 43;  // 184Bi, Z = 83
+		case 2618: return 43;  // 185Bi, Z = 83
+		case 2619: return 43;  // 186Bi, Z = 83
+		case 2620: return 43;  // 187Bi, Z = 83
+		case 2621: return 43;  // 188Bi, Z = 83
+		case 2622: return 43;  // 189Bi, Z = 83
+		case 2623: return 43;  // 190Bi, Z = 83
+		case 2624: return 43;  // 191Bi, Z = 83
+		case 2625: return 43;  // 192Bi, Z = 83
+		case 2626: return 43;  // 193Bi, Z = 83
+		case 2627: return 43;  // 194Bi, Z = 83
+		case 2628: return 43;  // 195Bi, Z = 83
+		case 2629: return 43;  // 196Bi, Z = 83
+		case 2630: return 43;  // 197Bi, Z = 83
+		case 2631: return 43;  // 198Bi, Z = 83
+		case 2632: return 43;  // 199Bi, Z = 83
+		case 2633: return 43;  // 200Bi, Z = 83
+		case 2634: return 43;  // 201Bi, Z = 83
+		case 2635: return 43;  // 202Bi, Z = 83
+		case 2636: return 43;  // 203Bi, Z = 83
+		case 2637: return 43;  // 204Bi, Z = 83
+		case 2638: return 43;  // 205Bi, Z = 83
+		case 2639: return 43;  // 206Bi, Z = 83
+		case 2640: return 43;  // 207Bi, Z = 83
+		case 2641: return 43;  // 208Bi, Z = 83
+		case 2642: return 43;  // 209Bi, Z = 83
+		case 2643: return 43;  // 210Bi, Z = 83
+		case 2644: return 43;  // 211Bi, Z = 83
+		case 2645: return 43;  // 212Bi, Z = 83
+		case 2646: return 43;  // 213Bi, Z = 83
+		case 2647: return 43;  // 214Bi, Z = 83
+		case 2648: return 43;  // 215Bi, Z = 83
+		case 2649: return 43;  // 216Bi, Z = 83
+		case 2650: return 43;  // 217Bi, Z = 83
+		case 2651: return 43;  // 218Bi, Z = 83
+		case 2652: return 43;  // 219Bi, Z = 83
+		case 2653: return 43;  // 220Bi, Z = 83
+		case 2654: return 43;  // 221Bi, Z = 83
+		case 2655: return 43;  // 222Bi, Z = 83
+		case 2656: return 43;  // 223Bi, Z = 83
+		case 2657: return 43;  // 224Bi, Z = 83
+		case 2658: return 43;  // 186Po, Z = 84
+		case 2659: return 43;  // 187Po, Z = 84
+		case 2660: return 43;  // 188Po, Z = 84
+		case 2661: return 43;  // 189Po, Z = 84
+		case 2662: return 43;  // 190Po, Z = 84
+		case 2663: return 43;  // 191Po, Z = 84
+		case 2664: return 43;  // 192Po, Z = 84
+		case 2665: return 43;  // 193Po, Z = 84
+		case 2666: return 43;  // 194Po, Z = 84
+		case 2667: return 43;  // 195Po, Z = 84
+		case 2668: return 43;  // 196Po, Z = 84
+		case 2669: return 43;  // 197Po, Z = 84
+		case 2670: return 43;  // 198Po, Z = 84
+		case 2671: return 43;  // 199Po, Z = 84
+		case 2672: return 43;  // 200Po, Z = 84
+		case 2673: return 43;  // 201Po, Z = 84
+		case 2674: return 43;  // 202Po, Z = 84
+		case 2675: return 43;  // 203Po, Z = 84
+		case 2676: return 43;  // 204Po, Z = 84
+		case 2677: return 43;  // 205Po, Z = 84
+		case 2678: return 43;  // 206Po, Z = 84
+		case 2679: return 43;  // 207Po, Z = 84
+		case 2680: return 43;  // 208Po, Z = 84
+		case 2681: return 43;  // 209Po, Z = 84
+		case 2682: return 43;  // 210Po, Z = 84
+		case 2683: return 43;  // 211Po, Z = 84
+		case 2684: return 43;  // 212Po, Z = 84
+		case 2685: return 43;  // 213Po, Z = 84
+		case 2686: return 43;  // 214Po, Z = 84
+		case 2687: return 43;  // 215Po, Z = 84
+		case 2688: return 43;  // 216Po, Z = 84
+		case 2689: return 43;  // 217Po, Z = 84
+		case 2690: return 43;  // 218Po, Z = 84
+		case 2691: return 43;  // 219Po, Z = 84
+		case 2692: return 43;  // 220Po, Z = 84
+		case 2693: return 43;  // 221Po, Z = 84
+		case 2694: return 43;  // 222Po, Z = 84
+		case 2695: return 43;  // 223Po, Z = 84
+		case 2696: return 43;  // 224Po, Z = 84
+		case 2697: return 43;  // 225Po, Z = 84
+		case 2698: return 43;  // 226Po, Z = 84
+		case 2699: return 43;  // 227Po, Z = 84
+		case 2700: return 43;  // 191At, Z = 85
+		case 2701: return 43;  // 192At, Z = 85
+		case 2702: return 43;  // 193At, Z = 85
+		case 2703: return 43;  // 194At, Z = 85
+		case 2704: return 43;  // 195At, Z = 85
+		case 2705: return 43;  // 196At, Z = 85
+		case 2706: return 43;  // 197At, Z = 85
+		case 2707: return 43;  // 198At, Z = 85
+		case 2708: return 43;  // 199At, Z = 85
+		case 2709: return 43;  // 200At, Z = 85
+		case 2710: return 43;  // 201At, Z = 85
+		case 2711: return 43;  // 202At, Z = 85
+		case 2712: return 43;  // 203At, Z = 85
+		case 2713: return 43;  // 204At, Z = 85
+		case 2714: return 43;  // 205At, Z = 85
+		case 2715: return 43;  // 206At, Z = 85
+		case 2716: return 43;  // 207At, Z = 85
+		case 2717: return 43;  // 208At, Z = 85
+		case 2718: return 43;  // 209At, Z = 85
+		case 2719: return 43;  // 210At, Z = 85
+		case 2720: return 43;  // 211At, Z = 85
+		case 2721: return 43;  // 212At, Z = 85
+		case 2722: return 43;  // 213At, Z = 85
+		case 2723: return 43;  // 214At, Z = 85
+		case 2724: return 43;  // 215At, Z = 85
+		case 2725: return 43;  // 216At, Z = 85
+		case 2726: return 43;  // 217At, Z = 85
+		case 2727: return 43;  // 218At, Z = 85
+		case 2728: return 43;  // 219At, Z = 85
+		case 2729: return 43;  // 220At, Z = 85
+		case 2730: return 43;  // 221At, Z = 85
+		case 2731: return 43;  // 222At, Z = 85
+		case 2732: return 43;  // 223At, Z = 85
+		case 2733: return 43;  // 224At, Z = 85
+		case 2734: return 43;  // 225At, Z = 85
+		case 2735: return 43;  // 226At, Z = 85
+		case 2736: return 43;  // 227At, Z = 85
+		case 2737: return 43;  // 228At, Z = 85
+		case 2738: return 43;  // 229At, Z = 85
+		case 2739: return 43;  // 193Rn, Z = 86
+		case 2740: return 43;  // 194Rn, Z = 86
+		case 2741: return 43;  // 195Rn, Z = 86
+		case 2742: return 43;  // 196Rn, Z = 86
+		case 2743: return 43;  // 197Rn, Z = 86
+		case 2744: return 43;  // 198Rn, Z = 86
+		case 2745: return 43;  // 199Rn, Z = 86
+		case 2746: return 43;  // 200Rn, Z = 86
+		case 2747: return 43;  // 201Rn, Z = 86
+		case 2748: return 43;  // 202Rn, Z = 86
+		case 2749: return 43;  // 203Rn, Z = 86
+		case 2750: return 43;  // 204Rn, Z = 86
+		case 2751: return 43;  // 205Rn, Z = 86
+		case 2752: return 43;  // 206Rn, Z = 86
+		case 2753: return 43;  // 207Rn, Z = 86
+		case 2754: return 43;  // 208Rn, Z = 86
+		case 2755: return 43;  // 209Rn, Z = 86
+		case 2756: return 43;  // 210Rn, Z = 86
+		case 2757: return 43;  // 211Rn, Z = 86
+		case 2758: return 43;  // 212Rn, Z = 86
+		case 2759: return 43;  // 213Rn, Z = 86
+		case 2760: return 43;  // 214Rn, Z = 86
+		case 2761: return 43;  // 215Rn, Z = 86
+		case 2762: return 43;  // 216Rn, Z = 86
+		case 2763: return 43;  // 217Rn, Z = 86
+		case 2764: return 43;  // 218Rn, Z = 86
+		case 2765: return 43;  // 219Rn, Z = 86
+		case 2766: return 43;  // 220Rn, Z = 86
+		case 2767: return 43;  // 221Rn, Z = 86
+		case 2768: return 43;  // 222Rn, Z = 86
+		case 2769: return 43;  // 223Rn, Z = 86
+		case 2770: return 43;  // 224Rn, Z = 86
+		case 2771: return 43;  // 225Rn, Z = 86
+		case 2772: return 43;  // 226Rn, Z = 86
+		case 2773: return 43;  // 227Rn, Z = 86
+		case 2774: return 43;  // 228Rn, Z = 86
+		case 2775: return 43;  // 229Rn, Z = 86
+		case 2776: return 43;  // 230Rn, Z = 86
+		case 2777: return 43;  // 231Rn, Z = 86
+		case 2778: return 44;  // 199Fr, Z = 87
+		case 2779: return 44;  // 200Fr, Z = 87
+		case 2780: return 44;  // 201Fr, Z = 87
+		case 2781: return 44;  // 202Fr, Z = 87
+		case 2782: return 44;  // 203Fr, Z = 87
+		case 2783: return 44;  // 204Fr, Z = 87
+		case 2784: return 44;  // 205Fr, Z = 87
+		case 2785: return 44;  // 206Fr, Z = 87
+		case 2786: return 44;  // 207Fr, Z = 87
+		case 2787: return 44;  // 208Fr, Z = 87
+		case 2788: return 44;  // 209Fr, Z = 87
+		case 2789: return 44;  // 210Fr, Z = 87
+		case 2790: return 44;  // 211Fr, Z = 87
+		case 2791: return 44;  // 212Fr, Z = 87
+		case 2792: return 44;  // 213Fr, Z = 87
+		case 2793: return 44;  // 214Fr, Z = 87
+		case 2794: return 44;  // 215Fr, Z = 87
+		case 2795: return 44;  // 216Fr, Z = 87
+		case 2796: return 44;  // 217Fr, Z = 87
+		case 2797: return 44;  // 218Fr, Z = 87
+		case 2798: return 44;  // 219Fr, Z = 87
+		case 2799: return 44;  // 220Fr, Z = 87
+		case 2800: return 44;  // 221Fr, Z = 87
+		case 2801: return 44;  // 222Fr, Z = 87
+		case 2802: return 44;  // 223Fr, Z = 87
+		case 2803: return 44;  // 224Fr, Z = 87
+		case 2804: return 44;  // 225Fr, Z = 87
+		case 2805: return 44;  // 226Fr, Z = 87
+		case 2806: return 44;  // 227Fr, Z = 87
+		case 2807: return 44;  // 228Fr, Z = 87
+		case 2808: return 44;  // 229Fr, Z = 87
+		case 2809: return 44;  // 230Fr, Z = 87
+		case 2810: return 44;  // 231Fr, Z = 87
+		case 2811: return 44;  // 232Fr, Z = 87
+		case 2812: return 44;  // 233Fr, Z = 87
+		case 2813: return 44;  // 201Ra, Z = 88
+		case 2814: return 44;  // 202Ra, Z = 88
+		case 2815: return 44;  // 203Ra, Z = 88
+		case 2816: return 44;  // 204Ra, Z = 88
+		case 2817: return 44;  // 205Ra, Z = 88
+		case 2818: return 44;  // 206Ra, Z = 88
+		case 2819: return 44;  // 207Ra, Z = 88
+		case 2820: return 44;  // 208Ra, Z = 88
+		case 2821: return 44;  // 209Ra, Z = 88
+		case 2822: return 44;  // 210Ra, Z = 88
+		case 2823: return 44;  // 211Ra, Z = 88
+		case 2824: return 44;  // 212Ra, Z = 88
+		case 2825: return 44;  // 213Ra, Z = 88
+		case 2826: return 44;  // 214Ra, Z = 88
+		case 2827: return 44;  // 215Ra, Z = 88
+		case 2828: return 44;  // 216Ra, Z = 88
+		case 2829: return 44;  // 217Ra, Z = 88
+		case 2830: return 44;  // 218Ra, Z = 88
+		case 2831: return 44;  // 219Ra, Z = 88
+		case 2832: return 44;  // 220Ra, Z = 88
+		case 2833: return 44;  // 221Ra, Z = 88
+		case 2834: return 44;  // 222Ra, Z = 88
+		case 2835: return 44;  // 223Ra, Z = 88
+		case 2836: return 44;  // 224Ra, Z = 88
+		case 2837: return 44;  // 225Ra, Z = 88
+		case 2838: return 44;  // 226Ra, Z = 88
+		case 2839: return 44;  // 227Ra, Z = 88
+		case 2840: return 44;  // 228Ra, Z = 88
+		case 2841: return 44;  // 229Ra, Z = 88
+		case 2842: return 44;  // 230Ra, Z = 88
+		case 2843: return 44;  // 231Ra, Z = 88
+		case 2844: return 44;  // 232Ra, Z = 88
+		case 2845: return 44;  // 233Ra, Z = 88
+		case 2846: return 44;  // 234Ra, Z = 88
+		case 2847: return 44;  // 235Ra, Z = 88
+		case 2848: return 49;  // 206Ac, Z = 89
+		case 2849: return 49;  // 207Ac, Z = 89
+		case 2850: return 49;  // 208Ac, Z = 89
+		case 2851: return 49;  // 209Ac, Z = 89
+		case 2852: return 49;  // 210Ac, Z = 89
+		case 2853: return 49;  // 211Ac, Z = 89
+		case 2854: return 49;  // 212Ac, Z = 89
+		case 2855: return 49;  // 213Ac, Z = 89
+		case 2856: return 49;  // 214Ac, Z = 89
+		case 2857: return 49;  // 215Ac, Z = 89
+		case 2858: return 49;  // 216Ac, Z = 89
+		case 2859: return 49;  // 217Ac, Z = 89
+		case 2860: return 49;  // 218Ac, Z = 89
+		case 2861: return 49;  // 219Ac, Z = 89
+		case 2862: return 49;  // 220Ac, Z = 89
+		case 2863: return 49;  // 221Ac, Z = 89
+		case 2864: return 49;  // 222Ac, Z = 89
+		case 2865: return 49;  // 223Ac, Z = 89
+		case 2866: return 49;  // 224Ac, Z = 89
+		case 2867: return 49;  // 225Ac, Z = 89
+		case 2868: return 49;  // 226Ac, Z = 89
+		case 2869: return 49;  // 227Ac, Z = 89
+		case 2870: return 49;  // 228Ac, Z = 89
+		case 2871: return 49;  // 229Ac, Z = 89
+		case 2872: return 49;  // 230Ac, Z = 89
+		case 2873: return 49;  // 231Ac, Z = 89
+		case 2874: return 49;  // 232Ac, Z = 89
+		case 2875: return 49;  // 233Ac, Z = 89
+		case 2876: return 49;  // 234Ac, Z = 89
+		case 2877: return 49;  // 235Ac, Z = 89
+		case 2878: return 49;  // 236Ac, Z = 89
+		case 2879: return 49;  // 237Ac, Z = 89
+		case 2880: return 49;  // 208Th, Z = 90
+		case 2881: return 49;  // 209Th, Z = 90
+		case 2882: return 49;  // 210Th, Z = 90
+		case 2883: return 49;  // 211Th, Z = 90
+		case 2884: return 49;  // 212Th, Z = 90
+		case 2885: return 49;  // 213Th, Z = 90
+		case 2886: return 49;  // 214Th, Z = 90
+		case 2887: return 49;  // 215Th, Z = 90
+		case 2888: return 49;  // 216Th, Z = 90
+		case 2889: return 49;  // 217Th, Z = 90
+		case 2890: return 49;  // 218Th, Z = 90
+		case 2891: return 49;  // 219Th, Z = 90
+		case 2892: return 49;  // 220Th, Z = 90
+		case 2893: return 49;  // 221Th, Z = 90
+		case 2894: return 49;  // 222Th, Z = 90
+		case 2895: return 49;  // 223Th, Z = 90
+		case 2896: return 49;  // 224Th, Z = 90
+		case 2897: return 49;  // 225Th, Z = 90
+		case 2898: return 49;  // 226Th, Z = 90
+		case 2899: return 49;  // 227Th, Z = 90
+		case 2900: return 49;  // 228Th, Z = 90
+		case 2901: return 49;  // 229Th, Z = 90
+		case 2902: return 49;  // 230Th, Z = 90
+		case 2903: return 49;  // 231Th, Z = 90
+		case 2904: return 49;  // 232Th, Z = 90
+		case 2905: return 49;  // 233Th, Z = 90
+		case 2906: return 49;  // 234Th, Z = 90
+		case 2907: return 49;  // 235Th, Z = 90
+		case 2908: return 49;  // 236Th, Z = 90
+		case 2909: return 49;  // 237Th, Z = 90
+		case 2910: return 49;  // 238Th, Z = 90
+		case 2911: return 49;  // 239Th, Z = 90
+		case 2912: return 56;  // 212Pa, Z = 91
+		case 2913: return 56;  // 213Pa, Z = 91
+		case 2914: return 56;  // 214Pa, Z = 91
+		case 2915: return 56;  // 215Pa, Z = 91
+		case 2916: return 56;  // 216Pa, Z = 91
+		case 2917: return 56;  // 217Pa, Z = 91
+		case 2918: return 56;  // 218Pa, Z = 91
+		case 2919: return 56;  // 219Pa, Z = 91
+		case 2920: return 56;  // 220Pa, Z = 91
+		case 2921: return 56;  // 221Pa, Z = 91
+		case 2922: return 56;  // 222Pa, Z = 91
+		case 2923: return 56;  // 223Pa, Z = 91
+		case 2924: return 56;  // 224Pa, Z = 91
+		case 2925: return 56;  // 225Pa, Z = 91
+		case 2926: return 56;  // 226Pa, Z = 91
+		case 2927: return 56;  // 227Pa, Z = 91
+		case 2928: return 56;  // 228Pa, Z = 91
+		case 2929: return 56;  // 229Pa, Z = 91
+		case 2930: return 56;  // 230Pa, Z = 91
+		case 2931: return 56;  // 231Pa, Z = 91
+		case 2932: return 56;  // 232Pa, Z = 91
+		case 2933: return 56;  // 233Pa, Z = 91
+		case 2934: return 56;  // 234Pa, Z = 91
+		case 2935: return 56;  // 235Pa, Z = 91
+		case 2936: return 56;  // 236Pa, Z = 91
+		case 2937: return 56;  // 237Pa, Z = 91
+		case 2938: return 56;  // 238Pa, Z = 91
+		case 2939: return 56;  // 239Pa, Z = 91
+		case 2940: return 56;  // 240Pa, Z = 91
+		case 2941: return 56;  // 241Pa, Z = 91
+		case 2942: return 56;  // 217U, Z = 92
+		case 2943: return 56;  // 218U, Z = 92
+		case 2944: return 56;  // 219U, Z = 92
+		case 2945: return 56;  // 220U, Z = 92
+		case 2946: return 56;  // 221U, Z = 92
+		case 2947: return 56;  // 222U, Z = 92
+		case 2948: return 56;  // 223U, Z = 92
+		case 2949: return 56;  // 224U, Z = 92
+		case 2950: return 56;  // 225U, Z = 92
+		case 2951: return 56;  // 226U, Z = 92
+		case 2952: return 56;  // 227U, Z = 92
+		case 2953: return 56;  // 228U, Z = 92
+		case 2954: return 56;  // 229U, Z = 92
+		case 2955: return 56;  // 230U, Z = 92
+		case 2956: return 56;  // 231U, Z = 92
+		case 2957: return 56;  // 232U, Z = 92
+		case 2958: return 56;  // 233U, Z = 92
+		case 2959: return 56;  // 234U, Z = 92
+		case 2960: return 56;  // 235U, Z = 92
+		case 2961: return 56;  // 236U, Z = 92
+		case 2962: return 56;  // 237U, Z = 92
+		case 2963: return 56;  // 238U, Z = 92
+		case 2964: return 56;  // 239U, Z = 92
+		case 2965: return 56;  // 240U, Z = 92
+		case 2966: return 56;  // 241U, Z = 92
+		case 2967: return 56;  // 242U, Z = 92
+		case 2968: return 56;  // 243U, Z = 92
+		case 2969: return 56;  // 219Np, Z = 93
+		case 2970: return 56;  // 220Np, Z = 93
+		case 2971: return 56;  // 221Np, Z = 93
+		case 2972: return 56;  // 222Np, Z = 93
+		case 2973: return 56;  // 223Np, Z = 93
+		case 2974: return 56;  // 224Np, Z = 93
+		case 2975: return 56;  // 225Np, Z = 93
+		case 2976: return 56;  // 226Np, Z = 93
+		case 2977: return 56;  // 227Np, Z = 93
+		case 2978: return 56;  // 228Np, Z = 93
+		case 2979: return 56;  // 229Np, Z = 93
+		case 2980: return 56;  // 230Np, Z = 93
+		case 2981: return 56;  // 231Np, Z = 93
+		case 2982: return 56;  // 232Np, Z = 93
+		case 2983: return 56;  // 233Np, Z = 93
+		case 2984: return 56;  // 234Np, Z = 93
+		case 2985: return 56;  // 235Np, Z = 93
+		case 2986: return 56;  // 236Np, Z = 93
+		case 2987: return 56;  // 237Np, Z = 93
+		case 2988: return 56;  // 238Np, Z = 93
+		case 2989: return 56;  // 239Np, Z = 93
+		case 2990: return 56;  // 240Np, Z = 93
+		case 2991: return 56;  // 241Np, Z = 93
+		case 2992: return 56;  // 242Np, Z = 93
+		case 2993: return 56;  // 243Np, Z = 93
+		case 2994: return 56;  // 244Np, Z = 93
+		case 2995: return 56;  // 245Np, Z = 93
+		case 2996: return 51;  // 228Pu, Z = 94
+		case 2997: return 51;  // 229Pu, Z = 94
+		case 2998: return 51;  // 230Pu, Z = 94
+		case 2999: return 51;  // 231Pu, Z = 94
+		case 3000: return 51;  // 232Pu, Z = 94
+		case 3001: return 51;  // 233Pu, Z = 94
+		case 3002: return 51;  // 234Pu, Z = 94
+		case 3003: return 51;  // 235Pu, Z = 94
+		case 3004: return 51;  // 236Pu, Z = 94
+		case 3005: return 51;  // 237Pu, Z = 94
+		case 3006: return 51;  // 238Pu, Z = 94
+		case 3007: return 51;  // 239Pu, Z = 94
+		case 3008: return 51;  // 240Pu, Z = 94
+		case 3009: return 51;  // 241Pu, Z = 94
+		case 3010: return 51;  // 242Pu, Z = 94
+		case 3011: return 51;  // 243Pu, Z = 94
+		case 3012: return 51;  // 244Pu, Z = 94
+		case 3013: return 51;  // 245Pu, Z = 94
+		case 3014: return 51;  // 246Pu, Z = 94
+		case 3015: return 51;  // 247Pu, Z = 94
+		case 3016: return 51;  // 230Am, Z = 95
+		case 3017: return 51;  // 231Am, Z = 95
+		case 3018: return 51;  // 232Am, Z = 95
+		case 3019: return 51;  // 233Am, Z = 95
+		case 3020: return 51;  // 234Am, Z = 95
+		case 3021: return 51;  // 235Am, Z = 95
+		case 3022: return 51;  // 236Am, Z = 95
+		case 3023: return 51;  // 237Am, Z = 95
+		case 3024: return 51;  // 238Am, Z = 95
+		case 3025: return 51;  // 239Am, Z = 95
+		case 3026: return 51;  // 240Am, Z = 95
+		case 3027: return 51;  // 241Am, Z = 95
+		case 3028: return 51;  // 242Am, Z = 95
+		case 3029: return 51;  // 243Am, Z = 95
+		case 3030: return 51;  // 244Am, Z = 95
+		case 3031: return 51;  // 245Am, Z = 95
+		case 3032: return 51;  // 246Am, Z = 95
+		case 3033: return 51;  // 247Am, Z = 95
+		case 3034: return 51;  // 248Am, Z = 95
+		case 3035: return 51;  // 249Am, Z = 95
+		case 3036: return 56;  // 232Cm, Z = 96
+		case 3037: return 56;  // 233Cm, Z = 96
+		case 3038: return 56;  // 234Cm, Z = 96
+		case 3039: return 56;  // 235Cm, Z = 96
+		case 3040: return 56;  // 236Cm, Z = 96
+		case 3041: return 56;  // 237Cm, Z = 96
+		case 3042: return 56;  // 238Cm, Z = 96
+		case 3043: return 56;  // 239Cm, Z = 96
+		case 3044: return 56;  // 240Cm, Z = 96
+		case 3045: return 56;  // 241Cm, Z = 96
+		case 3046: return 56;  // 242Cm, Z = 96
+		case 3047: return 56;  // 243Cm, Z = 96
+		case 3048: return 56;  // 244Cm, Z = 96
+		case 3049: return 56;  // 245Cm, Z = 96
+		case 3050: return 56;  // 246Cm, Z = 96
+		case 3051: return 56;  // 247Cm, Z = 96
+		case 3052: return 56;  // 248Cm, Z = 96
+		case 3053: return 56;  // 249Cm, Z = 96
+		case 3054: return 56;  // 250Cm, Z = 96
+		case 3055: return 56;  // 251Cm, Z = 96
+		case 3056: return 56;  // 252Cm, Z = 96
+		case 3057: return 51;  // 234Bk, Z = 97
+		case 3058: return 51;  // 235Bk, Z = 97
+		case 3059: return 51;  // 236Bk, Z = 97
+		case 3060: return 51;  // 237Bk, Z = 97
+		case 3061: return 51;  // 238Bk, Z = 97
+		case 3062: return 51;  // 239Bk, Z = 97
+		case 3063: return 51;  // 240Bk, Z = 97
+		case 3064: return 51;  // 241Bk, Z = 97
+		case 3065: return 51;  // 242Bk, Z = 97
+		case 3066: return 51;  // 243Bk, Z = 97
+		case 3067: return 51;  // 244Bk, Z = 97
+		case 3068: return 51;  // 245Bk, Z = 97
+		case 3069: return 51;  // 246Bk, Z = 97
+		case 3070: return 51;  // 247Bk, Z = 97
+		case 3071: return 51;  // 248Bk, Z = 97
+		case 3072: return 51;  // 249Bk, Z = 97
+		case 3073: return 51;  // 250Bk, Z = 97
+		case 3074: return 51;  // 251Bk, Z = 97
+		case 3075: return 51;  // 252Bk, Z = 97
+		case 3076: return 51;  // 253Bk, Z = 97
+		case 3077: return 51;  // 254Bk, Z = 97
+		case 3078: return 51;  // 237Cf, Z = 98
+		case 3079: return 51;  // 238Cf, Z = 98
+		case 3080: return 51;  // 239Cf, Z = 98
+		case 3081: return 51;  // 240Cf, Z = 98
+		case 3082: return 51;  // 241Cf, Z = 98
+		case 3083: return 51;  // 242Cf, Z = 98
+		case 3084: return 51;  // 243Cf, Z = 98
+		case 3085: return 51;  // 244Cf, Z = 98
+		case 3086: return 51;  // 245Cf, Z = 98
+		case 3087: return 51;  // 246Cf, Z = 98
+		case 3088: return 51;  // 247Cf, Z = 98
+		case 3089: return 51;  // 248Cf, Z = 98
+		case 3090: return 51;  // 249Cf, Z = 98
+		case 3091: return 51;  // 250Cf, Z = 98
+		case 3092: return 51;  // 251Cf, Z = 98
+		case 3093: return 51;  // 252Cf, Z = 98
+		case 3094: return 51;  // 253Cf, Z = 98
+		case 3095: return 51;  // 254Cf, Z = 98
+		case 3096: return 51;  // 255Cf, Z = 98
+		case 3097: return 51;  // 256Cf, Z = 98
+		case 3098: return 51;  // 239Es, Z = 99
+		case 3099: return 51;  // 240Es, Z = 99
+		case 3100: return 51;  // 241Es, Z = 99
+		case 3101: return 51;  // 242Es, Z = 99
+		case 3102: return 51;  // 243Es, Z = 99
+		case 3103: return 51;  // 244Es, Z = 99
+		case 3104: return 51;  // 245Es, Z = 99
+		case 3105: return 51;  // 246Es, Z = 99
+		case 3106: return 51;  // 247Es, Z = 99
+		case 3107: return 51;  // 248Es, Z = 99
+		case 3108: return 51;  // 249Es, Z = 99
+		case 3109: return 51;  // 250Es, Z = 99
+		case 3110: return 51;  // 251Es, Z = 99
+		case 3111: return 51;  // 252Es, Z = 99
+		case 3112: return 51;  // 253Es, Z = 99
+		case 3113: return 51;  // 254Es, Z = 99
+		case 3114: return 51;  // 255Es, Z = 99
+		case 3115: return 51;  // 256Es, Z = 99
+		case 3116: return 51;  // 257Es, Z = 99
+		case 3117: return 51;  // 258Es, Z = 99
+		case 3118: return 51;  // 241Fm, Z = 100
+		case 3119: return 51;  // 242Fm, Z = 100
+		case 3120: return 51;  // 243Fm, Z = 100
+		case 3121: return 51;  // 244Fm, Z = 100
+		case 3122: return 51;  // 245Fm, Z = 100
+		case 3123: return 51;  // 246Fm, Z = 100
+		case 3124: return 51;  // 247Fm, Z = 100
+		case 3125: return 51;  // 248Fm, Z = 100
+		case 3126: return 51;  // 249Fm, Z = 100
+		case 3127: return 51;  // 250Fm, Z = 100
+		case 3128: return 51;  // 251Fm, Z = 100
+		case 3129: return 51;  // 252Fm, Z = 100
+		case 3130: return 51;  // 253Fm, Z = 100
+		case 3131: return 51;  // 254Fm, Z = 100
+		case 3132: return 51;  // 255Fm, Z = 100
+		case 3133: return 51;  // 256Fm, Z = 100
+		case 3134: return 51;  // 257Fm, Z = 100
+		case 3135: return 51;  // 258Fm, Z = 100
+		case 3136: return 51;  // 259Fm, Z = 100
+		case 3137: return 51;  // 260Fm, Z = 100
+		case 3138: return 51;  // 245Md, Z = 101
+		case 3139: return 51;  // 246Md, Z = 101
+		case 3140: return 51;  // 247Md, Z = 101
+		case 3141: return 51;  // 248Md, Z = 101
+		case 3142: return 51;  // 249Md, Z = 101
+		case 3143: return 51;  // 250Md, Z = 101
+		case 3144: return 51;  // 251Md, Z = 101
+		case 3145: return 51;  // 252Md, Z = 101
+		case 3146: return 51;  // 253Md, Z = 101
+		case 3147: return 51;  // 254Md, Z = 101
+		case 3148: return 51;  // 255Md, Z = 101
+		case 3149: return 51;  // 256Md, Z = 101
+		case 3150: return 51;  // 257Md, Z = 101
+		case 3151: return 51;  // 258Md, Z = 101
+		case 3152: return 51;  // 259Md, Z = 101
+		case 3153: return 51;  // 260Md, Z = 101
+		case 3154: return 51;  // 261Md, Z = 101
+		case 3155: return 51;  // 262Md, Z = 101
+		case 3156: return 51;  // 248No, Z = 102
+		case 3157: return 51;  // 249No, Z = 102
+		case 3158: return 51;  // 250No, Z = 102
+		case 3159: return 51;  // 251No, Z = 102
+		case 3160: return 51;  // 252No, Z = 102
+		case 3161: return 51;  // 253No, Z = 102
+		case 3162: return 51;  // 254No, Z = 102
+		case 3163: return 51;  // 255No, Z = 102
+		case 3164: return 51;  // 256No, Z = 102
+		case 3165: return 51;  // 257No, Z = 102
+		case 3166: return 51;  // 258No, Z = 102
+		case 3167: return 51;  // 259No, Z = 102
+		case 3168: return 51;  // 260No, Z = 102
+		case 3169: return 51;  // 261No, Z = 102
+		case 3170: return 51;  // 262No, Z = 102
+		case 3171: return 51;  // 263No, Z = 102
+		case 3172: return 51;  // 264No, Z = 102
+		case 3173: return 54;  // 251Lr, Z = 103
+		case 3174: return 54;  // 252Lr, Z = 103
+		case 3175: return 54;  // 253Lr, Z = 103
+		case 3176: return 54;  // 254Lr, Z = 103
+		case 3177: return 54;  // 255Lr, Z = 103
+		case 3178: return 54;  // 256Lr, Z = 103
+		case 3179: return 54;  // 257Lr, Z = 103
+		case 3180: return 54;  // 258Lr, Z = 103
+		case 3181: return 54;  // 259Lr, Z = 103
+		case 3182: return 54;  // 260Lr, Z = 103
+		case 3183: return 54;  // 261Lr, Z = 103
+		case 3184: return 54;  // 262Lr, Z = 103
+		case 3185: return 54;  // 263Lr, Z = 103
+		case 3186: return 54;  // 264Lr, Z = 103
+		case 3187: return 54;  // 265Lr, Z = 103
+		case 3188: return 54;  // 266Lr, Z = 103
+		case 3189: return 56;  // 253Rf, Z = 104
+		case 3190: return 56;  // 254Rf, Z = 104
+		case 3191: return 56;  // 255Rf, Z = 104
+		case 3192: return 56;  // 256Rf, Z = 104
+		case 3193: return 56;  // 257Rf, Z = 104
+		case 3194: return 56;  // 258Rf, Z = 104
+		case 3195: return 56;  // 259Rf, Z = 104
+		case 3196: return 56;  // 260Rf, Z = 104
+		case 3197: return 56;  // 261Rf, Z = 104
+		case 3198: return 56;  // 262Rf, Z = 104
+		case 3199: return 56;  // 263Rf, Z = 104
+		case 3200: return 56;  // 264Rf, Z = 104
+		case 3201: return 56;  // 265Rf, Z = 104
+		case 3202: return 56;  // 266Rf, Z = 104
+		case 3203: return 56;  // 267Rf, Z = 104
+		case 3204: return 56;  // 268Rf, Z = 104
+		case 3205: return 0;   // 255Db, Z = 105
+		case 3206: return 0;   // 256Db, Z = 105
+		case 3207: return 0;   // 257Db, Z = 105
+		case 3208: return 0;   // 258Db, Z = 105
+		case 3209: return 0;   // 259Db, Z = 105
+		case 3210: return 0;   // 260Db, Z = 105
+		case 3211: return 0;   // 261Db, Z = 105
+		case 3212: return 0;   // 262Db, Z = 105
+		case 3213: return 0;   // 263Db, Z = 105
+		case 3214: return 0;   // 264Db, Z = 105
+		case 3215: return 0;   // 265Db, Z = 105
+		case 3216: return 0;   // 266Db, Z = 105
+		case 3217: return 0;   // 267Db, Z = 105
+		case 3218: return 0;   // 268Db, Z = 105
+		case 3219: return 0;   // 269Db, Z = 105
+		case 3220: return 0;   // 270Db, Z = 105
+		case 3221: return 0;   // 258Sg, Z = 106
+		case 3222: return 0;   // 259Sg, Z = 106
+		case 3223: return 0;   // 260Sg, Z = 106
+		case 3224: return 0;   // 261Sg, Z = 106
+		case 3225: return 0;   // 262Sg, Z = 106
+		case 3226: return 0;   // 263Sg, Z = 106
+		case 3227: return 0;   // 264Sg, Z = 106
+		case 3228: return 0;   // 265Sg, Z = 106
+		case 3229: return 0;   // 266Sg, Z = 106
+		case 3230: return 0;   // 267Sg, Z = 106
+		case 3231: return 0;   // 268Sg, Z = 106
+		case 3232: return 0;   // 269Sg, Z = 106
+		case 3233: return 0;   // 270Sg, Z = 106
+		case 3234: return 0;   // 271Sg, Z = 106
+		case 3235: return 0;   // 272Sg, Z = 106
+		case 3236: return 0;   // 273Sg, Z = 106
+		case 3237: return 0;   // 260Bh, Z = 107
+		case 3238: return 0;   // 261Bh, Z = 107
+		case 3239: return 0;   // 262Bh, Z = 107
+		case 3240: return 0;   // 263Bh, Z = 107
+		case 3241: return 0;   // 264Bh, Z = 107
+		case 3242: return 0;   // 265Bh, Z = 107
+		case 3243: return 0;   // 266Bh, Z = 107
+		case 3244: return 0;   // 267Bh, Z = 107
+		case 3245: return 0;   // 268Bh, Z = 107
+		case 3246: return 0;   // 269Bh, Z = 107
+		case 3247: return 0;   // 270Bh, Z = 107
+		case 3248: return 0;   // 271Bh, Z = 107
+		case 3249: return 0;   // 272Bh, Z = 107
+		case 3250: return 0;   // 273Bh, Z = 107
+		case 3251: return 0;   // 274Bh, Z = 107
+		case 3252: return 0;   // 275Bh, Z = 107
+		case 3253: return 0;   // 263Hs, Z = 108
+		case 3254: return 0;   // 264Hs, Z = 108
+		case 3255: return 0;   // 265Hs, Z = 108
+		case 3256: return 0;   // 266Hs, Z = 108
+		case 3257: return 0;   // 267Hs, Z = 108
+		case 3258: return 0;   // 268Hs, Z = 108
+		case 3259: return 0;   // 269Hs, Z = 108
+		case 3260: return 0;   // 270Hs, Z = 108
+		case 3261: return 0;   // 271Hs, Z = 108
+		case 3262: return 0;   // 272Hs, Z = 108
+		case 3263: return 0;   // 273Hs, Z = 108
+		case 3264: return 0;   // 274Hs, Z = 108
+		case 3265: return 0;   // 275Hs, Z = 108
+		case 3266: return 0;   // 276Hs, Z = 108
+		case 3267: return 0;   // 277Hs, Z = 108
+		case 3268: return 0;   // 265Mt, Z = 109
+		case 3269: return 0;   // 266Mt, Z = 109
+		case 3270: return 0;   // 267Mt, Z = 109
+		case 3271: return 0;   // 268Mt, Z = 109
+		case 3272: return 0;   // 269Mt, Z = 109
+		case 3273: return 0;   // 270Mt, Z = 109
+		case 3274: return 0;   // 271Mt, Z = 109
+		case 3275: return 0;   // 272Mt, Z = 109
+		case 3276: return 0;   // 273Mt, Z = 109
+		case 3277: return 0;   // 274Mt, Z = 109
+		case 3278: return 0;   // 275Mt, Z = 109
+		case 3279: return 0;   // 276Mt, Z = 109
+		case 3280: return 0;   // 277Mt, Z = 109
+		case 3281: return 0;   // 278Mt, Z = 109
+		case 3282: return 0;   // 279Mt, Z = 109
+		case 3283: return 0;   // 267Ds, Z = 110
+		case 3284: return 0;   // 268Ds, Z = 110
+		case 3285: return 0;   // 269Ds, Z = 110
+		case 3286: return 0;   // 270Ds, Z = 110
+		case 3287: return 0;   // 271Ds, Z = 110
+		case 3288: return 0;   // 272Ds, Z = 110
+		case 3289: return 0;   // 273Ds, Z = 110
+		case 3290: return 0;   // 274Ds, Z = 110
+		case 3291: return 0;   // 275Ds, Z = 110
+		case 3292: return 0;   // 276Ds, Z = 110
+		case 3293: return 0;   // 277Ds, Z = 110
+		case 3294: return 0;   // 278Ds, Z = 110
+		case 3295: return 0;   // 279Ds, Z = 110
+		case 3296: return 0;   // 280Ds, Z = 110
+		case 3297: return 0;   // 281Ds, Z = 110
+		case 3298: return 0;   // 272Rg, Z = 111
+		case 3299: return 0;   // 273Rg, Z = 111
+		case 3300: return 0;   // 274Rg, Z = 111
+		case 3301: return 0;   // 275Rg, Z = 111
+		case 3302: return 0;   // 276Rg, Z = 111
+		case 3303: return 0;   // 277Rg, Z = 111
+		case 3304: return 0;   // 278Rg, Z = 111
+		case 3305: return 0;   // 279Rg, Z = 111
+		case 3306: return 0;   // 280Rg, Z = 111
+		case 3307: return 0;   // 281Rg, Z = 111
+		case 3308: return 0;   // 282Rg, Z = 111
+		case 3309: return 0;   // 283Rg, Z = 111
+		case 3310: return 0;   // 276Cn, Z = 112
+		case 3311: return 0;   // 277Cn, Z = 112
+		case 3312: return 0;   // 278Cn, Z = 112
+		case 3313: return 0;   // 279Cn, Z = 112
+		case 3314: return 0;   // 280Cn, Z = 112
+		case 3315: return 0;   // 281Cn, Z = 112
+		case 3316: return 0;   // 282Cn, Z = 112
+		case 3317: return 0;   // 283Cn, Z = 112
+		case 3318: return 0;   // 284Cn, Z = 112
+		case 3319: return 0;   // 285Cn, Z = 112
+		case 3320: return 0;   // 278Nh, Z = 113
+		case 3321: return 0;   // 279Nh, Z = 113
+		case 3322: return 0;   // 280Nh, Z = 113
+		case 3323: return 0;   // 281Nh, Z = 113
+		case 3324: return 0;   // 282Nh, Z = 113
+		case 3325: return 0;   // 283Nh, Z = 113
+		case 3326: return 0;   // 284Nh, Z = 113
+		case 3327: return 0;   // 285Nh, Z = 113
+		case 3328: return 0;   // 286Nh, Z = 113
+		case 3329: return 0;   // 287Nh, Z = 113
+		case 3330: return 0;   // 285Fl, Z = 114
+		case 3331: return 0;   // 286Fl, Z = 114
+		case 3332: return 0;   // 287Fl, Z = 114
+		case 3333: return 0;   // 288Fl, Z = 114
+		case 3334: return 0;   // 289Fl, Z = 114
+		case 3335: return 0;   // 287Mc, Z = 115
+		case 3336: return 0;   // 288Mc, Z = 115
+		case 3337: return 0;   // 289Mc, Z = 115
+		case 3338: return 0;   // 290Mc, Z = 115
+		case 3339: return 0;   // 291Uup, Z = 115
+		case 3340: return 0;   // 289Lv, Z = 116
+		case 3341: return 0;   // 290Lv, Z = 116
+		case 3342: return 0;   // 291Lv, Z = 116
+		case 3343: return 0;   // 292Lv, Z = 116
+		case 3344: return 0;   // 293Lv, Z = 116
+		case 3345: return 0;   // 291Ts, Z = 117
+		case 3346: return 0;   // 292Ts, Z = 117
+		case 3347: return 0;   // 293Ts, Z = 117
+		case 3348: return 0;   // 294Uus, Z = 117
+		case 3349: return 0;   // 293Og, Z = 118
+		case 3350: return 0;   // 294Og, Z = 118
+		case 3351: return 0;   // 295Og, Z = 118
+		  default: return 0;
+	}
 }
 
 /******************************************************************************
@@ -6781,3 +13521,26825 @@ void nist_about(FILE *output)
 	fprintf(output, "# build date  = %s\n", __DATE__);
 	fprintf(output, "# source code = %s\n", __FILE__);
 }
+
+/*
+Date = 14/10/2017
+Font = NIST Physical Measurement Laboratory
+Link = https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=&all=all&ascii=ascii2&isotype=all
+
+Atomic Number = 1
+Atomic Symbol = H
+Mass Number = 1
+Relative Atomic Mass = 1.00782503223(9)
+Isotopic Composition = 0.999885(70)
+Standard Atomic Weight = [1.00784,1.00811]
+Notes = m
+
+Atomic Number = 1
+Atomic Symbol = D
+Mass Number = 2
+Relative Atomic Mass = 2.01410177812(12)
+Isotopic Composition = 0.000115(70)
+Standard Atomic Weight = [1.00784,1.00811]
+Notes = m
+
+Atomic Number = 1
+Atomic Symbol = T
+Mass Number = 3
+Relative Atomic Mass = 3.0160492779(24)
+Isotopic Composition =
+Standard Atomic Weight = [1.00784,1.00811]
+Notes = m
+
+Atomic Number = 1
+Atomic Symbol = H
+Mass Number = 4
+Relative Atomic Mass = 4.02643(11)
+Isotopic Composition =
+Standard Atomic Weight = [1.00784,1.00811]
+Notes = m
+
+Atomic Number = 1
+Atomic Symbol = H
+Mass Number = 5
+Relative Atomic Mass = 5.035311(96)
+Isotopic Composition =
+Standard Atomic Weight = [1.00784,1.00811]
+Notes = m
+
+Atomic Number = 1
+Atomic Symbol = H
+Mass Number = 6
+Relative Atomic Mass = 6.04496(27)
+Isotopic Composition =
+Standard Atomic Weight = [1.00784,1.00811]
+Notes = m
+
+Atomic Number = 1
+Atomic Symbol = H
+Mass Number = 7
+Relative Atomic Mass = 7.0527(11#)
+Isotopic Composition =
+Standard Atomic Weight = [1.00784,1.00811]
+Notes = m
+
+Atomic Number = 2
+Atomic Symbol = He
+Mass Number = 3
+Relative Atomic Mass = 3.0160293201(25)
+Isotopic Composition = 0.00000134(3)
+Standard Atomic Weight = 4.002602(2)
+Notes = g,r
+
+Atomic Number = 2
+Atomic Symbol = He
+Mass Number = 4
+Relative Atomic Mass = 4.00260325413(6)
+Isotopic Composition = 0.99999866(3)
+Standard Atomic Weight = 4.002602(2)
+Notes = g,r
+
+Atomic Number = 2
+Atomic Symbol = He
+Mass Number = 5
+Relative Atomic Mass = 5.012057(21)
+Isotopic Composition =
+Standard Atomic Weight = 4.002602(2)
+Notes = g,r
+
+Atomic Number = 2
+Atomic Symbol = He
+Mass Number = 6
+Relative Atomic Mass = 6.018885891(57)
+Isotopic Composition =
+Standard Atomic Weight = 4.002602(2)
+Notes = g,r
+
+Atomic Number = 2
+Atomic Symbol = He
+Mass Number = 7
+Relative Atomic Mass = 7.0279907(81)
+Isotopic Composition =
+Standard Atomic Weight = 4.002602(2)
+Notes = g,r
+
+Atomic Number = 2
+Atomic Symbol = He
+Mass Number = 8
+Relative Atomic Mass = 8.033934390(95)
+Isotopic Composition =
+Standard Atomic Weight = 4.002602(2)
+Notes = g,r
+
+Atomic Number = 2
+Atomic Symbol = He
+Mass Number = 9
+Relative Atomic Mass = 9.043946(50)
+Isotopic Composition =
+Standard Atomic Weight = 4.002602(2)
+Notes = g,r
+
+Atomic Number = 2
+Atomic Symbol = He
+Mass Number = 10
+Relative Atomic Mass = 10.05279(11)
+Isotopic Composition =
+Standard Atomic Weight = 4.002602(2)
+Notes = g,r
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 3
+Relative Atomic Mass = 3.0308(21#)
+Isotopic Composition =
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 4
+Relative Atomic Mass = 4.02719(23)
+Isotopic Composition =
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 5
+Relative Atomic Mass = 5.012538(54)
+Isotopic Composition =
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 6
+Relative Atomic Mass = 6.0151228874(16)
+Isotopic Composition = 0.0759(4)
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 7
+Relative Atomic Mass = 7.0160034366(45)
+Isotopic Composition = 0.9241(4)
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 8
+Relative Atomic Mass = 8.022486246(50)
+Isotopic Composition =
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 9
+Relative Atomic Mass = 9.02679019(20)
+Isotopic Composition =
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 10
+Relative Atomic Mass = 10.035483(14)
+Isotopic Composition =
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 11
+Relative Atomic Mass = 11.04372358(66)
+Isotopic Composition =
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 12
+Relative Atomic Mass = 12.052517(16)
+Isotopic Composition =
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 3
+Atomic Symbol = Li
+Mass Number = 13
+Relative Atomic Mass = 13.06263(38)
+Isotopic Composition =
+Standard Atomic Weight = [6.938,6.997]
+Notes = m
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 5
+Relative Atomic Mass = 5.0399(22#)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 6
+Relative Atomic Mass = 6.0197264(58)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 7
+Relative Atomic Mass = 7.016928717(76)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 8
+Relative Atomic Mass = 8.005305102(37)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 9
+Relative Atomic Mass = 9.012183065(82)
+Isotopic Composition = 1
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 10
+Relative Atomic Mass = 10.013534695(86)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 11
+Relative Atomic Mass = 11.02166108(26)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 12
+Relative Atomic Mass = 12.0269221(20)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 13
+Relative Atomic Mass = 13.036135(11)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 14
+Relative Atomic Mass = 14.04289(14)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 15
+Relative Atomic Mass = 15.05342(43#)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 4
+Atomic Symbol = Be
+Mass Number = 16
+Relative Atomic Mass = 16.06167(18)
+Isotopic Composition =
+Standard Atomic Weight = 9.0121831(5)
+Notes =
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 6
+Relative Atomic Mass = 6.0508(22#)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 7
+Relative Atomic Mass = 7.029712(27)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 8
+Relative Atomic Mass = 8.0246073(11)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 9
+Relative Atomic Mass = 9.01332965(97)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 10
+Relative Atomic Mass = 10.01293695(41)
+Isotopic Composition = 0.199(7)
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 11
+Relative Atomic Mass = 11.00930536(45)
+Isotopic Composition = 0.801(7)
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 12
+Relative Atomic Mass = 12.0143527(14)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 13
+Relative Atomic Mass = 13.0177802(12)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 14
+Relative Atomic Mass = 14.025404(23)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 15
+Relative Atomic Mass = 15.031088(23)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 16
+Relative Atomic Mass = 16.039842(26)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 17
+Relative Atomic Mass = 17.04699(18)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 18
+Relative Atomic Mass = 18.05566(18)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 19
+Relative Atomic Mass = 19.06310(43#)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 20
+Relative Atomic Mass = 20.07207(75#)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 5
+Atomic Symbol = B
+Mass Number = 21
+Relative Atomic Mass = 21.08129(97#)
+Isotopic Composition =
+Standard Atomic Weight = [10.806,10.821]
+Notes = m
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 8
+Relative Atomic Mass = 8.037643(20)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 9
+Relative Atomic Mass = 9.0310372(23)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 10
+Relative Atomic Mass = 10.01685331(42)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 11
+Relative Atomic Mass = 11.0114336(10)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 12
+Relative Atomic Mass = 12.0000000(00)
+Isotopic Composition = 0.9893(8)
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 13
+Relative Atomic Mass = 13.00335483507(23)
+Isotopic Composition = 0.0107(8)
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 14
+Relative Atomic Mass = 14.0032419884(40)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 15
+Relative Atomic Mass = 15.01059926(86)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 16
+Relative Atomic Mass = 16.0147013(38)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 17
+Relative Atomic Mass = 17.022577(19)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 18
+Relative Atomic Mass = 18.026751(32)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 19
+Relative Atomic Mass = 19.03480(11)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 20
+Relative Atomic Mass = 20.04032(26)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 21
+Relative Atomic Mass = 21.04900(43#)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 22
+Relative Atomic Mass = 22.05753(26)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 6
+Atomic Symbol = C
+Mass Number = 23
+Relative Atomic Mass = 23.0689(11#)
+Isotopic Composition =
+Standard Atomic Weight = [12.0096,12.0116]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 10
+Relative Atomic Mass = 10.04165(43)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 11
+Relative Atomic Mass = 11.026091(50)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 12
+Relative Atomic Mass = 12.0186132(11)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 13
+Relative Atomic Mass = 13.00573861(29)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 14
+Relative Atomic Mass = 14.00307400443(20)
+Isotopic Composition = 0.99636(20)
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 15
+Relative Atomic Mass = 15.00010889888(64)
+Isotopic Composition = 0.00364(20)
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 16
+Relative Atomic Mass = 16.0061019(25)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 17
+Relative Atomic Mass = 17.008449(16)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 18
+Relative Atomic Mass = 18.014078(20)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 19
+Relative Atomic Mass = 19.017022(18)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 20
+Relative Atomic Mass = 20.023366(60)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 21
+Relative Atomic Mass = 21.02711(10)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 22
+Relative Atomic Mass = 22.03439(21)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 23
+Relative Atomic Mass = 23.04114(32#)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 24
+Relative Atomic Mass = 24.05039(43#)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 7
+Atomic Symbol = N
+Mass Number = 25
+Relative Atomic Mass = 25.06010(54#)
+Isotopic Composition =
+Standard Atomic Weight = [14.00643,14.00728]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 12
+Relative Atomic Mass = 12.034262(26)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 13
+Relative Atomic Mass = 13.024815(10)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 14
+Relative Atomic Mass = 14.00859636(12)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 15
+Relative Atomic Mass = 15.00306562(53)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 16
+Relative Atomic Mass = 15.99491461957(17)
+Isotopic Composition = 0.99757(16)
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 17
+Relative Atomic Mass = 16.99913175650(69)
+Isotopic Composition = 0.00038(1)
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 18
+Relative Atomic Mass = 17.99915961286(76)
+Isotopic Composition = 0.00205(14)
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 19
+Relative Atomic Mass = 19.0035780(28)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 20
+Relative Atomic Mass = 20.00407535(95)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 21
+Relative Atomic Mass = 21.008655(13)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 22
+Relative Atomic Mass = 22.009966(61)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 23
+Relative Atomic Mass = 23.015696(97)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 24
+Relative Atomic Mass = 24.01986(12)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 25
+Relative Atomic Mass = 25.02936(12)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 26
+Relative Atomic Mass = 26.03729(17)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 27
+Relative Atomic Mass = 27.04772(54#)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 8
+Atomic Symbol = O
+Mass Number = 28
+Relative Atomic Mass = 28.05591(75#)
+Isotopic Composition =
+Standard Atomic Weight = [15.99903,15.99977]
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 14
+Relative Atomic Mass = 14.034315(44)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 15
+Relative Atomic Mass = 15.018043(67)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 16
+Relative Atomic Mass = 16.0114657(89)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 17
+Relative Atomic Mass = 17.00209524(27)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 18
+Relative Atomic Mass = 18.00093733(50)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 19
+Relative Atomic Mass = 18.99840316273(92)
+Isotopic Composition = 1
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 20
+Relative Atomic Mass = 19.999981252(31)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 21
+Relative Atomic Mass = 20.9999489(19)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 22
+Relative Atomic Mass = 22.002999(13)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 23
+Relative Atomic Mass = 23.003557(54)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 24
+Relative Atomic Mass = 24.008115(78)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 25
+Relative Atomic Mass = 25.012199(81)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 26
+Relative Atomic Mass = 26.020038(83)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 27
+Relative Atomic Mass = 27.02644(20)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 28
+Relative Atomic Mass = 28.03534(21)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 29
+Relative Atomic Mass = 29.04254(54#)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 30
+Relative Atomic Mass = 30.05165(64#)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 9
+Atomic Symbol = F
+Mass Number = 31
+Relative Atomic Mass = 31.05971(56#)
+Isotopic Composition =
+Standard Atomic Weight = 18.998403163(6)
+Notes =
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 16
+Relative Atomic Mass = 16.025750(22)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 17
+Relative Atomic Mass = 17.01771396(38)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 18
+Relative Atomic Mass = 18.00570870(39)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 19
+Relative Atomic Mass = 19.00188091(17)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 20
+Relative Atomic Mass = 19.9924401762(17)
+Isotopic Composition = 0.9048(3)
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 21
+Relative Atomic Mass = 20.993846685(41)
+Isotopic Composition = 0.0027(1)
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 22
+Relative Atomic Mass = 21.991385114(18)
+Isotopic Composition = 0.0925(3)
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 23
+Relative Atomic Mass = 22.99446691(11)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 24
+Relative Atomic Mass = 23.99361065(55)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 25
+Relative Atomic Mass = 24.997789(48)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 26
+Relative Atomic Mass = 26.000515(20)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 27
+Relative Atomic Mass = 27.007553(70)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 28
+Relative Atomic Mass = 28.01212(10)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 29
+Relative Atomic Mass = 29.01975(11)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 30
+Relative Atomic Mass = 30.02473(30)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 31
+Relative Atomic Mass = 31.0331(17)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 32
+Relative Atomic Mass = 32.03972(54#)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 33
+Relative Atomic Mass = 33.04938(64#)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 10
+Atomic Symbol = Ne
+Mass Number = 34
+Relative Atomic Mass = 34.05673(55#)
+Isotopic Composition =
+Standard Atomic Weight = 20.1797(6)
+Notes = g,m
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 18
+Relative Atomic Mass = 18.02688(12)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 19
+Relative Atomic Mass = 19.013880(11)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 20
+Relative Atomic Mass = 20.0073544(12)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 21
+Relative Atomic Mass = 20.99765469(30)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 22
+Relative Atomic Mass = 21.99443741(18)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 23
+Relative Atomic Mass = 22.9897692820(19)
+Isotopic Composition = 1
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 24
+Relative Atomic Mass = 23.990962950(38)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 25
+Relative Atomic Mass = 24.9899540(13)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 26
+Relative Atomic Mass = 25.9926346(38)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 27
+Relative Atomic Mass = 26.9940765(40)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 28
+Relative Atomic Mass = 27.998939(11)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 29
+Relative Atomic Mass = 29.0028771(79)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 30
+Relative Atomic Mass = 30.0090979(51)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 31
+Relative Atomic Mass = 31.013163(25)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 32
+Relative Atomic Mass = 32.02019(13)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 33
+Relative Atomic Mass = 33.02573(64#)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 34
+Relative Atomic Mass = 34.03359(54#)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 35
+Relative Atomic Mass = 35.04062(63#)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 36
+Relative Atomic Mass = 36.04929(64#)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 11
+Atomic Symbol = Na
+Mass Number = 37
+Relative Atomic Mass = 37.05705(65#)
+Isotopic Composition =
+Standard Atomic Weight = 22.98976928(2)
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 19
+Relative Atomic Mass = 19.034169(54)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 20
+Relative Atomic Mass = 20.018850(29)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 21
+Relative Atomic Mass = 21.011716(18)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 22
+Relative Atomic Mass = 21.99957065(34)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 23
+Relative Atomic Mass = 22.99412421(74)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 24
+Relative Atomic Mass = 23.985041697(14)
+Isotopic Composition = 0.7899(4)
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 25
+Relative Atomic Mass = 24.985836976(50)
+Isotopic Composition = 0.1000(1)
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 26
+Relative Atomic Mass = 25.982592968(31)
+Isotopic Composition = 0.1101(3)
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 27
+Relative Atomic Mass = 26.984340624(53)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 28
+Relative Atomic Mass = 27.9838767(22)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 29
+Relative Atomic Mass = 28.988617(12)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 30
+Relative Atomic Mass = 29.9904629(37)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 31
+Relative Atomic Mass = 30.9966480(33)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 32
+Relative Atomic Mass = 31.9991102(34)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 33
+Relative Atomic Mass = 33.0053271(31)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 34
+Relative Atomic Mass = 34.008935(31)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 35
+Relative Atomic Mass = 35.01679(19)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 36
+Relative Atomic Mass = 36.02188(49)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 37
+Relative Atomic Mass = 37.03037(54#)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 38
+Relative Atomic Mass = 38.03658(54#)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 39
+Relative Atomic Mass = 39.04538(55#)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 12
+Atomic Symbol = Mg
+Mass Number = 40
+Relative Atomic Mass = 40.05218(64#)
+Isotopic Composition =
+Standard Atomic Weight = [24.304,24.307]
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 21
+Relative Atomic Mass = 21.02897(43#)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 22
+Relative Atomic Mass = 22.01954(43#)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 23
+Relative Atomic Mass = 23.00724435(37)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 24
+Relative Atomic Mass = 23.9999489(12)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 25
+Relative Atomic Mass = 24.99042810(51)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 26
+Relative Atomic Mass = 25.986891904(69)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 27
+Relative Atomic Mass = 26.98153853(11)
+Isotopic Composition = 1
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 28
+Relative Atomic Mass = 27.98191021(13)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 29
+Relative Atomic Mass = 28.9804565(10)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 30
+Relative Atomic Mass = 29.982960(15)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 31
+Relative Atomic Mass = 30.983945(22)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 32
+Relative Atomic Mass = 31.988085(13)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 33
+Relative Atomic Mass = 32.990909(81)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 34
+Relative Atomic Mass = 33.996705(74)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 35
+Relative Atomic Mass = 34.999764(75)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 36
+Relative Atomic Mass = 36.00639(11)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 37
+Relative Atomic Mass = 37.01053(13)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 38
+Relative Atomic Mass = 38.01740(27)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 39
+Relative Atomic Mass = 39.02254(54#)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 40
+Relative Atomic Mass = 40.03003(54#)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 41
+Relative Atomic Mass = 41.03638(64#)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 42
+Relative Atomic Mass = 42.04384(64#)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 13
+Atomic Symbol = Al
+Mass Number = 43
+Relative Atomic Mass = 43.05147(75#)
+Isotopic Composition =
+Standard Atomic Weight = 26.9815385(7)
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 22
+Relative Atomic Mass = 22.03579(54#)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 23
+Relative Atomic Mass = 23.02544(54#)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 24
+Relative Atomic Mass = 24.011535(21)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 25
+Relative Atomic Mass = 25.004109(11)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 26
+Relative Atomic Mass = 25.99233384(11)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 27
+Relative Atomic Mass = 26.98670481(15)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 28
+Relative Atomic Mass = 27.97692653465(44)
+Isotopic Composition = 0.92223(19)
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 29
+Relative Atomic Mass = 28.97649466490(52)
+Isotopic Composition = 0.04685(8)
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 30
+Relative Atomic Mass = 29.973770136(23)
+Isotopic Composition = 0.03092(11)
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 31
+Relative Atomic Mass = 30.975363194(46)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 32
+Relative Atomic Mass = 31.97415154(32)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 33
+Relative Atomic Mass = 32.97797696(75)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 34
+Relative Atomic Mass = 33.978576(15)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 35
+Relative Atomic Mass = 34.984583(41)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 36
+Relative Atomic Mass = 35.986695(77)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 37
+Relative Atomic Mass = 36.992921(89)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 38
+Relative Atomic Mass = 37.995523(75)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 39
+Relative Atomic Mass = 39.002491(97)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 40
+Relative Atomic Mass = 40.00583(25)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 41
+Relative Atomic Mass = 41.01301(40)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 42
+Relative Atomic Mass = 42.01778(54#)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 43
+Relative Atomic Mass = 43.02480(64#)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 44
+Relative Atomic Mass = 44.03061(64#)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 14
+Atomic Symbol = Si
+Mass Number = 45
+Relative Atomic Mass = 45.03995(75#)
+Isotopic Composition =
+Standard Atomic Weight = [28.084,28.086]
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 24
+Relative Atomic Mass = 24.03577(54#)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 25
+Relative Atomic Mass = 25.02119(43#)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 26
+Relative Atomic Mass = 26.01178(21#)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 27
+Relative Atomic Mass = 26.999224(28)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 28
+Relative Atomic Mass = 27.9923266(12)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 29
+Relative Atomic Mass = 28.98180079(60)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 30
+Relative Atomic Mass = 29.97831375(34)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 31
+Relative Atomic Mass = 30.97376199842(70)
+Isotopic Composition = 1
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 32
+Relative Atomic Mass = 31.973907643(42)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 33
+Relative Atomic Mass = 32.9717257(12)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 34
+Relative Atomic Mass = 33.97364589(87)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 35
+Relative Atomic Mass = 34.9733141(20)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 36
+Relative Atomic Mass = 35.978260(14)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 37
+Relative Atomic Mass = 36.979607(41)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 38
+Relative Atomic Mass = 37.984252(93)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 39
+Relative Atomic Mass = 38.986227(98)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 40
+Relative Atomic Mass = 39.99133(12)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 41
+Relative Atomic Mass = 40.994654(86)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 42
+Relative Atomic Mass = 42.00108(23)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 43
+Relative Atomic Mass = 43.00502(40)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 44
+Relative Atomic Mass = 44.01121(54#)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 45
+Relative Atomic Mass = 45.01645(64#)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 46
+Relative Atomic Mass = 46.02446(75#)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 15
+Atomic Symbol = P
+Mass Number = 47
+Relative Atomic Mass = 47.03139(86#)
+Isotopic Composition =
+Standard Atomic Weight = 30.973761998(5)
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 26
+Relative Atomic Mass = 26.02907(64#)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 27
+Relative Atomic Mass = 27.01828(43#)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 28
+Relative Atomic Mass = 28.00437(17)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 29
+Relative Atomic Mass = 28.996611(54)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 30
+Relative Atomic Mass = 29.98490703(40)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 31
+Relative Atomic Mass = 30.97955701(25)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 32
+Relative Atomic Mass = 31.9720711744(14)
+Isotopic Composition = 0.9499(26)
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 33
+Relative Atomic Mass = 32.9714589098(15)
+Isotopic Composition = 0.0075(2)
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 34
+Relative Atomic Mass = 33.967867004(47)
+Isotopic Composition = 0.0425(24)
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 35
+Relative Atomic Mass = 34.969032310(43)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 36
+Relative Atomic Mass = 35.96708071(20)
+Isotopic Composition = 0.0001(1)
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 37
+Relative Atomic Mass = 36.97112551(21)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 38
+Relative Atomic Mass = 37.9711633(77)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 39
+Relative Atomic Mass = 38.975134(54)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 40
+Relative Atomic Mass = 39.9754826(43)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 41
+Relative Atomic Mass = 40.9795935(44)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 42
+Relative Atomic Mass = 41.9810651(30)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 43
+Relative Atomic Mass = 42.9869076(53)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 44
+Relative Atomic Mass = 43.9901188(56)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 45
+Relative Atomic Mass = 44.99572(74)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 46
+Relative Atomic Mass = 46.00004(54#)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 47
+Relative Atomic Mass = 47.00795(54#)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 48
+Relative Atomic Mass = 48.01370(64#)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 16
+Atomic Symbol = S
+Mass Number = 49
+Relative Atomic Mass = 49.02276(72#)
+Isotopic Composition =
+Standard Atomic Weight = [32.059,32.076]
+Notes =
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 28
+Relative Atomic Mass = 28.02954(64#)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 29
+Relative Atomic Mass = 29.01478(43#)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 30
+Relative Atomic Mass = 30.00477(21#)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 31
+Relative Atomic Mass = 30.992414(54)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 32
+Relative Atomic Mass = 31.98568464(60)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 33
+Relative Atomic Mass = 32.97745199(42)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 34
+Relative Atomic Mass = 33.973762485(52)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 35
+Relative Atomic Mass = 34.968852682(37)
+Isotopic Composition = 0.7576(10)
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 36
+Relative Atomic Mass = 35.968306809(38)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 37
+Relative Atomic Mass = 36.965902602(55)
+Isotopic Composition = 0.2424(10)
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 38
+Relative Atomic Mass = 37.96801044(11)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 39
+Relative Atomic Mass = 38.9680082(19)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 40
+Relative Atomic Mass = 39.970415(34)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 41
+Relative Atomic Mass = 40.970685(74)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 42
+Relative Atomic Mass = 41.97325(15)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 43
+Relative Atomic Mass = 42.97389(10)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 44
+Relative Atomic Mass = 43.97787(20)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 45
+Relative Atomic Mass = 44.98029(11)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 46
+Relative Atomic Mass = 45.98517(17)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 47
+Relative Atomic Mass = 46.98916(43#)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 48
+Relative Atomic Mass = 47.99564(54#)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 49
+Relative Atomic Mass = 49.00123(64#)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 50
+Relative Atomic Mass = 50.00905(64#)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 17
+Atomic Symbol = Cl
+Mass Number = 51
+Relative Atomic Mass = 51.01554(75#)
+Isotopic Composition =
+Standard Atomic Weight = [35.446,35.457]
+Notes = m
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 30
+Relative Atomic Mass = 30.02307(54#)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 31
+Relative Atomic Mass = 31.01212(22#)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 32
+Relative Atomic Mass = 31.9976378(19)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 33
+Relative Atomic Mass = 32.98992555(43)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 34
+Relative Atomic Mass = 33.980270090(83)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 35
+Relative Atomic Mass = 34.97525759(80)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 36
+Relative Atomic Mass = 35.967545105(28)
+Isotopic Composition = 0.003336(21)
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 37
+Relative Atomic Mass = 36.96677633(22)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 38
+Relative Atomic Mass = 37.96273211(21)
+Isotopic Composition = 0.000629(7)
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 39
+Relative Atomic Mass = 38.9643130(54)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 40
+Relative Atomic Mass = 39.9623831237(24)
+Isotopic Composition = 0.996035(25)
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 41
+Relative Atomic Mass = 40.96450057(37)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 42
+Relative Atomic Mass = 41.9630457(62)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 43
+Relative Atomic Mass = 42.9656361(57)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 44
+Relative Atomic Mass = 43.9649238(17)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 45
+Relative Atomic Mass = 44.96803973(55)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 46
+Relative Atomic Mass = 45.968083(44)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 47
+Relative Atomic Mass = 46.972935(96)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 48
+Relative Atomic Mass = 47.97591(32#)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 49
+Relative Atomic Mass = 48.98190(43#)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 50
+Relative Atomic Mass = 49.98613(54#)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 51
+Relative Atomic Mass = 50.99370(64#)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 52
+Relative Atomic Mass = 51.99896(64#)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 18
+Atomic Symbol = Ar
+Mass Number = 53
+Relative Atomic Mass = 53.00729(75#)
+Isotopic Composition =
+Standard Atomic Weight = 39.948(1)
+Notes = g,r
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 32
+Relative Atomic Mass = 32.02265(54#)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 33
+Relative Atomic Mass = 33.00756(21#)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 34
+Relative Atomic Mass = 33.99869(32#)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 35
+Relative Atomic Mass = 34.98800541(55)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 36
+Relative Atomic Mass = 35.98130201(37)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 37
+Relative Atomic Mass = 36.97337589(10)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 38
+Relative Atomic Mass = 37.96908112(21)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 39
+Relative Atomic Mass = 38.9637064864(49)
+Isotopic Composition = 0.932581(44)
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 40
+Relative Atomic Mass = 39.963998166(60)
+Isotopic Composition = 0.000117(1)
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 41
+Relative Atomic Mass = 40.9618252579(41)
+Isotopic Composition = 0.067302(44)
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 42
+Relative Atomic Mass = 41.96240231(11)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 43
+Relative Atomic Mass = 42.96073470(44)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 44
+Relative Atomic Mass = 43.96158699(45)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 45
+Relative Atomic Mass = 44.96069149(56)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 46
+Relative Atomic Mass = 45.96198159(78)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 47
+Relative Atomic Mass = 46.9616616(15)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 48
+Relative Atomic Mass = 47.96534119(83)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 49
+Relative Atomic Mass = 48.96821075(86)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 50
+Relative Atomic Mass = 49.9723800(83)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 51
+Relative Atomic Mass = 50.975828(14)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 52
+Relative Atomic Mass = 51.98224(43#)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 53
+Relative Atomic Mass = 52.98746(54#)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 54
+Relative Atomic Mass = 53.99463(64#)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 55
+Relative Atomic Mass = 55.00076(75#)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 19
+Atomic Symbol = K
+Mass Number = 56
+Relative Atomic Mass = 56.00851(86#)
+Isotopic Composition =
+Standard Atomic Weight = 39.0983(1)
+Notes =
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 34
+Relative Atomic Mass = 34.01487(32#)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 35
+Relative Atomic Mass = 35.00514(21#)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 36
+Relative Atomic Mass = 35.993074(43)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 37
+Relative Atomic Mass = 36.98589785(68)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 38
+Relative Atomic Mass = 37.97631922(21)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 39
+Relative Atomic Mass = 38.97071081(64)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 40
+Relative Atomic Mass = 39.962590863(22)
+Isotopic Composition = 0.96941(156)
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 41
+Relative Atomic Mass = 40.96227792(15)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 42
+Relative Atomic Mass = 41.95861783(16)
+Isotopic Composition = 0.00647(23)
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 43
+Relative Atomic Mass = 42.95876644(24)
+Isotopic Composition = 0.00135(10)
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 44
+Relative Atomic Mass = 43.95548156(35)
+Isotopic Composition = 0.02086(110)
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 45
+Relative Atomic Mass = 44.95618635(39)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 46
+Relative Atomic Mass = 45.9536890(24)
+Isotopic Composition = 0.00004(3)
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 47
+Relative Atomic Mass = 46.9545424(24)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 48
+Relative Atomic Mass = 47.95252276(13)
+Isotopic Composition = 0.00187(21)
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 49
+Relative Atomic Mass = 48.95566274(23)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 50
+Relative Atomic Mass = 49.9574992(17)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 51
+Relative Atomic Mass = 50.960989(24)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 52
+Relative Atomic Mass = 51.963217(64)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 53
+Relative Atomic Mass = 52.96945(43#)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 54
+Relative Atomic Mass = 53.97340(54#)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 55
+Relative Atomic Mass = 54.98030(54#)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 56
+Relative Atomic Mass = 55.98508(64#)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 57
+Relative Atomic Mass = 56.99262(64#)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 20
+Atomic Symbol = Ca
+Mass Number = 58
+Relative Atomic Mass = 57.99794(75#)
+Isotopic Composition =
+Standard Atomic Weight = 40.078(4)
+Notes = g
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 36
+Relative Atomic Mass = 36.01648(32#)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 37
+Relative Atomic Mass = 37.00374(32#)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 38
+Relative Atomic Mass = 37.99512(21#)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 39
+Relative Atomic Mass = 38.984785(26)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 40
+Relative Atomic Mass = 39.9779673(30)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 41
+Relative Atomic Mass = 40.969251105(88)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 42
+Relative Atomic Mass = 41.96551653(18)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 43
+Relative Atomic Mass = 42.9611505(20)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 44
+Relative Atomic Mass = 43.9594029(19)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 45
+Relative Atomic Mass = 44.95590828(77)
+Isotopic Composition = 1
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 46
+Relative Atomic Mass = 45.95516826(78)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 47
+Relative Atomic Mass = 46.9524037(21)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 48
+Relative Atomic Mass = 47.9522236(53)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 49
+Relative Atomic Mass = 48.9500146(29)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 50
+Relative Atomic Mass = 49.952176(16)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 51
+Relative Atomic Mass = 50.953592(21)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 52
+Relative Atomic Mass = 51.95688(15)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 53
+Relative Atomic Mass = 52.95909(29)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 54
+Relative Atomic Mass = 53.96393(39)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 55
+Relative Atomic Mass = 54.96782(50)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 56
+Relative Atomic Mass = 55.97345(43#)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 57
+Relative Atomic Mass = 56.97777(54#)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 58
+Relative Atomic Mass = 57.98403(64#)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 59
+Relative Atomic Mass = 58.98894(64#)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 60
+Relative Atomic Mass = 59.99565(75#)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 21
+Atomic Symbol = Sc
+Mass Number = 61
+Relative Atomic Mass = 61.00100(86#)
+Isotopic Composition =
+Standard Atomic Weight = 44.955908(5)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 38
+Relative Atomic Mass = 38.01145(32#)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 39
+Relative Atomic Mass = 39.00236(22#)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 40
+Relative Atomic Mass = 39.99050(17)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 41
+Relative Atomic Mass = 40.983148(30)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 42
+Relative Atomic Mass = 41.97304903(30)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 43
+Relative Atomic Mass = 42.9685225(78)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 44
+Relative Atomic Mass = 43.95968995(75)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 45
+Relative Atomic Mass = 44.95812198(95)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 46
+Relative Atomic Mass = 45.95262772(35)
+Isotopic Composition = 0.0825(3)
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 47
+Relative Atomic Mass = 46.95175879(38)
+Isotopic Composition = 0.0744(2)
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 48
+Relative Atomic Mass = 47.94794198(38)
+Isotopic Composition = 0.7372(3)
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 49
+Relative Atomic Mass = 48.94786568(39)
+Isotopic Composition = 0.0541(2)
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 50
+Relative Atomic Mass = 49.94478689(39)
+Isotopic Composition = 0.0518(2)
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 51
+Relative Atomic Mass = 50.94661065(65)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 52
+Relative Atomic Mass = 51.9468930(76)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 53
+Relative Atomic Mass = 52.94973(11)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 54
+Relative Atomic Mass = 53.95105(13)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 55
+Relative Atomic Mass = 54.95527(17)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 56
+Relative Atomic Mass = 55.95791(15)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 57
+Relative Atomic Mass = 56.96364(27)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 58
+Relative Atomic Mass = 57.96660(43#)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 59
+Relative Atomic Mass = 58.97247(43#)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 60
+Relative Atomic Mass = 59.97603(54#)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 61
+Relative Atomic Mass = 60.98245(64#)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 62
+Relative Atomic Mass = 61.98651(75#)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 22
+Atomic Symbol = Ti
+Mass Number = 63
+Relative Atomic Mass = 62.99375(75#)
+Isotopic Composition =
+Standard Atomic Weight = 47.867(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 40
+Relative Atomic Mass = 40.01276(43#)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 41
+Relative Atomic Mass = 41.00021(32#)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 42
+Relative Atomic Mass = 41.99182(32#)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 43
+Relative Atomic Mass = 42.980766(46)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 44
+Relative Atomic Mass = 43.97411(20)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 45
+Relative Atomic Mass = 44.9657748(86)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 46
+Relative Atomic Mass = 45.96019878(36)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 47
+Relative Atomic Mass = 46.95490491(36)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 48
+Relative Atomic Mass = 47.9522522(11)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 49
+Relative Atomic Mass = 48.94851180(96)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 50
+Relative Atomic Mass = 49.94715601(95)
+Isotopic Composition = 0.00250(4)
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 51
+Relative Atomic Mass = 50.94395704(94)
+Isotopic Composition = 0.99750(4)
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 52
+Relative Atomic Mass = 51.94477301(95)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 53
+Relative Atomic Mass = 52.9443367(34)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 54
+Relative Atomic Mass = 53.946439(16)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 55
+Relative Atomic Mass = 54.94724(10)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 56
+Relative Atomic Mass = 55.95048(19)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 57
+Relative Atomic Mass = 56.95252(24)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 58
+Relative Atomic Mass = 57.95672(14)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 59
+Relative Atomic Mass = 58.95939(17)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 60
+Relative Atomic Mass = 59.96431(24)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 61
+Relative Atomic Mass = 60.96725(96)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 62
+Relative Atomic Mass = 61.97265(32#)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 63
+Relative Atomic Mass = 62.97639(43#)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 64
+Relative Atomic Mass = 63.98264(43#)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 65
+Relative Atomic Mass = 64.98750(54#)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 23
+Atomic Symbol = V
+Mass Number = 66
+Relative Atomic Mass = 65.99398(64#)
+Isotopic Composition =
+Standard Atomic Weight = 50.9415(1)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 42
+Relative Atomic Mass = 42.00670(43#)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 43
+Relative Atomic Mass = 42.99753(43#)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 44
+Relative Atomic Mass = 43.98536(32#)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 45
+Relative Atomic Mass = 44.979050(38)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 46
+Relative Atomic Mass = 45.968359(21)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 47
+Relative Atomic Mass = 46.9628974(75)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 48
+Relative Atomic Mass = 47.9540291(79)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 49
+Relative Atomic Mass = 48.9513333(25)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 50
+Relative Atomic Mass = 49.94604183(94)
+Isotopic Composition = 0.04345(13)
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 51
+Relative Atomic Mass = 50.94476502(94)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 52
+Relative Atomic Mass = 51.94050623(63)
+Isotopic Composition = 0.83789(18)
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 53
+Relative Atomic Mass = 52.94064815(62)
+Isotopic Composition = 0.09501(17)
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 54
+Relative Atomic Mass = 53.93887916(61)
+Isotopic Composition = 0.02365(7)
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 55
+Relative Atomic Mass = 54.94083843(64)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 56
+Relative Atomic Mass = 55.9406531(20)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 57
+Relative Atomic Mass = 56.9436130(20)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 58
+Relative Atomic Mass = 57.94435(22)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 59
+Relative Atomic Mass = 58.94859(26)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 60
+Relative Atomic Mass = 59.95008(23)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 61
+Relative Atomic Mass = 60.95442(14)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 62
+Relative Atomic Mass = 61.95610(16)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 63
+Relative Atomic Mass = 62.96165(49)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 64
+Relative Atomic Mass = 63.96408(32#)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 65
+Relative Atomic Mass = 64.96996(32#)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 66
+Relative Atomic Mass = 65.97366(54#)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 67
+Relative Atomic Mass = 66.98016(54#)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 24
+Atomic Symbol = Cr
+Mass Number = 68
+Relative Atomic Mass = 67.98403(75#)
+Isotopic Composition =
+Standard Atomic Weight = 51.9961(6)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 44
+Relative Atomic Mass = 44.00715(54#)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 45
+Relative Atomic Mass = 44.99449(43#)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 46
+Relative Atomic Mass = 45.98609(43#)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 47
+Relative Atomic Mass = 46.975775(34)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 48
+Relative Atomic Mass = 47.96852(18)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 49
+Relative Atomic Mass = 48.959595(11)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 50
+Relative Atomic Mass = 49.95423778(95)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 51
+Relative Atomic Mass = 50.94820847(94)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 52
+Relative Atomic Mass = 51.9455639(20)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 53
+Relative Atomic Mass = 52.94128889(68)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 54
+Relative Atomic Mass = 53.9403576(12)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 55
+Relative Atomic Mass = 54.93804391(48)
+Isotopic Composition = 1
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 56
+Relative Atomic Mass = 55.93890369(49)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 57
+Relative Atomic Mass = 56.9382861(16)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 58
+Relative Atomic Mass = 57.9400666(29)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 59
+Relative Atomic Mass = 58.9403911(25)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 60
+Relative Atomic Mass = 59.9431366(25)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 61
+Relative Atomic Mass = 60.9444525(25)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 62
+Relative Atomic Mass = 61.94795(16#)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 63
+Relative Atomic Mass = 62.9496647(40)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 64
+Relative Atomic Mass = 63.9538494(38)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 65
+Relative Atomic Mass = 64.9560198(40)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 66
+Relative Atomic Mass = 65.960547(12)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 67
+Relative Atomic Mass = 66.96424(43#)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 68
+Relative Atomic Mass = 67.96962(54#)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 69
+Relative Atomic Mass = 68.97366(64#)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 70
+Relative Atomic Mass = 69.97937(75#)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 25
+Atomic Symbol = Mn
+Mass Number = 71
+Relative Atomic Mass = 70.98368(75#)
+Isotopic Composition =
+Standard Atomic Weight = 54.938044(3)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 45
+Relative Atomic Mass = 45.01442(43#)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 46
+Relative Atomic Mass = 46.00063(54#)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 47
+Relative Atomic Mass = 46.99185(54#)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 48
+Relative Atomic Mass = 47.98023(43#)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 49
+Relative Atomic Mass = 48.973429(26)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 50
+Relative Atomic Mass = 49.962975(64)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 51
+Relative Atomic Mass = 50.9568410(96)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 52
+Relative Atomic Mass = 51.9481131(70)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 53
+Relative Atomic Mass = 52.9453064(18)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 54
+Relative Atomic Mass = 53.93960899(53)
+Isotopic Composition = 0.05845(35)
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 55
+Relative Atomic Mass = 54.93829199(51)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 56
+Relative Atomic Mass = 55.93493633(49)
+Isotopic Composition = 0.91754(36)
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 57
+Relative Atomic Mass = 56.93539284(49)
+Isotopic Composition = 0.02119(10)
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 58
+Relative Atomic Mass = 57.93327443(53)
+Isotopic Composition = 0.00282(4)
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 59
+Relative Atomic Mass = 58.93487434(54)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 60
+Relative Atomic Mass = 59.9340711(37)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 61
+Relative Atomic Mass = 60.9367462(28)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 62
+Relative Atomic Mass = 61.9367918(30)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 63
+Relative Atomic Mass = 62.9402727(46)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 64
+Relative Atomic Mass = 63.9409878(54)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 65
+Relative Atomic Mass = 64.9450115(73)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 66
+Relative Atomic Mass = 65.9462500(44)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 67
+Relative Atomic Mass = 66.95054(23)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 68
+Relative Atomic Mass = 67.95295(39)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 69
+Relative Atomic Mass = 68.95807(43#)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 70
+Relative Atomic Mass = 69.96102(54#)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 71
+Relative Atomic Mass = 70.96672(64#)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 72
+Relative Atomic Mass = 71.96983(75#)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 73
+Relative Atomic Mass = 72.97572(75#)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 26
+Atomic Symbol = Fe
+Mass Number = 74
+Relative Atomic Mass = 73.97935(86#)
+Isotopic Composition =
+Standard Atomic Weight = 55.845(2)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 47
+Relative Atomic Mass = 47.01057(86#)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 48
+Relative Atomic Mass = 48.00093(86#)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 49
+Relative Atomic Mass = 48.98891(75#)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 50
+Relative Atomic Mass = 49.98091(64#)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 51
+Relative Atomic Mass = 50.970647(52)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 52
+Relative Atomic Mass = 51.96351(21#)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 53
+Relative Atomic Mass = 52.9542041(19)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 54
+Relative Atomic Mass = 53.94845987(54)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 55
+Relative Atomic Mass = 54.94199720(57)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 56
+Relative Atomic Mass = 55.93983880(63)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 57
+Relative Atomic Mass = 56.93629057(66)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 58
+Relative Atomic Mass = 57.9357521(13)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 59
+Relative Atomic Mass = 58.93319429(56)
+Isotopic Composition = 1
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 60
+Relative Atomic Mass = 59.93381630(56)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 61
+Relative Atomic Mass = 60.93247662(95)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 62
+Relative Atomic Mass = 61.934059(20)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 63
+Relative Atomic Mass = 62.933600(20)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 64
+Relative Atomic Mass = 63.935811(21)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 65
+Relative Atomic Mass = 64.9364621(22)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 66
+Relative Atomic Mass = 65.939443(15)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 67
+Relative Atomic Mass = 66.9406096(69)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 68
+Relative Atomic Mass = 67.94426(16)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 69
+Relative Atomic Mass = 68.94614(20)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 70
+Relative Atomic Mass = 69.94963(32)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 71
+Relative Atomic Mass = 70.95237(50)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 72
+Relative Atomic Mass = 71.95729(43#)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 73
+Relative Atomic Mass = 72.96039(54#)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 74
+Relative Atomic Mass = 73.96515(64#)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 75
+Relative Atomic Mass = 74.96876(75#)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 27
+Atomic Symbol = Co
+Mass Number = 76
+Relative Atomic Mass = 75.97413(86#)
+Isotopic Composition =
+Standard Atomic Weight = 58.933194(4)
+Notes =
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 48
+Relative Atomic Mass = 48.01769(54#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 49
+Relative Atomic Mass = 49.00770(86#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 50
+Relative Atomic Mass = 49.99474(86#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 51
+Relative Atomic Mass = 50.98611(86#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 52
+Relative Atomic Mass = 51.97480(75#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 53
+Relative Atomic Mass = 52.968190(27)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 54
+Relative Atomic Mass = 53.957892(54)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 55
+Relative Atomic Mass = 54.95133063(85)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 56
+Relative Atomic Mass = 55.94212855(57)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 57
+Relative Atomic Mass = 56.93979218(71)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 58
+Relative Atomic Mass = 57.93534241(52)
+Isotopic Composition = 0.68077(19)
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 59
+Relative Atomic Mass = 58.93434620(52)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 60
+Relative Atomic Mass = 59.93078588(52)
+Isotopic Composition = 0.26223(15)
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 61
+Relative Atomic Mass = 60.93105557(52)
+Isotopic Composition = 0.011399(13)
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 62
+Relative Atomic Mass = 61.92834537(55)
+Isotopic Composition = 0.036346(40)
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 63
+Relative Atomic Mass = 62.92966963(56)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 64
+Relative Atomic Mass = 63.92796682(58)
+Isotopic Composition = 0.009255(19)
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 65
+Relative Atomic Mass = 64.93008517(60)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 66
+Relative Atomic Mass = 65.9291393(15)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 67
+Relative Atomic Mass = 66.9315694(31)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 68
+Relative Atomic Mass = 67.9318688(32)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 69
+Relative Atomic Mass = 68.9356103(40)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 70
+Relative Atomic Mass = 69.9364313(23)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 71
+Relative Atomic Mass = 70.9405190(24)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 72
+Relative Atomic Mass = 71.9417859(24)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 73
+Relative Atomic Mass = 72.9462067(26)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 74
+Relative Atomic Mass = 73.94798(43#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 75
+Relative Atomic Mass = 74.95250(32#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 76
+Relative Atomic Mass = 75.95533(54#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 77
+Relative Atomic Mass = 76.96055(54#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 78
+Relative Atomic Mass = 77.96336(86#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 28
+Atomic Symbol = Ni
+Mass Number = 79
+Relative Atomic Mass = 78.97025(86#)
+Isotopic Composition =
+Standard Atomic Weight = 58.6934(4)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 52
+Relative Atomic Mass = 51.99671(86#)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 53
+Relative Atomic Mass = 52.98459(86#)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 54
+Relative Atomic Mass = 53.97666(54#)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 55
+Relative Atomic Mass = 54.96604(17)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 56
+Relative Atomic Mass = 55.95895(21#)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 57
+Relative Atomic Mass = 56.94921250(66)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 58
+Relative Atomic Mass = 57.94453305(70)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 59
+Relative Atomic Mass = 58.93949748(67)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 60
+Relative Atomic Mass = 59.9373645(18)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 61
+Relative Atomic Mass = 60.9334576(10)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 62
+Relative Atomic Mass = 61.93259541(75)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 63
+Relative Atomic Mass = 62.92959772(56)
+Isotopic Composition = 0.6915(15)
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 64
+Relative Atomic Mass = 63.92976434(56)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 65
+Relative Atomic Mass = 64.92778970(71)
+Isotopic Composition = 0.3085(15)
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 66
+Relative Atomic Mass = 65.92886903(72)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 67
+Relative Atomic Mass = 66.9277303(13)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 68
+Relative Atomic Mass = 67.9296109(17)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 69
+Relative Atomic Mass = 68.9294293(15)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 70
+Relative Atomic Mass = 69.9323921(12)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 71
+Relative Atomic Mass = 70.9326768(16)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 72
+Relative Atomic Mass = 71.9358203(15)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 73
+Relative Atomic Mass = 72.9366744(21)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 74
+Relative Atomic Mass = 73.9398749(66)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 75
+Relative Atomic Mass = 74.9415226(25)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 76
+Relative Atomic Mass = 75.9452750(72)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 77
+Relative Atomic Mass = 76.94792(16#)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 78
+Relative Atomic Mass = 77.95223(54)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 79
+Relative Atomic Mass = 78.95502(43#)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 80
+Relative Atomic Mass = 79.96089(64#)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 81
+Relative Atomic Mass = 80.96587(86#)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 29
+Atomic Symbol = Cu
+Mass Number = 82
+Relative Atomic Mass = 81.97244(86#)
+Isotopic Composition =
+Standard Atomic Weight = 63.546(3)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 54
+Relative Atomic Mass = 53.99204(75#)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 55
+Relative Atomic Mass = 54.98398(75#)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 56
+Relative Atomic Mass = 55.97254(54#)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 57
+Relative Atomic Mass = 56.96506(22#)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 58
+Relative Atomic Mass = 57.954591(54)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 59
+Relative Atomic Mass = 58.94931266(89)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 60
+Relative Atomic Mass = 59.94184210(69)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 61
+Relative Atomic Mass = 60.939507(17)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 62
+Relative Atomic Mass = 61.93433397(73)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 63
+Relative Atomic Mass = 62.9332115(17)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 64
+Relative Atomic Mass = 63.92914201(71)
+Isotopic Composition = 0.4917(75)
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 65
+Relative Atomic Mass = 64.92924077(71)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 66
+Relative Atomic Mass = 65.92603381(94)
+Isotopic Composition = 0.2773(98)
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 67
+Relative Atomic Mass = 66.92712775(96)
+Isotopic Composition = 0.0404(16)
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 68
+Relative Atomic Mass = 67.92484455(98)
+Isotopic Composition = 0.1845(63)
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 69
+Relative Atomic Mass = 68.9265507(10)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 70
+Relative Atomic Mass = 69.9253192(21)
+Isotopic Composition = 0.0061(10)
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 71
+Relative Atomic Mass = 70.9277196(28)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 72
+Relative Atomic Mass = 71.9268428(23)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 73
+Relative Atomic Mass = 72.9295826(20)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 74
+Relative Atomic Mass = 73.9294073(27)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 75
+Relative Atomic Mass = 74.9328402(21)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 76
+Relative Atomic Mass = 75.9331150(16)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 77
+Relative Atomic Mass = 76.9368872(21)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 78
+Relative Atomic Mass = 77.9382892(21)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 79
+Relative Atomic Mass = 78.9426381(24)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 80
+Relative Atomic Mass = 79.9445529(28)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 81
+Relative Atomic Mass = 80.9504026(54)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 82
+Relative Atomic Mass = 81.95426(32#)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 83
+Relative Atomic Mass = 82.96056(54#)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 84
+Relative Atomic Mass = 83.96521(64#)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 30
+Atomic Symbol = Zn
+Mass Number = 85
+Relative Atomic Mass = 84.97226(75#)
+Isotopic Composition =
+Standard Atomic Weight = 65.38(2)
+Notes = r
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 56
+Relative Atomic Mass = 55.99536(64#)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 57
+Relative Atomic Mass = 56.98320(32#)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 58
+Relative Atomic Mass = 57.97478(21#)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 59
+Relative Atomic Mass = 58.96353(18#)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 60
+Relative Atomic Mass = 59.95729(21#)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 61
+Relative Atomic Mass = 60.949399(41)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 62
+Relative Atomic Mass = 61.94419025(75)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 63
+Relative Atomic Mass = 62.9392942(14)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 64
+Relative Atomic Mass = 63.9368404(15)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 65
+Relative Atomic Mass = 64.93273459(88)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 66
+Relative Atomic Mass = 65.9315894(34)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 67
+Relative Atomic Mass = 66.9282025(13)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 68
+Relative Atomic Mass = 67.9279805(16)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 69
+Relative Atomic Mass = 68.9255735(13)
+Isotopic Composition = 0.60108(9)
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 70
+Relative Atomic Mass = 69.9260219(13)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 71
+Relative Atomic Mass = 70.92470258(87)
+Isotopic Composition = 0.39892(9)
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 72
+Relative Atomic Mass = 71.92636747(88)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 73
+Relative Atomic Mass = 72.9251747(18)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 74
+Relative Atomic Mass = 73.9269457(32)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 75
+Relative Atomic Mass = 74.9265002(26)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 76
+Relative Atomic Mass = 75.9288276(21)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 77
+Relative Atomic Mass = 76.9291543(26)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 78
+Relative Atomic Mass = 77.9316088(20)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 79
+Relative Atomic Mass = 78.9328523(20)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 80
+Relative Atomic Mass = 79.9364208(31)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 81
+Relative Atomic Mass = 80.9381338(35)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 82
+Relative Atomic Mass = 81.9431765(26)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 83
+Relative Atomic Mass = 82.9471203(28)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 84
+Relative Atomic Mass = 83.95246(43#)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 85
+Relative Atomic Mass = 84.95699(32#)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 86
+Relative Atomic Mass = 85.96301(75#)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 31
+Atomic Symbol = Ga
+Mass Number = 87
+Relative Atomic Mass = 86.96824(86#)
+Isotopic Composition =
+Standard Atomic Weight = 69.723(1)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 58
+Relative Atomic Mass = 57.99172(43#)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 59
+Relative Atomic Mass = 58.98249(32#)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 60
+Relative Atomic Mass = 59.97036(21#)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 61
+Relative Atomic Mass = 60.96379(32#)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 62
+Relative Atomic Mass = 61.95502(15#)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 63
+Relative Atomic Mass = 62.949628(40)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 64
+Relative Atomic Mass = 63.9416899(40)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 65
+Relative Atomic Mass = 64.9393681(23)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 66
+Relative Atomic Mass = 65.9338621(26)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 67
+Relative Atomic Mass = 66.9327339(50)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 68
+Relative Atomic Mass = 67.9280953(20)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 69
+Relative Atomic Mass = 68.9279645(14)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 70
+Relative Atomic Mass = 69.92424875(90)
+Isotopic Composition = 0.2057(27)
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 71
+Relative Atomic Mass = 70.92495233(90)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 72
+Relative Atomic Mass = 71.922075826(81)
+Isotopic Composition = 0.2745(32)
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 73
+Relative Atomic Mass = 72.923458956(61)
+Isotopic Composition = 0.0775(12)
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 74
+Relative Atomic Mass = 73.921177761(13)
+Isotopic Composition = 0.3650(20)
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 75
+Relative Atomic Mass = 74.922858370(55)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 76
+Relative Atomic Mass = 75.921402726(19)
+Isotopic Composition = 0.0773(12)
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 77
+Relative Atomic Mass = 76.923549843(57)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 78
+Relative Atomic Mass = 77.9228529(38)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 79
+Relative Atomic Mass = 78.925360(40)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 80
+Relative Atomic Mass = 79.9253508(22)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 81
+Relative Atomic Mass = 80.9288329(22)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 82
+Relative Atomic Mass = 81.9297740(24)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 83
+Relative Atomic Mass = 82.9345391(26)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 84
+Relative Atomic Mass = 83.9375751(34)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 85
+Relative Atomic Mass = 84.9429697(40)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 86
+Relative Atomic Mass = 85.94658(32#)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 87
+Relative Atomic Mass = 86.95268(43#)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 88
+Relative Atomic Mass = 87.95691(54#)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 89
+Relative Atomic Mass = 88.96379(64#)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 32
+Atomic Symbol = Ge
+Mass Number = 90
+Relative Atomic Mass = 89.96863(75#)
+Isotopic Composition =
+Standard Atomic Weight = 72.630(8)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 60
+Relative Atomic Mass = 59.99388(43#)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 61
+Relative Atomic Mass = 60.98112(32#)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 62
+Relative Atomic Mass = 61.97361(32#)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 63
+Relative Atomic Mass = 62.96390(21#)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 64
+Relative Atomic Mass = 63.95743(33#)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 65
+Relative Atomic Mass = 64.949611(91)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 66
+Relative Atomic Mass = 65.9441488(61)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 67
+Relative Atomic Mass = 66.93925111(48)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 68
+Relative Atomic Mass = 67.9367741(20)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 69
+Relative Atomic Mass = 68.932246(34)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 70
+Relative Atomic Mass = 69.930926(54)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 71
+Relative Atomic Mass = 70.9271138(45)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 72
+Relative Atomic Mass = 71.9267523(44)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 73
+Relative Atomic Mass = 72.9238291(41)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 74
+Relative Atomic Mass = 73.9239286(18)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 75
+Relative Atomic Mass = 74.92159457(95)
+Isotopic Composition = 1
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 76
+Relative Atomic Mass = 75.92239202(95)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 77
+Relative Atomic Mass = 76.9206476(18)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 78
+Relative Atomic Mass = 77.921828(11)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 79
+Relative Atomic Mass = 78.9209484(58)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 80
+Relative Atomic Mass = 79.9224746(36)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 81
+Relative Atomic Mass = 80.9221323(29)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 82
+Relative Atomic Mass = 81.9247412(46)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 83
+Relative Atomic Mass = 82.9252069(30)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 84
+Relative Atomic Mass = 83.9293033(34)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 85
+Relative Atomic Mass = 84.9321637(33)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 86
+Relative Atomic Mass = 85.9367015(37)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 87
+Relative Atomic Mass = 86.9402917(32)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 88
+Relative Atomic Mass = 87.94555(21#)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 89
+Relative Atomic Mass = 88.94976(32#)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 90
+Relative Atomic Mass = 89.95563(64#)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 91
+Relative Atomic Mass = 90.96039(64#)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 33
+Atomic Symbol = As
+Mass Number = 92
+Relative Atomic Mass = 91.96674(75#)
+Isotopic Composition =
+Standard Atomic Weight = 74.921595(6)
+Notes =
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 64
+Relative Atomic Mass = 63.97109(54#)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 65
+Relative Atomic Mass = 64.96440(64#)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 66
+Relative Atomic Mass = 65.95559(32#)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 67
+Relative Atomic Mass = 66.949994(72)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 68
+Relative Atomic Mass = 67.94182524(53)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 69
+Relative Atomic Mass = 68.9394148(16)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 70
+Relative Atomic Mass = 69.9335155(17)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 71
+Relative Atomic Mass = 70.9322094(30)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 72
+Relative Atomic Mass = 71.9271405(21)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 73
+Relative Atomic Mass = 72.9267549(80)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 74
+Relative Atomic Mass = 73.922475934(15)
+Isotopic Composition = 0.0089(4)
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 75
+Relative Atomic Mass = 74.922522870(78)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 76
+Relative Atomic Mass = 75.919213704(17)
+Isotopic Composition = 0.0937(29)
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 77
+Relative Atomic Mass = 76.919914154(67)
+Isotopic Composition = 0.0763(16)
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 78
+Relative Atomic Mass = 77.91730928(20)
+Isotopic Composition = 0.2377(28)
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 79
+Relative Atomic Mass = 78.91849929(24)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 80
+Relative Atomic Mass = 79.9165218(13)
+Isotopic Composition = 0.4961(41)
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 81
+Relative Atomic Mass = 80.9179930(14)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 82
+Relative Atomic Mass = 81.9166995(15)
+Isotopic Composition = 0.0873(22)
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 83
+Relative Atomic Mass = 82.9191186(36)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 84
+Relative Atomic Mass = 83.9184668(21)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 85
+Relative Atomic Mass = 84.9222608(28)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 86
+Relative Atomic Mass = 85.9243117(27)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 87
+Relative Atomic Mass = 86.9286886(24)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 88
+Relative Atomic Mass = 87.9314175(36)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 89
+Relative Atomic Mass = 88.9366691(40)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 90
+Relative Atomic Mass = 89.94010(35)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 91
+Relative Atomic Mass = 90.94596(54#)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 92
+Relative Atomic Mass = 91.94984(64#)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 93
+Relative Atomic Mass = 92.95629(86#)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 94
+Relative Atomic Mass = 93.96049(86#)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 34
+Atomic Symbol = Se
+Mass Number = 95
+Relative Atomic Mass = 94.96730(86#)
+Isotopic Composition =
+Standard Atomic Weight = 78.971(8)
+Notes = r
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 67
+Relative Atomic Mass = 66.96465(54#)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 68
+Relative Atomic Mass = 67.95873(33#)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 69
+Relative Atomic Mass = 68.950497(40)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 70
+Relative Atomic Mass = 69.944792(16)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 71
+Relative Atomic Mass = 70.9393422(58)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 72
+Relative Atomic Mass = 71.9365886(72)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 73
+Relative Atomic Mass = 72.9316715(78)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 74
+Relative Atomic Mass = 73.9299102(63)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 75
+Relative Atomic Mass = 74.9258105(46)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 76
+Relative Atomic Mass = 75.924542(10)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 77
+Relative Atomic Mass = 76.9213792(30)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 78
+Relative Atomic Mass = 77.9211459(38)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 79
+Relative Atomic Mass = 78.9183376(14)
+Isotopic Composition = 0.5069(7)
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 80
+Relative Atomic Mass = 79.9185298(14)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 81
+Relative Atomic Mass = 80.9162897(14)
+Isotopic Composition = 0.4931(7)
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 82
+Relative Atomic Mass = 81.9168032(14)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 83
+Relative Atomic Mass = 82.9151756(41)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 84
+Relative Atomic Mass = 83.916496(28)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 85
+Relative Atomic Mass = 84.9156458(33)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 86
+Relative Atomic Mass = 85.9188054(33)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 87
+Relative Atomic Mass = 86.9206740(34)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 88
+Relative Atomic Mass = 87.9240833(34)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 89
+Relative Atomic Mass = 88.9267046(35)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 90
+Relative Atomic Mass = 89.9312928(36)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 91
+Relative Atomic Mass = 90.9343986(38)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 92
+Relative Atomic Mass = 91.9396316(72)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 93
+Relative Atomic Mass = 92.94313(48)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 94
+Relative Atomic Mass = 93.94890(43#)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 95
+Relative Atomic Mass = 94.95301(21#)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 96
+Relative Atomic Mass = 95.95903(32#)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 97
+Relative Atomic Mass = 96.96344(43#)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 35
+Atomic Symbol = Br
+Mass Number = 98
+Relative Atomic Mass = 97.96946(43#)
+Isotopic Composition =
+Standard Atomic Weight = [79.901,79.907]
+Notes =
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 69
+Relative Atomic Mass = 68.96518(43#)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 70
+Relative Atomic Mass = 69.95604(21#)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 71
+Relative Atomic Mass = 70.95027(14)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 72
+Relative Atomic Mass = 71.9420924(86)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 73
+Relative Atomic Mass = 72.9392892(71)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 74
+Relative Atomic Mass = 73.9330840(22)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 75
+Relative Atomic Mass = 74.9309457(87)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 76
+Relative Atomic Mass = 75.9259103(43)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 77
+Relative Atomic Mass = 76.9246700(21)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 78
+Relative Atomic Mass = 77.92036494(76)
+Isotopic Composition = 0.00355(3)
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 79
+Relative Atomic Mass = 78.9200829(38)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 80
+Relative Atomic Mass = 79.91637808(75)
+Isotopic Composition = 0.02286(10)
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 81
+Relative Atomic Mass = 80.9165912(15)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 82
+Relative Atomic Mass = 81.91348273(94)
+Isotopic Composition = 0.11593(31)
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 83
+Relative Atomic Mass = 82.91412716(32)
+Isotopic Composition = 0.11500(19)
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 84
+Relative Atomic Mass = 83.9114977282(44)
+Isotopic Composition = 0.56987(15)
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 85
+Relative Atomic Mass = 84.9125273(21)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 86
+Relative Atomic Mass = 85.9106106269(41)
+Isotopic Composition = 0.17279(41)
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 87
+Relative Atomic Mass = 86.91335476(26)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 88
+Relative Atomic Mass = 87.9144479(28)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 89
+Relative Atomic Mass = 88.9178355(23)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 90
+Relative Atomic Mass = 89.9195279(20)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 91
+Relative Atomic Mass = 90.9238063(24)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 92
+Relative Atomic Mass = 91.9261731(29)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 93
+Relative Atomic Mass = 92.9311472(27)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 94
+Relative Atomic Mass = 93.934140(13)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 95
+Relative Atomic Mass = 94.939711(20)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 96
+Relative Atomic Mass = 95.943017(22)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 97
+Relative Atomic Mass = 96.94909(14)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 98
+Relative Atomic Mass = 97.95243(32#)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 99
+Relative Atomic Mass = 98.95839(54#)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 100
+Relative Atomic Mass = 99.96237(43#)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 36
+Atomic Symbol = Kr
+Mass Number = 101
+Relative Atomic Mass = 100.96873(54#)
+Isotopic Composition =
+Standard Atomic Weight = 83.798(2)
+Notes = g,m
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 71
+Relative Atomic Mass = 70.96532(54#)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 72
+Relative Atomic Mass = 71.95908(54#)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 73
+Relative Atomic Mass = 72.95053(11#)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 74
+Relative Atomic Mass = 73.9442659(32)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 75
+Relative Atomic Mass = 74.9385732(13)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 76
+Relative Atomic Mass = 75.9350730(10)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 77
+Relative Atomic Mass = 76.9304016(14)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 78
+Relative Atomic Mass = 77.9281419(35)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 79
+Relative Atomic Mass = 78.9239899(23)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 80
+Relative Atomic Mass = 79.9225164(20)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 81
+Relative Atomic Mass = 80.9189939(53)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 82
+Relative Atomic Mass = 81.9182090(32)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 83
+Relative Atomic Mass = 82.9151142(25)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 84
+Relative Atomic Mass = 83.9143752(24)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 85
+Relative Atomic Mass = 84.9117897379(54)
+Isotopic Composition = 0.7217(2)
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 86
+Relative Atomic Mass = 85.91116743(21)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 87
+Relative Atomic Mass = 86.9091805310(60)
+Isotopic Composition = 0.2783(2)
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 88
+Relative Atomic Mass = 87.91131559(17)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 89
+Relative Atomic Mass = 88.9122783(59)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 90
+Relative Atomic Mass = 89.9147985(70)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 91
+Relative Atomic Mass = 90.9165372(84)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 92
+Relative Atomic Mass = 91.9197284(66)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 93
+Relative Atomic Mass = 92.9220393(84)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 94
+Relative Atomic Mass = 93.9263948(22)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 95
+Relative Atomic Mass = 94.929260(22)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 96
+Relative Atomic Mass = 95.9341334(36)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 97
+Relative Atomic Mass = 96.9371771(21)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 98
+Relative Atomic Mass = 97.9416869(37)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 99
+Relative Atomic Mass = 98.94503(12)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 100
+Relative Atomic Mass = 99.95003(21#)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 101
+Relative Atomic Mass = 100.95404(23#)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 102
+Relative Atomic Mass = 101.95952(32#)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 37
+Atomic Symbol = Rb
+Mass Number = 103
+Relative Atomic Mass = 102.96392(43#)
+Isotopic Composition =
+Standard Atomic Weight = 85.4678(3)
+Notes = g
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 73
+Relative Atomic Mass = 72.96570(43#)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 74
+Relative Atomic Mass = 73.95617(11#)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 75
+Relative Atomic Mass = 74.94995(24)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 76
+Relative Atomic Mass = 75.941763(37)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 77
+Relative Atomic Mass = 76.9379455(85)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 78
+Relative Atomic Mass = 77.9321800(80)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 79
+Relative Atomic Mass = 78.9297077(90)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 80
+Relative Atomic Mass = 79.9245175(37)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 81
+Relative Atomic Mass = 80.9232114(34)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 82
+Relative Atomic Mass = 81.9183999(64)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 83
+Relative Atomic Mass = 82.9175544(73)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 84
+Relative Atomic Mass = 83.9134191(13)
+Isotopic Composition = 0.0056(1)
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 85
+Relative Atomic Mass = 84.9129320(30)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 86
+Relative Atomic Mass = 85.9092606(12)
+Isotopic Composition = 0.0986(1)
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 87
+Relative Atomic Mass = 86.9088775(12)
+Isotopic Composition = 0.0700(1)
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 88
+Relative Atomic Mass = 87.9056125(12)
+Isotopic Composition = 0.8258(1)
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 89
+Relative Atomic Mass = 88.9074511(12)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 90
+Relative Atomic Mass = 89.9077300(28)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 91
+Relative Atomic Mass = 90.9101954(61)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 92
+Relative Atomic Mass = 91.9110382(37)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 93
+Relative Atomic Mass = 92.9140242(81)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 94
+Relative Atomic Mass = 93.9153556(18)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 95
+Relative Atomic Mass = 94.9193529(63)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 96
+Relative Atomic Mass = 95.9217066(93)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 97
+Relative Atomic Mass = 96.9263740(36)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 98
+Relative Atomic Mass = 97.9286888(40)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 99
+Relative Atomic Mass = 98.9328907(38)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 100
+Relative Atomic Mass = 99.935770(10)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 101
+Relative Atomic Mass = 100.940352(86)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 102
+Relative Atomic Mass = 101.943791(75)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 103
+Relative Atomic Mass = 102.94909(21#)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 104
+Relative Atomic Mass = 103.95265(32#)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 105
+Relative Atomic Mass = 104.95855(54#)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 106
+Relative Atomic Mass = 105.96265(64#)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 38
+Atomic Symbol = Sr
+Mass Number = 107
+Relative Atomic Mass = 106.96897(75#)
+Isotopic Composition =
+Standard Atomic Weight = 87.62(1)
+Notes = g,r
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 76
+Relative Atomic Mass = 75.95856(54#)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 77
+Relative Atomic Mass = 76.949781(65#)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 78
+Relative Atomic Mass = 77.94361(43#)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 79
+Relative Atomic Mass = 78.93735(48)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 80
+Relative Atomic Mass = 79.9343561(67)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 81
+Relative Atomic Mass = 80.9294556(58)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 82
+Relative Atomic Mass = 81.9269314(59)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 83
+Relative Atomic Mass = 82.922485(20)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 84
+Relative Atomic Mass = 83.9206721(46)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 85
+Relative Atomic Mass = 84.916433(20)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 86
+Relative Atomic Mass = 85.914886(15)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 87
+Relative Atomic Mass = 86.9108761(17)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 88
+Relative Atomic Mass = 87.9095016(20)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 89
+Relative Atomic Mass = 88.9058403(24)
+Isotopic Composition = 1
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 90
+Relative Atomic Mass = 89.9071439(24)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 91
+Relative Atomic Mass = 90.9072974(28)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 92
+Relative Atomic Mass = 91.9089451(99)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 93
+Relative Atomic Mass = 92.909578(11)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 94
+Relative Atomic Mass = 93.9115906(69)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 95
+Relative Atomic Mass = 94.9128161(74)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 96
+Relative Atomic Mass = 95.9158968(69)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 97
+Relative Atomic Mass = 96.9182741(75)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 98
+Relative Atomic Mass = 97.9223821(88)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 99
+Relative Atomic Mass = 98.9241480(74)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 100
+Relative Atomic Mass = 99.927715(12)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 101
+Relative Atomic Mass = 100.9301477(79)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 102
+Relative Atomic Mass = 101.9343277(44)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 103
+Relative Atomic Mass = 102.937243(12)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 104
+Relative Atomic Mass = 103.94196(43#)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 105
+Relative Atomic Mass = 104.94544(54#)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 106
+Relative Atomic Mass = 105.95056(54#)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 107
+Relative Atomic Mass = 106.95452(54#)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 108
+Relative Atomic Mass = 107.95996(64#)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 39
+Atomic Symbol = Y
+Mass Number = 109
+Relative Atomic Mass = 108.96436(75#)
+Isotopic Composition =
+Standard Atomic Weight = 88.90584(2)
+Notes =
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 78
+Relative Atomic Mass = 77.95566(54#)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 79
+Relative Atomic Mass = 78.94948(43#)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 80
+Relative Atomic Mass = 79.9404(16)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 81
+Relative Atomic Mass = 80.93731(18)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 82
+Relative Atomic Mass = 81.93135(22#)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 83
+Relative Atomic Mass = 82.9292421(69)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 84
+Relative Atomic Mass = 83.9233269(59)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 85
+Relative Atomic Mass = 84.9214444(69)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 86
+Relative Atomic Mass = 85.9162972(38)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 87
+Relative Atomic Mass = 86.9148180(45)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 88
+Relative Atomic Mass = 87.9102213(58)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 89
+Relative Atomic Mass = 88.9088814(37)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 90
+Relative Atomic Mass = 89.9046977(20)
+Isotopic Composition = 0.5145(40)
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 91
+Relative Atomic Mass = 90.9056396(20)
+Isotopic Composition = 0.1122(5)
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 92
+Relative Atomic Mass = 91.9050347(20)
+Isotopic Composition = 0.1715(8)
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 93
+Relative Atomic Mass = 92.9064699(20)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 94
+Relative Atomic Mass = 93.9063108(20)
+Isotopic Composition = 0.1738(28)
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 95
+Relative Atomic Mass = 94.9080385(19)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 96
+Relative Atomic Mass = 95.9082714(21)
+Isotopic Composition = 0.0280(9)
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 97
+Relative Atomic Mass = 96.9109512(21)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 98
+Relative Atomic Mass = 97.9127289(93)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 99
+Relative Atomic Mass = 98.916667(11)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 100
+Relative Atomic Mass = 99.9180006(89)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 101
+Relative Atomic Mass = 100.9214480(91)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 102
+Relative Atomic Mass = 101.9231409(97)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 103
+Relative Atomic Mass = 102.927191(10)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 104
+Relative Atomic Mass = 103.929436(10)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 105
+Relative Atomic Mass = 104.934008(13)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 106
+Relative Atomic Mass = 105.93676(21#)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 107
+Relative Atomic Mass = 106.94174(32#)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 108
+Relative Atomic Mass = 107.94487(43#)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 109
+Relative Atomic Mass = 108.95041(54#)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 110
+Relative Atomic Mass = 109.95396(64#)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 111
+Relative Atomic Mass = 110.95968(75#)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 40
+Atomic Symbol = Zr
+Mass Number = 112
+Relative Atomic Mass = 111.96370(75#)
+Isotopic Composition =
+Standard Atomic Weight = 91.224(2)
+Notes = g
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 81
+Relative Atomic Mass = 80.94960(43#)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 82
+Relative Atomic Mass = 81.94396(32#)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 83
+Relative Atomic Mass = 82.93729(32)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 84
+Relative Atomic Mass = 83.93449(32#)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 85
+Relative Atomic Mass = 84.9288458(44)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 86
+Relative Atomic Mass = 85.9257828(59)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 87
+Relative Atomic Mass = 86.9206937(73)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 88
+Relative Atomic Mass = 87.918222(61)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 89
+Relative Atomic Mass = 88.913445(25)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 90
+Relative Atomic Mass = 89.9112584(38)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 91
+Relative Atomic Mass = 90.9069897(37)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 92
+Relative Atomic Mass = 91.9071881(26)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 93
+Relative Atomic Mass = 92.9063730(20)
+Isotopic Composition = 1
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 94
+Relative Atomic Mass = 93.9072788(20)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 95
+Relative Atomic Mass = 94.90683240(71)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 96
+Relative Atomic Mass = 95.9080973(35)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 97
+Relative Atomic Mass = 96.9080959(19)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 98
+Relative Atomic Mass = 97.9103265(58)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 99
+Relative Atomic Mass = 98.911613(13)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 100
+Relative Atomic Mass = 99.9143276(88)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 101
+Relative Atomic Mass = 100.9153103(42)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 102
+Relative Atomic Mass = 101.9180772(35)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 103
+Relative Atomic Mass = 102.9194572(44)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 104
+Relative Atomic Mass = 103.9228925(37)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 105
+Relative Atomic Mass = 104.9249465(45)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 106
+Relative Atomic Mass = 105.9289317(46)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 107
+Relative Atomic Mass = 106.9315937(87)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 108
+Relative Atomic Mass = 107.9360748(88)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 109
+Relative Atomic Mass = 108.93922(56)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 110
+Relative Atomic Mass = 109.94403(21#)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 111
+Relative Atomic Mass = 110.94753(32#)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 112
+Relative Atomic Mass = 111.95247(32#)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 113
+Relative Atomic Mass = 112.95651(43#)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 114
+Relative Atomic Mass = 113.96201(54#)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 41
+Atomic Symbol = Nb
+Mass Number = 115
+Relative Atomic Mass = 114.96634(54#)
+Isotopic Composition =
+Standard Atomic Weight = 92.90637(2)
+Notes =
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 83
+Relative Atomic Mass = 82.94988(43#)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 84
+Relative Atomic Mass = 83.94149(43#)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 85
+Relative Atomic Mass = 84.938261(17)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 86
+Relative Atomic Mass = 85.9311748(40)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 87
+Relative Atomic Mass = 86.9281962(31)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 88
+Relative Atomic Mass = 87.9219678(41)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 89
+Relative Atomic Mass = 88.9194682(42)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 90
+Relative Atomic Mass = 89.9139309(38)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 91
+Relative Atomic Mass = 90.9117453(67)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 92
+Relative Atomic Mass = 91.90680796(84)
+Isotopic Composition = 0.1453(30)
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 93
+Relative Atomic Mass = 92.90680958(84)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 94
+Relative Atomic Mass = 93.90508490(48)
+Isotopic Composition = 0.0915(9)
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 95
+Relative Atomic Mass = 94.90583877(47)
+Isotopic Composition = 0.1584(11)
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 96
+Relative Atomic Mass = 95.90467612(47)
+Isotopic Composition = 0.1667(15)
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 97
+Relative Atomic Mass = 96.90601812(49)
+Isotopic Composition = 0.0960(14)
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 98
+Relative Atomic Mass = 97.90540482(49)
+Isotopic Composition = 0.2439(37)
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 99
+Relative Atomic Mass = 98.90770851(52)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 100
+Relative Atomic Mass = 99.9074718(11)
+Isotopic Composition = 0.0982(31)
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 101
+Relative Atomic Mass = 100.9103414(11)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 102
+Relative Atomic Mass = 101.9102834(91)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 103
+Relative Atomic Mass = 102.913079(10)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 104
+Relative Atomic Mass = 103.9137344(98)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 105
+Relative Atomic Mass = 104.916969(10)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 106
+Relative Atomic Mass = 105.918259(10)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 107
+Relative Atomic Mass = 106.922106(10)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 108
+Relative Atomic Mass = 107.924033(10)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 109
+Relative Atomic Mass = 108.928424(12)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 110
+Relative Atomic Mass = 109.930704(26)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 111
+Relative Atomic Mass = 110.935654(14)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 112
+Relative Atomic Mass = 111.93831(21#)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 113
+Relative Atomic Mass = 112.94335(32#)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 114
+Relative Atomic Mass = 113.94653(32#)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 115
+Relative Atomic Mass = 114.95196(43#)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 116
+Relative Atomic Mass = 115.95545(54#)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 42
+Atomic Symbol = Mo
+Mass Number = 117
+Relative Atomic Mass = 116.96117(54#)
+Isotopic Composition =
+Standard Atomic Weight = 95.95(1)
+Notes = g
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 85
+Relative Atomic Mass = 84.95058(43#)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 86
+Relative Atomic Mass = 85.94493(32#)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 87
+Relative Atomic Mass = 86.9380672(45)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 88
+Relative Atomic Mass = 87.93378(16)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 89
+Relative Atomic Mass = 88.9276487(41)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 90
+Relative Atomic Mass = 89.9240739(11)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 91
+Relative Atomic Mass = 90.9184254(25)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 92
+Relative Atomic Mass = 91.9152698(33)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 93
+Relative Atomic Mass = 92.9102460(14)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 94
+Relative Atomic Mass = 93.9096536(44)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 95
+Relative Atomic Mass = 94.9076536(55)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 96
+Relative Atomic Mass = 95.9078680(55)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 97
+Relative Atomic Mass = 96.9063667(40)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 98
+Relative Atomic Mass = 97.9072124(36)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 99
+Relative Atomic Mass = 98.9062508(10)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 100
+Relative Atomic Mass = 99.9076539(15)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 101
+Relative Atomic Mass = 100.907309(26)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 102
+Relative Atomic Mass = 101.9092097(99)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 103
+Relative Atomic Mass = 102.909176(11)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 104
+Relative Atomic Mass = 103.911425(27)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 105
+Relative Atomic Mass = 104.911655(38)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 106
+Relative Atomic Mass = 105.914358(13)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 107
+Relative Atomic Mass = 106.9154606(93)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 108
+Relative Atomic Mass = 107.9184957(94)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 109
+Relative Atomic Mass = 108.920256(10)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 110
+Relative Atomic Mass = 109.923744(10)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 111
+Relative Atomic Mass = 110.925901(11)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 112
+Relative Atomic Mass = 111.9299458(60)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 113
+Relative Atomic Mass = 112.9325690(36)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 114
+Relative Atomic Mass = 113.93691(11#)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 115
+Relative Atomic Mass = 114.93998(21#)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 116
+Relative Atomic Mass = 115.94476(32#)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 117
+Relative Atomic Mass = 116.94806(43#)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 118
+Relative Atomic Mass = 117.95299(43#)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 119
+Relative Atomic Mass = 118.95666(54#)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 43
+Atomic Symbol = Tc
+Mass Number = 120
+Relative Atomic Mass = 119.96187(54#)
+Isotopic Composition =
+Standard Atomic Weight = [98]
+Notes =
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 87
+Relative Atomic Mass = 86.95069(43#)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 88
+Relative Atomic Mass = 87.94160(32#)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 89
+Relative Atomic Mass = 88.93762(32#)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 90
+Relative Atomic Mass = 89.9303444(40)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 91
+Relative Atomic Mass = 90.9267419(24)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 92
+Relative Atomic Mass = 91.9202344(29)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 93
+Relative Atomic Mass = 92.9171044(22)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 94
+Relative Atomic Mass = 93.9113429(34)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 95
+Relative Atomic Mass = 94.910406(10)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 96
+Relative Atomic Mass = 95.90759025(49)
+Isotopic Composition = 0.0554(14)
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 97
+Relative Atomic Mass = 96.9075471(30)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 98
+Relative Atomic Mass = 97.9052868(69)
+Isotopic Composition = 0.0187(3)
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 99
+Relative Atomic Mass = 98.9059341(11)
+Isotopic Composition = 0.1276(14)
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 100
+Relative Atomic Mass = 99.9042143(11)
+Isotopic Composition = 0.1260(7)
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 101
+Relative Atomic Mass = 100.9055769(12)
+Isotopic Composition = 0.1706(2)
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 102
+Relative Atomic Mass = 101.9043441(12)
+Isotopic Composition = 0.3155(14)
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 103
+Relative Atomic Mass = 102.9063186(12)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 104
+Relative Atomic Mass = 103.9054275(28)
+Isotopic Composition = 0.1862(27)
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 105
+Relative Atomic Mass = 104.9077476(28)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 106
+Relative Atomic Mass = 105.9073291(58)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 107
+Relative Atomic Mass = 106.9099720(93)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 108
+Relative Atomic Mass = 107.9101880(93)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 109
+Relative Atomic Mass = 108.9133260(96)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 110
+Relative Atomic Mass = 109.9140407(96)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 111
+Relative Atomic Mass = 110.917570(10)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 112
+Relative Atomic Mass = 111.918809(10)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 113
+Relative Atomic Mass = 112.922844(39)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 114
+Relative Atomic Mass = 113.9246136(38)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 115
+Relative Atomic Mass = 114.928820(71)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 116
+Relative Atomic Mass = 115.9312192(40)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 117
+Relative Atomic Mass = 116.93610(63)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 118
+Relative Atomic Mass = 117.93853(32#)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 119
+Relative Atomic Mass = 118.94357(32#)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 120
+Relative Atomic Mass = 119.94631(43#)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 121
+Relative Atomic Mass = 120.95164(43#)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 122
+Relative Atomic Mass = 121.95447(54#)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 123
+Relative Atomic Mass = 122.95989(54#)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 44
+Atomic Symbol = Ru
+Mass Number = 124
+Relative Atomic Mass = 123.96305(64#)
+Isotopic Composition =
+Standard Atomic Weight = 101.07(2)
+Notes = g
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 89
+Relative Atomic Mass = 88.95058(39#)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 90
+Relative Atomic Mass = 89.94422(43#)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 91
+Relative Atomic Mass = 90.93688(43#)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 92
+Relative Atomic Mass = 91.9323677(47)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 93
+Relative Atomic Mass = 92.9259128(28)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 94
+Relative Atomic Mass = 93.9217305(36)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 95
+Relative Atomic Mass = 94.9158979(42)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 96
+Relative Atomic Mass = 95.914453(11)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 97
+Relative Atomic Mass = 96.911329(38)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 98
+Relative Atomic Mass = 97.910708(13)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 99
+Relative Atomic Mass = 98.9081282(73)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 100
+Relative Atomic Mass = 99.908117(19)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 101
+Relative Atomic Mass = 100.9061606(63)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 102
+Relative Atomic Mass = 101.9068374(50)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 103
+Relative Atomic Mass = 102.9054980(26)
+Isotopic Composition = 1
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 104
+Relative Atomic Mass = 103.9066492(26)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 105
+Relative Atomic Mass = 104.9056885(27)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 106
+Relative Atomic Mass = 105.9072868(58)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 107
+Relative Atomic Mass = 106.906748(13)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 108
+Relative Atomic Mass = 107.908714(15)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 109
+Relative Atomic Mass = 108.9087488(43)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 110
+Relative Atomic Mass = 109.911079(19)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 111
+Relative Atomic Mass = 110.9116423(74)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 112
+Relative Atomic Mass = 111.914403(47)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 113
+Relative Atomic Mass = 112.9154393(77)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 114
+Relative Atomic Mass = 113.918718(77)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 115
+Relative Atomic Mass = 114.9203116(78)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 116
+Relative Atomic Mass = 115.924059(76)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 117
+Relative Atomic Mass = 116.9260354(95)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 118
+Relative Atomic Mass = 117.930340(26)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 119
+Relative Atomic Mass = 118.932557(10)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 120
+Relative Atomic Mass = 119.93686(21#)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 121
+Relative Atomic Mass = 120.93942(32#)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 122
+Relative Atomic Mass = 121.94399(32#)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 123
+Relative Atomic Mass = 122.94685(43#)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 124
+Relative Atomic Mass = 123.95151(43#)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 125
+Relative Atomic Mass = 124.95469(54#)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 45
+Atomic Symbol = Rh
+Mass Number = 126
+Relative Atomic Mass = 125.95946(54#)
+Isotopic Composition =
+Standard Atomic Weight = 102.90550(2)
+Notes =
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 91
+Relative Atomic Mass = 90.95032(54#)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 92
+Relative Atomic Mass = 91.94088(54#)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 93
+Relative Atomic Mass = 92.93651(43#)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 94
+Relative Atomic Mass = 93.9290376(46)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 95
+Relative Atomic Mass = 94.9248898(33)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 96
+Relative Atomic Mass = 95.9182151(45)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 97
+Relative Atomic Mass = 96.9164720(52)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 98
+Relative Atomic Mass = 97.9126983(51)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 99
+Relative Atomic Mass = 98.9117748(54)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 100
+Relative Atomic Mass = 99.908505(19)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 101
+Relative Atomic Mass = 100.9082864(49)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 102
+Relative Atomic Mass = 101.9056022(28)
+Isotopic Composition = 0.0102(1)
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 103
+Relative Atomic Mass = 102.9060809(27)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 104
+Relative Atomic Mass = 103.9040305(14)
+Isotopic Composition = 0.1114(8)
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 105
+Relative Atomic Mass = 104.9050796(12)
+Isotopic Composition = 0.2233(8)
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 106
+Relative Atomic Mass = 105.9034804(12)
+Isotopic Composition = 0.2733(3)
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 107
+Relative Atomic Mass = 106.9051282(13)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 108
+Relative Atomic Mass = 107.9038916(12)
+Isotopic Composition = 0.2646(9)
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 109
+Relative Atomic Mass = 108.9059504(12)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 110
+Relative Atomic Mass = 109.90517220(75)
+Isotopic Composition = 0.1172(9)
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 111
+Relative Atomic Mass = 110.90768968(86)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 112
+Relative Atomic Mass = 111.9073297(70)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 113
+Relative Atomic Mass = 112.9102610(75)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 114
+Relative Atomic Mass = 113.9103686(75)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 115
+Relative Atomic Mass = 114.913659(15)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 116
+Relative Atomic Mass = 115.9142970(77)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 117
+Relative Atomic Mass = 116.9179547(78)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 118
+Relative Atomic Mass = 117.9190667(27)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 119
+Relative Atomic Mass = 118.9233402(89)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 120
+Relative Atomic Mass = 119.9245511(25)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 121
+Relative Atomic Mass = 120.9289503(36)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 122
+Relative Atomic Mass = 121.930632(21)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 123
+Relative Atomic Mass = 122.93514(21#)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 124
+Relative Atomic Mass = 123.93714(32#)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 125
+Relative Atomic Mass = 124.94179(43#)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 126
+Relative Atomic Mass = 125.94416(54#)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 127
+Relative Atomic Mass = 126.94907(54#)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 46
+Atomic Symbol = Pd
+Mass Number = 128
+Relative Atomic Mass = 127.95183(64#)
+Isotopic Composition =
+Standard Atomic Weight = 106.42(1)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 93
+Relative Atomic Mass = 92.95033(54#)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 94
+Relative Atomic Mass = 93.94373(69#)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 95
+Relative Atomic Mass = 94.93602(43#)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 96
+Relative Atomic Mass = 95.930744(97)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 97
+Relative Atomic Mass = 96.92397(12)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 98
+Relative Atomic Mass = 97.921560(35)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 99
+Relative Atomic Mass = 98.9176458(67)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 100
+Relative Atomic Mass = 99.9161154(54)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 101
+Relative Atomic Mass = 100.9126840(52)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 102
+Relative Atomic Mass = 101.9117047(88)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 103
+Relative Atomic Mass = 102.9089631(41)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 104
+Relative Atomic Mass = 103.9086239(45)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 105
+Relative Atomic Mass = 104.9065256(49)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 106
+Relative Atomic Mass = 105.9066636(32)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 107
+Relative Atomic Mass = 106.9050916(26)
+Isotopic Composition = 0.51839(8)
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 108
+Relative Atomic Mass = 107.9059503(26)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 109
+Relative Atomic Mass = 108.9047553(14)
+Isotopic Composition = 0.48161(8)
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 110
+Relative Atomic Mass = 109.9061102(14)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 111
+Relative Atomic Mass = 110.9052959(16)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 112
+Relative Atomic Mass = 111.9070486(26)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 113
+Relative Atomic Mass = 112.906573(18)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 114
+Relative Atomic Mass = 113.9088230(49)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 115
+Relative Atomic Mass = 114.908767(20)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 116
+Relative Atomic Mass = 115.9113868(35)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 117
+Relative Atomic Mass = 116.911774(15)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 118
+Relative Atomic Mass = 117.9145955(27)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 119
+Relative Atomic Mass = 118.915570(16)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 120
+Relative Atomic Mass = 119.9187848(48)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 121
+Relative Atomic Mass = 120.920125(13)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 122
+Relative Atomic Mass = 121.923664(41)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 123
+Relative Atomic Mass = 122.925337(33)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 124
+Relative Atomic Mass = 123.92893(27)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 125
+Relative Atomic Mass = 124.93105(64)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 126
+Relative Atomic Mass = 125.93475(21#)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 127
+Relative Atomic Mass = 126.93711(21#)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 128
+Relative Atomic Mass = 127.94106(32#)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 129
+Relative Atomic Mass = 128.94395(32#)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 47
+Atomic Symbol = Ag
+Mass Number = 130
+Relative Atomic Mass = 129.95070(36#)
+Isotopic Composition =
+Standard Atomic Weight = 107.8682(2)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 95
+Relative Atomic Mass = 94.94994(54#)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 96
+Relative Atomic Mass = 95.94034(43#)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 97
+Relative Atomic Mass = 96.93510(32#)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 98
+Relative Atomic Mass = 97.927389(56)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 99
+Relative Atomic Mass = 98.9249258(17)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 100
+Relative Atomic Mass = 99.9203488(18)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 101
+Relative Atomic Mass = 100.9185862(16)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 102
+Relative Atomic Mass = 101.9144820(18)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 103
+Relative Atomic Mass = 102.9134165(19)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 104
+Relative Atomic Mass = 103.9098564(18)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 105
+Relative Atomic Mass = 104.9094639(15)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 106
+Relative Atomic Mass = 105.9064599(12)
+Isotopic Composition = 0.0125(6)
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 107
+Relative Atomic Mass = 106.9066121(18)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 108
+Relative Atomic Mass = 107.9041834(12)
+Isotopic Composition = 0.0089(3)
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 109
+Relative Atomic Mass = 108.9049867(17)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 110
+Relative Atomic Mass = 109.90300661(61)
+Isotopic Composition = 0.1249(18)
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 111
+Relative Atomic Mass = 110.90418287(61)
+Isotopic Composition = 0.1280(12)
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 112
+Relative Atomic Mass = 111.90276287(60)
+Isotopic Composition = 0.2413(21)
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 113
+Relative Atomic Mass = 112.90440813(45)
+Isotopic Composition = 0.1222(12)
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 114
+Relative Atomic Mass = 113.90336509(43)
+Isotopic Composition = 0.2873(42)
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 115
+Relative Atomic Mass = 114.90543751(77)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 116
+Relative Atomic Mass = 115.90476315(17)
+Isotopic Composition = 0.0749(18)
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 117
+Relative Atomic Mass = 116.9072260(11)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 118
+Relative Atomic Mass = 117.906922(21)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 119
+Relative Atomic Mass = 118.909847(40)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 120
+Relative Atomic Mass = 119.9098681(40)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 121
+Relative Atomic Mass = 120.9129637(21)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 122
+Relative Atomic Mass = 121.9134591(25)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 123
+Relative Atomic Mass = 122.9168925(29)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 124
+Relative Atomic Mass = 123.9176574(32)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 125
+Relative Atomic Mass = 124.9212576(31)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 126
+Relative Atomic Mass = 125.9224291(27)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 127
+Relative Atomic Mass = 126.926472(14)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 128
+Relative Atomic Mass = 127.9278129(78)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 129
+Relative Atomic Mass = 128.93182(21#)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 130
+Relative Atomic Mass = 129.93394(18)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 131
+Relative Atomic Mass = 130.94060(21#)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 132
+Relative Atomic Mass = 131.94604(21#)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 48
+Atomic Symbol = Cd
+Mass Number = 133
+Relative Atomic Mass = 132.95285(32#)
+Isotopic Composition =
+Standard Atomic Weight = 112.414(4)
+Notes = g
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 97
+Relative Atomic Mass = 96.94934(54#)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 98
+Relative Atomic Mass = 97.94214(21#)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 99
+Relative Atomic Mass = 98.93411(21#)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 100
+Relative Atomic Mass = 99.93096(20)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 101
+Relative Atomic Mass = 100.92634(32#)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 102
+Relative Atomic Mass = 101.9241071(49)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 103
+Relative Atomic Mass = 102.9198819(98)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 104
+Relative Atomic Mass = 103.9182145(62)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 105
+Relative Atomic Mass = 104.914502(11)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 106
+Relative Atomic Mass = 105.913464(13)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 107
+Relative Atomic Mass = 106.910290(12)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 108
+Relative Atomic Mass = 107.9096935(93)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 109
+Relative Atomic Mass = 108.9071514(43)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 110
+Relative Atomic Mass = 109.907170(12)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 111
+Relative Atomic Mass = 110.9051085(38)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 112
+Relative Atomic Mass = 111.9055377(46)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 113
+Relative Atomic Mass = 112.90406184(91)
+Isotopic Composition = 0.0429(5)
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 114
+Relative Atomic Mass = 113.90491791(94)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 115
+Relative Atomic Mass = 114.903878776(12)
+Isotopic Composition = 0.9571(5)
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 116
+Relative Atomic Mass = 115.90525999(24)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 117
+Relative Atomic Mass = 116.9045157(52)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 118
+Relative Atomic Mass = 117.9063566(83)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 119
+Relative Atomic Mass = 118.9058507(78)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 120
+Relative Atomic Mass = 119.907967(43)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 121
+Relative Atomic Mass = 120.907851(29)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 122
+Relative Atomic Mass = 121.910281(54)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 123
+Relative Atomic Mass = 122.910434(21)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 124
+Relative Atomic Mass = 123.913182(33)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 125
+Relative Atomic Mass = 124.913605(29)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 126
+Relative Atomic Mass = 125.916507(29)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 127
+Relative Atomic Mass = 126.917446(23)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 128
+Relative Atomic Mass = 127.92040(16)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 129
+Relative Atomic Mass = 128.9218053(29)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 130
+Relative Atomic Mass = 129.924977(41)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 131
+Relative Atomic Mass = 130.9269715(29)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 132
+Relative Atomic Mass = 131.933001(64)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 133
+Relative Atomic Mass = 132.93831(21#)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 134
+Relative Atomic Mass = 133.94454(32#)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 49
+Atomic Symbol = In
+Mass Number = 135
+Relative Atomic Mass = 134.95005(43#)
+Isotopic Composition =
+Standard Atomic Weight = 114.818(1)
+Notes =
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 99
+Relative Atomic Mass = 98.94853(54#)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 100
+Relative Atomic Mass = 99.93850(32)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 101
+Relative Atomic Mass = 100.93526(32)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 102
+Relative Atomic Mass = 101.93029(11)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 103
+Relative Atomic Mass = 102.928105(76)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 104
+Relative Atomic Mass = 103.9231052(62)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 105
+Relative Atomic Mass = 104.9212684(43)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 106
+Relative Atomic Mass = 105.9169574(55)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 107
+Relative Atomic Mass = 106.9157137(57)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 108
+Relative Atomic Mass = 107.9118943(58)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 109
+Relative Atomic Mass = 108.9112921(85)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 110
+Relative Atomic Mass = 109.907845(15)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 111
+Relative Atomic Mass = 110.9077401(58)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 112
+Relative Atomic Mass = 111.90482387(61)
+Isotopic Composition = 0.0097(1)
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 113
+Relative Atomic Mass = 112.9051757(18)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 114
+Relative Atomic Mass = 113.9027827(10)
+Isotopic Composition = 0.0066(1)
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 115
+Relative Atomic Mass = 114.903344699(16)
+Isotopic Composition = 0.0034(1)
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 116
+Relative Atomic Mass = 115.90174280(10)
+Isotopic Composition = 0.1454(9)
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 117
+Relative Atomic Mass = 116.90295398(52)
+Isotopic Composition = 0.0768(7)
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 118
+Relative Atomic Mass = 117.90160657(54)
+Isotopic Composition = 0.2422(9)
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 119
+Relative Atomic Mass = 118.90331117(78)
+Isotopic Composition = 0.0859(4)
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 120
+Relative Atomic Mass = 119.90220163(97)
+Isotopic Composition = 0.3258(9)
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 121
+Relative Atomic Mass = 120.9042426(10)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 122
+Relative Atomic Mass = 121.9034438(26)
+Isotopic Composition = 0.0463(3)
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 123
+Relative Atomic Mass = 122.9057252(26)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 124
+Relative Atomic Mass = 123.9052766(11)
+Isotopic Composition = 0.0579(5)
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 125
+Relative Atomic Mass = 124.9077864(11)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 126
+Relative Atomic Mass = 125.907659(11)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 127
+Relative Atomic Mass = 126.910390(11)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 128
+Relative Atomic Mass = 127.910507(19)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 129
+Relative Atomic Mass = 128.913465(21)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 130
+Relative Atomic Mass = 129.9139738(23)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 131
+Relative Atomic Mass = 130.9170450(65)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 132
+Relative Atomic Mass = 131.9178267(31)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 133
+Relative Atomic Mass = 132.9239134(26)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 134
+Relative Atomic Mass = 133.9286821(35)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 135
+Relative Atomic Mass = 134.9349086(33)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 136
+Relative Atomic Mass = 135.93999(43#)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 137
+Relative Atomic Mass = 136.94655(54#)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 50
+Atomic Symbol = Sn
+Mass Number = 138
+Relative Atomic Mass = 137.95184(64#)
+Isotopic Composition =
+Standard Atomic Weight = 118.710(7)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 103
+Relative Atomic Mass = 102.93969(32#)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 104
+Relative Atomic Mass = 103.93648(13)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 105
+Relative Atomic Mass = 104.931276(23)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 106
+Relative Atomic Mass = 105.9286380(80)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 107
+Relative Atomic Mass = 106.9241506(45)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 108
+Relative Atomic Mass = 107.9222267(59)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 109
+Relative Atomic Mass = 108.9181411(57)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 110
+Relative Atomic Mass = 109.9168543(64)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 111
+Relative Atomic Mass = 110.9132182(95)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 112
+Relative Atomic Mass = 111.912400(19)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 113
+Relative Atomic Mass = 112.909375(18)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 114
+Relative Atomic Mass = 113.909290(23)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 115
+Relative Atomic Mass = 114.906598(17)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 116
+Relative Atomic Mass = 115.9067931(55)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 117
+Relative Atomic Mass = 116.9048415(91)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 118
+Relative Atomic Mass = 117.9055321(32)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 119
+Relative Atomic Mass = 118.9039455(83)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 120
+Relative Atomic Mass = 119.9050794(77)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 121
+Relative Atomic Mass = 120.9038120(30)
+Isotopic Composition = 0.5721(5)
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 122
+Relative Atomic Mass = 121.9051699(30)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 123
+Relative Atomic Mass = 122.9042132(23)
+Isotopic Composition = 0.4279(5)
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 124
+Relative Atomic Mass = 123.9059350(23)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 125
+Relative Atomic Mass = 124.9052530(28)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 126
+Relative Atomic Mass = 125.907253(34)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 127
+Relative Atomic Mass = 126.9069243(55)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 128
+Relative Atomic Mass = 127.909146(21)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 129
+Relative Atomic Mass = 128.909147(23)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 130
+Relative Atomic Mass = 129.911662(15)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 131
+Relative Atomic Mass = 130.9119888(23)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 132
+Relative Atomic Mass = 131.9145077(29)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 133
+Relative Atomic Mass = 132.9152732(34)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 134
+Relative Atomic Mass = 133.9205357(18)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 135
+Relative Atomic Mass = 134.9251851(31)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 136
+Relative Atomic Mass = 135.9307459(68)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 137
+Relative Atomic Mass = 136.93555(32)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 138
+Relative Atomic Mass = 137.94145(32#)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 139
+Relative Atomic Mass = 138.94655(43#)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 51
+Atomic Symbol = Sb
+Mass Number = 140
+Relative Atomic Mass = 139.95283(64#)
+Isotopic Composition =
+Standard Atomic Weight = 121.760(1)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 105
+Relative Atomic Mass = 104.94330(32)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 106
+Relative Atomic Mass = 105.93750(11)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 107
+Relative Atomic Mass = 106.935012(76)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 108
+Relative Atomic Mass = 107.9293805(58)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 109
+Relative Atomic Mass = 108.9273045(47)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 110
+Relative Atomic Mass = 109.9224581(71)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 111
+Relative Atomic Mass = 110.9210006(69)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 112
+Relative Atomic Mass = 111.9167279(90)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 113
+Relative Atomic Mass = 112.915891(30)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 114
+Relative Atomic Mass = 113.912089(30)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 115
+Relative Atomic Mass = 114.911902(30)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 116
+Relative Atomic Mass = 115.908460(30)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 117
+Relative Atomic Mass = 116.908646(14)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 118
+Relative Atomic Mass = 117.905854(20)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 119
+Relative Atomic Mass = 118.9064071(85)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 120
+Relative Atomic Mass = 119.9040593(33)
+Isotopic Composition = 0.0009(1)
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 121
+Relative Atomic Mass = 120.904944(28)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 122
+Relative Atomic Mass = 121.9030435(16)
+Isotopic Composition = 0.0255(12)
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 123
+Relative Atomic Mass = 122.9042698(16)
+Isotopic Composition = 0.0089(3)
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 124
+Relative Atomic Mass = 123.9028171(16)
+Isotopic Composition = 0.0474(14)
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 125
+Relative Atomic Mass = 124.9044299(16)
+Isotopic Composition = 0.0707(15)
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 126
+Relative Atomic Mass = 125.9033109(16)
+Isotopic Composition = 0.1884(25)
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 127
+Relative Atomic Mass = 126.9052257(16)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 128
+Relative Atomic Mass = 127.90446128(93)
+Isotopic Composition = 0.3174(8)
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 129
+Relative Atomic Mass = 128.90659646(93)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 130
+Relative Atomic Mass = 129.906222748(12)
+Isotopic Composition = 0.3408(62)
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 131
+Relative Atomic Mass = 130.908522213(65)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 132
+Relative Atomic Mass = 131.9085467(37)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 133
+Relative Atomic Mass = 132.9109688(39)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 134
+Relative Atomic Mass = 133.9113940(30)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 135
+Relative Atomic Mass = 134.9165557(29)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 136
+Relative Atomic Mass = 135.9201006(26)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 137
+Relative Atomic Mass = 136.9255989(27)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 138
+Relative Atomic Mass = 137.9294722(47)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 139
+Relative Atomic Mass = 138.9353672(38)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 140
+Relative Atomic Mass = 139.939499(30)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 141
+Relative Atomic Mass = 140.94580(43#)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 142
+Relative Atomic Mass = 141.95022(54#)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 52
+Atomic Symbol = Te
+Mass Number = 143
+Relative Atomic Mass = 142.95676(54#)
+Isotopic Composition =
+Standard Atomic Weight = 127.60(3)
+Notes = g
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 107
+Relative Atomic Mass = 106.94678(32#)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 108
+Relative Atomic Mass = 107.94348(14)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 109
+Relative Atomic Mass = 108.9380853(61)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 110
+Relative Atomic Mass = 109.935089(54)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 111
+Relative Atomic Mass = 110.9302692(51)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 112
+Relative Atomic Mass = 111.928005(11)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 113
+Relative Atomic Mass = 112.9236501(86)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 114
+Relative Atomic Mass = 113.92185(32#)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 115
+Relative Atomic Mass = 114.918048(31)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 116
+Relative Atomic Mass = 115.91681(10)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 117
+Relative Atomic Mass = 116.913648(28)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 118
+Relative Atomic Mass = 117.913074(21)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 119
+Relative Atomic Mass = 118.910074(30)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 120
+Relative Atomic Mass = 119.910087(16)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 121
+Relative Atomic Mass = 120.9074051(58)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 122
+Relative Atomic Mass = 121.9075888(56)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 123
+Relative Atomic Mass = 122.9055885(40)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 124
+Relative Atomic Mass = 123.9062090(26)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 125
+Relative Atomic Mass = 124.9046294(16)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 126
+Relative Atomic Mass = 125.9056233(41)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 127
+Relative Atomic Mass = 126.9044719(39)
+Isotopic Composition = 1
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 128
+Relative Atomic Mass = 127.9058086(39)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 129
+Relative Atomic Mass = 128.9049837(34)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 130
+Relative Atomic Mass = 129.9066702(34)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 131
+Relative Atomic Mass = 130.90612630(69)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 132
+Relative Atomic Mass = 131.9079935(44)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 133
+Relative Atomic Mass = 132.9077970(50)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 134
+Relative Atomic Mass = 133.9097588(59)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 135
+Relative Atomic Mass = 134.9100488(58)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 136
+Relative Atomic Mass = 135.914604(15)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 137
+Relative Atomic Mass = 136.9180282(90)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 138
+Relative Atomic Mass = 137.9227264(64)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 139
+Relative Atomic Mass = 138.926506(31)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 140
+Relative Atomic Mass = 139.93173(20)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 141
+Relative Atomic Mass = 140.93569(21#)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 142
+Relative Atomic Mass = 141.94120(40)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 143
+Relative Atomic Mass = 142.94565(32#)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 144
+Relative Atomic Mass = 143.95139(43#)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 53
+Atomic Symbol = I
+Mass Number = 145
+Relative Atomic Mass = 144.95605(54#)
+Isotopic Composition =
+Standard Atomic Weight = 126.90447(3)
+Notes =
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 109
+Relative Atomic Mass = 108.95043(32)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 110
+Relative Atomic Mass = 109.94426(11)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 111
+Relative Atomic Mass = 110.941607(93)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 112
+Relative Atomic Mass = 111.9355590(89)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 113
+Relative Atomic Mass = 112.9332217(73)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 114
+Relative Atomic Mass = 113.927980(12)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 115
+Relative Atomic Mass = 114.926294(13)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 116
+Relative Atomic Mass = 115.921581(14)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 117
+Relative Atomic Mass = 116.920359(11)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 118
+Relative Atomic Mass = 117.916179(11)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 119
+Relative Atomic Mass = 118.915411(11)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 120
+Relative Atomic Mass = 119.911784(13)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 121
+Relative Atomic Mass = 120.911453(11)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 122
+Relative Atomic Mass = 121.908368(12)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 123
+Relative Atomic Mass = 122.908482(10)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 124
+Relative Atomic Mass = 123.9058920(19)
+Isotopic Composition = 0.000952(3)
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 125
+Relative Atomic Mass = 124.9063944(20)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 126
+Relative Atomic Mass = 125.9042983(38)
+Isotopic Composition = 0.000890(2)
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 127
+Relative Atomic Mass = 126.9051829(44)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 128
+Relative Atomic Mass = 127.9035310(11)
+Isotopic Composition = 0.019102(8)
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 129
+Relative Atomic Mass = 128.9047808611(60)
+Isotopic Composition = 0.264006(82)
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 130
+Relative Atomic Mass = 129.903509349(10)
+Isotopic Composition = 0.040710(13)
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 131
+Relative Atomic Mass = 130.90508406(24)
+Isotopic Composition = 0.212324(30)
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 132
+Relative Atomic Mass = 131.9041550856(56)
+Isotopic Composition = 0.269086(33)
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 133
+Relative Atomic Mass = 132.9059108(26)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 134
+Relative Atomic Mass = 133.90539466(90)
+Isotopic Composition = 0.104357(21)
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 135
+Relative Atomic Mass = 134.9072278(45)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 136
+Relative Atomic Mass = 135.907214484(11)
+Isotopic Composition = 0.088573(44)
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 137
+Relative Atomic Mass = 136.91155778(11)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 138
+Relative Atomic Mass = 137.9141463(30)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 139
+Relative Atomic Mass = 138.9187922(23)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 140
+Relative Atomic Mass = 139.9216458(25)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 141
+Relative Atomic Mass = 140.9267872(31)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 142
+Relative Atomic Mass = 141.9299731(29)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 143
+Relative Atomic Mass = 142.9353696(50)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 144
+Relative Atomic Mass = 143.9389451(57)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 145
+Relative Atomic Mass = 144.944720(12)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 146
+Relative Atomic Mass = 145.948518(26)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 147
+Relative Atomic Mass = 146.95426(21#)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 54
+Atomic Symbol = Xe
+Mass Number = 148
+Relative Atomic Mass = 147.95813(21#)
+Isotopic Composition =
+Standard Atomic Weight = 131.293(6)
+Notes = g,m
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 112
+Relative Atomic Mass = 111.950309(93)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 113
+Relative Atomic Mass = 112.9444291(93)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 114
+Relative Atomic Mass = 113.941296(76)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 115
+Relative Atomic Mass = 114.93591(32#)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 116
+Relative Atomic Mass = 115.93337(11#)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 117
+Relative Atomic Mass = 116.928617(67)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 118
+Relative Atomic Mass = 117.926560(14)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 119
+Relative Atomic Mass = 118.922377(15)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 120
+Relative Atomic Mass = 119.920677(11)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 121
+Relative Atomic Mass = 120.917227(15)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 122
+Relative Atomic Mass = 121.916108(36)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 123
+Relative Atomic Mass = 122.912996(13)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 124
+Relative Atomic Mass = 123.9122578(89)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 125
+Relative Atomic Mass = 124.9097280(83)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 126
+Relative Atomic Mass = 125.909446(11)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 127
+Relative Atomic Mass = 126.9074174(60)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 128
+Relative Atomic Mass = 127.9077487(58)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 129
+Relative Atomic Mass = 128.9060657(49)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 130
+Relative Atomic Mass = 129.9067093(90)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 131
+Relative Atomic Mass = 130.9054649(53)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 132
+Relative Atomic Mass = 131.9064339(21)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 133
+Relative Atomic Mass = 132.9054519610(80)
+Isotopic Composition = 1
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 134
+Relative Atomic Mass = 133.906718503(17)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 135
+Relative Atomic Mass = 134.9059770(11)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 136
+Relative Atomic Mass = 135.9073114(20)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 137
+Relative Atomic Mass = 136.90708923(36)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 138
+Relative Atomic Mass = 137.9110171(98)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 139
+Relative Atomic Mass = 138.9133638(34)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 140
+Relative Atomic Mass = 139.9172831(88)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 141
+Relative Atomic Mass = 140.9200455(98)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 142
+Relative Atomic Mass = 141.9242960(79)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 143
+Relative Atomic Mass = 142.927349(24)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 144
+Relative Atomic Mass = 143.932076(27)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 145
+Relative Atomic Mass = 144.935527(12)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 146
+Relative Atomic Mass = 145.940344(42)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 147
+Relative Atomic Mass = 146.944156(57)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 148
+Relative Atomic Mass = 147.94923(62)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 149
+Relative Atomic Mass = 148.95302(21#)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 150
+Relative Atomic Mass = 149.95833(32#)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 55
+Atomic Symbol = Cs
+Mass Number = 151
+Relative Atomic Mass = 150.96258(43#)
+Isotopic Composition =
+Standard Atomic Weight = 132.90545196(6)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 114
+Relative Atomic Mass = 113.95066(12)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 115
+Relative Atomic Mass = 114.94737(54#)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 116
+Relative Atomic Mass = 115.94128(32#)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 117
+Relative Atomic Mass = 116.93814(21)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 118
+Relative Atomic Mass = 117.93306(21#)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 119
+Relative Atomic Mass = 118.93066(21)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 120
+Relative Atomic Mass = 119.92605(32)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 121
+Relative Atomic Mass = 120.92405(15)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 122
+Relative Atomic Mass = 121.919904(30)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 123
+Relative Atomic Mass = 122.918781(13)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 124
+Relative Atomic Mass = 123.915094(13)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 125
+Relative Atomic Mass = 124.914472(12)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 126
+Relative Atomic Mass = 125.911250(13)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 127
+Relative Atomic Mass = 126.911091(12)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 128
+Relative Atomic Mass = 127.9083420(56)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 129
+Relative Atomic Mass = 128.908681(11)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 130
+Relative Atomic Mass = 129.9063207(28)
+Isotopic Composition = 0.00106(1)
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 131
+Relative Atomic Mass = 130.9069410(28)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 132
+Relative Atomic Mass = 131.9050611(11)
+Isotopic Composition = 0.00101(1)
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 133
+Relative Atomic Mass = 132.9060074(11)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 134
+Relative Atomic Mass = 133.90450818(30)
+Isotopic Composition = 0.02417(18)
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 135
+Relative Atomic Mass = 134.90568838(29)
+Isotopic Composition = 0.06592(12)
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 136
+Relative Atomic Mass = 135.90457573(29)
+Isotopic Composition = 0.07854(24)
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 137
+Relative Atomic Mass = 136.90582714(30)
+Isotopic Composition = 0.11232(24)
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 138
+Relative Atomic Mass = 137.90524700(31)
+Isotopic Composition = 0.71698(42)
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 139
+Relative Atomic Mass = 138.90884110(31)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 140
+Relative Atomic Mass = 139.9106057(85)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 141
+Relative Atomic Mass = 140.9144033(57)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 142
+Relative Atomic Mass = 141.9164324(64)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 143
+Relative Atomic Mass = 142.9206253(74)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 144
+Relative Atomic Mass = 143.9229549(77)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 145
+Relative Atomic Mass = 144.9275184(91)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 146
+Relative Atomic Mass = 145.930284(22)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 147
+Relative Atomic Mass = 146.935304(21)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 148
+Relative Atomic Mass = 147.938171(68)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 149
+Relative Atomic Mass = 148.94308(21#)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 150
+Relative Atomic Mass = 149.94605(32#)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 151
+Relative Atomic Mass = 150.95127(32#)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 152
+Relative Atomic Mass = 151.95481(43#)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 56
+Atomic Symbol = Ba
+Mass Number = 153
+Relative Atomic Mass = 152.96036(43#)
+Isotopic Composition =
+Standard Atomic Weight = 137.327(7)
+Notes =
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 116
+Relative Atomic Mass = 115.95630(23#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 117
+Relative Atomic Mass = 116.94999(32#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 118
+Relative Atomic Mass = 117.94673(32#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 119
+Relative Atomic Mass = 118.94099(32#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 120
+Relative Atomic Mass = 119.93807(32#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 121
+Relative Atomic Mass = 120.93315(32#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 122
+Relative Atomic Mass = 121.93071(32#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 123
+Relative Atomic Mass = 122.92630(21#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 124
+Relative Atomic Mass = 123.924574(61)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 125
+Relative Atomic Mass = 124.920816(28)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 126
+Relative Atomic Mass = 125.919513(97)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 127
+Relative Atomic Mass = 126.916375(28)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 128
+Relative Atomic Mass = 127.915592(58)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 129
+Relative Atomic Mass = 128.912694(23)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 130
+Relative Atomic Mass = 129.912369(28)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 131
+Relative Atomic Mass = 130.910070(30)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 132
+Relative Atomic Mass = 131.910119(39)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 133
+Relative Atomic Mass = 132.908218(30)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 134
+Relative Atomic Mass = 133.908514(21)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 135
+Relative Atomic Mass = 134.906984(10)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 136
+Relative Atomic Mass = 135.907635(57)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 137
+Relative Atomic Mass = 136.9064504(18)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 138
+Relative Atomic Mass = 137.9071149(37)
+Isotopic Composition = 0.0008881(71)
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 139
+Relative Atomic Mass = 138.9063563(24)
+Isotopic Composition = 0.9991119(71)
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 140
+Relative Atomic Mass = 139.9094806(24)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 141
+Relative Atomic Mass = 140.9109660(48)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 142
+Relative Atomic Mass = 141.9140909(69)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 143
+Relative Atomic Mass = 142.9160795(79)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 144
+Relative Atomic Mass = 143.919646(14)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 145
+Relative Atomic Mass = 144.921808(13)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 146
+Relative Atomic Mass = 145.925875(36)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 147
+Relative Atomic Mass = 146.928418(12)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 148
+Relative Atomic Mass = 147.932679(21)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 149
+Relative Atomic Mass = 148.93535(21)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 150
+Relative Atomic Mass = 149.93947(21#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 151
+Relative Atomic Mass = 150.94232(21#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 152
+Relative Atomic Mass = 151.94682(32#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 153
+Relative Atomic Mass = 152.95036(32#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 154
+Relative Atomic Mass = 153.95517(43#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 57
+Atomic Symbol = La
+Mass Number = 155
+Relative Atomic Mass = 154.95901(43#)
+Isotopic Composition =
+Standard Atomic Weight = 138.90547(7)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 119
+Relative Atomic Mass = 118.95271(54#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 120
+Relative Atomic Mass = 119.94654(54#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 121
+Relative Atomic Mass = 120.94335(43#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 122
+Relative Atomic Mass = 121.93787(43#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 123
+Relative Atomic Mass = 122.93528(32#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 124
+Relative Atomic Mass = 123.93031(32#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 125
+Relative Atomic Mass = 124.92844(21#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 126
+Relative Atomic Mass = 125.923971(30)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 127
+Relative Atomic Mass = 126.922727(31)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 128
+Relative Atomic Mass = 127.918911(30)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 129
+Relative Atomic Mass = 128.918102(30)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 130
+Relative Atomic Mass = 129.914736(30)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 131
+Relative Atomic Mass = 130.914429(35)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 132
+Relative Atomic Mass = 131.911464(22)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 133
+Relative Atomic Mass = 132.911520(18)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 134
+Relative Atomic Mass = 133.908928(22)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 135
+Relative Atomic Mass = 134.909161(11)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 136
+Relative Atomic Mass = 135.90712921(41)
+Isotopic Composition = 0.00185(2)
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 137
+Relative Atomic Mass = 136.90776236(45)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 138
+Relative Atomic Mass = 137.905991(11)
+Isotopic Composition = 0.00251(2)
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 139
+Relative Atomic Mass = 138.9066551(78)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 140
+Relative Atomic Mass = 139.9054431(23)
+Isotopic Composition = 0.88450(51)
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 141
+Relative Atomic Mass = 140.9082807(23)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 142
+Relative Atomic Mass = 141.9092504(29)
+Isotopic Composition = 0.11114(51)
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 143
+Relative Atomic Mass = 142.9123921(29)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 144
+Relative Atomic Mass = 143.9136529(34)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 145
+Relative Atomic Mass = 144.917265(36)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 146
+Relative Atomic Mass = 145.918802(18)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 147
+Relative Atomic Mass = 146.9226899(92)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 148
+Relative Atomic Mass = 147.924424(12)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 149
+Relative Atomic Mass = 148.928427(11)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 150
+Relative Atomic Mass = 149.930384(13)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 151
+Relative Atomic Mass = 150.934272(19)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 152
+Relative Atomic Mass = 151.93660(21#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 153
+Relative Atomic Mass = 152.94093(21#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 154
+Relative Atomic Mass = 153.94380(32#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 155
+Relative Atomic Mass = 154.94855(43#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 156
+Relative Atomic Mass = 155.95183(43#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 58
+Atomic Symbol = Ce
+Mass Number = 157
+Relative Atomic Mass = 156.95705(54#)
+Isotopic Composition =
+Standard Atomic Weight = 140.116(1)
+Notes = g
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 121
+Relative Atomic Mass = 120.95532(54#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 122
+Relative Atomic Mass = 121.95175(54#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 123
+Relative Atomic Mass = 122.94596(43#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 124
+Relative Atomic Mass = 123.94294(43#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 125
+Relative Atomic Mass = 124.93770(32#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 126
+Relative Atomic Mass = 125.93524(21#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 127
+Relative Atomic Mass = 126.93071(21#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 128
+Relative Atomic Mass = 127.928791(32)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 129
+Relative Atomic Mass = 128.925095(32)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 130
+Relative Atomic Mass = 129.923590(69)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 131
+Relative Atomic Mass = 130.920235(50)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 132
+Relative Atomic Mass = 131.919255(61)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 133
+Relative Atomic Mass = 132.916331(13)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 134
+Relative Atomic Mass = 133.915697(22)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 135
+Relative Atomic Mass = 134.913112(13)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 136
+Relative Atomic Mass = 135.912677(12)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 137
+Relative Atomic Mass = 136.9106792(87)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 138
+Relative Atomic Mass = 137.910754(15)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 139
+Relative Atomic Mass = 138.9089408(85)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 140
+Relative Atomic Mass = 139.9090803(69)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 141
+Relative Atomic Mass = 140.9076576(23)
+Isotopic Composition = 1
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 142
+Relative Atomic Mass = 141.9100496(23)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 143
+Relative Atomic Mass = 142.9108228(24)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 144
+Relative Atomic Mass = 143.9133109(32)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 145
+Relative Atomic Mass = 144.9145182(78)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 146
+Relative Atomic Mass = 145.917680(37)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 147
+Relative Atomic Mass = 146.919008(17)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 148
+Relative Atomic Mass = 147.922130(16)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 149
+Relative Atomic Mass = 148.923736(11)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 150
+Relative Atomic Mass = 149.9266765(97)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 151
+Relative Atomic Mass = 150.928309(13)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 152
+Relative Atomic Mass = 151.931553(20)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 153
+Relative Atomic Mass = 152.933904(13)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 154
+Relative Atomic Mass = 153.93753(16)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 155
+Relative Atomic Mass = 154.940509(18)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 156
+Relative Atomic Mass = 155.94464(32#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 157
+Relative Atomic Mass = 156.94789(43#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 158
+Relative Atomic Mass = 157.95241(43#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 59
+Atomic Symbol = Pr
+Mass Number = 159
+Relative Atomic Mass = 158.95589(54#)
+Isotopic Composition =
+Standard Atomic Weight = 140.90766(2)
+Notes =
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 124
+Relative Atomic Mass = 123.95220(54#)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 125
+Relative Atomic Mass = 124.94890(43#)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 126
+Relative Atomic Mass = 125.94311(32#)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 127
+Relative Atomic Mass = 126.94038(32#)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 128
+Relative Atomic Mass = 127.93525(21#)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 129
+Relative Atomic Mass = 128.93310(22#)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 130
+Relative Atomic Mass = 129.928506(30)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 131
+Relative Atomic Mass = 130.927248(30)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 132
+Relative Atomic Mass = 131.923321(26)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 133
+Relative Atomic Mass = 132.922348(50)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 134
+Relative Atomic Mass = 133.918790(13)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 135
+Relative Atomic Mass = 134.918181(21)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 136
+Relative Atomic Mass = 135.914976(13)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 137
+Relative Atomic Mass = 136.914562(13)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 138
+Relative Atomic Mass = 137.911950(12)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 139
+Relative Atomic Mass = 138.911954(30)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 140
+Relative Atomic Mass = 139.909550(28)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 141
+Relative Atomic Mass = 140.9096147(38)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 142
+Relative Atomic Mass = 141.9077290(20)
+Isotopic Composition = 0.27152(40)
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 143
+Relative Atomic Mass = 142.9098200(20)
+Isotopic Composition = 0.12174(26)
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 144
+Relative Atomic Mass = 143.9100930(20)
+Isotopic Composition = 0.23798(19)
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 145
+Relative Atomic Mass = 144.9125793(20)
+Isotopic Composition = 0.08293(12)
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 146
+Relative Atomic Mass = 145.9131226(20)
+Isotopic Composition = 0.17189(32)
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 147
+Relative Atomic Mass = 146.9161061(20)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 148
+Relative Atomic Mass = 147.9168993(26)
+Isotopic Composition = 0.05756(21)
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 149
+Relative Atomic Mass = 148.9201548(26)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 150
+Relative Atomic Mass = 149.9209022(18)
+Isotopic Composition = 0.05638(28)
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 151
+Relative Atomic Mass = 150.9238403(18)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 152
+Relative Atomic Mass = 151.924692(26)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 153
+Relative Atomic Mass = 152.9277180(29)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 154
+Relative Atomic Mass = 153.92948(12)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 155
+Relative Atomic Mass = 154.9331357(98)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 156
+Relative Atomic Mass = 155.93508(21)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 157
+Relative Atomic Mass = 156.939386(27)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 158
+Relative Atomic Mass = 157.94197(32#)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 159
+Relative Atomic Mass = 158.94653(43#)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 160
+Relative Atomic Mass = 159.94940(43#)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 60
+Atomic Symbol = Nd
+Mass Number = 161
+Relative Atomic Mass = 160.95428(54#)
+Isotopic Composition =
+Standard Atomic Weight = 144.242(3)
+Notes = g
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 126
+Relative Atomic Mass = 125.95792(54#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 127
+Relative Atomic Mass = 126.95192(43#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 128
+Relative Atomic Mass = 127.94870(32#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 129
+Relative Atomic Mass = 128.94323(32#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 130
+Relative Atomic Mass = 129.94053(21#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 131
+Relative Atomic Mass = 130.93567(21#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 132
+Relative Atomic Mass = 131.93384(16#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 133
+Relative Atomic Mass = 132.929782(54)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 134
+Relative Atomic Mass = 133.928353(62)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 135
+Relative Atomic Mass = 134.924823(70)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 136
+Relative Atomic Mass = 135.923585(77)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 137
+Relative Atomic Mass = 136.920480(14)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 138
+Relative Atomic Mass = 137.919548(30)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 139
+Relative Atomic Mass = 138.916800(15)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 140
+Relative Atomic Mass = 139.916040(38)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 141
+Relative Atomic Mass = 140.913555(15)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 142
+Relative Atomic Mass = 141.912890(25)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 143
+Relative Atomic Mass = 142.9109383(34)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 144
+Relative Atomic Mass = 143.9125964(34)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 145
+Relative Atomic Mass = 144.9127559(33)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 146
+Relative Atomic Mass = 145.9147024(48)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 147
+Relative Atomic Mass = 146.9151450(19)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 148
+Relative Atomic Mass = 147.9174819(63)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 149
+Relative Atomic Mass = 148.9183423(27)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 150
+Relative Atomic Mass = 149.920991(22)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 151
+Relative Atomic Mass = 150.9212175(51)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 152
+Relative Atomic Mass = 151.923506(28)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 153
+Relative Atomic Mass = 152.9241567(97)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 154
+Relative Atomic Mass = 153.926472(48)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 155
+Relative Atomic Mass = 154.9281370(51)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 156
+Relative Atomic Mass = 155.9311175(39)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 157
+Relative Atomic Mass = 156.9331214(75)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 158
+Relative Atomic Mass = 157.936565(14)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 159
+Relative Atomic Mass = 158.939287(11)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 160
+Relative Atomic Mass = 159.94310(32#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 161
+Relative Atomic Mass = 160.94607(32#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 162
+Relative Atomic Mass = 161.95022(43#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 61
+Atomic Symbol = Pm
+Mass Number = 163
+Relative Atomic Mass = 162.95357(54#)
+Isotopic Composition =
+Standard Atomic Weight = [145]
+Notes =
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 128
+Relative Atomic Mass = 127.95842(54#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 129
+Relative Atomic Mass = 128.95476(54#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 130
+Relative Atomic Mass = 129.94900(43#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 131
+Relative Atomic Mass = 130.94618(43#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 132
+Relative Atomic Mass = 131.94087(32#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 133
+Relative Atomic Mass = 132.93856(32#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 134
+Relative Atomic Mass = 133.93411(21#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 135
+Relative Atomic Mass = 134.93252(17)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 136
+Relative Atomic Mass = 135.928276(13)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 137
+Relative Atomic Mass = 136.926971(46)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 138
+Relative Atomic Mass = 137.923244(13)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 139
+Relative Atomic Mass = 138.922297(12)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 140
+Relative Atomic Mass = 139.918995(13)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 141
+Relative Atomic Mass = 140.9184816(92)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 142
+Relative Atomic Mass = 141.9152044(36)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 143
+Relative Atomic Mass = 142.9146353(33)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 144
+Relative Atomic Mass = 143.9120065(21)
+Isotopic Composition = 0.0307(7)
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 145
+Relative Atomic Mass = 144.9134173(21)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 146
+Relative Atomic Mass = 145.9130470(35)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 147
+Relative Atomic Mass = 146.9149044(19)
+Isotopic Composition = 0.1499(18)
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 148
+Relative Atomic Mass = 147.9148292(19)
+Isotopic Composition = 0.1124(10)
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 149
+Relative Atomic Mass = 148.9171921(18)
+Isotopic Composition = 0.1382(7)
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 150
+Relative Atomic Mass = 149.9172829(18)
+Isotopic Composition = 0.0738(1)
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 151
+Relative Atomic Mass = 150.9199398(18)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 152
+Relative Atomic Mass = 151.9197397(18)
+Isotopic Composition = 0.2675(16)
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 153
+Relative Atomic Mass = 152.9221047(18)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 154
+Relative Atomic Mass = 153.9222169(20)
+Isotopic Composition = 0.2275(29)
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 155
+Relative Atomic Mass = 154.9246477(20)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 156
+Relative Atomic Mass = 155.925536(10)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 157
+Relative Atomic Mass = 156.9284187(48)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 158
+Relative Atomic Mass = 157.9299510(53)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 159
+Relative Atomic Mass = 158.9332172(64)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 160
+Relative Atomic Mass = 159.9353353(64)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 161
+Relative Atomic Mass = 160.9391602(73)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 162
+Relative Atomic Mass = 161.94146(21#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 163
+Relative Atomic Mass = 162.94555(32#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 164
+Relative Atomic Mass = 163.94836(32#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 62
+Atomic Symbol = Sm
+Mass Number = 165
+Relative Atomic Mass = 164.95297(43#)
+Isotopic Composition =
+Standard Atomic Weight = 150.36(2)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 130
+Relative Atomic Mass = 129.96369(54#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 131
+Relative Atomic Mass = 130.95784(43#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 132
+Relative Atomic Mass = 131.95467(43#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 133
+Relative Atomic Mass = 132.94929(32#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 134
+Relative Atomic Mass = 133.94640(32#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 135
+Relative Atomic Mass = 134.94187(21#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 136
+Relative Atomic Mass = 135.93962(21#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 137
+Relative Atomic Mass = 136.93546(21#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 138
+Relative Atomic Mass = 137.933709(30)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 139
+Relative Atomic Mass = 138.929792(14)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 140
+Relative Atomic Mass = 139.928088(55)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 141
+Relative Atomic Mass = 140.924932(14)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 142
+Relative Atomic Mass = 141.923442(32)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 143
+Relative Atomic Mass = 142.920299(12)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 144
+Relative Atomic Mass = 143.918820(12)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 145
+Relative Atomic Mass = 144.9162726(36)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 146
+Relative Atomic Mass = 145.9172110(65)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 147
+Relative Atomic Mass = 146.9167527(31)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 148
+Relative Atomic Mass = 147.918089(11)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 149
+Relative Atomic Mass = 148.9179378(44)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 150
+Relative Atomic Mass = 149.9197077(68)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 151
+Relative Atomic Mass = 150.9198578(18)
+Isotopic Composition = 0.4781(6)
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 152
+Relative Atomic Mass = 151.9217522(18)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 153
+Relative Atomic Mass = 152.9212380(18)
+Isotopic Composition = 0.5219(6)
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 154
+Relative Atomic Mass = 153.9229870(19)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 155
+Relative Atomic Mass = 154.9229011(19)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 156
+Relative Atomic Mass = 155.9247605(59)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 157
+Relative Atomic Mass = 156.9254334(46)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 158
+Relative Atomic Mass = 157.927799(11)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 159
+Relative Atomic Mass = 158.9291001(47)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 160
+Relative Atomic Mass = 159.931851(10)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 161
+Relative Atomic Mass = 160.933664(11)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 162
+Relative Atomic Mass = 161.936989(65)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 163
+Relative Atomic Mass = 162.939196(76)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 164
+Relative Atomic Mass = 163.94274(22#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 165
+Relative Atomic Mass = 164.94559(35#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 166
+Relative Atomic Mass = 165.94962(32#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 63
+Atomic Symbol = Eu
+Mass Number = 167
+Relative Atomic Mass = 166.95289(43#)
+Isotopic Composition =
+Standard Atomic Weight = 151.964(1)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 133
+Relative Atomic Mass = 132.96133(54#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 134
+Relative Atomic Mass = 133.95566(43#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 135
+Relative Atomic Mass = 134.95245(43#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 136
+Relative Atomic Mass = 135.94730(32#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 137
+Relative Atomic Mass = 136.94502(32#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 138
+Relative Atomic Mass = 137.94025(21#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 139
+Relative Atomic Mass = 138.93813(21#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 140
+Relative Atomic Mass = 139.933674(30)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 141
+Relative Atomic Mass = 140.932126(21)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 142
+Relative Atomic Mass = 141.928116(30)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 143
+Relative Atomic Mass = 142.92675(22)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 144
+Relative Atomic Mass = 143.922963(30)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 145
+Relative Atomic Mass = 144.921713(21)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 146
+Relative Atomic Mass = 145.9183188(46)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 147
+Relative Atomic Mass = 146.9191014(25)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 148
+Relative Atomic Mass = 147.9181215(21)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 149
+Relative Atomic Mass = 148.9193481(38)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 150
+Relative Atomic Mass = 149.9186644(66)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 151
+Relative Atomic Mass = 150.9203560(35)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 152
+Relative Atomic Mass = 151.9197995(18)
+Isotopic Composition = 0.0020(1)
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 153
+Relative Atomic Mass = 152.9217580(18)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 154
+Relative Atomic Mass = 153.9208741(17)
+Isotopic Composition = 0.0218(3)
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 155
+Relative Atomic Mass = 154.9226305(17)
+Isotopic Composition = 0.1480(12)
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 156
+Relative Atomic Mass = 155.9221312(17)
+Isotopic Composition = 0.2047(9)
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 157
+Relative Atomic Mass = 156.9239686(17)
+Isotopic Composition = 0.1565(2)
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 158
+Relative Atomic Mass = 157.9241123(17)
+Isotopic Composition = 0.2484(7)
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 159
+Relative Atomic Mass = 158.9263970(17)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 160
+Relative Atomic Mass = 159.9270624(18)
+Isotopic Composition = 0.2186(19)
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 161
+Relative Atomic Mass = 160.9296775(21)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 162
+Relative Atomic Mass = 161.9309930(45)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 163
+Relative Atomic Mass = 162.9341769(90)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 164
+Relative Atomic Mass = 163.93583(21#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 165
+Relative Atomic Mass = 164.93936(32#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 166
+Relative Atomic Mass = 165.94146(64#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 167
+Relative Atomic Mass = 166.94545(43#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 168
+Relative Atomic Mass = 167.94808(43#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 64
+Atomic Symbol = Gd
+Mass Number = 169
+Relative Atomic Mass = 168.95260(54#)
+Isotopic Composition =
+Standard Atomic Weight = 157.25(3)
+Notes = g
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 135
+Relative Atomic Mass = 134.96476(43#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 136
+Relative Atomic Mass = 135.96129(54#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 137
+Relative Atomic Mass = 136.95602(54#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 138
+Relative Atomic Mass = 137.95312(32#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 139
+Relative Atomic Mass = 138.94833(32#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 140
+Relative Atomic Mass = 139.94581(86)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 141
+Relative Atomic Mass = 140.94145(11)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 142
+Relative Atomic Mass = 141.93928(75)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 143
+Relative Atomic Mass = 142.935137(55)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 144
+Relative Atomic Mass = 143.933045(30)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 145
+Relative Atomic Mass = 144.92882(10)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 146
+Relative Atomic Mass = 145.927253(48)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 147
+Relative Atomic Mass = 146.9240548(87)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 148
+Relative Atomic Mass = 147.924282(14)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 149
+Relative Atomic Mass = 148.9232535(41)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 150
+Relative Atomic Mass = 149.9236649(80)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 151
+Relative Atomic Mass = 150.9231096(46)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 152
+Relative Atomic Mass = 151.924083(43)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 153
+Relative Atomic Mass = 152.9234424(44)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 154
+Relative Atomic Mass = 153.924685(49)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 155
+Relative Atomic Mass = 154.923511(11)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 156
+Relative Atomic Mass = 155.9247552(43)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 157
+Relative Atomic Mass = 156.9240330(18)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 158
+Relative Atomic Mass = 157.9254209(20)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 159
+Relative Atomic Mass = 158.9253547(19)
+Isotopic Composition = 1
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 160
+Relative Atomic Mass = 159.9271756(19)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 161
+Relative Atomic Mass = 160.9275778(20)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 162
+Relative Atomic Mass = 161.929495(39)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 163
+Relative Atomic Mass = 162.9306547(47)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 164
+Relative Atomic Mass = 163.93336(11)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 165
+Relative Atomic Mass = 164.93498(21#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 166
+Relative Atomic Mass = 165.937860(75)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 167
+Relative Atomic Mass = 166.93996(21#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 168
+Relative Atomic Mass = 167.94340(32#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 169
+Relative Atomic Mass = 168.94597(32#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 170
+Relative Atomic Mass = 169.94984(43#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 65
+Atomic Symbol = Tb
+Mass Number = 171
+Relative Atomic Mass = 170.95273(54#)
+Isotopic Composition =
+Standard Atomic Weight = 158.92535(2)
+Notes =
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 138
+Relative Atomic Mass = 137.96250(43#)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 139
+Relative Atomic Mass = 138.95959(54#)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 140
+Relative Atomic Mass = 139.95402(54#)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 141
+Relative Atomic Mass = 140.95128(32#)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 142
+Relative Atomic Mass = 141.94619(78#)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 143
+Relative Atomic Mass = 142.943994(14)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 144
+Relative Atomic Mass = 143.9392695(77)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 145
+Relative Atomic Mass = 144.9374740(70)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 146
+Relative Atomic Mass = 145.9328445(72)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 147
+Relative Atomic Mass = 146.9310827(95)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 148
+Relative Atomic Mass = 147.927157(10)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 149
+Relative Atomic Mass = 148.927322(10)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 150
+Relative Atomic Mass = 149.9255933(48)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 151
+Relative Atomic Mass = 150.9261916(38)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 152
+Relative Atomic Mass = 151.9247253(51)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 153
+Relative Atomic Mass = 152.9257724(45)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 154
+Relative Atomic Mass = 153.9244293(80)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 155
+Relative Atomic Mass = 154.925759(10)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 156
+Relative Atomic Mass = 155.9242847(17)
+Isotopic Composition = 0.00056(3)
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 157
+Relative Atomic Mass = 156.9254707(57)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 158
+Relative Atomic Mass = 157.9244159(31)
+Isotopic Composition = 0.00095(3)
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 159
+Relative Atomic Mass = 158.9257470(22)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 160
+Relative Atomic Mass = 159.9252046(20)
+Isotopic Composition = 0.02329(18)
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 161
+Relative Atomic Mass = 160.9269405(20)
+Isotopic Composition = 0.18889(42)
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 162
+Relative Atomic Mass = 161.9268056(20)
+Isotopic Composition = 0.25475(36)
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 163
+Relative Atomic Mass = 162.9287383(20)
+Isotopic Composition = 0.24896(42)
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 164
+Relative Atomic Mass = 163.9291819(20)
+Isotopic Composition = 0.28260(54)
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 165
+Relative Atomic Mass = 164.9317105(20)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 166
+Relative Atomic Mass = 165.9328139(21)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 167
+Relative Atomic Mass = 166.935661(65)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 168
+Relative Atomic Mass = 167.93713(15)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 169
+Relative Atomic Mass = 168.94031(32)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 170
+Relative Atomic Mass = 169.94239(21#)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 171
+Relative Atomic Mass = 170.94612(32#)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 172
+Relative Atomic Mass = 171.94846(32#)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 66
+Atomic Symbol = Dy
+Mass Number = 173
+Relative Atomic Mass = 172.95283(43#)
+Isotopic Composition =
+Standard Atomic Weight = 162.500(1)
+Notes = g
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 140
+Relative Atomic Mass = 139.96859(54#)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 141
+Relative Atomic Mass = 140.96311(54#)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 142
+Relative Atomic Mass = 141.96001(54#)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 143
+Relative Atomic Mass = 142.95486(43#)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 144
+Relative Atomic Mass = 143.9521097(91)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 145
+Relative Atomic Mass = 144.9472674(80)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 146
+Relative Atomic Mass = 145.9449935(71)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 147
+Relative Atomic Mass = 146.9401423(54)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 148
+Relative Atomic Mass = 147.937744(90)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 149
+Relative Atomic Mass = 148.933803(16)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 150
+Relative Atomic Mass = 149.933498(15)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 151
+Relative Atomic Mass = 150.9316983(89)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 152
+Relative Atomic Mass = 151.931724(14)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 153
+Relative Atomic Mass = 152.9302064(56)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 154
+Relative Atomic Mass = 153.9306068(89)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 155
+Relative Atomic Mass = 154.929104(19)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 156
+Relative Atomic Mass = 155.929706(64)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 157
+Relative Atomic Mass = 156.928254(25)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 158
+Relative Atomic Mass = 157.928946(29)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 159
+Relative Atomic Mass = 158.9277197(36)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 160
+Relative Atomic Mass = 159.928737(16)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 161
+Relative Atomic Mass = 160.9278615(30)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 162
+Relative Atomic Mass = 161.9291023(39)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 163
+Relative Atomic Mass = 162.9287410(20)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 164
+Relative Atomic Mass = 163.9302403(25)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 165
+Relative Atomic Mass = 164.9303288(21)
+Isotopic Composition = 1
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 166
+Relative Atomic Mass = 165.9322909(21)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 167
+Relative Atomic Mass = 166.9331385(59)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 168
+Relative Atomic Mass = 167.935522(32)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 169
+Relative Atomic Mass = 168.936878(22)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 170
+Relative Atomic Mass = 169.939625(54)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 171
+Relative Atomic Mass = 170.94147(64)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 172
+Relative Atomic Mass = 171.94473(21#)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 173
+Relative Atomic Mass = 172.94702(32#)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 174
+Relative Atomic Mass = 173.95095(32#)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 67
+Atomic Symbol = Ho
+Mass Number = 175
+Relative Atomic Mass = 174.95362(43#)
+Isotopic Composition =
+Standard Atomic Weight = 164.93033(2)
+Notes =
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 142
+Relative Atomic Mass = 141.97010(54#)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 143
+Relative Atomic Mass = 142.96662(43#)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 144
+Relative Atomic Mass = 143.96070(21#)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 145
+Relative Atomic Mass = 144.95805(21#)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 146
+Relative Atomic Mass = 145.9524184(72)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 147
+Relative Atomic Mass = 146.949964(41)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 148
+Relative Atomic Mass = 147.944735(11)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 149
+Relative Atomic Mass = 148.942306(30)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 150
+Relative Atomic Mass = 149.937916(18)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 151
+Relative Atomic Mass = 150.937449(18)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 152
+Relative Atomic Mass = 151.935057(10)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 153
+Relative Atomic Mass = 152.935080(10)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 154
+Relative Atomic Mass = 153.9327908(55)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 155
+Relative Atomic Mass = 154.9332159(67)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 156
+Relative Atomic Mass = 155.931067(26)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 157
+Relative Atomic Mass = 156.931949(27)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 158
+Relative Atomic Mass = 157.929893(27)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 159
+Relative Atomic Mass = 158.9306918(42)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 160
+Relative Atomic Mass = 159.929077(26)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 161
+Relative Atomic Mass = 160.9300046(96)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 162
+Relative Atomic Mass = 161.9287884(20)
+Isotopic Composition = 0.00139(5)
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 163
+Relative Atomic Mass = 162.9300408(53)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 164
+Relative Atomic Mass = 163.9292088(20)
+Isotopic Composition = 0.01601(3)
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 165
+Relative Atomic Mass = 164.9307345(21)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 166
+Relative Atomic Mass = 165.9302995(22)
+Isotopic Composition = 0.33503(36)
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 167
+Relative Atomic Mass = 166.9320546(22)
+Isotopic Composition = 0.22869(9)
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 168
+Relative Atomic Mass = 167.9323767(22)
+Isotopic Composition = 0.26978(18)
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 169
+Relative Atomic Mass = 168.9345968(22)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 170
+Relative Atomic Mass = 169.9354702(26)
+Isotopic Composition = 0.14910(36)
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 171
+Relative Atomic Mass = 170.9380357(26)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 172
+Relative Atomic Mass = 171.9393619(47)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 173
+Relative Atomic Mass = 172.94240(21#)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 174
+Relative Atomic Mass = 173.94423(32#)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 175
+Relative Atomic Mass = 174.94777(43#)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 176
+Relative Atomic Mass = 175.94994(43#)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 68
+Atomic Symbol = Er
+Mass Number = 177
+Relative Atomic Mass = 176.95399(54#)
+Isotopic Composition =
+Standard Atomic Weight = 167.259(3)
+Notes = g
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 144
+Relative Atomic Mass = 143.97628(43#)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 145
+Relative Atomic Mass = 144.97039(21#)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 146
+Relative Atomic Mass = 145.96684(21#)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 147
+Relative Atomic Mass = 146.9613799(73)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 148
+Relative Atomic Mass = 147.958384(11)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 149
+Relative Atomic Mass = 148.95289(32#)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 150
+Relative Atomic Mass = 149.95009(21#)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 151
+Relative Atomic Mass = 150.945488(21)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 152
+Relative Atomic Mass = 151.944422(79)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 153
+Relative Atomic Mass = 152.942040(16)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 154
+Relative Atomic Mass = 153.941570(15)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 155
+Relative Atomic Mass = 154.939210(11)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 156
+Relative Atomic Mass = 155.938992(16)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 157
+Relative Atomic Mass = 156.936944(28)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 158
+Relative Atomic Mass = 157.936980(27)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 159
+Relative Atomic Mass = 158.934975(30)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 160
+Relative Atomic Mass = 159.935263(37)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 161
+Relative Atomic Mass = 160.933549(30)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 162
+Relative Atomic Mass = 161.934002(28)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 163
+Relative Atomic Mass = 162.9326592(62)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 164
+Relative Atomic Mass = 163.933544(26)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 165
+Relative Atomic Mass = 164.9324431(26)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 166
+Relative Atomic Mass = 165.933561(13)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 167
+Relative Atomic Mass = 166.9328562(25)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 168
+Relative Atomic Mass = 167.9341774(27)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 169
+Relative Atomic Mass = 168.9342179(22)
+Isotopic Composition = 1
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 170
+Relative Atomic Mass = 169.9358060(22)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 171
+Relative Atomic Mass = 170.9364339(24)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 172
+Relative Atomic Mass = 171.9384055(62)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 173
+Relative Atomic Mass = 172.9396084(53)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 174
+Relative Atomic Mass = 173.942173(48)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 175
+Relative Atomic Mass = 174.943841(54)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 176
+Relative Atomic Mass = 175.94700(11)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 177
+Relative Atomic Mass = 176.94904(32#)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 178
+Relative Atomic Mass = 177.95264(43#)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 69
+Atomic Symbol = Tm
+Mass Number = 179
+Relative Atomic Mass = 178.95534(54#)
+Isotopic Composition =
+Standard Atomic Weight = 168.93422(2)
+Notes =
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 148
+Relative Atomic Mass = 147.96758(64#)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 149
+Relative Atomic Mass = 148.96436(54#)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 150
+Relative Atomic Mass = 149.95852(43#)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 151
+Relative Atomic Mass = 150.95540(32)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 152
+Relative Atomic Mass = 151.95027(17)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 153
+Relative Atomic Mass = 152.94932(21#)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 154
+Relative Atomic Mass = 153.946396(19)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 155
+Relative Atomic Mass = 154.945783(18)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 156
+Relative Atomic Mass = 155.942825(11)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 157
+Relative Atomic Mass = 156.942645(12)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 158
+Relative Atomic Mass = 157.9398705(86)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 159
+Relative Atomic Mass = 158.940055(19)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 160
+Relative Atomic Mass = 159.937557(17)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 161
+Relative Atomic Mass = 160.937907(17)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 162
+Relative Atomic Mass = 161.935774(17)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 163
+Relative Atomic Mass = 162.936340(17)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 164
+Relative Atomic Mass = 163.934495(17)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 165
+Relative Atomic Mass = 164.935270(28)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 166
+Relative Atomic Mass = 165.9338747(78)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 167
+Relative Atomic Mass = 166.9349530(47)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 168
+Relative Atomic Mass = 167.9338896(22)
+Isotopic Composition = 0.00123(3)
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 169
+Relative Atomic Mass = 168.9351825(22)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 170
+Relative Atomic Mass = 169.9347664(22)
+Isotopic Composition = 0.02982(39)
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 171
+Relative Atomic Mass = 170.9363302(22)
+Isotopic Composition = 0.1409(14)
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 172
+Relative Atomic Mass = 171.9363859(22)
+Isotopic Composition = 0.2168(13)
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 173
+Relative Atomic Mass = 172.9382151(22)
+Isotopic Composition = 0.16103(63)
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 174
+Relative Atomic Mass = 173.9388664(22)
+Isotopic Composition = 0.32026(80)
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 175
+Relative Atomic Mass = 174.9412808(22)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 176
+Relative Atomic Mass = 175.9425764(24)
+Isotopic Composition = 0.12996(83)
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 177
+Relative Atomic Mass = 176.9452656(24)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 178
+Relative Atomic Mass = 177.946651(11)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 179
+Relative Atomic Mass = 178.95004(21#)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 180
+Relative Atomic Mass = 179.95212(32#)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 70
+Atomic Symbol = Yb
+Mass Number = 181
+Relative Atomic Mass = 180.95589(32#)
+Isotopic Composition =
+Standard Atomic Weight = 173.054(5)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 150
+Relative Atomic Mass = 149.97355(54#)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 151
+Relative Atomic Mass = 150.96768(43#)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 152
+Relative Atomic Mass = 151.96412(21#)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 153
+Relative Atomic Mass = 152.95875(17)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 154
+Relative Atomic Mass = 153.95736(22#)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 155
+Relative Atomic Mass = 154.954321(21)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 156
+Relative Atomic Mass = 155.953033(79)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 157
+Relative Atomic Mass = 156.950127(16)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 158
+Relative Atomic Mass = 157.949316(16)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 159
+Relative Atomic Mass = 158.946636(40)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 160
+Relative Atomic Mass = 159.946033(61)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 161
+Relative Atomic Mass = 160.943572(30)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 162
+Relative Atomic Mass = 161.943283(81)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 163
+Relative Atomic Mass = 162.941179(30)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 164
+Relative Atomic Mass = 163.941339(30)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 165
+Relative Atomic Mass = 164.939407(28)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 166
+Relative Atomic Mass = 165.939859(32)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 167
+Relative Atomic Mass = 166.938270(34)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 168
+Relative Atomic Mass = 167.938736(42)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 169
+Relative Atomic Mass = 168.9376441(39)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 170
+Relative Atomic Mass = 169.938478(18)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 171
+Relative Atomic Mass = 170.9379170(27)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 172
+Relative Atomic Mass = 171.9390891(30)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 173
+Relative Atomic Mass = 172.9389340(23)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 174
+Relative Atomic Mass = 173.9403409(23)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 175
+Relative Atomic Mass = 174.9407752(20)
+Isotopic Composition = 0.97401(13)
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 176
+Relative Atomic Mass = 175.9426897(20)
+Isotopic Composition = 0.02599(13)
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 177
+Relative Atomic Mass = 176.9437615(20)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 178
+Relative Atomic Mass = 177.9459580(29)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 179
+Relative Atomic Mass = 178.9473309(57)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 180
+Relative Atomic Mass = 179.949888(76)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 181
+Relative Atomic Mass = 180.95191(17)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 182
+Relative Atomic Mass = 181.95504(21#)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 183
+Relative Atomic Mass = 182.957363(98)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 184
+Relative Atomic Mass = 183.96091(32#)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 71
+Atomic Symbol = Lu
+Mass Number = 185
+Relative Atomic Mass = 184.96362(32#)
+Isotopic Composition =
+Standard Atomic Weight = 174.9668(1)
+Notes = g
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 153
+Relative Atomic Mass = 152.97069(54#)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 154
+Relative Atomic Mass = 153.96486(54#)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 155
+Relative Atomic Mass = 154.96311(32#)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 156
+Relative Atomic Mass = 155.95935(17)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 157
+Relative Atomic Mass = 156.95824(21#)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 158
+Relative Atomic Mass = 157.954801(19)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 159
+Relative Atomic Mass = 158.953996(18)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 160
+Relative Atomic Mass = 159.950691(11)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 161
+Relative Atomic Mass = 160.950278(24)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 162
+Relative Atomic Mass = 161.9472148(97)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 163
+Relative Atomic Mass = 162.947113(27)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 164
+Relative Atomic Mass = 163.944371(17)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 165
+Relative Atomic Mass = 164.944567(30)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 166
+Relative Atomic Mass = 165.942180(30)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 167
+Relative Atomic Mass = 166.942600(30)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 168
+Relative Atomic Mass = 167.940568(30)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 169
+Relative Atomic Mass = 168.941259(30)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 170
+Relative Atomic Mass = 169.939609(30)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 171
+Relative Atomic Mass = 170.940492(31)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 172
+Relative Atomic Mass = 171.939450(26)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 173
+Relative Atomic Mass = 172.940513(30)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 174
+Relative Atomic Mass = 173.9400461(28)
+Isotopic Composition = 0.0016(1)
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 175
+Relative Atomic Mass = 174.9415092(29)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 176
+Relative Atomic Mass = 175.9414076(22)
+Isotopic Composition = 0.0526(7)
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 177
+Relative Atomic Mass = 176.9432277(20)
+Isotopic Composition = 0.1860(9)
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 178
+Relative Atomic Mass = 177.9437058(20)
+Isotopic Composition = 0.2728(7)
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 179
+Relative Atomic Mass = 178.9458232(20)
+Isotopic Composition = 0.1362(2)
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 180
+Relative Atomic Mass = 179.9465570(20)
+Isotopic Composition = 0.3508(16)
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 181
+Relative Atomic Mass = 180.9491083(20)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 182
+Relative Atomic Mass = 181.9505612(68)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 183
+Relative Atomic Mass = 182.953530(32)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 184
+Relative Atomic Mass = 183.955446(43)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 185
+Relative Atomic Mass = 184.958862(98)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 186
+Relative Atomic Mass = 185.960897(59)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 187
+Relative Atomic Mass = 186.96477(32#)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 188
+Relative Atomic Mass = 187.96685(32#)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 72
+Atomic Symbol = Hf
+Mass Number = 189
+Relative Atomic Mass = 188.97084(32#)
+Isotopic Composition =
+Standard Atomic Weight = 178.49(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 155
+Relative Atomic Mass = 154.97424(54#)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 156
+Relative Atomic Mass = 155.97203(32#)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 157
+Relative Atomic Mass = 156.96818(17)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 158
+Relative Atomic Mass = 157.96654(22#)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 159
+Relative Atomic Mass = 158.963023(21)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 160
+Relative Atomic Mass = 159.961488(79)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 161
+Relative Atomic Mass = 160.958452(27)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 162
+Relative Atomic Mass = 161.957294(56)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 163
+Relative Atomic Mass = 162.954337(41)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 164
+Relative Atomic Mass = 163.953534(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 165
+Relative Atomic Mass = 164.950781(15)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 166
+Relative Atomic Mass = 165.950512(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 167
+Relative Atomic Mass = 166.948093(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 168
+Relative Atomic Mass = 167.948047(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 169
+Relative Atomic Mass = 168.946011(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 170
+Relative Atomic Mass = 169.946175(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 171
+Relative Atomic Mass = 170.944476(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 172
+Relative Atomic Mass = 171.944895(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 173
+Relative Atomic Mass = 172.943750(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 174
+Relative Atomic Mass = 173.944454(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 175
+Relative Atomic Mass = 174.943737(30)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 176
+Relative Atomic Mass = 175.944857(33)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 177
+Relative Atomic Mass = 176.9444795(38)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 178
+Relative Atomic Mass = 177.945678(56#)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 179
+Relative Atomic Mass = 178.9459366(21)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 180
+Relative Atomic Mass = 179.9474648(24)
+Isotopic Composition = 0.0001201(32)
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 181
+Relative Atomic Mass = 180.9479958(20)
+Isotopic Composition = 0.9998799(32)
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 182
+Relative Atomic Mass = 181.9501519(20)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 183
+Relative Atomic Mass = 182.9513726(20)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 184
+Relative Atomic Mass = 183.954008(28)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 185
+Relative Atomic Mass = 184.955559(15)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 186
+Relative Atomic Mass = 185.958551(64)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 187
+Relative Atomic Mass = 186.960386(71)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 188
+Relative Atomic Mass = 187.963916(71)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 189
+Relative Atomic Mass = 188.96583(32#)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 190
+Relative Atomic Mass = 189.96939(21#)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 191
+Relative Atomic Mass = 190.97156(32#)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 73
+Atomic Symbol = Ta
+Mass Number = 192
+Relative Atomic Mass = 191.97514(43#)
+Isotopic Composition =
+Standard Atomic Weight = 180.94788(2)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 157
+Relative Atomic Mass = 156.97884(43#)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 158
+Relative Atomic Mass = 157.97456(54#)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 159
+Relative Atomic Mass = 158.97264(32#)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 160
+Relative Atomic Mass = 159.96846(17)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 161
+Relative Atomic Mass = 160.96720(21#)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 162
+Relative Atomic Mass = 161.963499(19)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 163
+Relative Atomic Mass = 162.962524(57)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 164
+Relative Atomic Mass = 163.958961(11)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 165
+Relative Atomic Mass = 164.958281(27)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 166
+Relative Atomic Mass = 165.955031(10)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 167
+Relative Atomic Mass = 166.954805(20)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 168
+Relative Atomic Mass = 167.951806(14)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 169
+Relative Atomic Mass = 168.951779(17)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 170
+Relative Atomic Mass = 169.949232(14)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 171
+Relative Atomic Mass = 170.949451(30)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 172
+Relative Atomic Mass = 171.947292(30)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 173
+Relative Atomic Mass = 172.947689(30)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 174
+Relative Atomic Mass = 173.946079(30)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 175
+Relative Atomic Mass = 174.946717(30)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 176
+Relative Atomic Mass = 175.945634(30)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 177
+Relative Atomic Mass = 176.946643(30)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 178
+Relative Atomic Mass = 177.945883(16)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 179
+Relative Atomic Mass = 178.947077(16)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 180
+Relative Atomic Mass = 179.9467108(20)
+Isotopic Composition = 0.0012(1)
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 181
+Relative Atomic Mass = 180.9481978(51)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 182
+Relative Atomic Mass = 181.94820394(91)
+Isotopic Composition = 0.2650(16)
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 183
+Relative Atomic Mass = 182.95022275(90)
+Isotopic Composition = 0.1431(4)
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 184
+Relative Atomic Mass = 183.95093092(94)
+Isotopic Composition = 0.3064(2)
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 185
+Relative Atomic Mass = 184.95341897(99)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 186
+Relative Atomic Mass = 185.9543628(17)
+Isotopic Composition = 0.2843(19)
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 187
+Relative Atomic Mass = 186.9571588(17)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 188
+Relative Atomic Mass = 187.9584862(36)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 189
+Relative Atomic Mass = 188.961763(44)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 190
+Relative Atomic Mass = 189.963091(42)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 191
+Relative Atomic Mass = 190.966531(48)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 192
+Relative Atomic Mass = 191.96817(21#)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 193
+Relative Atomic Mass = 192.97178(21#)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 74
+Atomic Symbol = W
+Mass Number = 194
+Relative Atomic Mass = 193.97367(32#)
+Isotopic Composition =
+Standard Atomic Weight = 183.84(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 159
+Relative Atomic Mass = 158.98418(54#)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 160
+Relative Atomic Mass = 159.98182(32#)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 161
+Relative Atomic Mass = 160.97757(17)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 162
+Relative Atomic Mass = 161.97584(22#)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 163
+Relative Atomic Mass = 162.972080(20)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 164
+Relative Atomic Mass = 163.970453(79)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 165
+Relative Atomic Mass = 164.967103(27)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 166
+Relative Atomic Mass = 165.965761(78)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 167
+Relative Atomic Mass = 166.962595(44#)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 168
+Relative Atomic Mass = 167.961573(33)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 169
+Relative Atomic Mass = 168.958766(12)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 170
+Relative Atomic Mass = 169.958220(28)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 171
+Relative Atomic Mass = 170.955716(30)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 172
+Relative Atomic Mass = 171.955420(42)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 173
+Relative Atomic Mass = 172.953243(30)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 174
+Relative Atomic Mass = 173.953115(30)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 175
+Relative Atomic Mass = 174.951381(30)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 176
+Relative Atomic Mass = 175.951623(30)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 177
+Relative Atomic Mass = 176.950328(30)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 178
+Relative Atomic Mass = 177.950989(30)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 179
+Relative Atomic Mass = 178.949989(26)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 180
+Relative Atomic Mass = 179.950792(23)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 181
+Relative Atomic Mass = 180.950058(14)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 182
+Relative Atomic Mass = 181.95121(11)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 183
+Relative Atomic Mass = 182.9508196(86)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 184
+Relative Atomic Mass = 183.9525228(47)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 185
+Relative Atomic Mass = 184.9529545(13)
+Isotopic Composition = 0.3740(2)
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 186
+Relative Atomic Mass = 185.9549856(13)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 187
+Relative Atomic Mass = 186.9557501(16)
+Isotopic Composition = 0.6260(2)
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 188
+Relative Atomic Mass = 187.9581115(16)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 189
+Relative Atomic Mass = 188.9592260(89)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 190
+Relative Atomic Mass = 189.961744(76)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 191
+Relative Atomic Mass = 190.963122(11)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 192
+Relative Atomic Mass = 191.966088(82)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 193
+Relative Atomic Mass = 192.967541(41)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 194
+Relative Atomic Mass = 193.97076(21#)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 195
+Relative Atomic Mass = 194.97254(32#)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 196
+Relative Atomic Mass = 195.97580(32#)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 197
+Relative Atomic Mass = 196.97799(32#)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 75
+Atomic Symbol = Re
+Mass Number = 198
+Relative Atomic Mass = 197.98160(43#)
+Isotopic Composition =
+Standard Atomic Weight = 186.207(1)
+Notes =
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 161
+Relative Atomic Mass = 160.98903(43#)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 162
+Relative Atomic Mass = 161.98443(54#)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 163
+Relative Atomic Mass = 162.98241(32#)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 164
+Relative Atomic Mass = 163.97802(17)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 165
+Relative Atomic Mass = 164.97660(22#)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 166
+Relative Atomic Mass = 165.972692(20)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 167
+Relative Atomic Mass = 166.971549(78)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 168
+Relative Atomic Mass = 167.967808(12)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 169
+Relative Atomic Mass = 168.967018(27)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 170
+Relative Atomic Mass = 169.963578(11)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 171
+Relative Atomic Mass = 170.963174(19)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 172
+Relative Atomic Mass = 171.960017(14)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 173
+Relative Atomic Mass = 172.959808(16)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 174
+Relative Atomic Mass = 173.957064(11)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 175
+Relative Atomic Mass = 174.956945(13)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 176
+Relative Atomic Mass = 175.954806(30)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 177
+Relative Atomic Mass = 176.954966(17)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 178
+Relative Atomic Mass = 177.953254(15)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 179
+Relative Atomic Mass = 178.953817(18)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 180
+Relative Atomic Mass = 179.952375(17)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 181
+Relative Atomic Mass = 180.953247(27)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 182
+Relative Atomic Mass = 181.952110(23)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 183
+Relative Atomic Mass = 182.953125(53)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 184
+Relative Atomic Mass = 183.9524885(14)
+Isotopic Composition = 0.0002(1)
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 185
+Relative Atomic Mass = 184.9540417(14)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 186
+Relative Atomic Mass = 185.9538350(16)
+Isotopic Composition = 0.0159(3)
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 187
+Relative Atomic Mass = 186.9557474(16)
+Isotopic Composition = 0.0196(2)
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 188
+Relative Atomic Mass = 187.9558352(16)
+Isotopic Composition = 0.1324(8)
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 189
+Relative Atomic Mass = 188.9581442(17)
+Isotopic Composition = 0.1615(5)
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 190
+Relative Atomic Mass = 189.9584437(17)
+Isotopic Composition = 0.2626(2)
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 191
+Relative Atomic Mass = 190.9609264(17)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 192
+Relative Atomic Mass = 191.9614770(29)
+Isotopic Composition = 0.4078(19)
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 193
+Relative Atomic Mass = 192.9641479(29)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 194
+Relative Atomic Mass = 193.9651772(30)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 195
+Relative Atomic Mass = 194.968318(65)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 196
+Relative Atomic Mass = 195.969641(43)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 197
+Relative Atomic Mass = 196.97283(21#)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 198
+Relative Atomic Mass = 197.97441(21#)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 199
+Relative Atomic Mass = 198.97801(21#)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 200
+Relative Atomic Mass = 199.97984(32#)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 201
+Relative Atomic Mass = 200.98364(32#)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 76
+Atomic Symbol = Os
+Mass Number = 202
+Relative Atomic Mass = 201.98595(43#)
+Isotopic Composition =
+Standard Atomic Weight = 190.23(3)
+Notes = g
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 164
+Relative Atomic Mass = 163.99191(34#)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 165
+Relative Atomic Mass = 164.98750(18#)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 166
+Relative Atomic Mass = 165.98566(22#)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 167
+Relative Atomic Mass = 166.981666(20)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 168
+Relative Atomic Mass = 167.979907(80)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 169
+Relative Atomic Mass = 168.976298(27)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 170
+Relative Atomic Mass = 169.974922(95#)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 171
+Relative Atomic Mass = 170.971640(42)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 172
+Relative Atomic Mass = 171.970607(35)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 173
+Relative Atomic Mass = 172.967506(12)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 174
+Relative Atomic Mass = 173.966861(30)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 175
+Relative Atomic Mass = 174.964150(13)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 176
+Relative Atomic Mass = 175.963650(22)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 177
+Relative Atomic Mass = 176.961301(21)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 178
+Relative Atomic Mass = 177.961082(21)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 179
+Relative Atomic Mass = 178.959120(10)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 180
+Relative Atomic Mass = 179.959229(23)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 181
+Relative Atomic Mass = 180.957625(28)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 182
+Relative Atomic Mass = 181.958076(23)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 183
+Relative Atomic Mass = 182.956840(26)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 184
+Relative Atomic Mass = 183.957476(30)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 185
+Relative Atomic Mass = 184.956698(30)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 186
+Relative Atomic Mass = 185.957944(18)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 187
+Relative Atomic Mass = 186.957542(30)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 188
+Relative Atomic Mass = 187.958828(10)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 189
+Relative Atomic Mass = 188.958715(14)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 190
+Relative Atomic Mass = 189.9605412(21)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 191
+Relative Atomic Mass = 190.9605893(21)
+Isotopic Composition = 0.373(2)
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 192
+Relative Atomic Mass = 191.9626002(21)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 193
+Relative Atomic Mass = 192.9629216(21)
+Isotopic Composition = 0.627(2)
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 194
+Relative Atomic Mass = 193.9650735(21)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 195
+Relative Atomic Mass = 194.9659747(21)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 196
+Relative Atomic Mass = 195.968397(41)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 197
+Relative Atomic Mass = 196.969655(22)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 198
+Relative Atomic Mass = 197.97228(21#)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 199
+Relative Atomic Mass = 198.973805(44)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 200
+Relative Atomic Mass = 199.97680(21#)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 201
+Relative Atomic Mass = 200.97864(21#)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 202
+Relative Atomic Mass = 201.98199(32#)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 203
+Relative Atomic Mass = 202.98423(43#)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 77
+Atomic Symbol = Ir
+Mass Number = 204
+Relative Atomic Mass = 203.98960(43#)
+Isotopic Composition =
+Standard Atomic Weight = 192.217(3)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 166
+Relative Atomic Mass = 165.99486(54#)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 167
+Relative Atomic Mass = 166.99269(33#)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 168
+Relative Atomic Mass = 167.98813(17)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 169
+Relative Atomic Mass = 168.98657(22#)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 170
+Relative Atomic Mass = 169.982496(20)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 171
+Relative Atomic Mass = 170.981245(78)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 172
+Relative Atomic Mass = 171.977351(12)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 173
+Relative Atomic Mass = 172.976443(60)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 174
+Relative Atomic Mass = 173.972820(11)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 175
+Relative Atomic Mass = 174.972410(19)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 176
+Relative Atomic Mass = 175.968938(14)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 177
+Relative Atomic Mass = 176.968470(16)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 178
+Relative Atomic Mass = 177.965650(11)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 179
+Relative Atomic Mass = 178.9653590(86)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 180
+Relative Atomic Mass = 179.963032(12)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 181
+Relative Atomic Mass = 180.963098(16)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 182
+Relative Atomic Mass = 181.961172(14)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 183
+Relative Atomic Mass = 182.961597(17)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 184
+Relative Atomic Mass = 183.959915(17)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 185
+Relative Atomic Mass = 184.960614(28)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 186
+Relative Atomic Mass = 185.959351(23)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 187
+Relative Atomic Mass = 186.960617(26)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 188
+Relative Atomic Mass = 187.9593889(61)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 189
+Relative Atomic Mass = 188.960831(12)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 190
+Relative Atomic Mass = 189.9599297(63)
+Isotopic Composition = 0.00012(2)
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 191
+Relative Atomic Mass = 190.9616729(53)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 192
+Relative Atomic Mass = 191.9610387(32)
+Isotopic Composition = 0.00782(24)
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 193
+Relative Atomic Mass = 192.9629824(21)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 194
+Relative Atomic Mass = 193.9626809(10)
+Isotopic Composition = 0.3286(40)
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 195
+Relative Atomic Mass = 194.9647917(10)
+Isotopic Composition = 0.3378(24)
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 196
+Relative Atomic Mass = 195.96495209(99)
+Isotopic Composition = 0.2521(34)
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 197
+Relative Atomic Mass = 196.96734069(94)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 198
+Relative Atomic Mass = 197.9678949(23)
+Isotopic Composition = 0.07356(130)
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 199
+Relative Atomic Mass = 198.9705952(24)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 200
+Relative Atomic Mass = 199.971443(22)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 201
+Relative Atomic Mass = 200.974513(54)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 202
+Relative Atomic Mass = 201.975639(27)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 203
+Relative Atomic Mass = 202.97893(21#)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 204
+Relative Atomic Mass = 203.98076(21#)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 205
+Relative Atomic Mass = 204.98608(32#)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 78
+Atomic Symbol = Pt
+Mass Number = 206
+Relative Atomic Mass = 205.98966(32#)
+Isotopic Composition =
+Standard Atomic Weight = 195.084(9)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 169
+Relative Atomic Mass = 168.99808(32#)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 170
+Relative Atomic Mass = 169.99597(22#)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 171
+Relative Atomic Mass = 170.991876(22)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 172
+Relative Atomic Mass = 171.989942(81)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 173
+Relative Atomic Mass = 172.986241(26)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 174
+Relative Atomic Mass = 173.984717(95#)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 175
+Relative Atomic Mass = 174.981304(42)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 176
+Relative Atomic Mass = 175.980250(36)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 177
+Relative Atomic Mass = 176.976870(11)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 178
+Relative Atomic Mass = 177.976032(61)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 179
+Relative Atomic Mass = 178.973174(13)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 180
+Relative Atomic Mass = 179.972523(21)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 181
+Relative Atomic Mass = 180.970079(21)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 182
+Relative Atomic Mass = 181.969618(22)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 183
+Relative Atomic Mass = 182.967591(10)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 184
+Relative Atomic Mass = 183.967452(24)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 185
+Relative Atomic Mass = 184.965790(28)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 186
+Relative Atomic Mass = 185.965953(23)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 187
+Relative Atomic Mass = 186.964543(24)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 188
+Relative Atomic Mass = 187.965349(17)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 189
+Relative Atomic Mass = 188.963948(22)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 190
+Relative Atomic Mass = 189.964698(17)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 191
+Relative Atomic Mass = 190.963702(40)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 192
+Relative Atomic Mass = 191.964814(17)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 193
+Relative Atomic Mass = 192.9641373(93)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 194
+Relative Atomic Mass = 193.9654178(23)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 195
+Relative Atomic Mass = 194.9650352(15)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 196
+Relative Atomic Mass = 195.9665699(32)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 197
+Relative Atomic Mass = 196.96656879(71)
+Isotopic Composition = 1
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 198
+Relative Atomic Mass = 197.96824242(70)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 199
+Relative Atomic Mass = 198.96876528(70)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 200
+Relative Atomic Mass = 199.970756(29)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 201
+Relative Atomic Mass = 200.9716575(34)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 202
+Relative Atomic Mass = 201.973856(25)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 203
+Relative Atomic Mass = 202.9751544(33)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 204
+Relative Atomic Mass = 203.97783(22#)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 205
+Relative Atomic Mass = 204.97985(21#)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 206
+Relative Atomic Mass = 205.98474(32#)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 207
+Relative Atomic Mass = 206.98840(32#)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 208
+Relative Atomic Mass = 207.99345(32#)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 209
+Relative Atomic Mass = 208.99735(43#)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 79
+Atomic Symbol = Au
+Mass Number = 210
+Relative Atomic Mass = 210.00250(43#)
+Isotopic Composition =
+Standard Atomic Weight = 196.966569(5)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 171
+Relative Atomic Mass = 171.00353(33#)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 172
+Relative Atomic Mass = 171.99881(17)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 173
+Relative Atomic Mass = 172.99709(22#)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 174
+Relative Atomic Mass = 173.992865(21)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 175
+Relative Atomic Mass = 174.991441(78)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 176
+Relative Atomic Mass = 175.987361(14)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 177
+Relative Atomic Mass = 176.986277(81)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 178
+Relative Atomic Mass = 177.982484(12)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 179
+Relative Atomic Mass = 178.981831(29)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 180
+Relative Atomic Mass = 179.978260(14)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 181
+Relative Atomic Mass = 180.977819(17)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 182
+Relative Atomic Mass = 181.974689(11)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 183
+Relative Atomic Mass = 182.9744448(76)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 184
+Relative Atomic Mass = 183.971714(11)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 185
+Relative Atomic Mass = 184.971899(17)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 186
+Relative Atomic Mass = 185.969362(13)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 187
+Relative Atomic Mass = 186.969814(15)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 188
+Relative Atomic Mass = 187.967567(12)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 189
+Relative Atomic Mass = 188.968195(34)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 190
+Relative Atomic Mass = 189.966323(17)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 191
+Relative Atomic Mass = 190.967157(24)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 192
+Relative Atomic Mass = 191.965635(17)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 193
+Relative Atomic Mass = 192.966653(17)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 194
+Relative Atomic Mass = 193.9654491(31)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 195
+Relative Atomic Mass = 194.966721(25)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 196
+Relative Atomic Mass = 195.9658326(32)
+Isotopic Composition = 0.0015(1)
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 197
+Relative Atomic Mass = 196.9672128(35)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 198
+Relative Atomic Mass = 197.96676860(52)
+Isotopic Composition = 0.0997(20)
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 199
+Relative Atomic Mass = 198.96828064(46)
+Isotopic Composition = 0.1687(22)
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 200
+Relative Atomic Mass = 199.96832659(47)
+Isotopic Composition = 0.2310(19)
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 201
+Relative Atomic Mass = 200.97030284(69)
+Isotopic Composition = 0.1318(9)
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 202
+Relative Atomic Mass = 201.97064340(69)
+Isotopic Composition = 0.2986(26)
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 203
+Relative Atomic Mass = 202.9728728(18)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 204
+Relative Atomic Mass = 203.97349398(53)
+Isotopic Composition = 0.0687(15)
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 205
+Relative Atomic Mass = 204.9760734(39)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 206
+Relative Atomic Mass = 205.977514(22)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 207
+Relative Atomic Mass = 206.982300(32)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 208
+Relative Atomic Mass = 207.985759(33)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 209
+Relative Atomic Mass = 208.99072(16#)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 210
+Relative Atomic Mass = 209.99424(21#)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 211
+Relative Atomic Mass = 210.99933(21#)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 212
+Relative Atomic Mass = 212.00296(32#)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 213
+Relative Atomic Mass = 213.00823(32#)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 214
+Relative Atomic Mass = 214.01200(43#)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 215
+Relative Atomic Mass = 215.01740(43#)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 80
+Atomic Symbol = Hg
+Mass Number = 216
+Relative Atomic Mass = 216.02132(43#)
+Isotopic Composition =
+Standard Atomic Weight = 200.592(3)
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 176
+Relative Atomic Mass = 176.000624(81)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 177
+Relative Atomic Mass = 176.996431(25)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 178
+Relative Atomic Mass = 177.99485(11#)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 179
+Relative Atomic Mass = 178.991111(43)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 180
+Relative Atomic Mass = 179.990057(64)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 181
+Relative Atomic Mass = 180.9862600(98)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 182
+Relative Atomic Mass = 181.985713(63)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 183
+Relative Atomic Mass = 182.982193(10)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 184
+Relative Atomic Mass = 183.981886(22)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 185
+Relative Atomic Mass = 184.978789(22)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 186
+Relative Atomic Mass = 185.978651(24)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 187
+Relative Atomic Mass = 186.9759063(88)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 188
+Relative Atomic Mass = 187.976021(32)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 189
+Relative Atomic Mass = 188.973588(12)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 190
+Relative Atomic Mass = 189.973828(54#)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 191
+Relative Atomic Mass = 190.9717842(79)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 192
+Relative Atomic Mass = 191.972225(34)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 193
+Relative Atomic Mass = 192.9705020(72)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 194
+Relative Atomic Mass = 193.971081(15)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 195
+Relative Atomic Mass = 194.969774(12)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 196
+Relative Atomic Mass = 195.970481(13)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 197
+Relative Atomic Mass = 196.969576(18)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 198
+Relative Atomic Mass = 197.970483(86)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 199
+Relative Atomic Mass = 198.969877(30)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 200
+Relative Atomic Mass = 199.9709633(62)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 201
+Relative Atomic Mass = 200.970822(15)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 202
+Relative Atomic Mass = 201.972102(15)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 203
+Relative Atomic Mass = 202.9723446(14)
+Isotopic Composition = 0.2952(1)
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 204
+Relative Atomic Mass = 203.9738639(13)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 205
+Relative Atomic Mass = 204.9744278(14)
+Isotopic Composition = 0.7048(1)
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 206
+Relative Atomic Mass = 205.9761106(15)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 207
+Relative Atomic Mass = 206.9774197(59)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 208
+Relative Atomic Mass = 207.9820190(21)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 209
+Relative Atomic Mass = 208.9853594(86)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 210
+Relative Atomic Mass = 209.990074(12)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 211
+Relative Atomic Mass = 210.993475(45)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 212
+Relative Atomic Mass = 211.99834(22#)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 213
+Relative Atomic Mass = 213.001915(29)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 214
+Relative Atomic Mass = 214.00694(21#)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 215
+Relative Atomic Mass = 215.01064(32#)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 216
+Relative Atomic Mass = 216.01580(32#)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 217
+Relative Atomic Mass = 217.01966(43#)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 81
+Atomic Symbol = Tl
+Mass Number = 218
+Relative Atomic Mass = 218.02479(43#)
+Isotopic Composition =
+Standard Atomic Weight = [204.382,204.385]
+Notes =
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 178
+Relative Atomic Mass = 178.003831(26)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 179
+Relative Atomic Mass = 179.002201(81)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 180
+Relative Atomic Mass = 179.997928(15)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 181
+Relative Atomic Mass = 180.996653(81)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 182
+Relative Atomic Mass = 181.992672(13)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 183
+Relative Atomic Mass = 182.991872(30)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 184
+Relative Atomic Mass = 183.988136(14)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 185
+Relative Atomic Mass = 184.987610(17)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 186
+Relative Atomic Mass = 185.984238(12)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 187
+Relative Atomic Mass = 186.9839109(55)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 188
+Relative Atomic Mass = 187.980875(11)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 189
+Relative Atomic Mass = 188.980807(37)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 190
+Relative Atomic Mass = 189.978082(13)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 191
+Relative Atomic Mass = 190.978276(41)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 192
+Relative Atomic Mass = 191.975775(13)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 193
+Relative Atomic Mass = 192.976173(53)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 194
+Relative Atomic Mass = 193.974012(19)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 195
+Relative Atomic Mass = 194.974543(25)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 196
+Relative Atomic Mass = 195.972774(15)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 197
+Relative Atomic Mass = 196.9734312(60)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 198
+Relative Atomic Mass = 197.972034(16)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 199
+Relative Atomic Mass = 198.972913(11)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 200
+Relative Atomic Mass = 199.971819(12)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 201
+Relative Atomic Mass = 200.972883(23)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 202
+Relative Atomic Mass = 201.9721520(40)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 203
+Relative Atomic Mass = 202.9733911(71)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 204
+Relative Atomic Mass = 203.9730440(13)
+Isotopic Composition = 0.014(1)
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 205
+Relative Atomic Mass = 204.9744822(13)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 206
+Relative Atomic Mass = 205.9744657(13)
+Isotopic Composition = 0.241(1)
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 207
+Relative Atomic Mass = 206.9758973(13)
+Isotopic Composition = 0.221(1)
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 208
+Relative Atomic Mass = 207.9766525(13)
+Isotopic Composition = 0.524(1)
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 209
+Relative Atomic Mass = 208.9810905(19)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 210
+Relative Atomic Mass = 209.9841889(16)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 211
+Relative Atomic Mass = 210.9887371(28)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 212
+Relative Atomic Mass = 211.9918977(23)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 213
+Relative Atomic Mass = 212.9965629(72)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 214
+Relative Atomic Mass = 213.9998059(25)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 215
+Relative Atomic Mass = 215.00474(11#)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 216
+Relative Atomic Mass = 216.00803(21#)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 217
+Relative Atomic Mass = 217.01314(32#)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 218
+Relative Atomic Mass = 218.01659(32#)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 219
+Relative Atomic Mass = 219.02177(43#)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 82
+Atomic Symbol = Pb
+Mass Number = 220
+Relative Atomic Mass = 220.02541(43#)
+Isotopic Composition =
+Standard Atomic Weight = 207.2(1)
+Notes = g,r
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 184
+Relative Atomic Mass = 184.001275(84)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 185
+Relative Atomic Mass = 184.997600(87#)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 186
+Relative Atomic Mass = 185.996644(65)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 187
+Relative Atomic Mass = 186.993147(11)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 188
+Relative Atomic Mass = 187.992287(22)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 189
+Relative Atomic Mass = 188.989195(22)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 190
+Relative Atomic Mass = 189.988622(24)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 191
+Relative Atomic Mass = 190.9857866(80)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 192
+Relative Atomic Mass = 191.985469(33)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 193
+Relative Atomic Mass = 192.982960(10)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 194
+Relative Atomic Mass = 193.982785(54#)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 195
+Relative Atomic Mass = 194.9806488(57)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 196
+Relative Atomic Mass = 195.980667(26)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 197
+Relative Atomic Mass = 196.9788651(89)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 198
+Relative Atomic Mass = 197.979206(30)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 199
+Relative Atomic Mass = 198.977673(11)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 200
+Relative Atomic Mass = 199.978131(24)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 201
+Relative Atomic Mass = 200.977010(16)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 202
+Relative Atomic Mass = 201.977734(17)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 203
+Relative Atomic Mass = 202.976893(14)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 204
+Relative Atomic Mass = 203.9778361(99)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 205
+Relative Atomic Mass = 204.9773867(55)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 206
+Relative Atomic Mass = 205.9784993(82)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 207
+Relative Atomic Mass = 206.9784710(26)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 208
+Relative Atomic Mass = 207.9797425(25)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 209
+Relative Atomic Mass = 208.9803991(16)
+Isotopic Composition = 1
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 210
+Relative Atomic Mass = 209.9841207(16)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 211
+Relative Atomic Mass = 210.9872697(59)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 212
+Relative Atomic Mass = 211.9912860(21)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 213
+Relative Atomic Mass = 212.9943851(56)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 214
+Relative Atomic Mass = 213.998712(12)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 215
+Relative Atomic Mass = 215.001770(16)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 216
+Relative Atomic Mass = 216.006306(12)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 217
+Relative Atomic Mass = 217.009372(19)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 218
+Relative Atomic Mass = 218.014188(29)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 219
+Relative Atomic Mass = 219.01748(21#)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 220
+Relative Atomic Mass = 220.02235(32#)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 221
+Relative Atomic Mass = 221.02587(32#)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 222
+Relative Atomic Mass = 222.03078(32#)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 223
+Relative Atomic Mass = 223.03450(43#)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 83
+Atomic Symbol = Bi
+Mass Number = 224
+Relative Atomic Mass = 224.03947(43#)
+Isotopic Composition =
+Standard Atomic Weight = 208.98040(1)
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 186
+Relative Atomic Mass = 186.004393(35)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 187
+Relative Atomic Mass = 187.003041(34)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 188
+Relative Atomic Mass = 187.999416(21)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 189
+Relative Atomic Mass = 188.998473(24)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 190
+Relative Atomic Mass = 189.995101(14)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 191
+Relative Atomic Mass = 190.9945585(76)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 192
+Relative Atomic Mass = 191.991336(12)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 193
+Relative Atomic Mass = 192.991026(37)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 194
+Relative Atomic Mass = 193.988186(14)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 195
+Relative Atomic Mass = 194.988126(41)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 196
+Relative Atomic Mass = 195.985526(14)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 197
+Relative Atomic Mass = 196.985660(53)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 198
+Relative Atomic Mass = 197.983389(19)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 199
+Relative Atomic Mass = 198.983667(25)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 200
+Relative Atomic Mass = 199.981799(15)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 201
+Relative Atomic Mass = 200.9822598(63)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 202
+Relative Atomic Mass = 201.980758(16)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 203
+Relative Atomic Mass = 202.9814161(93)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 204
+Relative Atomic Mass = 203.980310(12)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 205
+Relative Atomic Mass = 204.981203(22)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 206
+Relative Atomic Mass = 205.9804740(43)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 207
+Relative Atomic Mass = 206.9815938(72)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 208
+Relative Atomic Mass = 207.9812461(19)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 209
+Relative Atomic Mass = 208.9824308(20)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 210
+Relative Atomic Mass = 209.9828741(13)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 211
+Relative Atomic Mass = 210.9866536(14)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 212
+Relative Atomic Mass = 211.9888684(13)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 213
+Relative Atomic Mass = 212.9928576(33)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 214
+Relative Atomic Mass = 213.9952017(16)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 215
+Relative Atomic Mass = 214.9994201(27)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 216
+Relative Atomic Mass = 216.0019152(23)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 217
+Relative Atomic Mass = 217.0063182(67)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 218
+Relative Atomic Mass = 218.0089735(25)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 219
+Relative Atomic Mass = 219.013614(17)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 220
+Relative Atomic Mass = 220.016386(19)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 221
+Relative Atomic Mass = 221.021228(21)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 222
+Relative Atomic Mass = 222.024140(43)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 223
+Relative Atomic Mass = 223.02907(21#)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 224
+Relative Atomic Mass = 224.03211(21#)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 225
+Relative Atomic Mass = 225.03707(32#)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 226
+Relative Atomic Mass = 226.04031(43#)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 84
+Atomic Symbol = Po
+Mass Number = 227
+Relative Atomic Mass = 227.04539(43#)
+Isotopic Composition =
+Standard Atomic Weight = [209]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 191
+Relative Atomic Mass = 191.004148(17)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 192
+Relative Atomic Mass = 192.003152(35)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 193
+Relative Atomic Mass = 192.999927(23)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 194
+Relative Atomic Mass = 193.999236(29)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 195
+Relative Atomic Mass = 194.9962685(98)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 196
+Relative Atomic Mass = 195.995800(33)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 197
+Relative Atomic Mass = 196.993189(55)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 198
+Relative Atomic Mass = 197.992784(54#)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 199
+Relative Atomic Mass = 198.9905277(58)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 200
+Relative Atomic Mass = 199.990351(26)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 201
+Relative Atomic Mass = 200.9884171(88)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 202
+Relative Atomic Mass = 201.988630(30)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 203
+Relative Atomic Mass = 202.986943(11)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 204
+Relative Atomic Mass = 203.987251(24)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 205
+Relative Atomic Mass = 204.986076(16)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 206
+Relative Atomic Mass = 205.986657(16)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 207
+Relative Atomic Mass = 206.985800(13)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 208
+Relative Atomic Mass = 207.9866133(96)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 209
+Relative Atomic Mass = 208.9861702(55)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 210
+Relative Atomic Mass = 209.9871479(83)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 211
+Relative Atomic Mass = 210.9874966(30)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 212
+Relative Atomic Mass = 211.9907377(26)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 213
+Relative Atomic Mass = 212.9929370(53)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 214
+Relative Atomic Mass = 213.9963721(46)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 215
+Relative Atomic Mass = 214.9986528(73)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 216
+Relative Atomic Mass = 216.0024236(39)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 217
+Relative Atomic Mass = 217.0047192(55)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 218
+Relative Atomic Mass = 218.008695(12)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 219
+Relative Atomic Mass = 219.0111618(42)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 220
+Relative Atomic Mass = 220.015433(15)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 221
+Relative Atomic Mass = 221.018017(15)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 222
+Relative Atomic Mass = 222.022494(17)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 223
+Relative Atomic Mass = 223.025151(15)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 224
+Relative Atomic Mass = 224.029749(24)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 225
+Relative Atomic Mass = 225.03263(32#)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 226
+Relative Atomic Mass = 226.03716(32#)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 227
+Relative Atomic Mass = 227.04024(32#)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 228
+Relative Atomic Mass = 228.04475(43#)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 85
+Atomic Symbol = At
+Mass Number = 229
+Relative Atomic Mass = 229.04812(43#)
+Isotopic Composition =
+Standard Atomic Weight = [210]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 193
+Relative Atomic Mass = 193.009708(27)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 194
+Relative Atomic Mass = 194.006144(18)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 195
+Relative Atomic Mass = 195.005422(54)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 196
+Relative Atomic Mass = 196.002116(15)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 197
+Relative Atomic Mass = 197.001585(38)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 198
+Relative Atomic Mass = 197.998679(14)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 199
+Relative Atomic Mass = 198.998390(68)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 200
+Relative Atomic Mass = 199.995690(14)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 201
+Relative Atomic Mass = 200.995628(53)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 202
+Relative Atomic Mass = 201.993264(19)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 203
+Relative Atomic Mass = 202.993388(25)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 204
+Relative Atomic Mass = 203.991430(16)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 205
+Relative Atomic Mass = 204.991719(54)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 206
+Relative Atomic Mass = 205.990214(16)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 207
+Relative Atomic Mass = 206.9907303(91)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 208
+Relative Atomic Mass = 207.989635(12)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 209
+Relative Atomic Mass = 208.990415(22)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 210
+Relative Atomic Mass = 209.9896891(49)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 211
+Relative Atomic Mass = 210.9906011(73)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 212
+Relative Atomic Mass = 211.9907039(34)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 213
+Relative Atomic Mass = 212.9938831(61)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 214
+Relative Atomic Mass = 213.9953630(99)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 215
+Relative Atomic Mass = 214.9987459(83)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 216
+Relative Atomic Mass = 216.0002719(65)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 217
+Relative Atomic Mass = 217.0039280(45)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 218
+Relative Atomic Mass = 218.0056016(25)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 219
+Relative Atomic Mass = 219.0094804(27)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 220
+Relative Atomic Mass = 220.0113941(23)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 221
+Relative Atomic Mass = 221.0155371(63)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 222
+Relative Atomic Mass = 222.0175782(25)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 223
+Relative Atomic Mass = 223.0218893(84)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 224
+Relative Atomic Mass = 224.024096(11)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 225
+Relative Atomic Mass = 225.028486(12)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 226
+Relative Atomic Mass = 226.030861(11)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 227
+Relative Atomic Mass = 227.035304(15)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 228
+Relative Atomic Mass = 228.037835(19)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 229
+Relative Atomic Mass = 229.042257(14)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 230
+Relative Atomic Mass = 230.04514(21#)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 86
+Atomic Symbol = Rn
+Mass Number = 231
+Relative Atomic Mass = 231.04987(32#)
+Isotopic Composition =
+Standard Atomic Weight = [222]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 199
+Relative Atomic Mass = 199.007259(45)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 200
+Relative Atomic Mass = 200.006586(63)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 201
+Relative Atomic Mass = 201.003867(77)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 202
+Relative Atomic Mass = 202.003320(55#)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 203
+Relative Atomic Mass = 203.0009407(67)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 204
+Relative Atomic Mass = 204.000652(26)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 205
+Relative Atomic Mass = 204.9985939(84)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 206
+Relative Atomic Mass = 205.998666(30)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 207
+Relative Atomic Mass = 206.996946(19)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 208
+Relative Atomic Mass = 207.997138(12)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 209
+Relative Atomic Mass = 208.995955(16)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 210
+Relative Atomic Mass = 209.996422(16)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 211
+Relative Atomic Mass = 210.995556(13)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 212
+Relative Atomic Mass = 211.9962257(94)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 213
+Relative Atomic Mass = 212.9961860(55)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 214
+Relative Atomic Mass = 213.9989713(93)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 215
+Relative Atomic Mass = 215.0003418(76)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 216
+Relative Atomic Mass = 216.0031899(45)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 217
+Relative Atomic Mass = 217.0046323(70)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 218
+Relative Atomic Mass = 218.0075787(51)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 219
+Relative Atomic Mass = 219.0092524(76)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 220
+Relative Atomic Mass = 220.0123277(44)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 221
+Relative Atomic Mass = 221.0142552(54)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 222
+Relative Atomic Mass = 222.017552(23)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 223
+Relative Atomic Mass = 223.0197360(25)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 224
+Relative Atomic Mass = 224.023398(14)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 225
+Relative Atomic Mass = 225.025573(13)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 226
+Relative Atomic Mass = 226.029566(13)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 227
+Relative Atomic Mass = 227.031869(14)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 228
+Relative Atomic Mass = 228.035823(14)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 229
+Relative Atomic Mass = 229.038298(15)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 230
+Relative Atomic Mass = 230.042416(17)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 231
+Relative Atomic Mass = 231.045158(27)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 232
+Relative Atomic Mass = 232.04937(17#)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 87
+Atomic Symbol = Fr
+Mass Number = 233
+Relative Atomic Mass = 233.05264(32#)
+Isotopic Composition =
+Standard Atomic Weight = [223]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 201
+Relative Atomic Mass = 201.01271(11#)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 202
+Relative Atomic Mass = 202.009760(26)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 203
+Relative Atomic Mass = 203.009304(86)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 204
+Relative Atomic Mass = 204.006492(16)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 205
+Relative Atomic Mass = 205.006268(76)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 206
+Relative Atomic Mass = 206.003828(19)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 207
+Relative Atomic Mass = 207.003799(59)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 208
+Relative Atomic Mass = 208.001841(17)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 209
+Relative Atomic Mass = 209.001990(54)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 210
+Relative Atomic Mass = 210.000494(16)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 211
+Relative Atomic Mass = 211.0008932(85)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 212
+Relative Atomic Mass = 211.999787(12)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 213
+Relative Atomic Mass = 213.000384(22)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 214
+Relative Atomic Mass = 214.0000997(56)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 215
+Relative Atomic Mass = 215.0027204(82)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 216
+Relative Atomic Mass = 216.0035334(94)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 217
+Relative Atomic Mass = 217.0063207(92)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 218
+Relative Atomic Mass = 218.007141(12)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 219
+Relative Atomic Mass = 219.0100855(89)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 220
+Relative Atomic Mass = 220.0110259(89)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 221
+Relative Atomic Mass = 221.0139177(50)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 222
+Relative Atomic Mass = 222.0153748(49)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 223
+Relative Atomic Mass = 223.0185023(27)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 224
+Relative Atomic Mass = 224.0202120(23)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 225
+Relative Atomic Mass = 225.0236119(32)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 226
+Relative Atomic Mass = 226.0254103(25)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 227
+Relative Atomic Mass = 227.0291783(25)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 228
+Relative Atomic Mass = 228.0310707(26)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 229
+Relative Atomic Mass = 229.034942(16)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 230
+Relative Atomic Mass = 230.037055(11)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 231
+Relative Atomic Mass = 231.041027(12)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 232
+Relative Atomic Mass = 232.0434753(98)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 233
+Relative Atomic Mass = 233.047582(17)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 234
+Relative Atomic Mass = 234.050342(33)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 88
+Atomic Symbol = Ra
+Mass Number = 235
+Relative Atomic Mass = 235.05497(32#)
+Isotopic Composition =
+Standard Atomic Weight = [226]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 206
+Relative Atomic Mass = 206.014452(77#)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 207
+Relative Atomic Mass = 207.011966(54)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 208
+Relative Atomic Mass = 208.011550(60)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 209
+Relative Atomic Mass = 209.009495(54)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 210
+Relative Atomic Mass = 210.009436(62)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 211
+Relative Atomic Mass = 211.007732(57)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 212
+Relative Atomic Mass = 212.007813(55)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 213
+Relative Atomic Mass = 213.006609(56)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 214
+Relative Atomic Mass = 214.006918(16)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 215
+Relative Atomic Mass = 215.006475(13)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 216
+Relative Atomic Mass = 216.008743(12)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 217
+Relative Atomic Mass = 217.009344(12)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 218
+Relative Atomic Mass = 218.011642(54)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 219
+Relative Atomic Mass = 219.012421(54)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 220
+Relative Atomic Mass = 220.0147549(66)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 221
+Relative Atomic Mass = 221.015592(54)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 222
+Relative Atomic Mass = 222.0178442(56)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 223
+Relative Atomic Mass = 223.0191377(77)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 224
+Relative Atomic Mass = 224.0217232(45)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 225
+Relative Atomic Mass = 225.0232300(53)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 226
+Relative Atomic Mass = 226.0260984(36)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 227
+Relative Atomic Mass = 227.0277523(25)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 228
+Relative Atomic Mass = 228.0310215(27)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 229
+Relative Atomic Mass = 229.032956(13)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 230
+Relative Atomic Mass = 230.036327(17)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 231
+Relative Atomic Mass = 231.038393(14)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 232
+Relative Atomic Mass = 232.042034(14)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 233
+Relative Atomic Mass = 233.044346(14)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 234
+Relative Atomic Mass = 234.048139(15)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 235
+Relative Atomic Mass = 235.050840(15)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 236
+Relative Atomic Mass = 236.054988(41)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 89
+Atomic Symbol = Ac
+Mass Number = 237
+Relative Atomic Mass = 237.05827(43#)
+Isotopic Composition =
+Standard Atomic Weight = [227]
+Notes =
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 208
+Relative Atomic Mass = 208.017900(36)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 209
+Relative Atomic Mass = 209.017753(93)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 210
+Relative Atomic Mass = 210.015094(20)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 211
+Relative Atomic Mass = 211.014929(80)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 212
+Relative Atomic Mass = 212.012988(17)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 213
+Relative Atomic Mass = 213.013009(76)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 214
+Relative Atomic Mass = 214.011500(17)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 215
+Relative Atomic Mass = 215.0117248(95)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 216
+Relative Atomic Mass = 216.011056(13)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 217
+Relative Atomic Mass = 217.013117(22)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 218
+Relative Atomic Mass = 218.013276(11)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 219
+Relative Atomic Mass = 219.015537(54)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 220
+Relative Atomic Mass = 220.015748(24)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 221
+Relative Atomic Mass = 221.018184(10)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 222
+Relative Atomic Mass = 222.018469(13)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 223
+Relative Atomic Mass = 223.0208119(99)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 224
+Relative Atomic Mass = 224.021464(11)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 225
+Relative Atomic Mass = 225.0239514(55)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 226
+Relative Atomic Mass = 226.0249034(50)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 227
+Relative Atomic Mass = 227.0277042(27)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 228
+Relative Atomic Mass = 228.0287413(23)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 229
+Relative Atomic Mass = 229.0317627(30)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 230
+Relative Atomic Mass = 230.0331341(19)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 231
+Relative Atomic Mass = 231.0363046(19)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 232
+Relative Atomic Mass = 232.0380558(21)
+Isotopic Composition = 1
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 233
+Relative Atomic Mass = 233.0415823(21)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 234
+Relative Atomic Mass = 234.0436014(37)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 235
+Relative Atomic Mass = 235.047255(14)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 236
+Relative Atomic Mass = 236.049657(15)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 237
+Relative Atomic Mass = 237.053629(17)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 238
+Relative Atomic Mass = 238.05650(30#)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 90
+Atomic Symbol = Th
+Mass Number = 239
+Relative Atomic Mass = 239.06077(43#)
+Isotopic Composition =
+Standard Atomic Weight = 232.0377(4)
+Notes = g
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 212
+Relative Atomic Mass = 212.023203(80)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 213
+Relative Atomic Mass = 213.021109(76)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 214
+Relative Atomic Mass = 214.020918(82)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 215
+Relative Atomic Mass = 215.019183(78)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 216
+Relative Atomic Mass = 216.019109(57)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 217
+Relative Atomic Mass = 217.018325(56)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 218
+Relative Atomic Mass = 218.020059(20)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 219
+Relative Atomic Mass = 219.019904(55)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 220
+Relative Atomic Mass = 220.021705(55#)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 221
+Relative Atomic Mass = 221.021875(55)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 222
+Relative Atomic Mass = 222.023784(78#)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 223
+Relative Atomic Mass = 223.023963(76)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 224
+Relative Atomic Mass = 224.0256176(82)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 225
+Relative Atomic Mass = 225.026131(76)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 226
+Relative Atomic Mass = 226.027948(12)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 227
+Relative Atomic Mass = 227.0288054(80)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 228
+Relative Atomic Mass = 228.0310517(47)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 229
+Relative Atomic Mass = 229.0320972(38)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 230
+Relative Atomic Mass = 230.0345410(35)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 231
+Relative Atomic Mass = 231.0358842(24)
+Isotopic Composition = 1
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 232
+Relative Atomic Mass = 232.0385917(83)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 233
+Relative Atomic Mass = 233.0402472(22)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 234
+Relative Atomic Mass = 234.0433072(51)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 235
+Relative Atomic Mass = 235.045399(15)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 236
+Relative Atomic Mass = 236.048668(15)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 237
+Relative Atomic Mass = 237.051023(14)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 238
+Relative Atomic Mass = 238.054637(17)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 239
+Relative Atomic Mass = 239.05726(21#)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 240
+Relative Atomic Mass = 240.06098(32#)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 91
+Atomic Symbol = Pa
+Mass Number = 241
+Relative Atomic Mass = 241.06408(43#)
+Isotopic Composition =
+Standard Atomic Weight = 231.03588(2)
+Notes =
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 217
+Relative Atomic Mass = 217.02466(11#)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 218
+Relative Atomic Mass = 218.023523(20)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 219
+Relative Atomic Mass = 219.024999(55)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 220
+Relative Atomic Mass = 220.02462(11#)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 221
+Relative Atomic Mass = 221.02628(11#)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 222
+Relative Atomic Mass = 222.02600(11#)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 223
+Relative Atomic Mass = 223.027739(76)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 224
+Relative Atomic Mass = 224.027605(27)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 225
+Relative Atomic Mass = 225.029391(13)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 226
+Relative Atomic Mass = 226.029339(14)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 227
+Relative Atomic Mass = 227.031157(18)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 228
+Relative Atomic Mass = 228.031371(15)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 229
+Relative Atomic Mass = 229.0335063(64)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 230
+Relative Atomic Mass = 230.0339401(51)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 231
+Relative Atomic Mass = 231.0362939(32)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 232
+Relative Atomic Mass = 232.0371563(23)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 233
+Relative Atomic Mass = 233.0396355(29)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 234
+Relative Atomic Mass = 234.0409523(19)
+Isotopic Composition = 0.000054(5)
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 235
+Relative Atomic Mass = 235.0439301(19)
+Isotopic Composition = 0.007204(6)
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 236
+Relative Atomic Mass = 236.0455682(19)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 237
+Relative Atomic Mass = 237.0487304(20)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 238
+Relative Atomic Mass = 238.0507884(20)
+Isotopic Composition = 0.992742(10)
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 239
+Relative Atomic Mass = 239.0542935(20)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 240
+Relative Atomic Mass = 240.0565934(57)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 241
+Relative Atomic Mass = 241.06033(32#)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 242
+Relative Atomic Mass = 242.06293(22#)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 92
+Atomic Symbol = U
+Mass Number = 243
+Relative Atomic Mass = 243.06699(43#)
+Isotopic Composition =
+Standard Atomic Weight = 238.02891(3)
+Notes = g,m
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 219
+Relative Atomic Mass = 219.03143(21#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 220
+Relative Atomic Mass = 220.03254(21#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 221
+Relative Atomic Mass = 221.03204(21#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 222
+Relative Atomic Mass = 222.03330(21#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 223
+Relative Atomic Mass = 223.03285(21#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 224
+Relative Atomic Mass = 224.03422(21#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 225
+Relative Atomic Mass = 225.033911(77)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 226
+Relative Atomic Mass = 226.035188(95#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 227
+Relative Atomic Mass = 227.034957(78)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 228
+Relative Atomic Mass = 228.036067(54)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 229
+Relative Atomic Mass = 229.036264(93)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 230
+Relative Atomic Mass = 230.037828(55)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 231
+Relative Atomic Mass = 231.038245(54)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 232
+Relative Atomic Mass = 232.04011(11#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 233
+Relative Atomic Mass = 233.040741(55)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 234
+Relative Atomic Mass = 234.0428953(91)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 235
+Relative Atomic Mass = 235.0440635(21)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 236
+Relative Atomic Mass = 236.046570(54)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 237
+Relative Atomic Mass = 237.0481736(19)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 238
+Relative Atomic Mass = 238.0509466(19)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 239
+Relative Atomic Mass = 239.0529392(22)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 240
+Relative Atomic Mass = 240.056165(18)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 241
+Relative Atomic Mass = 241.058253(76)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 242
+Relative Atomic Mass = 242.06164(21)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 243
+Relative Atomic Mass = 243.064280(34#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 244
+Relative Atomic Mass = 244.06785(32#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 93
+Atomic Symbol = Np
+Mass Number = 245
+Relative Atomic Mass = 245.07080(43#)
+Isotopic Composition =
+Standard Atomic Weight = [237]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 228
+Relative Atomic Mass = 228.038732(33)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 229
+Relative Atomic Mass = 229.040144(55)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 230
+Relative Atomic Mass = 230.039650(16)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 231
+Relative Atomic Mass = 231.041102(28)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 232
+Relative Atomic Mass = 232.041185(19)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 233
+Relative Atomic Mass = 233.042998(54)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 234
+Relative Atomic Mass = 234.0433174(75)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 235
+Relative Atomic Mass = 235.045286(22)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 236
+Relative Atomic Mass = 236.0460581(23)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 237
+Relative Atomic Mass = 237.0484098(24)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 238
+Relative Atomic Mass = 238.0495601(19)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 239
+Relative Atomic Mass = 239.0521636(19)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 240
+Relative Atomic Mass = 240.0538138(19)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 241
+Relative Atomic Mass = 241.0568517(19)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 242
+Relative Atomic Mass = 242.0587428(20)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 243
+Relative Atomic Mass = 243.0620036(34)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 244
+Relative Atomic Mass = 244.0642053(56)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 245
+Relative Atomic Mass = 245.067826(15)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 246
+Relative Atomic Mass = 246.070205(16)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 94
+Atomic Symbol = Pu
+Mass Number = 247
+Relative Atomic Mass = 247.07419(21#)
+Isotopic Composition =
+Standard Atomic Weight = [244]
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 230
+Relative Atomic Mass = 230.04609(14#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 231
+Relative Atomic Mass = 231.04556(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 232
+Relative Atomic Mass = 232.04645(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 233
+Relative Atomic Mass = 233.04644(11#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 234
+Relative Atomic Mass = 234.04773(17#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 235
+Relative Atomic Mass = 235.047908(56)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 236
+Relative Atomic Mass = 236.04943(12#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 237
+Relative Atomic Mass = 237.049996(64#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 238
+Relative Atomic Mass = 238.051985(54)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 239
+Relative Atomic Mass = 239.0530247(26)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 240
+Relative Atomic Mass = 240.055300(15)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 241
+Relative Atomic Mass = 241.0568293(19)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 242
+Relative Atomic Mass = 242.0595494(19)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 243
+Relative Atomic Mass = 243.0613813(24)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 244
+Relative Atomic Mass = 244.0642851(22)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 245
+Relative Atomic Mass = 245.0664548(34)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 246
+Relative Atomic Mass = 246.069775(20#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 247
+Relative Atomic Mass = 247.07209(11#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 248
+Relative Atomic Mass = 248.07575(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 95
+Atomic Symbol = Am
+Mass Number = 249
+Relative Atomic Mass = 249.07848(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 232
+Relative Atomic Mass = 232.04982(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 233
+Relative Atomic Mass = 233.050770(77)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 234
+Relative Atomic Mass = 234.050160(20)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 235
+Relative Atomic Mass = 235.05154(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 236
+Relative Atomic Mass = 236.051374(20)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 237
+Relative Atomic Mass = 237.052869(76)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 238
+Relative Atomic Mass = 238.053081(13)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 239
+Relative Atomic Mass = 239.054910(58)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 240
+Relative Atomic Mass = 240.0555297(24)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 241
+Relative Atomic Mass = 241.0576532(23)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 242
+Relative Atomic Mass = 242.0588360(19)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 243
+Relative Atomic Mass = 243.0613893(22)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 244
+Relative Atomic Mass = 244.0627528(19)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 245
+Relative Atomic Mass = 245.0654915(22)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 246
+Relative Atomic Mass = 246.0672238(22)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 247
+Relative Atomic Mass = 247.0703541(47)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 248
+Relative Atomic Mass = 248.0723499(56)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 249
+Relative Atomic Mass = 249.0759548(56)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 250
+Relative Atomic Mass = 250.078358(12)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 251
+Relative Atomic Mass = 251.082286(24)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 96
+Atomic Symbol = Cm
+Mass Number = 252
+Relative Atomic Mass = 252.08487(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 234
+Relative Atomic Mass = 234.05727(15#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 235
+Relative Atomic Mass = 235.05658(43#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 236
+Relative Atomic Mass = 236.05748(43#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 237
+Relative Atomic Mass = 237.05710(24#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 238
+Relative Atomic Mass = 238.05820(27#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 239
+Relative Atomic Mass = 239.05824(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 240
+Relative Atomic Mass = 240.05976(16#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 241
+Relative Atomic Mass = 241.06016(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 242
+Relative Atomic Mass = 242.06198(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 243
+Relative Atomic Mass = 243.0630078(51)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 244
+Relative Atomic Mass = 244.065181(16)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 245
+Relative Atomic Mass = 245.0663618(24)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 246
+Relative Atomic Mass = 246.068673(64)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 247
+Relative Atomic Mass = 247.0703073(59)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 248
+Relative Atomic Mass = 248.073088(76#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 249
+Relative Atomic Mass = 249.0749877(27)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 250
+Relative Atomic Mass = 250.0783167(42)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 251
+Relative Atomic Mass = 251.080762(12)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 252
+Relative Atomic Mass = 252.08431(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 253
+Relative Atomic Mass = 253.08688(39#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 97
+Atomic Symbol = Bk
+Mass Number = 254
+Relative Atomic Mass = 254.09060(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 237
+Relative Atomic Mass = 237.062198(94)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 238
+Relative Atomic Mass = 238.06149(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 239
+Relative Atomic Mass = 239.06253(23#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 240
+Relative Atomic Mass = 240.062256(20)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 241
+Relative Atomic Mass = 241.06369(18#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 242
+Relative Atomic Mass = 242.063754(14)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 243
+Relative Atomic Mass = 243.06548(12#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 244
+Relative Atomic Mass = 244.0660008(31)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 245
+Relative Atomic Mass = 245.0680487(30)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 246
+Relative Atomic Mass = 246.0688055(22)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 247
+Relative Atomic Mass = 247.070965(16)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 248
+Relative Atomic Mass = 248.0721851(57)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 249
+Relative Atomic Mass = 249.0748539(23)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 250
+Relative Atomic Mass = 250.0764062(22)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 251
+Relative Atomic Mass = 251.0795886(48)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 252
+Relative Atomic Mass = 252.0816272(56)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 253
+Relative Atomic Mass = 253.0851345(67)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 254
+Relative Atomic Mass = 254.087324(13)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 255
+Relative Atomic Mass = 255.09105(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 98
+Atomic Symbol = Cf
+Mass Number = 256
+Relative Atomic Mass = 256.09344(34#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 239
+Relative Atomic Mass = 239.06823(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 240
+Relative Atomic Mass = 240.06892(43#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 241
+Relative Atomic Mass = 241.06856(24#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 242
+Relative Atomic Mass = 242.06957(28#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 243
+Relative Atomic Mass = 243.06951(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 244
+Relative Atomic Mass = 244.07088(20#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 245
+Relative Atomic Mass = 245.07125(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 246
+Relative Atomic Mass = 246.07290(24#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 247
+Relative Atomic Mass = 247.073622(21)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 248
+Relative Atomic Mass = 248.075471(56#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 249
+Relative Atomic Mass = 249.076411(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 250
+Relative Atomic Mass = 250.07861(11#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 251
+Relative Atomic Mass = 251.0799936(67)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 252
+Relative Atomic Mass = 252.082980(54)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 253
+Relative Atomic Mass = 253.0848257(27)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 254
+Relative Atomic Mass = 254.0880222(45)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 255
+Relative Atomic Mass = 255.090275(12)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 256
+Relative Atomic Mass = 256.09360(11#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 257
+Relative Atomic Mass = 257.09598(44#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 99
+Atomic Symbol = Es
+Mass Number = 258
+Relative Atomic Mass = 258.09952(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 241
+Relative Atomic Mass = 241.07421(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 242
+Relative Atomic Mass = 242.07343(43#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 243
+Relative Atomic Mass = 243.07446(23#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 244
+Relative Atomic Mass = 244.07404(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 245
+Relative Atomic Mass = 245.07535(21#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 246
+Relative Atomic Mass = 246.075350(17)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 247
+Relative Atomic Mass = 247.07694(12#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 248
+Relative Atomic Mass = 248.0771865(92)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 249
+Relative Atomic Mass = 249.0789275(68)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 250
+Relative Atomic Mass = 250.0795210(86)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 251
+Relative Atomic Mass = 251.081540(16)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 252
+Relative Atomic Mass = 252.0824671(61)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 253
+Relative Atomic Mass = 253.0851846(37)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 254
+Relative Atomic Mass = 254.0868544(30)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 255
+Relative Atomic Mass = 255.0899640(52)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 256
+Relative Atomic Mass = 256.0917745(78)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 257
+Relative Atomic Mass = 257.0951061(69)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 258
+Relative Atomic Mass = 258.09708(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 259
+Relative Atomic Mass = 259.10060(30#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 100
+Atomic Symbol = Fm
+Mass Number = 260
+Relative Atomic Mass = 260.10281(55#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 245
+Relative Atomic Mass = 245.08081(33#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 246
+Relative Atomic Mass = 246.08171(28#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 247
+Relative Atomic Mass = 247.08152(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 248
+Relative Atomic Mass = 248.08282(26#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 249
+Relative Atomic Mass = 249.08291(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 250
+Relative Atomic Mass = 250.08441(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 251
+Relative Atomic Mass = 251.084774(20)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 252
+Relative Atomic Mass = 252.08643(14#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 253
+Relative Atomic Mass = 253.087144(34#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 254
+Relative Atomic Mass = 254.08959(11#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 255
+Relative Atomic Mass = 255.0910841(73)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 256
+Relative Atomic Mass = 256.09389(13#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 257
+Relative Atomic Mass = 257.0955424(29)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 258
+Relative Atomic Mass = 258.0984315(50)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 259
+Relative Atomic Mass = 259.10051(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 260
+Relative Atomic Mass = 260.10365(34#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 261
+Relative Atomic Mass = 261.10583(62#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 101
+Atomic Symbol = Md
+Mass Number = 262
+Relative Atomic Mass = 262.10910(45#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 248
+Relative Atomic Mass = 248.08655(24#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 249
+Relative Atomic Mass = 249.08780(30#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 250
+Relative Atomic Mass = 250.08756(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 251
+Relative Atomic Mass = 251.08894(12#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 252
+Relative Atomic Mass = 252.088967(10)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 253
+Relative Atomic Mass = 253.0905641(75)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 254
+Relative Atomic Mass = 254.090956(11)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 255
+Relative Atomic Mass = 255.093191(16)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 256
+Relative Atomic Mass = 256.0942829(84)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 257
+Relative Atomic Mass = 257.0968878(74)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 258
+Relative Atomic Mass = 258.09821(11#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 259
+Relative Atomic Mass = 259.10103(11#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 260
+Relative Atomic Mass = 260.10264(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 261
+Relative Atomic Mass = 261.10570(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 262
+Relative Atomic Mass = 262.10746(39#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 263
+Relative Atomic Mass = 263.11071(53#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 102
+Atomic Symbol = No
+Mass Number = 264
+Relative Atomic Mass = 264.11273(70#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 251
+Relative Atomic Mass = 251.09418(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 252
+Relative Atomic Mass = 252.09526(26#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 253
+Relative Atomic Mass = 253.09509(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 254
+Relative Atomic Mass = 254.09648(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 255
+Relative Atomic Mass = 255.096562(19)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 256
+Relative Atomic Mass = 256.098494(89)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 257
+Relative Atomic Mass = 257.099418(47#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 258
+Relative Atomic Mass = 258.10176(11#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 259
+Relative Atomic Mass = 259.102902(76#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 260
+Relative Atomic Mass = 260.10550(13#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 261
+Relative Atomic Mass = 261.10688(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 262
+Relative Atomic Mass = 262.10961(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 263
+Relative Atomic Mass = 263.11136(30#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 264
+Relative Atomic Mass = 264.11420(47#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 265
+Relative Atomic Mass = 265.11619(65#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 103
+Atomic Symbol = Lr
+Mass Number = 266
+Relative Atomic Mass = 266.11983(56#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 253
+Relative Atomic Mass = 253.10044(44#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 254
+Relative Atomic Mass = 254.10005(30#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 255
+Relative Atomic Mass = 255.10127(12#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 256
+Relative Atomic Mass = 256.101152(19)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 257
+Relative Atomic Mass = 257.102918(12)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 258
+Relative Atomic Mass = 258.103428(34)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 259
+Relative Atomic Mass = 259.105596(78#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 260
+Relative Atomic Mass = 260.10644(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 261
+Relative Atomic Mass = 261.108773(54)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 262
+Relative Atomic Mass = 262.10992(24#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 263
+Relative Atomic Mass = 263.11249(20#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 264
+Relative Atomic Mass = 264.11388(39#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 265
+Relative Atomic Mass = 265.11668(39#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 266
+Relative Atomic Mass = 266.11817(50#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 267
+Relative Atomic Mass = 267.12179(62#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 104
+Atomic Symbol = Rf
+Mass Number = 268
+Relative Atomic Mass = 268.12397(77#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 255
+Relative Atomic Mass = 255.10707(45#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 256
+Relative Atomic Mass = 256.10789(26#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 257
+Relative Atomic Mass = 257.10758(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 258
+Relative Atomic Mass = 258.10928(33#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 259
+Relative Atomic Mass = 259.109492(57)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 260
+Relative Atomic Mass = 260.11130(10#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 261
+Relative Atomic Mass = 261.11192(12#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 262
+Relative Atomic Mass = 262.11407(15#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 263
+Relative Atomic Mass = 263.11499(18#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 264
+Relative Atomic Mass = 264.11741(25#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 265
+Relative Atomic Mass = 265.11861(24#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 266
+Relative Atomic Mass = 266.12103(30#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 267
+Relative Atomic Mass = 267.12247(44#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 268
+Relative Atomic Mass = 268.12567(57#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 269
+Relative Atomic Mass = 269.12791(73#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 105
+Atomic Symbol = Db
+Mass Number = 270
+Relative Atomic Mass = 270.13136(64#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 258
+Relative Atomic Mass = 258.11298(44#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 259
+Relative Atomic Mass = 259.11440(13#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 260
+Relative Atomic Mass = 260.114384(22)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 261
+Relative Atomic Mass = 261.115949(20)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 262
+Relative Atomic Mass = 262.116337(38)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 263
+Relative Atomic Mass = 263.11829(10#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 264
+Relative Atomic Mass = 264.11893(30#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 265
+Relative Atomic Mass = 265.12109(13#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 266
+Relative Atomic Mass = 266.12198(26#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 267
+Relative Atomic Mass = 267.12436(30#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 268
+Relative Atomic Mass = 268.12539(50#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 269
+Relative Atomic Mass = 269.12863(39#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 270
+Relative Atomic Mass = 270.13043(60#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 271
+Relative Atomic Mass = 271.13393(63#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 272
+Relative Atomic Mass = 272.13589(83#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 106
+Atomic Symbol = Sg
+Mass Number = 273
+Relative Atomic Mass = 273.13958(54#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 260
+Relative Atomic Mass = 260.12166(26#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 261
+Relative Atomic Mass = 261.12145(22#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 262
+Relative Atomic Mass = 262.12297(33#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 263
+Relative Atomic Mass = 263.12292(33#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 264
+Relative Atomic Mass = 264.12459(19#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 265
+Relative Atomic Mass = 265.12491(25#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 266
+Relative Atomic Mass = 266.12679(18#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 267
+Relative Atomic Mass = 267.12750(28#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 268
+Relative Atomic Mass = 268.12969(41#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 269
+Relative Atomic Mass = 269.13042(40#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 270
+Relative Atomic Mass = 270.13336(31#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 271
+Relative Atomic Mass = 271.13526(48#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 272
+Relative Atomic Mass = 272.13826(58#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 273
+Relative Atomic Mass = 273.14024(80#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 274
+Relative Atomic Mass = 274.14355(65#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 107
+Atomic Symbol = Bh
+Mass Number = 275
+Relative Atomic Mass = 275.14567(64#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 263
+Relative Atomic Mass = 263.12852(14#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 264
+Relative Atomic Mass = 264.128357(31)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 265
+Relative Atomic Mass = 265.129793(26)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 266
+Relative Atomic Mass = 266.130046(42)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 267
+Relative Atomic Mass = 267.13167(10#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 268
+Relative Atomic Mass = 268.13186(30#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 269
+Relative Atomic Mass = 269.13375(13#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 270
+Relative Atomic Mass = 270.13429(27#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 271
+Relative Atomic Mass = 271.13717(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 272
+Relative Atomic Mass = 272.13850(55#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 273
+Relative Atomic Mass = 273.14168(40#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 274
+Relative Atomic Mass = 274.14330(63#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 275
+Relative Atomic Mass = 275.14667(63#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 276
+Relative Atomic Mass = 276.14846(86#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 108
+Atomic Symbol = Hs
+Mass Number = 277
+Relative Atomic Mass = 277.15190(58#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 265
+Relative Atomic Mass = 265.13600(48#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 266
+Relative Atomic Mass = 266.13737(33#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 267
+Relative Atomic Mass = 267.13719(54#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 268
+Relative Atomic Mass = 268.13865(25#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 269
+Relative Atomic Mass = 269.13882(50#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 270
+Relative Atomic Mass = 270.14033(18#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 271
+Relative Atomic Mass = 271.14074(35#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 272
+Relative Atomic Mass = 272.14341(52#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 273
+Relative Atomic Mass = 273.14440(52#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 274
+Relative Atomic Mass = 274.14724(38#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 275
+Relative Atomic Mass = 275.14882(50#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 276
+Relative Atomic Mass = 276.15159(59#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 277
+Relative Atomic Mass = 277.15327(82#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 278
+Relative Atomic Mass = 278.15631(68#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 109
+Atomic Symbol = Mt
+Mass Number = 279
+Relative Atomic Mass = 279.15808(72#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 267
+Relative Atomic Mass = 267.14377(15#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 268
+Relative Atomic Mass = 268.14348(32#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 269
+Relative Atomic Mass = 269.144752(34)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 270
+Relative Atomic Mass = 270.144584(52)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 271
+Relative Atomic Mass = 271.14595(10#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 272
+Relative Atomic Mass = 272.14602(44#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 273
+Relative Atomic Mass = 273.14856(14#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 274
+Relative Atomic Mass = 274.14941(42#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 275
+Relative Atomic Mass = 275.15203(45#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 276
+Relative Atomic Mass = 276.15303(59#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 277
+Relative Atomic Mass = 277.15591(41#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 278
+Relative Atomic Mass = 278.15704(67#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 279
+Relative Atomic Mass = 279.16010(64#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 280
+Relative Atomic Mass = 280.16131(89#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 110
+Atomic Symbol = Ds
+Mass Number = 281
+Relative Atomic Mass = 281.16451(59#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 272
+Relative Atomic Mass = 272.15327(25#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 273
+Relative Atomic Mass = 273.15313(56#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 274
+Relative Atomic Mass = 274.15525(19#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 275
+Relative Atomic Mass = 275.15594(56#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 276
+Relative Atomic Mass = 276.15833(68#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 277
+Relative Atomic Mass = 277.15907(61#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 278
+Relative Atomic Mass = 278.16149(38#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 279
+Relative Atomic Mass = 279.16272(51#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 280
+Relative Atomic Mass = 280.16514(61#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 281
+Relative Atomic Mass = 281.16636(89#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 282
+Relative Atomic Mass = 282.16912(72#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 111
+Atomic Symbol = Rg
+Mass Number = 283
+Relative Atomic Mass = 283.17054(79#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 112
+Atomic Symbol = Cn
+Mass Number = 276
+Relative Atomic Mass = 276.16141(64#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 112
+Atomic Symbol = Cn
+Mass Number = 277
+Relative Atomic Mass = 277.16364(15#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 112
+Atomic Symbol = Cn
+Mass Number = 278
+Relative Atomic Mass = 278.16416(47#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 112
+Atomic Symbol = Cn
+Mass Number = 279
+Relative Atomic Mass = 279.16654(50#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 112
+Atomic Symbol = Cn
+Mass Number = 280
+Relative Atomic Mass = 280.16715(63#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 112
+Atomic Symbol = Cn
+Mass Number = 281
+Relative Atomic Mass = 281.16975(42#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 112
+Atomic Symbol = Cn
+Mass Number = 282
+Relative Atomic Mass = 282.17050(70#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 112
+Atomic Symbol = Cn
+Mass Number = 283
+Relative Atomic Mass = 283.17327(65#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 112
+Atomic Symbol = Cn
+Mass Number = 284
+Relative Atomic Mass = 284.17416(91#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 112
+Atomic Symbol = Cn
+Mass Number = 285
+Relative Atomic Mass = 285.17712(60#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 113
+Atomic Symbol = Nh
+Mass Number = 278
+Relative Atomic Mass = 278.17058(20#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 113
+Atomic Symbol = Nh
+Mass Number = 279
+Relative Atomic Mass = 279.17095(75#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 113
+Atomic Symbol = Nh
+Mass Number = 280
+Relative Atomic Mass = 280.17293(75#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 113
+Atomic Symbol = Nh
+Mass Number = 281
+Relative Atomic Mass = 281.17348(75#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 113
+Atomic Symbol = Nh
+Mass Number = 282
+Relative Atomic Mass = 282.17567(39#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 113
+Atomic Symbol = Nh
+Mass Number = 283
+Relative Atomic Mass = 283.17657(52#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 113
+Atomic Symbol = Nh
+Mass Number = 284
+Relative Atomic Mass = 284.17873(62#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 113
+Atomic Symbol = Nh
+Mass Number = 285
+Relative Atomic Mass = 285.17973(89#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 113
+Atomic Symbol = Nh
+Mass Number = 286
+Relative Atomic Mass = 286.18221(72#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 113
+Atomic Symbol = Nh
+Mass Number = 287
+Relative Atomic Mass = 287.18339(81#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 114
+Atomic Symbol = Fl
+Mass Number = 285
+Relative Atomic Mass = 285.18364(47#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 114
+Atomic Symbol = Fl
+Mass Number = 286
+Relative Atomic Mass = 286.18423(71#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 114
+Atomic Symbol = Fl
+Mass Number = 287
+Relative Atomic Mass = 287.18678(66#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 114
+Atomic Symbol = Fl
+Mass Number = 288
+Relative Atomic Mass = 288.18757(91#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 114
+Atomic Symbol = Fl
+Mass Number = 289
+Relative Atomic Mass = 289.19042(60#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 115
+Atomic Symbol = Mc
+Mass Number = 287
+Relative Atomic Mass = 287.19070(52#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 115
+Atomic Symbol = Mc
+Mass Number = 288
+Relative Atomic Mass = 288.19274(62#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 115
+Atomic Symbol = Mc
+Mass Number = 289
+Relative Atomic Mass = 289.19363(89#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 115
+Atomic Symbol = Mc
+Mass Number = 290
+Relative Atomic Mass = 290.19598(73#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 115
+Atomic Symbol = Uup
+Mass Number = 291
+Relative Atomic Mass = 291.19707(88#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 116
+Atomic Symbol = Lv
+Mass Number = 289
+Relative Atomic Mass = 289.19816(57#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 116
+Atomic Symbol = Lv
+Mass Number = 290
+Relative Atomic Mass = 290.19864(71#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 116
+Atomic Symbol = Lv
+Mass Number = 291
+Relative Atomic Mass = 291.20108(66#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 116
+Atomic Symbol = Lv
+Mass Number = 292
+Relative Atomic Mass = 292.20174(91#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 116
+Atomic Symbol = Lv
+Mass Number = 293
+Relative Atomic Mass = 293.20449(60#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 117
+Atomic Symbol = Ts
+Mass Number = 291
+Relative Atomic Mass = 291.20553(68#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 117
+Atomic Symbol = Ts
+Mass Number = 292
+Relative Atomic Mass = 292.20746(75#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 117
+Atomic Symbol = Ts
+Mass Number = 293
+Relative Atomic Mass = 293.20824(89#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 117
+Atomic Symbol = Uus
+Mass Number = 294
+Relative Atomic Mass = 294.21046(74#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 118
+Atomic Symbol = Og
+Mass Number = 293
+Relative Atomic Mass = 293.21356(78#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 118
+Atomic Symbol = Og
+Mass Number = 294
+Relative Atomic Mass = 294.21392(71#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+
+Atomic Number = 118
+Atomic Symbol = Og
+Mass Number = 295
+Relative Atomic Mass = 295.21624(69#)
+Isotopic Composition =
+Standard Atomic Weight =
+Notes =
+*/
