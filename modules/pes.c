@@ -67,7 +67,7 @@ extern double EXTERNAL_PES_NAME(const double r[]);
 /******************************************************************************
 
  Function pes_set_inf(): to define an asymptotic limit used internally. Default
- value is 1000 Bohrs.
+ value is 100 Bohrs.
 
 ******************************************************************************/
 

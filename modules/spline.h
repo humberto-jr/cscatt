@@ -22,4 +22,6 @@
 	double spline_derivative(const spline *s, const size_t order, const double x);
 
 	double spline_integral(const spline *s, const double a, const double b);
+
+	void spline_about(FILE *output);
 #endif

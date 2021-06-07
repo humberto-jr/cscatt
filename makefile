@@ -457,11 +457,6 @@ network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h matrix.o
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
-test_suit: test_suit.c $(MODULES_DIR)/matrix.h
-	@echo "$<:"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o math.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
-	@echo
-
 a+d_multipole: a+d_multipole.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
 	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
@@ -633,6 +628,11 @@ mm_csection: $(TOOLS_DIR)/mm_csection.c $(TOOLS_DIR)/mm_dcsection.c $(MODULES_DI
 cmatrix_check: $(TOOLS_DIR)/cmatrix_check.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
 	@echo "$<:"
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o file.o $(LDFLAGS)
+	@echo
+
+test_suit: $(TOOLS_DIR)/test_suit.c $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h
+	@echo "$<:"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o math.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 #
