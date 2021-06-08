@@ -187,9 +187,6 @@ void pes_init()
 		is_nan = isnan(pes_abcd(inf, inf, inf, 90.0, 90.0, 0.0));
 
 	ASSERT(is_nan == false)
-
-	math_no_gsl_handler();
-	math_set_error(1.0e-2);
 }
 
 /******************************************************************************
@@ -322,10 +319,10 @@ double pes_abc(const char arrang,
 			c.y = -b.y;
 			c.z =  0.0;
 
-			const double bc = (b.y*mass_b + c.y*mass_c)/(mass_b + mass_c);
+			const double bc_y = (b.y*mass_b + c.y*mass_c)/(mass_b + mass_c);
 
 			a.x = 0.0;
-			a.y = bc + R*sin(theta*M_PI/180.0);
+			a.y = bc_y + R*sin(theta*M_PI/180.0);
 			a.z = R*cos(theta*M_PI/180.0);
 
 			internuc[0] = r;
@@ -344,10 +341,10 @@ double pes_abc(const char arrang,
 			c.y = -a.y;
 			c.z =  0.0;
 
-			const double ac = (a.y*mass_a + c.y*mass_c)/(mass_a + mass_c);
+			const double ac_y = (a.y*mass_a + c.y*mass_c)/(mass_a + mass_c);
 
 			b.x = 0.0;
-			b.y = ac + R*sin(theta*M_PI/180.0);
+			b.y = ac_y + R*sin(theta*M_PI/180.0);
 			b.z = R*cos(theta*M_PI/180.0);
 
 			internuc[0] = math_distance(&b, &c);
@@ -366,10 +363,10 @@ double pes_abc(const char arrang,
 			b.y = -a.y;
 			b.z =  0.0;
 
-			const double ab = (a.y*mass_a + b.y*mass_b)/(mass_a + mass_b);
+			const double ab_y = (a.y*mass_a + b.y*mass_b)/(mass_a + mass_b);
 
 			c.x = 0.0;
-			c.y = ab + R*sin(theta*M_PI/180.0);
+			c.y = ab_y + R*sin(theta*M_PI/180.0);
 			c.z = R*cos(theta*M_PI/180.0);
 
 			internuc[0] = math_distance(&b, &c);
@@ -482,7 +479,7 @@ double pes_abcd(const double r_bc,
 
 ******************************************************************************/
 
-double pes_bc(const int j, const double r)
+double pes_bc(const size_t j, const double r)
 {
 	const double mass = pes_mass_bc();
 
@@ -496,7 +493,7 @@ double pes_bc(const int j, const double r)
 
 ******************************************************************************/
 
-double pes_ac(const int j, const double r)
+double pes_ac(const size_t j, const double r)
 {
 	const double mass = pes_mass_ac();
 
@@ -510,7 +507,7 @@ double pes_ac(const int j, const double r)
 
 ******************************************************************************/
 
-double pes_ab(const int j, const double r)
+double pes_ab(const size_t j, const double r)
 {
 	const double mass = pes_mass_ab();
 
@@ -528,7 +525,7 @@ double pes_ab(const int j, const double r)
 struct legendre_params
 {
 	const char arrang;
-	const int lambda;
+	const size_t lambda;
 	const double r;
 	const double R;
 };
@@ -557,10 +554,8 @@ static double pes_legendre_integrand(const double theta, const void *params)
 ******************************************************************************/
 
 double pes_legendre_multipole(const char arrang,
-                              const int lambda, const double r, const double R)
+                              const size_t lambda, const double r, const double R)
 {
-	ASSERT(lambda > -1)
-
 	struct legendre_params p =
 	{
 		.arrang = arrang,
@@ -574,68 +569,6 @@ double pes_legendre_multipole(const char arrang,
 
 	return as_double(2*lambda + 1)*result/2.0;
 }
-
-/*
-double pes_legendre_multipole(const char arrang,
-                              const int lambda, const double r, const double R)
-{
-	struct legendre_params p =
-	{
-		.arrang = arrang,
-		.lambda = lambda,
-		.r = r,
-		.R = R
-	};
-
-	double factor = 1.0, theta_max = M_PI;
-
-	if (arrang == 'a' && mass_b == mass_c)
-	{
-		 factor = 2.0;
-		 theta_max = M_PI/2.0;
-	}
-
-	if (arrang == 'b' && mass_c == mass_a)
-	{
-		 factor = 2.0;
-		 theta_max = M_PI/2.0;
-	}
-
-	if (arrang == 'c' && mass_a == mass_b)
-	{
-		 factor = 2.0;
-		 theta_max = M_PI/2.0;
-	}
-
-	const double result = math_qags(0.0, theta_max, &p, pes_legendre_integrand);
-
-	return as_double(2*lambda + 1)*factor*result/2.0;
-}
-*/
-
-/*
-double pes_legendre_multipole(const char arrang,
-                              const int lambda, const double r, const double R)
-{
-	struct legendre_params p =
-	{
-		.arrang = arrang,
-		.lambda = lambda,
-		.r = r,
-		.R = R
-	};
-
-//	NOTE: assuming lambda/2 + 1 oscillations with 1000 points each.
-	const int n_max = 1000*(round(lambda/2) + 1);
-
-	ASSERT(n_max > 0)
-
-	const double result
-		= math_simpson(0.0, M_PI, n_max, &p, false, pes_legendre_integrand);
-
-	return as_double(2*lambda + 1)*result/2.0;
-}*/
-
 
 /******************************************************************************
 
@@ -934,6 +867,117 @@ void pes_multipole_free(pes_multipole *m)
 
 	free(m->value);
 	m->value = NULL;
+}
+
+/******************************************************************************
+
+ Function pes_olson_smith_model(): return the 2-by-2 model potential of Olson
+ and Smith for the system Ne + He^+ at a given internuclear distance x. See
+ Eq. (45) and Table I from Ref. [1] for details. Where, n = [0, 1] and
+ m = [0, 1].
+
+ NOTE: a handy benchmark for the algorithms.
+
+******************************************************************************/
+
+double pes_olson_smith_model(const size_t n, const size_t m, const double x)
+{
+	if (n == 0 && m == 0)
+		return 21.1*exp(-x/0.678)/x;
+
+	else if (n == 0 && m == 1)
+		return 0.170*exp(-x/0.667);
+
+	else if (n == 1 && m == 0)
+		return 0.170*exp(-x/0.667);
+
+	else if (n == 1 && m == 1)
+		return (21.1/x - 12.1)*exp(-x/0.678) + 16.8/27.2113961;
+
+	else
+		PRINT_ERROR("invalid values of n = %d and/or m = %d\n", (int) n, (int) m)
+		exit(EXIT_FAILURE);
+}
+
+/******************************************************************************
+
+ Function pes_tully_1st_model(): return one of the first 2x2 model potential of
+ J. C. Tully at a given x. See Eq. (21), (23) and (24) of Ref. [2]. Where, n =
+ [0, 1] and m = [0, 1].
+
+******************************************************************************/
+
+double pes_tully_1st_model(const size_t n, const size_t m, const double x)
+{
+	if (n == 0 && m == 0)
+		return (x > 0.0? 0.01*(1.0 - exp(-1.6*x)) : -0.01*(1.0 - exp(1.6*x)));
+
+	else if (n == 0 && m == 1)
+		return 0.005*exp(-1.0*x*x);
+
+	else if (n == 1 && m == 0)
+		return 0.005*exp(-1.0*x*x);
+
+	else if (n == 1 && m == 1)
+		return (x > 0.0? -0.01*(1.0 - exp(-1.6*x)) : 0.01*(1.0 - exp(1.6*x)));
+
+	else
+		PRINT_ERROR("invalid values of n = %d and/or m = %d\n", (int) n, (int) m)
+		exit(EXIT_FAILURE);
+}
+
+/******************************************************************************
+
+ Function pes_tully_2nd_model(): return one of the second 2x2 model potential
+ of J. C. Tully at a given x. See Eq. (21), (23) and (24) of Ref. [2]. Where,
+ n = [0, 1] and m = [0, 1].
+
+******************************************************************************/
+
+double pes_tully_2nd_model(const size_t n, const size_t m, const double x)
+{
+	if (n == 0 && m == 0)
+		return 0.0;
+
+	else if (n == 0 && m == 1)
+		return 0.015*exp(-0.06*x*x);
+
+	else if (n == 1 && m == 0)
+		return 0.015*exp(-0.06*x*x);
+
+	else if (n == 1 && m == 1)
+		return -0.10*exp(-0.28*x*x) + 0.05;
+
+	else
+		PRINT_ERROR("invalid values of n = %d and/or m = %d\n", (int) n, (int) m)
+		exit(EXIT_FAILURE);
+}
+
+/******************************************************************************
+
+ Function pes_tully_3rd_model(): return one of the third 2x2 model potential of
+ J. C. Tully at a given x. See Eq. (21), (23) and (24) of Ref. [2]. Where, n =
+ [0, 1] and m = [0, 1].
+
+******************************************************************************/
+
+double pes_tully_3rd_model(const size_t n, const size_t m, const double x)
+{
+	if (n == 0 && m == 0)
+		return 0.0006;
+
+	else if (n == 0 && m == 1)
+		return (x < 0.0? 0.10*exp(0.90*x) : 0.10*(2.0 - exp(-0.90*x)));
+
+	else if (n == 1 && m == 0)
+		return 0.0;
+
+	else if (n == 1 && m == 1)
+		return -0.0006;
+
+	else
+		PRINT_ERROR("invalid values of n = %d and/or m = %d\n", (int) n, (int) m)
+		exit(EXIT_FAILURE);
 }
 
 /******************************************************************************

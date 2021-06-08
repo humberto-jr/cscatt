@@ -51,14 +51,14 @@
 	                const double theta_a,
 	                const double phi_a);
 
-	double pes_bc(const int j, const double r);
+	double pes_bc(const size_t j, const double r);
 
-	double pes_ac(const int j, const double r);
+	double pes_ac(const size_t j, const double r);
 
-	double pes_ab(const int j, const double r);
+	double pes_ab(const size_t j, const double r);
 
 	double pes_legendre_multipole(const char arrang,
-	                              const int lambda,
+	                              const size_t lambda,
 	                              const double r,
 	                              const double R);
 
@@ -88,6 +88,14 @@
 	int pes_multipole_count(const char arrang);
 
 	void pes_multipole_free(pes_multipole *m);
+
+	double pes_olson_smith_model(const size_t n, const size_t m, const double x);
+
+	double pes_tully_1st_model(const size_t n, const size_t m, const double x);
+
+	double pes_tully_2nd_model(const size_t n, const size_t m, const double x);
+
+	double pes_tully_3rd_model(const size_t n, const size_t m, const double x);
 
 	void pes_about(FILE *output);
 #endif
