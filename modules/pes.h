@@ -66,8 +66,8 @@
 	                               const int m_eta,
 	                               const double r_bc,
 	                               const double r_bcd,
-	                               const double r_abcd,
-	                               const double theta_bc);
+	                               const double theta,
+	                               const double R);
 
 	FILE *pes_multipole_file(const char arrang,
 	                         const int n, const char mode[], const bool verbose);

@@ -75,11 +75,11 @@
 		return matrix_cols(v);
 	}
 
-	inline static vector_copy(vector *a,
-	                          const vector *b, const double alpha, const double beta);
-	{
-		matrix_copy(a, b, alpha, beta);
-	}
+//	inline static vector_copy(vector *a,
+//	                          const vector *b, const double alpha, const double beta);
+//	{
+//		matrix_copy(a, b, alpha, beta);
+//	}
 
 	inline static void vector_swap(vector *a, vector *b)
 	{
@@ -169,6 +169,24 @@
 	inline static void vector_use_omp(vector *v, const bool use)
 	{
 		matrix_use_omp(v, use);
+	}
+
+	inline static void vector_write(const vector *v, FILE *output)
+	{
+		ASSERT(output != NULL)
+
+		const size_t n_max = matrix_cols(v);
+
+		for (size_t n = 0; n < n_max; ++n)
+			fprintf(output, "% -8e\n", matrix_get(v, 0, n));
+	}
+
+	inline static void vector_append(vector *v, const double x)
+	{
+		const size_t new_length = matrix_cols(v) + 1;
+
+		matrix_reshape(v, 1, new_length);
+		matrix_set(v, 0, new_length - 1, x);
 	}
 
 	inline static void vector_about(FILE *output)

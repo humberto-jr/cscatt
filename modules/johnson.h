@@ -20,13 +20,13 @@
 	                                  const double wavenum,
 	                                  const double x);
 
-	double *johnson_jcp77_numerov(const int grid_size,
+	double *johnson_jcp77_numerov(const size_t grid_size,
 	                              const double grid_step,
 	                              const double pot_energy[],
 	                              const double trial_energy,
 	                              const double mass,
 	                              double *error,
-	                              int *nodes);
+	                              size_t *nodes);
 
 	void johnson_jcp78_numerov(const double grid_step,
 	                           matrix *pot_energy,

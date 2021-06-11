@@ -1444,6 +1444,28 @@ void matrix_use_omp(matrix *m, const bool use)
 
 /******************************************************************************
 
+ Function matrix_reshape(): resize the shape of a matrix m after initialized by
+ matrix_alloc().
+
+******************************************************************************/
+
+void matrix_reshape(matrix *m, const size_t max_row, const size_t max_col)
+{
+	if (matrix_using_magma())
+	{
+		PRINT_ERROR("%s\n", "memory pinned reallocation not available when using MAGMA")
+		exit(EXIT_FAILURE);
+	}
+
+	m->max_row = max_row;
+	m->max_col = max_col;
+	m->data = realloc(m->data, sizeof(double)*m->max_row*m->max_col);
+
+	ASSERT(m->data != NULL)
+}
+
+/******************************************************************************
+
  Function matrix_about(): prints in a given output file the conditions in which
  the module was compiled.
 

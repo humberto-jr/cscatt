@@ -155,5 +155,7 @@
 
 	void matrix_use_omp(matrix *m, const bool use);
 
+	void matrix_reshape(matrix *m, const size_t max_row, const size_t max_col);
+
 	void matrix_about(FILE *output);
 #endif

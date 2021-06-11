@@ -28,7 +28,11 @@
 #include "file.h"
 #include "pes.h"
 
-static double mass_a = 0.0, mass_b = 0.0, mass_c = 0.0, mass_d = 0.0, inf = 100.0;
+static double mass_a = 0.0;
+static double mass_b = 0.0;
+static double mass_c = 0.0;
+static double mass_d = 0.0;
+static double inf = 100.0;
 
 /******************************************************************************
 
@@ -253,11 +257,13 @@ double pes_mass_ab()
 
 double pes_mass_abc(const char arrang)
 {
+	const double mass_abc = mass_a + mass_b + mass_c;
+
 	switch (arrang)
 	{
-		case 'a': return mass_a*(mass_b + mass_c)/(mass_a + mass_b + mass_c);
-		case 'b': return mass_b*(mass_a + mass_c)/(mass_a + mass_b + mass_c);
-		case 'c': return mass_c*(mass_a + mass_b)/(mass_a + mass_b + mass_c);
+		case 'a': return mass_a*(mass_b + mass_c)/mass_abc;
+		case 'b': return mass_b*(mass_a + mass_c)/mass_abc;
+		case 'c': return mass_c*(mass_a + mass_b)/mass_abc;
 
 		default:
 			PRINT_ERROR("invalid arrangement %c\n", arrang)
@@ -425,33 +431,35 @@ double pes_abcd(const double r_bc,
 	/* NOTE: ab = 0, ac = 1, ad = 2, bc = 3, bd = 4, cd = 5. */
 	double internuc[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-	math_xyz a, b, c, d, cb, cbd;
+	math_xyz a, b, c, d, bc, bcd;
 
-	c.x = 0.0;
-	c.y = r_bc/2.0;
-	c.z = 0.0;
+	b.x = 0.0;
+	b.y = r_bc/2.0;
+	b.z = 0.0;
 
-	b.x =  0.0;
-	b.y = -c.y;
-	b.z =  0.0;
+	c.x =  0.0;
+	c.y = -b.y;
+	c.z =  0.0;
 
-	cb.x = 0.0;
-	cb.y = (c.y*mass_c + b.y*mass_b)/(mass_c + mass_b);
-	cb.z = 0.0;
+	const double mass_bc = mass_b + mass_c;
 
-	d.x = cb.x;
-	d.y = cb.y + r_bcd*sin(theta_bc*M_PI/180.0);
-	d.z = cb.z + r_bcd*cos(theta_bc*M_PI/180.0);
+	bc.x = 0.0;
+	bc.y = (b.y*mass_b + c.y*mass_c)/mass_bc;
+	bc.z = 0.0;
 
-	const double mass_cb = mass_c + mass_b;
+	d.x = bc.x;
+	d.y = bc.y + r_bcd*sin(theta_bc*M_PI/180.0);
+	d.z = bc.z + r_bcd*cos(theta_bc*M_PI/180.0);
 
-	cbd.x = (d.x*mass_d + cb.x*mass_cb)/(mass_d + mass_cb);
-	cbd.y = (d.y*mass_d + cb.y*mass_cb)/(mass_d + mass_cb);
-	cbd.z = (d.z*mass_d + cb.z*mass_cb)/(mass_d + mass_cb);
+	const double mass_bcd = mass_bc + mass_d;
 
-	a.x = cbd.x + r_abcd*sin(theta_a*M_PI/180.0)*cos(phi_a*M_PI/180.0);
-	a.y = cbd.y + r_abcd*sin(theta_a*M_PI/180.0)*sin(phi_a*M_PI/180.0);
-	a.z = cbd.z + r_abcd*cos(theta_a*M_PI/180.0);
+	bcd.x = (bc.x*mass_bc + d.x*mass_d)/mass_bcd;
+	bcd.y = (bc.y*mass_bc + d.y*mass_d)/mass_bcd;
+	bcd.z = (bc.z*mass_bc + d.z*mass_d)/mass_bcd;
+
+	a.x = bcd.x + r_abcd*sin(theta_a*M_PI/180.0)*cos(phi_a*M_PI/180.0);
+	a.y = bcd.y + r_abcd*sin(theta_a*M_PI/180.0)*sin(phi_a*M_PI/180.0);
+	a.z = bcd.z + r_abcd*cos(theta_a*M_PI/180.0);
 
 	#if defined(USE_CARTESIAN_COORDINATES)
 	{
@@ -530,7 +538,7 @@ struct legendre_params
 	const double R;
 };
 
-static double pes_legendre_integrand(const double theta, const void *params)
+static double pes_legendre_integrand(const double theta, void *params)
 {
 	struct legendre_params *p = (struct legendre_params *) params;
 
@@ -617,7 +625,7 @@ static double pes_phi_integrand(const double phi, void *params)
 
 	p->phi_a = phi*180.0/M_PI;
 
-	return math_qags(0.0, M_PI, &p, pes_theta_integrand);
+	return math_gauss_legendre(0.0, M_PI, 64, &p, pes_theta_integrand);
 }
 
 /******************************************************************************
@@ -634,15 +642,15 @@ double pes_harmonics_multipole(const int eta,
                                const int m_eta,
                                const double r_bc,
                                const double r_bcd,
-                               const double r_abcd,
-                               const double theta_bc)
+                               const double theta,
+                               const double R)
 {
 	struct harmonics_params p =
 	{
 		.r_bc = r_bc,
 		.r_bcd = r_bcd,
-		.r_abcd = r_abcd,
-		.theta_bc = theta_bc,
+		.r_abcd = R,
+		.theta_bc = theta,
 
 		.eta = eta,
 		.m_eta = abs(m_eta)
@@ -650,7 +658,7 @@ double pes_harmonics_multipole(const int eta,
 
 	const double phase = (m_eta < 0? pow(-1.0, m_eta) : 1.0);
 
-	return phase*math_qags(0.0, 2.0*M_PI, &p, pes_phi_integrand);
+	return phase*math_gauss_legendre(0.0, 2.0*M_PI, 64, &p, pes_phi_integrand);
 }
 
 /******************************************************************************
@@ -871,10 +879,9 @@ void pes_multipole_free(pes_multipole *m)
 
 /******************************************************************************
 
- Function pes_olson_smith_model(): return the 2-by-2 model potential of Olson
- and Smith for the system Ne + He^+ at a given internuclear distance x. See
- Eq. (45) and Table I from Ref. [1] for details. Where, n = [0, 1] and
- m = [0, 1].
+ Function pes_olson_smith_model(): return the 2x2 model potential of Olson and
+ Smith for the system Ne + He^+ at a given internuclear distance x. See Eq.
+ (45) and Table I from Ref. [1] for details. Where, n = [0, 1] and m = [0, 1].
 
  NOTE: a handy benchmark for the algorithms.
 

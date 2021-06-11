@@ -20,32 +20,33 @@
 
 	typedef struct fgh_basis fgh_basis;
 
-	matrix *fgh_dense_single_channel(const int grid_size,
+	matrix *fgh_dense_single_channel(const size_t grid_size,
 	                                 const double grid_step,
 	                                 const double pot_energy[],
 	                                 const double mass);
 
-	matrix *fgh_dense_multi_channel(const int max_state,
-	                                const int grid_size,
+	matrix *fgh_dense_multi_channel(const size_t max_state,
+	                                const size_t grid_size,
 	                                const double grid_step,
 	                                const tensor pot_energy[],
 	                                const double mass);
 
-	mpi_matrix *fgh_sparse_multi_channel(const int max_state,
-	                                     const int grid_size,
+	mpi_matrix *fgh_sparse_multi_channel(const size_t max_state,
+	                                     const size_t grid_size,
 	                                     const double grid_step,
 	                                     const tensor pot_energy[],
 	                                     const double mass);
 
-	double fgh_interpolation(const int grid_size,
+	double fgh_interpolation(const size_t grid_size,
+	                         const double eigenvec[],
 	                         const double r_min,
 	                         const double r_max,
-	                         const double r_new,
-	                         const double eigenvec[]);
+	                         const double r_new);
 
-	double *fgh_eigenvec(const matrix *fgh, const int v, const double grid_step);
+	double *fgh_eigenvec(const matrix *fgh,
+	                     const size_t v, const double grid_step);
 
-	int fgh_basis_count(const char dir[], const char arrang, const int J);
+	size_t fgh_basis_count(const char dir[], const char arrang, const int J);
 
 	FILE *fgh_basis_file(const char dir[], const char arrang, const int n,
 	                     const int J, const char mode[], const bool verbose);

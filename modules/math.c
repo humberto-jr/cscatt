@@ -49,7 +49,7 @@ double math_distance(const math_xyz *a, const math_xyz *b)
 
 double math_dot_product(const math_xyz *a, const math_xyz *b)
 {
-	return a->x*b->x + a->y*b->y + a->z*b->z;
+	return (a->x*b->x + a->y*b->y + a->z*b->z);
 }
 
 /******************************************************************************
@@ -120,6 +120,52 @@ void math_cartesian_coor(math_xyz *a,
 	a->x = rho*sin(th)*cos(ph);
 	a->y = rho*sin(th)*sin(ph);
 	a->z = rho*cos(th);
+}
+
+/******************************************************************************
+
+ Function math_euler_rotation(): rotates a Cartesian point a by successive
+ rotations of z by alpha, y by beta and z by gamma. On entry angles are in
+ degree.
+
+******************************************************************************/
+
+void math_euler_rotation(math_xyz *a,
+                         const double alpha,
+                         const double beta,
+                         const double gamma)
+{
+	const double cosa = cos(alpha*M_PI/180.0);
+	const double cosb = cos(beta*M_PI/180.0);
+	const double cosg = cos(gamma*M_PI/180.0);
+	const double sina = sin(alpha*M_PI/180.0);
+	const double sinb = sin(beta*M_PI/180.0);
+	const double sing = sin(gamma*M_PI/180.0);
+
+/*
+	const double new_x
+		= (cosa*cosb*cosg - sina*sing)*a->x + (-cosa*cosb*sing - sina*cosg)*a->y + cosa*sinb*a->z;
+
+	const double new_y
+		= (sina*cosb*cosg + cosa*sing)*a->x + (-sina*cosb*sing + cosa*cosg)*a->y + sina*sinb*a->z;
+
+	const double new_z
+		= -sinb*cosg*a->x + sinb*sing*a->y + cosb*a->z;
+*/
+
+	const double new_z = cosa*cosb*a->z
+	                   + (cosa*sinb*sing - sina*cosg)*a->y
+	                   + (cosa*sinb*cosg + sina*sing)*a->x;
+
+	const double new_y = sina*cosb*a->z
+	                   + (sina*sinb*sing + cosa*cosg)*a->y
+	                   + (sina*sinb*cosg - cosa*sing)*a->x;
+
+	const double new_x = -sinb*a->z + cosb*sing*a->y + cosb*cosg*a->x;
+
+	a->x = new_x;
+	a->y = new_y;
+	a->z = new_z;
 }
 
 /******************************************************************************
@@ -5939,8 +5985,8 @@ static const long double *math_gauss_legendre_root(const int order)
 double math_gauss_legendre(const double a,
                            const double b,
                            const int order,
-                           const void *params,
-                           double (*f)(const double x, const void *params))
+                           void *params,
+                           double (*f)(const double x, void *params))
 {
 	ASSERT(order > 1)
 	ASSERT(order < 65)

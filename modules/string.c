@@ -11,7 +11,7 @@ struct string
 /******************************************************************************
 
  Function string_increase_storage(): auxiliar function to increase the internal
- maximum length of the internal string array.
+ maximum length of a string array.
 
 ******************************************************************************/
 
@@ -56,7 +56,7 @@ void string_free(string *s)
 
 /******************************************************************************
 
- Function string_set():
+ Function string_set(): set a given text (as a C array) to a string.
 
 ******************************************************************************/
 
@@ -194,8 +194,8 @@ string *string_copy(const string *s)
 
 /******************************************************************************
 
- Function string_append(): appends a given text to the actual content of a
- string s.
+ Function string_append(): appends a given text (as a C array) to the actual
+ content of a string s.
 
 ******************************************************************************/
 
@@ -256,8 +256,8 @@ size_t string_count(const string *s, const char pattern[])
 
 /******************************************************************************
 
- Function string_insert(): inserts a given text at the n-th character of a
- string s.
+ Function string_insert(): inserts a given text (as a C array) at the n-th
+ character of a string s.
 
 ******************************************************************************/
 
@@ -412,7 +412,7 @@ void string_left_trim(string *s)
 
 /******************************************************************************
 
- Function string_trim():
+ Function string_trim(): to trim a string at both sides.
 
 ******************************************************************************/
 

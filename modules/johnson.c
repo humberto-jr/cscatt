@@ -98,15 +98,12 @@ double johnson_modif_spher_bessel(const char type, const int l,
 
 ******************************************************************************/
 
-double *johnson_jcp77_numerov(const int grid_size,
+double *johnson_jcp77_numerov(const size_t grid_size,
                               const double grid_step,
                               const double pot_energy[],
                               const double trial_energy,
-                              const double mass,
-                              double *error,
-                              int *nodes)
+                              const double mass, double *error, size_t *nodes)
 {
-	ASSERT(grid_size > 0)
 	ASSERT(pot_energy != NULL)
 
 	double *T = allocate(grid_size, sizeof(double), false);
@@ -124,10 +121,11 @@ double *johnson_jcp77_numerov(const int grid_size,
 	T[grid_size - 1] =
 		-pow(grid_step, 2)*2.0*mass*(trial_energy - pot_energy[grid_size - 1])/12.0;
 
-	int M = 0;
-	for (int n = (grid_size - 2); n > -1; --n)
+	size_t M = 0;
+	for (size_t n = (grid_size - 2); n < grid_size; --n)
 	{
 		T[n] = -pow(grid_step, 2)*2.0*mass*(trial_energy - pot_energy[n])/12.0;
+
 		inward_R[n] = (2.0 + 10.0*T[n])/(1.0 - T[n]) - 1.0/inward_R[n + 1];
 
 /*
@@ -162,16 +160,17 @@ double *johnson_jcp77_numerov(const int grid_size,
 	T[0] = -pow(grid_step, 2)*2.0*mass*(trial_energy - pot_energy[0])/12.0;
 
 	*nodes = 0;
-	for (int n = 1; n < M; ++n)
+	for (size_t n = 1; n < M; ++n)
 	{
 		T[n] = -pow(grid_step, 2)*2.0*mass*(trial_energy - pot_energy[n])/12.0;
+
 		outward_R[n] = (2.0 + 10.0*T[n])/(1.0 - T[n]) - 1.0/outward_R[n - 1];
 
 /*
  *		Count the number of nodes in the wavefunction:
  */
 
-		if (outward_R[n] < 0.0) ++(*nodes);
+		if (outward_R[n] < 0.0) *nodes += 1;
 	}
 
 /*
@@ -179,15 +178,12 @@ double *johnson_jcp77_numerov(const int grid_size,
  */
 
 	F[M] = 1.0;
-	for (int n = (M - 1); n > -1; --n)
-	{
-		F[n] = F[n + 1]/outward_R[n];
-	}
 
-	for (int n = (M + 1); n < grid_size; ++n)
-	{
+	for (size_t n = (M - 1); n < M; --n)
+		F[n] = F[n + 1]/outward_R[n];
+
+	for (size_t n = (M + 1); n < grid_size; ++n)
 		F[n] = F[n - 1]/inward_R[n];
-	}
 
 /*
  *	Solve Eq. (33) for the wavefunction (unnormalized):
@@ -195,10 +191,8 @@ double *johnson_jcp77_numerov(const int grid_size,
 
 	double *wavef = allocate(grid_size, sizeof(double), false);
 
-	for (int n = 0; n < grid_size; ++n)
-	{
+	for (size_t n = 0; n < grid_size; ++n)
 		wavef[n] = F[n]/(1.0 - T[n]);
-	}
 
 /*
  *	Solve Eq. (48) for the difference, D (named as error here), between the
@@ -234,15 +228,14 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 	ASSERT(ratio != NULL)
 	ASSERT(pot_energy != NULL)
 
-	if (!matrix_null(ratio)) matrix_inverse(ratio);
+	if (!matrix_is_null(ratio)) matrix_inverse(ratio);
 
 /*
  *	NOTE: From Eq. (2) and (17) of Ref. [1] the following numerical
  *	factor is defined in atomic units:
  */
 
-	const double factor
-		= -grid_step*grid_step*2.0*mass/12.0;
+	const double factor = -grid_step*grid_step*2.0*mass/12.0;
 
 /*
  *	Resolve Eq. (23) of Ref. [1] with Eq. (2) and (17) plugged in:
@@ -250,12 +243,12 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 
 	matrix *w = pot_energy;
 
-	for (int n = 0; n < matrix_rows(pot_energy); ++n)
+	for (size_t n = 0; n < matrix_rows(pot_energy); ++n)
 	{
 		double t = factor*(tot_energy - matrix_get(pot_energy, n, n));
 		matrix_set(w, n, n, 1.0 - t);
 
-		for (int m = (n + 1); m < matrix_cols(pot_energy); ++m)
+		for (size_t m = (n + 1); m < matrix_cols(pot_energy); ++m)
 		{
 			t = factor*(0.0 - matrix_get(pot_energy, n, m));
 			matrix_set(w, n, m, 0.0 - t);
@@ -271,12 +264,12 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 
 	matrix_inverse(w);
 
-	for (int n = 0; n < matrix_rows(pot_energy); ++n)
+	for (size_t n = 0; n < matrix_rows(pot_energy); ++n)
 	{
 		double u = 12.0*matrix_get(w, n, n) - 10.0;
 		matrix_set(ratio, n, n, u - matrix_get(ratio, n, n));
 
-		for (int m = (n + 1); m < matrix_cols(pot_energy); ++m)
+		for (size_t m = (n + 1); m < matrix_cols(pot_energy); ++m)
 		{
 			u = 12.0*matrix_get(w, n, m);
 			matrix_set(ratio, n, m, u - matrix_get(ratio, n, m));

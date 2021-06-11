@@ -35,6 +35,11 @@
 	void math_cartesian_coor(math_xyz *a,
 	                         const double rho, const double theta, const double phi);
 
+	void math_euler_rotation(math_xyz *a,
+	                         const double alpha,
+	                         const double beta,
+	                         const double gamma);
+
 	double math_legendre_poly(const size_t l, const double x);
 
 	double math_assoc_legendre_poly(const size_t l,
@@ -157,8 +162,8 @@
 	double math_gauss_legendre(const double a,
 	                           const double b,
 	                           const int order,
-	                           const void *params,
-	                           double (*f)(const double x, const void *params));
+	                           void *params,
+	                           double (*f)(const double x, void *params));
 
 	void math_about(FILE *output);
 #endif

@@ -30,10 +30,9 @@
 
 ******************************************************************************/
 
-matrix *fgh_dense_single_channel(const int grid_size,
+matrix *fgh_dense_single_channel(const size_t grid_size,
                                  const double grid_step,
-                                 const double pot_energy[],
-                                 const double mass)
+                                 const double pot_energy[], const double mass)
 {
 	ASSERT(pot_energy != NULL)
 
@@ -45,11 +44,11 @@ matrix *fgh_dense_single_channel(const int grid_size,
 
 	const double nn_term = factor*as_double(grid_size*grid_size + 2)/6.0;
 
-	for (int n = 0; n < grid_size; ++n)
+	for (size_t n = 0; n < grid_size; ++n)
 	{
 		matrix_set_diag(result, n, nn_term + pot_energy[n]);
 
-		for (int m = (n + 1); m < grid_size; ++m)
+		for (size_t m = (n + 1); m < grid_size; ++m)
 		{
 			const double nm = as_double((n + 1) - (m + 1));
 
@@ -70,11 +69,10 @@ matrix *fgh_dense_single_channel(const int grid_size,
 
 ******************************************************************************/
 
-matrix *fgh_dense_multi_channel(const int max_state,
-                                const int grid_size,
+matrix *fgh_dense_multi_channel(const size_t max_state,
+                                const size_t grid_size,
                                 const double grid_step,
-                                const tensor pot_energy[],
-                                const double mass)
+                                const tensor pot_energy[], const double mass)
 {
 	ASSERT(max_state > 0)
 	ASSERT(pot_energy != NULL)
@@ -87,15 +85,15 @@ matrix *fgh_dense_multi_channel(const int max_state,
 
 	const double nn_term = factor*as_double(grid_size*grid_size + 2)/6.0;
 
-	int row = 0;
-	for (int p = 0; p < max_state; ++p)
+	size_t row = 0;
+	for (size_t p = 0; p < max_state; ++p)
 	{
-		for (int n = 0; n < grid_size; ++n)
+		for (size_t n = 0; n < grid_size; ++n)
 		{
-			int col = 0;
-			for (int q = 0; q < max_state; ++q)
+			size_t col = 0;
+			for (size_t q = 0; q < max_state; ++q)
 			{
-				for (int m = 0; m < grid_size; ++m)
+				for (size_t m = 0; m < grid_size; ++m)
 				{
 					double pnqm = 0.0;
 
@@ -139,16 +137,15 @@ matrix *fgh_dense_multi_channel(const int max_state,
 
 ******************************************************************************/
 
-mpi_matrix *fgh_sparse_multi_channel(const int max_state,
-                                     const int grid_size,
+mpi_matrix *fgh_sparse_multi_channel(const size_t max_state,
+                                     const size_t grid_size,
                                      const double grid_step,
-                                     const tensor pot_energy[],
-                                     const double mass)
+                                     const tensor pot_energy[], const double mass)
 {
 	ASSERT(max_state > 0)
 	ASSERT(pot_energy != NULL)
 
-	const int size = grid_size*max_state;
+	const size_t size = grid_size*max_state;
 
 	const int non_zeros[2] = {1, 1};
 
@@ -160,15 +157,15 @@ mpi_matrix *fgh_sparse_multi_channel(const int max_state,
 
 	const double nn_term = factor*as_double(grid_size*grid_size + 2)/6.0;
 
-	int row = 0;
-	for (int p = 0; p < max_state; ++p)
+	size_t row = 0;
+	for (size_t p = 0; p < max_state; ++p)
 	{
-		for (int n = 0; n < grid_size; ++n)
+		for (size_t n = 0; n < grid_size; ++n)
 		{
-			int col = 0;
-			for (int q = 0; q < max_state; ++q)
+			size_t col = 0;
+			for (size_t q = 0; q < max_state; ++q)
 			{
-				for (int m = 0; m < grid_size; ++m)
+				for (size_t m = 0; m < grid_size; ++m)
 				{
 					double pnqm = 0.0;
 
@@ -233,19 +230,18 @@ matrix *dvr_multich_fgh_comp(matrix *fgh,
 
 ******************************************************************************/
 
-double fgh_interpolation(const int grid_size,
+double fgh_interpolation(const size_t grid_size,
+                         const double eigenvec[],
                          const double r_min,
                          const double r_max,
-                         const double r_new,
-                         const double eigenvec[])
+                         const double r_new)
 {
-	ASSERT(grid_size > 0)
 	ASSERT(eigenvec != NULL)
 
 	const double r_step = (r_max - r_min)/as_double(grid_size);
 
 	double result = 0.0;
-	for (int n = 0; n < grid_size; ++n)
+	for (size_t n = 0; n < grid_size; ++n)
 	{
 		const double r_old = r_min + as_double(n)*r_step;
 		const double param = M_PI*(r_new - r_old)/r_step;
@@ -308,13 +304,12 @@ double dvr_fgh_product(const matrix *fgh, const int a, const int b,
 
 ******************************************************************************/
 
-double *fgh_eigenvec(const matrix *fgh, const int v, const double grid_step)
+double *fgh_eigenvec(const matrix *fgh, const size_t v, const double grid_step)
 {
-	ASSERT(v > -1)
 	ASSERT(fgh != NULL)
 
-	const int grid_size = matrix_rows(fgh);
-	const int n_max = (grid_size%2 == 0? grid_size : grid_size - 1);
+	const size_t grid_size = matrix_rows(fgh);
+	const size_t n_max = (grid_size%2 == 0? grid_size : grid_size - 1);
 
 	double *eigenvec = NULL;
 
@@ -328,14 +323,14 @@ double *fgh_eigenvec(const matrix *fgh, const int v, const double grid_step)
 	double sum
 		= eigenvec[0]*eigenvec[0] + eigenvec[n_max - 1]*eigenvec[n_max - 1];
 
-	for (int n = 1; n < (n_max - 2); n += 2)
+	for (size_t n = 1; n < (n_max - 2); n += 2)
 		sum += 4.0*eigenvec[n]*eigenvec[n] + 2.0*eigenvec[n + 1]*eigenvec[n + 1];
 
 	sum = grid_step*sum/3.0;
 
 	const double norm = 1.0/sqrt(sum);
 
-	for (int n = 0; n < grid_size; ++n)
+	for (size_t n = 0; n < grid_size; ++n)
 		eigenvec[n] = norm*eigenvec[n];
 
 	return eigenvec;
@@ -385,17 +380,17 @@ void dvr_multich_fgh_norm(matrix *fgh, const int max_ch,
 
 ******************************************************************************/
 
-int fgh_basis_count(const char dir[], const char arrang, const int J)
+size_t fgh_basis_count(const char dir[], const char arrang, const int J)
 {
 	char filename[MAX_LINE_LENGTH];
 
-	int counter = 0;
-	sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, counter, J, "bin");
+	size_t counter = 0;
+	sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, (int) counter, J, "bin");
 
 	while (file_exist(filename))
 	{
 		++counter;
-		sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, counter, J, "bin");
+		sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, (int) counter, J, "bin");
 	}
 
 	return counter;
