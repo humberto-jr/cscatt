@@ -27,7 +27,7 @@
 
 	inline static void vector_set(vector *v, const size_t n, const double x)
 	{
-		matrix_set(v, 0, n, x);
+		matrix_data_set(v, n, x);
 	}
 
 	inline static void vector_set_all(vector *v, const double x)
@@ -43,6 +43,16 @@
 		matrix_set_block(v, 0, 0, n_min, n_max, x);
 	}
 
+	inline static void vector_set_first(vector *v, const double x)
+	{
+		matrix_data_set(v, 0, x);
+	}
+
+	inline static void vector_set_last(vector *v, const double x)
+	{
+		matrix_data_set(v, matrix_cols(x) - 1, x);
+	}
+
 	inline static void vector_set_random(vector *v)
 	{
 		matrix_set_random(v);
@@ -55,7 +65,7 @@
 
 	inline static double vector_get(const vector *v, const size_t n)
 	{
-		return matrix_get(v, 0, n);
+		return matrix_data_get(v, n);
 	}
 
 	inline static vector *vector_get_block(const vector *v,
@@ -181,12 +191,14 @@
 			fprintf(output, "% -8e\n", matrix_get(v, 0, n));
 	}
 
-	inline static void vector_append(vector *v, const double x)
+	inline static void vector_resize(vector *v, const size_t length)
 	{
-		const size_t new_length = matrix_cols(v) + 1;
+		matrix_reshape(v, 1, length);
+	}
 
-		matrix_reshape(v, 1, new_length);
-		matrix_set(v, 0, new_length - 1, x);
+	inline static void vector_enlarge(vector *v, const size_t extra_length)
+	{
+		matrix_reshape(v, 1, matrix_cols(v) + extra_length);
 	}
 
 	inline static void vector_about(FILE *output)

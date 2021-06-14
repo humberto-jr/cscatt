@@ -1451,17 +1451,52 @@ void matrix_use_omp(matrix *m, const bool use)
 
 void matrix_reshape(matrix *m, const size_t max_row, const size_t max_col)
 {
-	if (matrix_using_magma())
-	{
+	#if defined(USE_MAGMA)
 		PRINT_ERROR("%s\n", "memory pinned reallocation not available when using MAGMA")
 		exit(EXIT_FAILURE);
-	}
+	#endif
 
 	m->max_row = max_row;
 	m->max_col = max_col;
 	m->data = realloc(m->data, sizeof(double)*m->max_row*m->max_col);
 
 	ASSERT(m->data != NULL)
+}
+
+/******************************************************************************
+
+ Function matrix_data_set(): set x to the n-th element in the internal vector
+ that stores the matrix m, whose physical length in memory is max_row*max_col.
+
+******************************************************************************/
+
+void matrix_data_set(matrix *m, const size_t n, const double x)
+{
+	m->data[n] = x;
+}
+
+/******************************************************************************
+
+ Function matrix_data_get(): accesses the n-th element in the internal vector
+ that stores the matrix m, whose physical length in memory is max_row*max_col.
+
+******************************************************************************/
+
+double matrix_data_get(const matrix *m, const size_t n)
+{
+	return m->data[n];
+}
+
+/******************************************************************************
+
+ Function matrix_data_length(): returns the internal physical length of m as it
+ is stored in memory, max_row*max_col.
+
+******************************************************************************/
+
+size_t matrix_data_length(const matrix *m)
+{
+	return m->max_row*m->max_col;
 }
 
 /******************************************************************************

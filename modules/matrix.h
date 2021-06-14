@@ -157,5 +157,11 @@
 
 	void matrix_reshape(matrix *m, const size_t max_row, const size_t max_col);
 
+	void matrix_data_set(matrix *m, const size_t n, const double x);
+
+	double matrix_data_get(const matrix *m, const size_t n);
+
+	size_t matrix_data_length(const matrix *m);
+
 	void matrix_about(FILE *output);
 #endif
