@@ -29,10 +29,8 @@
 	                              size_t *nodes);
 
 	void johnson_jcp78_numerov(const double grid_step,
-	                           matrix *pot_energy,
-	                           const double tot_energy,
-	                           const double mass,
-	                           matrix *ratio);
+	                           const double mass, const double tot_energy,
+	                           matrix *pot_energy, matrix *ratio, matrix *workspace);
 
 	void johnson_jcp73_logd(const int n,
 	                        const int grid_size,

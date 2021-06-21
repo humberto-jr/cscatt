@@ -214,16 +214,18 @@ double *johnson_jcp77_numerov(const size_t grid_size,
 
 /******************************************************************************
 
- Function johnson_jcp78_numerov(): use the method of B. R. Johnson, Ref. [1],
+ Function johnson_jcp78_numerov(): uses the method of B. R. Johnson, Ref. [1],
  to propagate the ratio matrix of a multichannel wavefunction from the radial
  grid point (n - 1) to n at a given total energy.
 
- NOTE: the potential matrix is used as workspace and its content is destroyed.
+ NOTE: the potential matrix is used as workspace and its content is destroyed
+ if workspace = NULL.
 
 ******************************************************************************/
 
-void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
-                           const double tot_energy, const double mass, matrix *ratio)
+void johnson_jcp78_numerov(const double grid_step,
+                           const double mass, const double tot_energy,
+                           matrix *pot_energy, matrix *ratio, matrix *workspace)
 {
 	ASSERT(ratio != NULL)
 	ASSERT(pot_energy != NULL)
@@ -241,20 +243,26 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
  *	Resolve Eq. (23) of Ref. [1] with Eq. (2) and (17) plugged in:
  */
 
-	matrix *w = pot_energy;
+	matrix *w = NULL;
 
-	for (size_t n = 0; n < matrix_rows(pot_energy); ++n)
+	if (workspace == NULL)
+		w = pot_energy;
+	else
+		w = workspace;
+
+	const int n_max = matrix_rows(pot_energy);
+
+	for (int n = 0; n < n_max; ++n)
 	{
-		double t = factor*(tot_energy - matrix_get(pot_energy, n, n));
-		matrix_set(w, n, n, 1.0 - t);
+		const double t_nn = factor*(tot_energy - matrix_get(pot_energy, n, n));
 
-		for (size_t m = (n + 1); m < matrix_cols(pot_energy); ++m)
+		matrix_set_diag(w, n, 1.0 - t_nn);
+
+		for (int m = (n + 1); m < n_max; ++m)
 		{
-			t = factor*(0.0 - matrix_get(pot_energy, n, m));
-			matrix_set(w, n, m, 0.0 - t);
+			const double t_nm = factor*(0.0 - matrix_get(pot_energy, n, m));
 
-			t = factor*(0.0 - matrix_get(pot_energy, m, n));
-			matrix_set(w, m, n, 0.0 - t);
+			matrix_set_symm(w, n, m, 0.0 - t_nm);
 		}
 	}
 
@@ -264,18 +272,17 @@ void johnson_jcp78_numerov(const double grid_step, matrix *pot_energy,
 
 	matrix_inverse(w);
 
-	for (size_t n = 0; n < matrix_rows(pot_energy); ++n)
+	for (int n = 0; n < n_max; ++n)
 	{
-		double u = 12.0*matrix_get(w, n, n) - 10.0;
-		matrix_set(ratio, n, n, u - matrix_get(ratio, n, n));
+		const double u_nn = 12.0*matrix_get(w, n, n) - 10.0;
 
-		for (size_t m = (n + 1); m < matrix_cols(pot_energy); ++m)
+		matrix_set_diag(ratio, n, u_nn - matrix_get(ratio, n, n));
+
+		for (int m = (n + 1); m < n_max; ++m)
 		{
-			u = 12.0*matrix_get(w, n, m);
-			matrix_set(ratio, n, m, u - matrix_get(ratio, n, m));
+			const double u_nm = 12.0*matrix_get(w, n, m);
 
-			u = 12.0*matrix_get(w, m, n);
-			matrix_set(ratio, m, n, u - matrix_get(ratio, m, n));
+			matrix_set_symm(ratio, n, m, u_nm - matrix_get(ratio, n, m));
 		}
 	}
 

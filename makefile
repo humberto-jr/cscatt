@@ -635,6 +635,11 @@ test_suit: $(TOOLS_DIR)/test_suit.c $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o math.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
+numerov_test: $(TOOLS_DIR)/numerov_test.c $(MODULES_DIR)/johnson.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/pes.h math.o nist.o file.o
+	@echo "$<:"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o johnson.o pes.o math.o nist.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	@echo
+
 #
 # Rules to build/install external libraries:
 #
