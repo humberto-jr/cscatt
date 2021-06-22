@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
 	while ((input = pes_multipole_file(arrang, n, "rb", true)) != NULL)
 	{
-		pes_multipole m = {.value = NULL};
+		pes_multipole m;
 		pes_multipole_read(&m, input);
 
 		FILE *output = pes_multipole_file(arrang, n, "w", true);

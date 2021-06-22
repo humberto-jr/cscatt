@@ -40,7 +40,10 @@
 	                                    const size_t n_max,
 	                                    const double x)
 	{
-		matrix_set_block(v, 0, 0, n_min, n_max, x);
+		if (matrix_rows(v) == 1)
+			matrix_set_block(v, 0, 0, n_min, n_max, x);
+		else
+			matrix_set_block(v, n_min, n_max, 0, 0, x);
 	}
 
 	inline static void vector_set_first(vector *v, const double x)
@@ -50,7 +53,7 @@
 
 	inline static void vector_set_last(vector *v, const double x)
 	{
-		matrix_data_set(v, matrix_cols(x) - 1, x);
+		matrix_data_set(v, matrix_data_length(v) - 1, x);
 	}
 
 	inline static void vector_set_random(vector *v)
@@ -72,17 +75,20 @@
 	                                       const size_t n_min,
 	                                       const size_t n_max)
 	{
-		return matrix_get_block(v, 0, 0, n_min, n_max);
+		if (matrix_rows(v) == 1)
+			return matrix_get_block(v, 0, 0, n_min, n_max);
+		else
+			return matrix_get_block(v, n_min, n_max, 0, 0);
 	}
 
 	inline static double *vector_get_raw(const vector *v)
 	{
-		return matrix_get_raw_row(v, 0);
+		return matrix_data_raw(v);
 	}
 
 	inline static size_t vector_length(const vector *v)
 	{
-		return matrix_cols(v);
+		return matrix_data_length(v);
 	}
 
 //	inline static vector_copy(vector *a,
@@ -158,7 +164,7 @@
 
 	inline static bool vector_using_lapacke()
 	{
-		return vector_using_lapacke();
+		return matrix_using_lapacke();
 	}
 
 	inline static void vector_save(const vector *v, const char filename[])
@@ -185,10 +191,10 @@
 	{
 		ASSERT(output != NULL)
 
-		const size_t n_max = matrix_cols(v);
+		const size_t n_max = matrix_data_length(v);
 
 		for (size_t n = 0; n < n_max; ++n)
-			fprintf(output, "% -8e\n", matrix_get(v, 0, n));
+			fprintf(output, "% -8e\n", matrix_data_get(v, n));
 	}
 
 	inline static void vector_resize(vector *v, const size_t length)
@@ -198,7 +204,7 @@
 
 	inline static void vector_enlarge(vector *v, const size_t extra_length)
 	{
-		matrix_reshape(v, 1, matrix_cols(v) + extra_length);
+		matrix_reshape(v, 1, matrix_data_length(v) + extra_length);
 	}
 
 	inline static void vector_about(FILE *output)

@@ -28,9 +28,8 @@
 	#include "slepceps.h"
 #endif
 
-static int this_rank = 0, comm_size = 1, thread_level = 0;
-
-static int chunk_size = 1, tasks = 1, extra_tasks = 0, last_rank_index = 0;
+static size_t this_rank = 0, comm_size = 1, thread_level = 0;
+static size_t chunk_size = 1, tasks = 1, extra_tasks = 0, last_rank_index = 0;
 
 /******************************************************************************
 
@@ -103,7 +102,6 @@ struct mpi_vector
 #if defined(USE_PETSC)
   #define ASSERT_ROW_INDEX(pointer, p) \
   {                                    \
-    ASSERT((p) > -1)                   \
     ASSERT((p) < pointer->max_row)     \
   }
 #else
@@ -120,7 +118,6 @@ struct mpi_vector
 #if defined(USE_PETSC)
   #define ASSERT_COL_INDEX(pointer, q) \
   {                                    \
-    ASSERT((q) > -1)                   \
     ASSERT((q) < pointer->max_col)     \
   }
 #else
@@ -136,7 +133,6 @@ struct mpi_vector
 
 #define ASSERT_RANK(n)    \
 {                         \
-  ASSERT((n) > -1)        \
   ASSERT((n) < comm_size) \
 }
 
@@ -258,7 +254,7 @@ void mpi_end()
 
 ******************************************************************************/
 
-int mpi_rank()
+size_t mpi_rank()
 {
 	return this_rank;
 }
@@ -270,7 +266,7 @@ int mpi_rank()
 
 ******************************************************************************/
 
-int mpi_comm_size()
+size_t mpi_comm_size()
 {
 	return comm_size;
 }
@@ -281,7 +277,7 @@ int mpi_comm_size()
 
 ******************************************************************************/
 
-int mpi_thread_level()
+size_t mpi_thread_level()
 {
 	return thread_level;
 }
@@ -312,7 +308,7 @@ void mpi_barrier()
 
 ******************************************************************************/
 
-void mpi_set_tasks(const int max_task)
+void mpi_set_tasks(const size_t max_task)
 {
 	ASSERT(max_task > 0)
 
@@ -320,8 +316,6 @@ void mpi_set_tasks(const int max_task)
 	chunk_size = max_task/comm_size;
 	last_rank_index = (comm_size - 1)*chunk_size + (chunk_size - 1);
 	extra_tasks = (max_task - 1) - last_rank_index;
-
-	ASSERT(extra_tasks >= 0)
 }
 
 /******************************************************************************
@@ -333,7 +327,7 @@ void mpi_set_tasks(const int max_task)
 
 ******************************************************************************/
 
-int mpi_first_task()
+size_t mpi_first_task()
 {
 	return this_rank*chunk_size;
 }
@@ -348,7 +342,7 @@ int mpi_first_task()
 
 ******************************************************************************/
 
-int mpi_last_task()
+size_t mpi_last_task()
 {
 	return this_rank*chunk_size + (chunk_size - 1);
 }
@@ -364,9 +358,9 @@ int mpi_last_task()
 
 ******************************************************************************/
 
-int mpi_extra_task()
+size_t mpi_extra_task()
 {
-	const int index = (extra_tasks > 0? last_rank_index + this_rank + 1 : 0);
+	const size_t index = (extra_tasks > 0? last_rank_index + this_rank + 1 : 0);
 
 	return (index < tasks? index : 0);
 }
@@ -378,17 +372,15 @@ int mpi_extra_task()
 
 ******************************************************************************/
 
-bool mpi_inbox(const int from)
+bool mpi_inbox(const size_t from)
 {
 	ASSERT_RANK(from)
 
 	int message_sent = (int) false;
 
 	#if defined(USE_MPI)
-	{
 		#pragma omp critical
 		MPI_Iprobe(from, 666, MPI_COMM_WORLD, &message_sent, MPI_STATUS_IGNORE);
-	}
 	#endif
 
 	return (bool) message_sent;
@@ -402,38 +394,38 @@ bool mpi_inbox(const int from)
 
 ******************************************************************************/
 
-void mpi_send(const int to, const int n, const char type, void *data)
+void mpi_send(const size_t to, const size_t n, const char type, void *data)
 {
 	ASSERT(n > 0)
 	ASSERT_RANK(to)
 	ASSERT(data != NULL)
 
-	/* NOTE: to avoid 'unused parameter' warns during compilation of the dummy version. */
+	/* NOTE: to avoid 'unused parameter' warns during compilation of a dummy version. */
 	ASSERT(type == type)
 
 	#if defined(USE_MPI)
 	{
 		#pragma omp critical
 		{
-			MPI_Send(&n, 1, MPI_INT, to, 666, MPI_COMM_WORLD);
+			MPI_Send(&n, 1, MPI_UNSIGNED, to, 666, MPI_COMM_WORLD);
 
 			switch (type)
 			{
 				case 'i':
 					MPI_Send(data, n, MPI_INT, to, 667, MPI_COMM_WORLD);
-					break;
+					return;
 
 				case 'c':
 					MPI_Send(data, n, MPI_CHAR, to, 667, MPI_COMM_WORLD);
-					break;
+					return;
 
 				case 'f':
 					MPI_Send(data, n, MPI_FLOAT, to, 667, MPI_COMM_WORLD);
-					break;
+					return;
 
 				case 'd':
 					MPI_Send(data, n, MPI_DOUBLE, to, 667, MPI_COMM_WORLD);
-					break;
+					return;
 
 				default:
 					PRINT_ERROR("invalid type %c\n", type)
@@ -455,7 +447,7 @@ void mpi_send(const int to, const int n, const char type, void *data)
 
 ******************************************************************************/
 
-void mpi_receive(const int from, const int n, const char type, void *data)
+void mpi_receive(const size_t from, const size_t n, const char type, void *data)
 {
 	ASSERT(n > 0)
 	ASSERT_RANK(from)
@@ -468,9 +460,9 @@ void mpi_receive(const int from, const int n, const char type, void *data)
 	{
 		#pragma omp critical
 		{
-			int m = 0;
+			size_t m = 0;
 
-			MPI_Recv(&m, 1, MPI_INT, from, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			MPI_Recv(&m, 1, MPI_UNSIGNED, from, 666, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 			m = min(n, m);
 
@@ -478,19 +470,19 @@ void mpi_receive(const int from, const int n, const char type, void *data)
 			{
 				case 'i':
 					MPI_Recv(data, m, MPI_INT, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-					break;
+					return;
 
 				case 'c':
 					MPI_Recv(data, m, MPI_CHAR, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-					break;
+					return;
 
 				case 'f':
 					MPI_Recv(data, m, MPI_FLOAT, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-					break;
+					return;
 
 				case 'd':
 					MPI_Recv(data, m, MPI_DOUBLE, from, 667, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-					break;
+					return;
 
 				default:
 					PRINT_ERROR("invalid type %c\n", type)
@@ -514,8 +506,8 @@ void mpi_receive(const int from, const int n, const char type, void *data)
 
 ******************************************************************************/
 
-mpi_matrix *mpi_matrix_alloc(const int max_row,
-                             const int max_col, const int non_zeros[])
+mpi_matrix *mpi_matrix_alloc(const size_t max_row,
+                             const size_t max_col, const int non_zeros[])
 {
 	ASSERT(max_row > 0)
 	ASSERT(max_col > 0)
@@ -570,6 +562,35 @@ mpi_matrix *mpi_matrix_alloc(const int max_row,
 	}
 	#endif
 }
+
+/*
+mpi_matrix *mpi_matrix_alloc(const size_t max_row, const size_t max_col)
+{
+	mpi_matrix *pointer = allocate(1, sizeof(struct mpi_matrix), true);
+
+	#if defined(USE_PETSC)
+	{
+		int info = MatCreate(MPI_COMM_WORLD, &pointer->data);
+
+		CHECK_PETSC_ERROR("MatCreate()", info, true)
+
+		info = MatSetSizes(&pointer->data, PETSC_DECIDE, PETSC_DECIDE, max_row, max_col);
+
+		CHECK_PETSC_ERROR("MatSetSizes()", info, true)
+
+		info = MatGetOwnershipRange(pointer->data, &pointer->first, &pointer->last);
+
+		CHECK_PETSC_ERROR("MatGetOwnershipRange()", info, true)
+
+		return pointer;
+	}
+	#else
+	{
+		pointer->data = matrix_alloc(max_row, max_col, false);
+		return pointer;
+	}
+	#endif
+}*/
 
 /******************************************************************************
 
@@ -901,6 +922,33 @@ mpi_vector *mpi_matrix_eigenpair(const mpi_matrix *m,
  compilation. Otherwise, this is a dummy function.
 
 ******************************************************************************/
+
+void mpi_vector_save(const mpi_vector *v, const char filename[])
+{
+	ASSERT(v != NULL)
+	ASSERT(filename != NULL)
+
+	#if defined(USE_PETSC)
+	{
+		PetscViewer output;
+		int info = PetscViewerCreate(PETSC_COMM_WORLD, &output);
+
+		CHECK_PETSC_ERROR("PetscViewerCreate()", info, true)
+
+		info = PetscViewerBinaryOpen(PETSC_COMM_WORLD, filename, FILE_MODE_WRITE, &output);
+
+		CHECK_PETSC_ERROR("PetscViewerBinaryOpen()", info, true)
+
+		info = VecView(v->data, &output);
+
+		CHECK_PETSC_ERROR("VecView()", info, true)
+
+		info = PetscViewerDestroy(&output);
+
+		CHECK_PETSC_ERROR("PetscViewerDestroy()", info, false)
+	}
+	#endif
+}
 
 void mpi_vector_write(const mpi_vector *v,
                       const int n_min, const int n_max, FILE *stream)

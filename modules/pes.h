@@ -3,9 +3,9 @@
 	#include "globals.h"
 	#include "matrix.h"
 
-	#define MAX_JACOBI_VECTOR 5
-	#define MAX_ATOM (MAX_JACOBI_VECTOR + 1)
-	#define MAX_INTERNUC_DISTANCE (3*MAX_ATOM - 6)
+	#define PES_MAX_JACOBI_VECTOR 5
+	#define PES_MAX_ATOM (PES_MAX_JACOBI_VECTOR + 1)
+	#define PES_MAX_INTERNUC_DISTANCE (3*PES_MAX_ATOM - 6)
 
 	/******************************************************************************
 
@@ -16,7 +16,7 @@
 	struct pes_multipole
 	{
 		double R, r_min, r_max, r_step, **value;
-		int lambda_min, lambda_max, lambda_step, grid_size;
+		size_t lambda_min, lambda_max, lambda_step, grid_size;
 	};
 
 	typedef struct pes_multipole pes_multipole;
@@ -40,6 +40,8 @@
 	double pes_mass_abc(const char arrang);
 
 	double pes_mass_abcd();
+
+	const char *pes_name();
 
 	double pes_abc(const char arrang,
 	               const double r, const double R, const double theta);
@@ -70,22 +72,22 @@
 	                               const double R);
 
 	FILE *pes_multipole_file(const char arrang,
-	                         const int n, const char mode[], const bool verbose);
+	                         const size_t n, const char mode[], const bool verbose);
 
 	void pes_multipole_init(pes_multipole *m);
 
-	void pes_multipole_init_all(const int n_max, pes_multipole m[]);
+	void pes_multipole_init_all(const size_t n_max, pes_multipole m[]);
 
 	void pes_multipole_write(const pes_multipole *m, FILE *output);
 
-	void pes_multipole_write_all(const int n_max,
+	void pes_multipole_write_all(const size_t n_max,
 	                             const pes_multipole m[], FILE *output);
 
 	void pes_multipole_read(pes_multipole *m, FILE *input);
 
-	void pes_multipole_read_all(const int n_max, pes_multipole m[], FILE *input);
+	void pes_multipole_read_all(const size_t n_max, pes_multipole m[], FILE *input);
 
-	int pes_multipole_count(const char arrang);
+	size_t pes_multipole_count(const char arrang);
 
 	void pes_multipole_free(pes_multipole *m);
 

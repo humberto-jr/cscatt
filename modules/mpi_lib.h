@@ -14,30 +14,30 @@
 
 	void mpi_end();
 
-	int mpi_rank();
+	size_t mpi_rank();
 
-	int mpi_comm_size();
+	size_t mpi_comm_size();
 
-	int mpi_thread_level();
+	size_t mpi_thread_level();
 
 	void mpi_barrier();
 
-	void mpi_set_tasks(const int max_task);
+	void mpi_set_tasks(const size_t max_task);
 
-	int mpi_first_task();
+	size_t mpi_first_task();
 
-	int mpi_last_task();
+	size_t mpi_last_task();
 
-	int mpi_extra_task();
+	size_t mpi_extra_task();
 
-	bool mpi_inbox(const int from);
+	bool mpi_inbox(const size_t from);
 
-	void mpi_send(const int to, const int n, const char type, void *data);
+	void mpi_send(const size_t to, const size_t n, const char type, void *data);
 
-	void mpi_receive(const int from, const int n, const char type, void *data);
+	void mpi_receive(const size_t from, const size_t n, const char type, void *data);
 
-	mpi_matrix *mpi_matrix_alloc(const int max_row,
-	                             const int max_col, const int non_zeros[]);
+	mpi_matrix *mpi_matrix_alloc(const size_t max_row,
+	                             const size_t max_col, const int non_zeros[]);
 
 	void mpi_matrix_free(mpi_matrix *m);
 

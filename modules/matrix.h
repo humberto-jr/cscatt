@@ -161,6 +161,8 @@
 
 	double matrix_data_get(const matrix *m, const size_t n);
 
+	double *matrix_data_raw(const matrix *m);
+
 	size_t matrix_data_length(const matrix *m);
 
 	void matrix_about(FILE *output);

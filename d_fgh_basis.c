@@ -4,7 +4,7 @@
 #include "modules/matrix.h"
 #include "modules/globals.h"
 
-#define FORMAT "# %5d   %5d   %5d   %5d   %5d   %+5d     % -8e  % -8e  % -8e\n"
+#define FORMAT "# %5zu   %5zu   %5zu   %5zu   %5zu   %+5d     % -8e  % -8e  % -8e\n"
 
 /******************************************************************************
 
@@ -13,7 +13,7 @@
 
 ******************************************************************************/
 
-inline static int parity(const int l)
+inline static int parity(const size_t l)
 {
 	return (int) pow(-1.0, l);
 }
@@ -33,66 +33,51 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J_min
-		= read_int_keyword(stdin, "J_min", 0, 10000, 0);
+	const size_t J_min = read_int_keyword(stdin, "J_min", 0, 10000, 0);
 
-	const int J_max
-		= read_int_keyword(stdin, "J_max", J_min, 10000, J_min);
+	const size_t J_max = read_int_keyword(stdin, "J_max", J_min, 10000, J_min);
 
-	const int J_step
-		= read_int_keyword(stdin, "J_step", 1, 10000, 1);
+	const size_t J_step = read_int_keyword(stdin, "J_step", 1, 10000, 1);
 
-	const int J_parity
-		= read_int_keyword(stdin, "J_parity", -1, 1, 0);
+	const int J_parity = read_int_keyword(stdin, "J_parity", -1, 1, 0);
 
 /*
  *	Vibrational quantum numbers, v:
  */
 
-	const int v_min
-		= read_int_keyword(stdin, "v_min", 0, 10000, 0);
+	const size_t v_min = read_int_keyword(stdin, "v_min", 0, 10000, 0);
 
-	const int v_max
-		= read_int_keyword(stdin, "v_max", v_min, 10000, v_min);
+	const size_t v_max = read_int_keyword(stdin, "v_max", v_min, 10000, v_min);
 
-	const int v_step
-		= read_int_keyword(stdin, "v_step", 1, 10000, 1);
+	const size_t v_step = read_int_keyword(stdin, "v_step", 1, 10000, 1);
 
 /*
  *	Rotational quantum numbers, j:
  */
 
-	const int j_min
-		= read_int_keyword(stdin, "j_min", 0, 10000, 0);
+	const size_t j_min = read_int_keyword(stdin, "j_min", 0, 10000, 0);
 
-	const int j_max
-		= read_int_keyword(stdin, "j_max", j_min, 10000, j_min);
+	const size_t j_max = read_int_keyword(stdin, "j_max", j_min, 10000, j_min);
 
-	const int j_step
-		= read_int_keyword(stdin, "j_step", 1, 10000, 1);
+	const size_t j_step = read_int_keyword(stdin, "j_step", 1, 10000, 1);
 
 /*
  *	Vibrational grid:
  */
 
-	const int n_max
-		= read_int_keyword(stdin, "rovib_grid_size", v_max + 1, 1000000, 1000);
+	const size_t n_max = read_int_keyword(stdin, "rovib_grid_size", v_max + 1, 1000000, 1000);
 
-	const double r_min
-		= read_dbl_keyword(stdin, "r_min", 0.0, INF, 0.5);
+	const double r_min = read_dbl_keyword(stdin, "r_min", 0.0, INF, 0.5);
 
-	const double r_max
-		= read_dbl_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
+	const double r_max = read_dbl_keyword(stdin, "r_max", r_min, INF, r_min + 30.0);
 
-	const double r_step
-		= (r_max - r_min)/as_double(n_max);
+	const double r_step = (r_max - r_min)/as_double(n_max);
 
 /*
  *	Arrangement (a = 1, b = 2, c = 3), atomic masses and PES:
  */
 
-	const char arrang
-		= 96 + read_int_keyword(stdin, "arrang", 1, 3, 1);
+	const char arrang = 96 + read_int_keyword(stdin, "arrang", 1, 3, 1);
 
 	pes_init_mass(stdin, 'a');
 	pes_init_mass(stdin, 'b');
@@ -100,7 +85,7 @@ int main(int argc, char *argv[])
 
 	pes_init();
 
-	double (*pec)(const int, const double), mass = 0.0;
+	double (*pec)(const size_t, const double), mass = 0.0;
 
 	switch (arrang)
 	{
@@ -142,11 +127,11 @@ int main(int argc, char *argv[])
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
  */
 
-	printf("# Reduced mass = %f a.u., basis dir. = %s\n", mass, dir);
+	printf("# Reduced mass = %f a.u., basis dir. = %s, PES name = %s\n", mass, dir, pes_name());
 	printf("#     J     Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
 	printf("# ---------------------------------------------------------------------------------------------\n");
 
-	int *ch_counter = allocate(J_max + 1, sizeof(int), true);
+	size_t *ch_counter = allocate(J_max + 1, sizeof(size_t), true);
 
 	fgh_basis basis =
 	{
@@ -171,7 +156,7 @@ int main(int argc, char *argv[])
 	{
 		double *pot_energy = allocate(n_max, sizeof(double), false);
 
-		for (int n = 0; n < n_max; ++n)
+		for (size_t n = 0; n < n_max; ++n)
 			pot_energy[n] = pec(basis.j, r_min + as_double(n)*r_step);
 
 		matrix *fgh
@@ -196,7 +181,7 @@ int main(int argc, char *argv[])
  *			respective J and j.
  */
 
-			for (int J = J_min; J <= J_max; J += J_step)
+			for (size_t J = J_min; J <= J_max; J += J_step)
 			{
 				for (basis.l = abs(J - basis.j); basis.l <= (J + basis.j); ++basis.l)
 				{

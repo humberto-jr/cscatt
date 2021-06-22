@@ -14,7 +14,7 @@
 
 	struct fgh_basis
 	{
-		int v, j, l, n, grid_size;
+		size_t v, j, l, n, grid_size;
 		double r_min, r_max, r_step, eigenval, *eigenvec;
 	};
 
@@ -46,10 +46,10 @@
 	double *fgh_eigenvec(const matrix *fgh,
 	                     const size_t v, const double grid_step);
 
-	size_t fgh_basis_count(const char dir[], const char arrang, const int J);
+	size_t fgh_basis_count(const char dir[], const char arrang, const size_t J);
 
-	FILE *fgh_basis_file(const char dir[], const char arrang, const int n,
-	                     const int J, const char mode[], const bool verbose);
+	FILE *fgh_basis_file(const char dir[], const char arrang, const size_t n,
+	                     const size_t J, const char mode[], const bool verbose);
 
 	void fgh_basis_write(const fgh_basis *b, FILE *output);
 

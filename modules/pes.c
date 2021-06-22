@@ -41,7 +41,7 @@ static double inf = 100.0;
 ******************************************************************************/
 
 #if !defined(MULTIPOLE_FILE_FORMAT)
-	#define MULTIPOLE_FILE_FORMAT "multipole_arrang=%c_n=%d.%s"
+	#define MULTIPOLE_FILE_FORMAT "multipole_arrang=%c_n=%zu.%s"
 #endif
 
 /******************************************************************************
@@ -280,6 +280,17 @@ double pes_mass_abc(const char arrang)
 double pes_mass_abcd()
 {
 	return mass_a*(mass_b + mass_c + mass_d)/(mass_a + mass_b + mass_c + mass_d);
+}
+
+/******************************************************************************
+
+ Function pes_mass_abc(): return the name of the user defined PES routine.
+
+******************************************************************************/
+
+const char *pes_name()
+{
+	return PRINT_MACRO(EXTERNAL_PES_NAME);
 }
 
 /******************************************************************************
@@ -673,7 +684,7 @@ double pes_harmonics_multipole(const int eta,
 ******************************************************************************/
 
 FILE *pes_multipole_file(const char arrang,
-                         const int n, const char mode[], const bool verbose)
+                         const size_t n, const char mode[], const bool verbose)
 {
 	char filename[MAX_LINE_LENGTH], ext[4];
 
@@ -704,18 +715,14 @@ FILE *pes_multipole_file(const char arrang,
 
 void pes_multipole_init(pes_multipole *m)
 {
-	ASSERT(m->value == NULL)
 	ASSERT(m->grid_size > 0)
-	ASSERT(m->lambda_min > -1)
 	ASSERT(m->lambda_step > 0)
 	ASSERT(m->lambda_max >= m->lambda_min)
 
 	m->value = allocate(m->lambda_max + 1, sizeof(double *), true);
 
-	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
-	{
+	for (size_t lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 		m->value[lambda] = allocate(m->grid_size, sizeof(double), false);
-	}
 }
 
 /******************************************************************************
@@ -725,14 +732,10 @@ void pes_multipole_init(pes_multipole *m)
 
 ******************************************************************************/
 
-void pes_multipole_init_all(const int n_max, pes_multipole m[])
+void pes_multipole_init_all(const size_t n_max, pes_multipole m[])
 {
-	ASSERT(n_max > 0)
-
-	for (int n = 0; n < n_max; ++n)
-	{
+	for (size_t n = 0; n < n_max; ++n)
 		pes_multipole_init(&m[n]);
-	}
 }
 
 /******************************************************************************
@@ -755,15 +758,15 @@ void pes_multipole_write(const pes_multipole *m, FILE *output)
 
 	file_write(&m->r_step, sizeof(double), 1, output);
 
-	file_write(&m->lambda_min, sizeof(int), 1, output);
+	file_write(&m->lambda_min, sizeof(size_t), 1, output);
 
-	file_write(&m->lambda_max, sizeof(int), 1, output);
+	file_write(&m->lambda_max, sizeof(size_t), 1, output);
 
-	file_write(&m->lambda_step, sizeof(int), 1, output);
+	file_write(&m->lambda_step, sizeof(size_t), 1, output);
 
-	file_write(&m->grid_size, sizeof(int), 1, output);
+	file_write(&m->grid_size, sizeof(size_t), 1, output);
 
-	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
+	for (size_t lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 		file_write(m->value[lambda], sizeof(double), m->grid_size, output);
 }
 
@@ -774,15 +777,11 @@ void pes_multipole_write(const pes_multipole *m, FILE *output)
 
 ******************************************************************************/
 
-void pes_multipole_write_all(const int n_max,
+void pes_multipole_write_all(const size_t n_max,
                              const pes_multipole m[], FILE *output)
 {
-	ASSERT(n_max > 0)
-
-	for (int n = 0; n < n_max; ++n)
-	{
+	for (size_t n = 0; n < n_max; ++n)
 		pes_multipole_write(&m[n], output);
-	}
 }
 
 /******************************************************************************
@@ -802,37 +801,31 @@ void pes_multipole_read(pes_multipole *m, FILE *input)
 
 	file_read(&m->r_step, sizeof(double), 1, input, 0);
 
-	file_read(&m->lambda_min, sizeof(int), 1, input, 0);
+	file_read(&m->lambda_min, sizeof(size_t), 1, input, 0);
 
-	file_read(&m->lambda_max, sizeof(int), 1, input, 0);
+	file_read(&m->lambda_max, sizeof(size_t), 1, input, 0);
 
-	file_read(&m->lambda_step, sizeof(int), 1, input, 0);
+	file_read(&m->lambda_step, sizeof(size_t), 1, input, 0);
 
-	file_read(&m->grid_size, sizeof(int), 1, input, 0);
+	file_read(&m->grid_size, sizeof(size_t), 1, input, 0);
 
 	pes_multipole_init(m);
 
-	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
-	{
+	for (size_t lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 		file_read(m->value[lambda], sizeof(double), m->grid_size, input, 0);
-	}
 }
 
 /******************************************************************************
 
- Function pes_multipole_read_all(): the same as pes_multipole_read() but for
- an array of n sets.
+ Function pes_multipole_read_all(): the same as pes_multipole_read() but for an
+ array of n sets.
 
 ******************************************************************************/
 
-void pes_multipole_read_all(const int n_max, pes_multipole m[], FILE *input)
+void pes_multipole_read_all(const size_t n_max, pes_multipole m[], FILE *input)
 {
-	ASSERT(n_max > 0)
-
-	for (int n = 0; n < n_max; ++n)
-	{
+	for (size_t n = 0; n < n_max; ++n)
 		pes_multipole_read(&m[n], input);
-	}
 }
 
 /******************************************************************************
@@ -842,11 +835,11 @@ void pes_multipole_read_all(const int n_max, pes_multipole m[], FILE *input)
 
 ******************************************************************************/
 
-int pes_multipole_count(const char arrang)
+size_t pes_multipole_count(const char arrang)
 {
 	char filename[MAX_LINE_LENGTH];
 
-	int counter = 0;
+	size_t counter = 0;
 	sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, counter, "bin");
 
 	while (file_exist(filename))
@@ -870,7 +863,7 @@ void pes_multipole_free(pes_multipole *m)
 
 	if (m->value == NULL) return;
 
-	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
+	for (size_t lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 		if (m->value[lambda] != NULL) free(m->value[lambda]);
 
 	free(m->value);

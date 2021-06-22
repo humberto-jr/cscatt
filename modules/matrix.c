@@ -1465,7 +1465,7 @@ void matrix_reshape(matrix *m, const size_t max_row, const size_t max_col)
 
 /******************************************************************************
 
- Function matrix_data_set(): set x to the n-th element in the internal vector
+ Function matrix_data_set(): set x to the n-th element in the internal array
  that stores the matrix m, whose physical length in memory is max_row*max_col.
 
 ******************************************************************************/
@@ -1477,7 +1477,7 @@ void matrix_data_set(matrix *m, const size_t n, const double x)
 
 /******************************************************************************
 
- Function matrix_data_get(): accesses the n-th element in the internal vector
+ Function matrix_data_get(): accesses the n-th element in the internal array
  that stores the matrix m, whose physical length in memory is max_row*max_col.
 
 ******************************************************************************/
@@ -1485,6 +1485,26 @@ void matrix_data_set(matrix *m, const size_t n, const double x)
 double matrix_data_get(const matrix *m, const size_t n)
 {
 	return m->data[n];
+}
+
+/******************************************************************************
+
+ Function matrix_data_raw(): returns the whole internal array that stores the
+ matrix m, whose physical length in memory is max_row*max_col.
+
+******************************************************************************/
+
+double *matrix_data_raw(const matrix *m)
+{
+	const size_t n_max = m->max_row*m->max_col;
+
+	double *data = allocate(n_max, sizeof(double), false);
+
+	#pragma omp parallel for default(none) shared(m, data) schedule(static) if(m->use_omp)
+	for (size_t n = 0; n < n_max; ++n)
+		data[n] = m->data[n];
+
+	return data;
 }
 
 /******************************************************************************

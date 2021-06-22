@@ -16,7 +16,7 @@
 #include "fgh.h"
 
 #if !defined(FGH_BASIS_FORMAT)
-	#define FGH_BASIS_FORMAT "%s/basis_arrang=%c_ch=%d_J=%d.%s"
+	#define FGH_BASIS_FORMAT "%s/basis_arrang=%c_ch=%zu_J=%zu.%s"
 #endif
 
 /******************************************************************************
@@ -380,17 +380,17 @@ void dvr_multich_fgh_norm(matrix *fgh, const int max_ch,
 
 ******************************************************************************/
 
-size_t fgh_basis_count(const char dir[], const char arrang, const int J)
+size_t fgh_basis_count(const char dir[], const char arrang, const size_t J)
 {
 	char filename[MAX_LINE_LENGTH];
 
 	size_t counter = 0;
-	sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, (int) counter, J, "bin");
+	sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, counter, J, "bin");
 
 	while (file_exist(filename))
 	{
 		++counter;
-		sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, (int) counter, J, "bin");
+		sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, counter, J, "bin");
 	}
 
 	return counter;
@@ -407,8 +407,8 @@ size_t fgh_basis_count(const char dir[], const char arrang, const int J)
 
 ******************************************************************************/
 
-FILE *fgh_basis_file(const char dir[], const char arrang, const int n,
-                     const int J, const char mode[], const bool verbose)
+FILE *fgh_basis_file(const char dir[], const char arrang, const size_t n,
+                     const size_t J, const char mode[], const bool verbose)
 {
 	char filename[MAX_LINE_LENGTH], ext[4];
 
@@ -441,10 +441,10 @@ void fgh_basis_write(const fgh_basis *b, FILE *output)
 {
 	ASSERT(b != NULL)
 
-	file_write(&b->v, sizeof(int), 1, output);
-	file_write(&b->j, sizeof(int), 1, output);
-	file_write(&b->l, sizeof(int), 1, output);
-	file_write(&b->n, sizeof(int), 1, output);
+	file_write(&b->v, sizeof(size_t), 1, output);
+	file_write(&b->j, sizeof(size_t), 1, output);
+	file_write(&b->l, sizeof(size_t), 1, output);
+	file_write(&b->n, sizeof(size_t), 1, output);
 
 	file_write(&b->r_min, sizeof(double), 1, output);
 	file_write(&b->r_max, sizeof(double), 1, output);
@@ -452,7 +452,7 @@ void fgh_basis_write(const fgh_basis *b, FILE *output)
 
 	file_write(&b->eigenval, sizeof(double), 1, output);
 
-	file_write(&b->grid_size, sizeof(int), 1, output);
+	file_write(&b->grid_size, sizeof(size_t), 1, output);
 
 	file_write(b->eigenvec, sizeof(double), b->grid_size, output);
 }
@@ -468,10 +468,10 @@ void fgh_basis_read(fgh_basis *b, FILE *input)
 {
 	ASSERT(b != NULL)
 
-	file_read(&b->v, sizeof(int), 1, input, 0);
-	file_read(&b->j, sizeof(int), 1, input, 0);
-	file_read(&b->l, sizeof(int), 1, input, 0);
-	file_read(&b->n, sizeof(int), 1, input, 0);
+	file_read(&b->v, sizeof(size_t), 1, input, 0);
+	file_read(&b->j, sizeof(size_t), 1, input, 0);
+	file_read(&b->l, sizeof(size_t), 1, input, 0);
+	file_read(&b->n, sizeof(size_t), 1, input, 0);
 
 	file_read(&b->r_min, sizeof(double), 1, input, 0);
 	file_read(&b->r_max, sizeof(double), 1, input, 0);
@@ -479,7 +479,7 @@ void fgh_basis_read(fgh_basis *b, FILE *input)
 
 	file_read(&b->eigenval, sizeof(double), 1, input, 0);
 
-	file_read(&b->grid_size, sizeof(int), 1, input, 0);
+	file_read(&b->grid_size, sizeof(size_t), 1, input, 0);
 
 	b->eigenvec = allocate(b->grid_size, sizeof(double), false);
 

@@ -457,9 +457,9 @@ network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h matrix.o
 	$(CC) $(CFLAGS) $< -o $@.out matrix.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
-a+d_multipole: a+d_multipole.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT)
+a+d_multipole: a+d_multipole.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT) matrix.o
 	@echo "$<:"
-	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o mpi_lib.o matrix.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 multipole_print: multipole_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h nist.o math.o
