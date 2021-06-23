@@ -338,6 +338,66 @@ double *fgh_eigenvec(const matrix *fgh, const size_t v, const double grid_step)
 
 /******************************************************************************
 
+ Function norm(): normalize to unity a radial multichannel eigenvector composed
+ of max_state components and grid_size points, using a 1/3-Simpson quadrature
+ rule.
+
+******************************************************************************/
+
+double *fgh_multi_channel_eigenvec(const matrix *fgh,
+                                   const double grid_step,
+                                   const size_t max_state,
+                                   const size_t v,
+                                   const size_t c)
+{
+	ASSERT(fgh != NULL)
+
+	size_t grid_size = matrix_rows(fgh)/max_state;
+	grid_size = (grid_size%2 == 0? grid_size : grid_size - 1);
+
+	double *eigenvec = NULL;
+
+	if (matrix_using_magma())
+		eigenvec = matrix_get_raw_row(fgh, v);
+	else
+		eigenvec = matrix_get_raw_col(fgh, v);
+
+	ASSERT(eigenvec != NULL)
+
+	double total_sum = 0.0;
+
+	for (size_t m = 0; m < max_state; ++m)
+	{
+		const size_t n_min = m*grid_size;
+		const size_t n_max = n_min + grid_size;
+
+		double sum
+			= eigenvec[n_min]*eigenvec[n_min] + eigenvec[n_max - 1]*eigenvec[n_max - 1];
+
+		for (size_t n = n_min + 1; n < (n_max - 2); n += 2)
+			sum += 4.0*eigenvec[n]*eigenvec[n] + 2.0*eigenvec[n + 1]*eigenvec[n + 1];
+
+		sum = grid_step*sum/3.0;
+		total_sum += sum;
+	}
+
+	const double norm = 1.0/sqrt(total_sum);
+
+	/* NOTE: restore the original grid size for what follows. */
+	grid_size = matrix_rows(fgh)/max_state;
+
+	double *c_eigenvec = allocate(grid_size, sizeof(double), false);
+
+	const size_t n_min = c*grid_size;
+
+	for (size_t n = 0; n < grid_size; ++n)
+		c_eigenvec[n] = norm*eigenvec[n_min + n];
+
+	return eigenvec;
+}
+
+/******************************************************************************
+
  Function dvr_fgh_norm(): the same of dvr_fgh_norm() but for eigenvectos from
  those matrices built by dvr_multich_fgh().
 

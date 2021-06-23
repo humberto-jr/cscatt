@@ -46,6 +46,12 @@
 	double *fgh_eigenvec(const matrix *fgh,
 	                     const size_t v, const double grid_step);
 
+	double *fgh_multi_channel_eigenvec(const matrix *fgh,
+	                                   const double grid_step,
+	                                   const size_t max_state,
+	                                   const size_t v,
+	                                   const size_t c);
+
 	size_t fgh_basis_count(const char dir[], const char arrang, const size_t J);
 
 	FILE *fgh_basis_file(const char dir[], const char arrang, const size_t n,

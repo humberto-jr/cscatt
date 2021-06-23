@@ -344,7 +344,7 @@ USE_MACRO = DUMMY_MACRO
 
 all: modules drivers
 modules: utils matrix nist johnson pes file math mpi_lib fgh spline string
-drivers: d_fgh_basis pes_print basis_print c_print multipole_print a+d_fgh_basis a+d_multipole a+d_cmatrix pec_print basis_resize about
+drivers: d_fgh_basis pes_print basis_print c_print multipole_print a+d_sparse-fgh_basis a+d_dense-fgh_basis a+d_multipole a+d_cmatrix pec_print basis_resize about
 
 #
 # Rules for modules:
@@ -447,9 +447,14 @@ m_basis_std: m_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o mpi_lib.o matrix.o file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
-a+d_fgh_basis: a+d_fgh_basis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h $(MODULES_DIR)/pes.h math.o nist.o
+a+d_sparse-fgh_basis: a+d_sparse-fgh_basis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h $(MODULES_DIR)/pes.h math.o nist.o
 	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out mpi_lib.o matrix.o file.o fgh.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
+	@echo
+
+a+d_dense-fgh_basis: a+d_dense-fgh_basis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h $(MODULES_DIR)/pes.h math.o nist.o mpi_lib.o
+	@echo "$<:"
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o fgh.o pes.o math.o nist.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(SLEPC_LIB) $(PETSC_LIB) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 network: network.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h matrix.o
@@ -498,9 +503,9 @@ a+t_multipole: a+t_multipole.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h
 	$(CC) $(CFLAGS) $< -o $@.out file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-numerov: numerov.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT) math.o nist.o
+numerov: numerov.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h $(PES_OBJECT) math.o nist.o
 	@echo "$<:"
-	$(CC) $(CFLAGS) $< -o $@.out utils.o matrix.o file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
+	$(CC) $(CFLAGS) $< -o $@.out matrix.o file.o pes.o nist.o math.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
 #
