@@ -60,4 +60,10 @@
 	void fgh_basis_write(const fgh_basis *b, FILE *output);
 
 	void fgh_basis_read(fgh_basis *b, FILE *input);
+
+	void fgh_basis_save(const fgh_basis *b, const char dir[],
+	                    const char arrang, const size_t n, const size_t J);
+
+	void fgh_basis_load(fgh_basis *b, const char dir[],
+	                    const char arrang, const size_t n, const size_t J);
 #endif

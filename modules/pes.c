@@ -284,7 +284,7 @@ double pes_mass_abcd()
 
 /******************************************************************************
 
- Function pes_mass_abc(): return the name of the user defined PES routine.
+ Function pes_name(): return the name of the user defined PES routine.
 
 ******************************************************************************/
 
@@ -849,6 +849,86 @@ size_t pes_multipole_count(const char arrang)
 	}
 
 	return counter;
+}
+
+/******************************************************************************
+
+ Function pes_multipole_save(): counts how many multipole files (one per grid
+ point) are available in the disk for a given arrangement.
+
+******************************************************************************/
+
+void pes_multipole_save(const pes_multipole *m,
+                        const char arrang, const size_t n)
+{
+	ASSERT(m != NULL)
+	ASSERT(m->value != NULL)
+
+	char filename[MAX_LINE_LENGTH];
+	sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, n, "bin");
+
+	FILE *output = file_open(filename, "wb");
+
+	file_write(&m->R, sizeof(double), 1, output);
+
+	file_write(&m->r_min, sizeof(double), 1, output);
+
+	file_write(&m->r_max, sizeof(double), 1, output);
+
+	file_write(&m->r_step, sizeof(double), 1, output);
+
+	file_write(&m->lambda_min, sizeof(size_t), 1, output);
+
+	file_write(&m->lambda_max, sizeof(size_t), 1, output);
+
+	file_write(&m->lambda_step, sizeof(size_t), 1, output);
+
+	file_write(&m->grid_size, sizeof(size_t), 1, output);
+
+	for (size_t lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
+		file_write(m->value[lambda], sizeof(double), m->grid_size, output);
+
+	file_close(&output);
+}
+
+/******************************************************************************
+
+ Function pes_multipole_save(): counts how many multipole files (one per grid
+ point) are available in the disk for a given arrangement.
+
+******************************************************************************/
+
+void pes_multipole_load(pes_multipole *m, const char arrang, const size_t n)
+{
+	ASSERT(m != NULL)
+
+	char filename[MAX_LINE_LENGTH];
+	sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, n, "bin");
+
+	FILE *input = file_open(filename, "rb");
+
+	file_read(&m->R, sizeof(double), 1, input, 0);
+
+	file_read(&m->r_min, sizeof(double), 1, input, 0);
+
+	file_read(&m->r_max, sizeof(double), 1, input, 0);
+
+	file_read(&m->r_step, sizeof(double), 1, input, 0);
+
+	file_read(&m->lambda_min, sizeof(size_t), 1, input, 0);
+
+	file_read(&m->lambda_max, sizeof(size_t), 1, input, 0);
+
+	file_read(&m->lambda_step, sizeof(size_t), 1, input, 0);
+
+	file_read(&m->grid_size, sizeof(size_t), 1, input, 0);
+
+	pes_multipole_init(m);
+
+	for (size_t lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
+		file_read(m->value[lambda], sizeof(double), m->grid_size, input, 0);
+
+	file_close(&input);
 }
 
 /******************************************************************************

@@ -8,7 +8,7 @@
 	#define COUPLING_MATRIX_FILE_FORMAT "cmatrix_arrang=%c_n=%zu_J=%zu.bin"
 #endif
 
-#define FORMAT "# %5zu   %5zu   %5zu   %5zu   %5zu   %+5d   %5zu     % -8e  % -8e  % -8e\n"
+#define FORMAT "# %5zu  %5zu   %5zu   %5zu   %5zu   %+5d   %5zu     % -8e  % -8e  % -8e\n"
 
 /******************************************************************************
 
@@ -97,13 +97,13 @@ int main(int argc, char *argv[])
  *	coupling matrices:
  */
 
-	const size_t n_min = read_int_keyword(stdin, "n_min", 0, n_max - 1, 0);
+	const size_t n_min = read_int_keyword(stdin, "n_min", 0, n_max, 0);
 
-	n_max = read_int_keyword(stdin, "n_max", n_min, n_max - 1, n_max - 1);
+	n_max = read_int_keyword(stdin, "n_max", n_min, n_max, n_max);
 
 	R_min = R_min + as_double(n_min)*R_step;
 
-	R_max = R_min + as_double(n_max)*R_step;
+	R_max = R_min + as_double(n_max - 1)*R_step;
 
 	ASSERT(n_max >= v_max + 1)
 
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
 		.r_min = R_min,
 		.r_max = R_max,
 		.r_step = R_step,
-		.grid_size = (size_t) as_double(n_max - n_min)/R_step + 1.0,
+		.grid_size = n_max - n_min,
 		.eigenval = 0.0,
 		.eigenvec = NULL
 	};
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 		tensor *pot_energy = allocate(n_max, sizeof(tensor), true);
 
 		size_t n_counter = 0;
-		for (size_t n = n_min; n <= n_max; ++n)
+		for (size_t n = n_min; n < n_max; ++n)
 		{
 			pot_energy[n_counter].value = load_cmatrix(arrang, n, basis.j);
 
@@ -168,10 +168,7 @@ int main(int argc, char *argv[])
 			++n_counter;
 		}
 
-/*
- *		NOTE: the total number of diatomic states used to expand the triatomic
- *		eigenvectos is named max_state and it is equal ch_counter from dbasis driver.
- */
+		ASSERT(n_counter == basis.grid_size)
 
 		const size_t max_state = matrix_rows(pot_energy[0].value);
 
@@ -185,49 +182,30 @@ int main(int argc, char *argv[])
 
 		double *eigenval = matrix_symm_eigen(fgh, 'v');
 
-/*
- *		Step 2: loop over the vibrational states v of the triatom, solutions of
- *		step 1, and select only those of interest.
- */
-
 		for (basis.v = v_min; basis.v <= v_max; basis.v += v_step)
 		{
 			basis.eigenval = eigenval[basis.v];
 
-/*
- *			Step 3: loop over all partial waves l of the atom around the triatom
- *			given by the respective J and j.
- */
-
-			for (size_t J = J_min; J <= J_max; J += J_step)
+			for (basis.n = 0; basis.n < max_state; ++basis.n)
 			{
-				for (basis.l = abs(J - basis.j); basis.l <= (J + basis.j); ++basis.l)
+				basis.eigenvec = fgh_multi_channel_eigenvec(fgh, R_step, max_state, basis.v, basis.n);
+
+				for (size_t J = J_min; J <= J_max; J += J_step)
 				{
-					if (parity(basis.j + basis.l) != J_parity && J_parity != 0) continue;
-
-					for (basis.n = 0; basis.n < max_state; ++basis.n)
+					for (basis.l = abs(J - basis.j); basis.l <= (J + basis.j); ++basis.l)
 					{
-						printf(FORMAT, J, ch_counter[J], basis.v, basis.j, basis.l, parity(basis.j + basis.l), basis.n,
-						       eigenval[basis.v], eigenval[basis.v]*219474.63137054, eigenval[basis.v]*27.211385);
+						if (parity(basis.j + basis.l) != J_parity && J_parity != 0) continue;
 
-						basis.eigenvec = fgh_multi_channel_eigenvec(fgh, R_step, max_state, basis.v, basis.n);
+						printf(FORMAT, J, ch_counter[J], basis.v, basis.j, basis.l, parity(basis.j + basis.l),
+						       basis.n, basis.eigenval, basis.eigenval*219474.63137054, basis.eigenval*27.211385);
 
-/*
- *						Step 4: save each basis function |vjln> in the disk and increment
- *						the counter of atom-triatom channels.
- */
-
-						FILE *output = fgh_basis_file(".", arrang, ch_counter[J], J, "wb", false);
-
-						fgh_basis_write(&basis, output);
-
-						file_close(&output);
+						fgh_basis_save(&basis, ".", arrang, ch_counter[J], J);
 
 						ch_counter[J] += 1;
-
-						free(basis.eigenvec);
 					}
 				}
+
+				free(basis.eigenvec);
 			}
 		}
 

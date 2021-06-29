@@ -75,13 +75,15 @@ bool file_end(FILE *stream)
 
 /******************************************************************************
 
- Wrapper file_delete(): a safe interface to remove() that halt the execution in
+ Wrapper file_remove(): a safe interface to remove() that halt the execution in
  the case of error and prints a formatted message in the C stderr.
 
 ******************************************************************************/
 
-void file_delete(const char filename[])
+void file_remove(const char filename[])
 {
+	ASSERT(filename != NULL)
+
 	if (remove(filename) == -1)
 	{
 		PRINT_ERROR("unable to delete %s\n", filename)
@@ -91,16 +93,19 @@ void file_delete(const char filename[])
 
 /******************************************************************************
 
- Wrapper file_rename(): a safe interface to rename() that halt the execution in
- the case of error and prints a formatted message in the C stderr.
+ Wrapper file_rename(): a safe interface to rename() that halt the execution
+ in the case of error and prints a formatted message in the C stderr.
 
 ******************************************************************************/
 
-void file_rename(const char old_filename[], const char new_filename[])
+void file_rename(const char old_name[], const char new_name[])
 {
-	if (rename(old_filename, new_filename) == -1)
+	ASSERT(old_name != NULL)
+	ASSERT(new_name != NULL)
+
+	if (rename(old_name, new_name) == -1)
 	{
-		PRINT_ERROR("unable to rename %s to %s\n", old_filename, new_filename)
+		PRINT_ERROR("unable to rename %s to %s\n", old_name, new_name)
 		exit(EXIT_FAILURE);
 	}
 }
@@ -137,24 +142,24 @@ void file_init_stdout(const char filename[])
 
 /******************************************************************************
 
- Function file_find(): scan a given input file searching for the 1st occurrence
- of a given pattern. It returns the whole line, if found, or an empty string
+ Function file_find(): scan a given file searching for the 1st occurrence of a
+ given pattern. It returns the whole line, if found, or an empty string
  otherwise.
 
  NOTE: Lines starting by '#' are ignored.
 
 ******************************************************************************/
 
-char *file_find(FILE *input, const char pattern[])
+char *file_find(FILE *stream, const char pattern[])
 {
-	ASSERT(input != NULL)
+	ASSERT(stream != NULL)
 	ASSERT(pattern != NULL)
 
 	char *line = allocate(MAX_LINE_LENGTH + 1, sizeof(char), false);
 
-	rewind(input);
+	rewind(stream);
 
-	while (fgets(line, MAX_LINE_LENGTH, input) != NULL)
+	while (fgets(line, MAX_LINE_LENGTH, stream) != NULL)
 		if (line[0] != '#' && strstr(line, pattern) != NULL) return line;
 
 	line[0] = '\0';
@@ -203,187 +208,47 @@ double file_keyword(FILE *input, const char key[],
 
 /******************************************************************************
 
- Function file_read_dbl_keyword(): scan a given input file and search for the
- 1st occurrence of a keyword in the format "[key] = [value]". Where, [value]
- is a real number such that min < [value] < max. Return [value] if found or
- a default value otherwise.
-
- NOTE: Lines starting by '#' are ignored.
-
-******************************************************************************/
-
-double file_read_dbl_keyword(FILE *input,
-                             const char key[],
-                             const double min,
-                             const double max,
-                             const double default_value)
-{
-	ASSERT(max >= min)
-
-	char *line = file_find(input, key), *token = NULL;
-
-	if (line[0] != '\0') token = strtok(line, "=");
-
-	if (token != NULL)
-	{
-		token = trim(token);
-
-		if (strcmp(token, key) == 0)
-		{
-			token = strtok(NULL, "=");
-
-			const double value = (token != NULL? atof(token) : default_value);
-			free(line);
-
-			if (value < min)
-				return min;
-			else if (value > max)
-				return max;
-			else
-				return value;
-		}
-	}
-
-	free(line);
-	return default_value;
-}
-
-/******************************************************************************
-
- Function file_read_int_keyword(): scan a given input file and search for the
- 1st occurrence of a keyword in the format "[key] = [value]". Where, [value]
- is an integer number such that min < [value] < max. Return [value] if found
- or a default value otherwise.
-
- NOTE: Lines starting by '#' are ignored.
-
-******************************************************************************/
-
-int file_read_int_keyword(FILE *input, const char key[],
-                          const int min, const int max, const int default_value)
-{
-	ASSERT(max >= min)
-
-	char *line = file_find(input, key), *token = NULL;
-
-	if (line[0] != '\0') token = strtok(line, "=");
-
-	if (token != NULL)
-	{
-		token = trim(token);
-
-		if (strcmp(token, key) == 0)
-		{
-			token = strtok(NULL, "=");
-
-			const int value = (token != NULL? atoi(token) : default_value);
-			free(line);
-
-			if (value < min)
-				return min;
-			else if (value > max)
-				return max;
-			else
-				return value;
-		}
-	}
-
-	free(line);
-	return default_value;
-}
-
-/******************************************************************************
-
- Function file_read_str_keyword(): scan a given input file and search for the
- 1st occurrence of a keyword in the format "[key] = [value]". Where, [value]
- is a string with up to MAX_LINE_LENGTH characters. Return [value] if found
- or the content pointed by replacement.
-
- NOTE: Lines starting by '#' are ignored.
-
-******************************************************************************/
-
-char *file_read_str_keyword(FILE *input, const char key[], char replacement[])
-{
-	ASSERT(replacement != NULL)
-
-	char *line = file_find(input, key), *token = NULL;
-
-	if (line[0] != '\0') token = strtok(line, "=");
-
-	if (token != NULL)
-	{
-		token = trim(token);
-
-		if (strcmp(token, key) == 0)
-		{
-			token = strtok(NULL, "=");
-
-			if (token != NULL)
-				token = trim(token);
-			else
-				token = replacement;
-		}
-	}
-	else
-	{
-		token = replacement;
-	}
-
-	char *value = allocate(strlen(token) + 1, sizeof(char), false);
-
-	strcpy(value, token);
-	free(line);
-
-	return value;
-}
-
-/******************************************************************************
-
  Function file_row_count(): counts the actual number of valid lines in a given
- input data file.
+ file.
 
- NOTE: Blank lines or lines starting by '#' are ignored.
+ NOTE: blank lines or lines starting by '#' are ignored.
 
 ******************************************************************************/
 
-int file_row_count(FILE *input)
+size_t file_row_count(FILE *stream)
 {
-	ASSERT(input != NULL)
+	ASSERT(stream != NULL)
 
-	int counter = 0;
+	size_t counter = 0;
 	char line[MAX_LINE_LENGTH] = "\n";
 
-	rewind(input);
-	while (fgets(line, sizeof(line), input) != NULL)
-	{
-		if (line[0] != '#' && line[0] != '\n') ++counter;
-	}
+	rewind(stream);
+
+	while (fgets(line, sizeof(line), stream) != NULL)
+		if ((line[0] != '#') && (line[0] != '\n') && (line[0] != '\0')) ++counter;
 
 	return counter;
 }
 
 /******************************************************************************
 
- Function file_col_count(): counts the actual number of columns in a given
- input data file.
+ Function file_col_count(): counts the actual number of columns in a given file.
 
- NOTE: Blank lines or lines starting by '#' are ignored.
+ NOTE: blank lines or lines starting by '#' are ignored.
 
 ******************************************************************************/
 
-int file_col_count(FILE *input)
+size_t file_col_count(FILE *stream)
 {
-	ASSERT(input != NULL)
+	ASSERT(stream != NULL)
 
-	int counter = 0;
+	size_t counter = 0;
 	char line[MAX_LINE_LENGTH] = "\n";
 
-	rewind(input);
-	while (fgets(line, sizeof(line), input) != NULL)
-	{
-		if (line[0] != '#' && line[0] != '\n') break;
-	}
+	rewind(stream);
+
+	while (fgets(line, sizeof(line), stream) != NULL)
+		if ((line[0] != '#') && (line[0] != '\n') && (line[0] != '\0')) break;
 
 	char *token = strtok(line, " ");
 
@@ -399,51 +264,53 @@ int file_col_count(FILE *input)
 /******************************************************************************
 
  Wrapper file_write(): is an interface to fwrite() that checks both inputs and
- outputs and halt the execution in the case of errors, printing a formatted
+ outputs and halt the execution in the case of errors printing a formatted
  message in the C stderr.
 
- NOTE: data_size is often the output of sizeof() for the type of data.
+ NOTE: size is often the output of sizeof() for the type of buffer.
 
 ******************************************************************************/
 
-void file_write(const void *data, const int data_size, const int n, FILE *stream)
+void file_write(const void *buffer,
+                const size_t size, const size_t length, FILE *stream)
 {
-	ASSERT(n > 0)
-	ASSERT(data_size > 0)
-
-	ASSERT(data != NULL)
+	ASSERT(buffer != NULL)
 	ASSERT(stream != NULL)
 
-	const int info = fwrite(data, data_size, n, stream);
+	const size_t info = fwrite(buffer, size, length, stream);
 
-	if (info < n) PRINT_ERROR("only %d/%d elements written\n", info, n)
+	if (info != length)
+	{
+		PRINT_ERROR("only %zu/%zu elements written by fwrite()\n", info, length)
+		exit(EXIT_FAILURE);
+	}
 }
 
 /******************************************************************************
 
  Wrapper file_read(): is an interface to fread() that checks both inputs and
- outputs and halt the execution in the case of errors, printing a formatted
+ outputs and halt the execution in the case of errors printing a formatted
  message in the C stderr.
 
- NOTE: data_size is often the output of sizeof() for the type of data and if
+ NOTE: size is often the output of sizeof() for the type of buffer and if
  offset is zero the reading is performed from the beginning of the file.
 
 ******************************************************************************/
 
-void file_read(void *data,
-               const int data_size, const int n, FILE *stream, const int offset)
+void file_read(void *buffer, const size_t size,
+               const size_t length, FILE *stream, const size_t offset)
 {
-	ASSERT(n > 0)
-	ASSERT(data_size > 0)
-
-	ASSERT(data != NULL)
+	ASSERT(buffer != NULL)
 	ASSERT(stream != NULL)
 
 	if (offset > 0) fseek(stream, offset, SEEK_SET);
+	const size_t info = fread(buffer, size, length, stream);
 
-	const int info = fread(data, data_size, n, stream);
-
-	if (info < n) PRINT_ERROR("only %d/%d elements read\n", info, n)
+	if (info != length)
+	{
+		PRINT_ERROR("only %zu/%zu elements read by fread()\n", info, length)
+		exit(EXIT_FAILURE);
+	}
 }
 
 /******************************************************************************

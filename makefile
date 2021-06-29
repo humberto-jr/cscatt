@@ -343,8 +343,8 @@ USE_MACRO = DUMMY_MACRO
 #
 
 all: modules drivers
-modules: utils matrix nist johnson pes file math mpi_lib fgh spline string
-drivers: d_fgh_basis pes_print basis_print c_print multipole_print a+d_sparse-fgh_basis a+d_dense-fgh_basis a+d_multipole a+d_cmatrix pec_print basis_resize about
+modules: matrix nist johnson pes file math mpi_lib fgh spline string
+drivers: d_fgh_basis pes_print basis_print cmatrix_print multipole_print a+d_sparse-fgh_basis a+d_dense-fgh_basis a+d_multipole a+d_cmatrix pec_print basis_resize about
 
 #
 # Rules for modules:
@@ -437,9 +437,9 @@ basis_print: basis_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MO
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o fgh.o mpi_lib.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
-c_print: c_print.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
+cmatrix_print: cmatrix_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h
 	@echo "$<:"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out utils.o matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 m_basis_std: m_basis.c utils.h $(MODULES_DIR)/globals.h $(MODULES_DIR)/mpi_lib.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/math.h $(MODULES_DIR)/file.h $(MODULES_DIR)/pes.h math.o nist.o

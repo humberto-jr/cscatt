@@ -12,26 +12,26 @@ struct tasks
 /******************************************************************************
 
  Function driver(): performs the calculation of multipole coefficients, m, for
- all max_task (lambda, r)-values stored in the array jobs at a fixed R. The
+ all max_task (lambda, r)-values stored in the array job at a fixed R. The
  wall time in seconds is returned.
 
 ******************************************************************************/
 
 double driver(const char arrang, const size_t max_task,
-              const struct tasks jobs[], pes_multipole *m, const bool use_omp)
+              const struct tasks job[], pes_multipole *m, const bool use_omp)
 {
 	ASSERT(m != NULL)
-	ASSERT(jobs != NULL)
+	ASSERT(job != NULL)
 	ASSERT(m->value != NULL)
 
 	const double start_time = wall_time();
 
-	#pragma omp parallel for default(none) shared(jobs, m) schedule(static) if(use_omp)
+	#pragma omp parallel for default(none) shared(job, m) schedule(static) if(use_omp)
 	for (size_t task = 0; task < max_task; ++task)
 	{
-		const size_t n = jobs[task].index;
-		const size_t lambda = jobs[task].lambda;
-		const double r = jobs[task].r, R = m->R;
+		const size_t n = job[task].index;
+		const size_t lambda = job[task].lambda;
+		const double r = job[task].r, R = m->R;
 
 		m->value[lambda][n] = pes_legendre_multipole(arrang, lambda, r, R);
 	}
@@ -39,22 +39,6 @@ double driver(const char arrang, const size_t max_task,
 	const double end_time = wall_time();
 
 	return (end_time - start_time);
-}
-
-/******************************************************************************
-
- Function save_multipole(): writes in the disk the multipole for a given R grid
- index, n, and arrangement. Binary format is used.
-
-******************************************************************************/
-
-void save_multipole(const char arrang, const size_t n, const pes_multipole *m)
-{
-	FILE *output = pes_multipole_file(arrang, n, "wb", false);
-
-	pes_multipole_write(m, output);
-
-	fclose(output);
 }
 
 /******************************************************************************
@@ -133,6 +117,8 @@ int main(int argc, char *argv[])
 			++counter;
 			list = realloc(list, sizeof(struct tasks)*counter);
 
+			ASSERT(list != NULL)
+
 			list[counter - 1].r = r_min + as_double(n)*r_step;
 			list[counter - 1].lambda = lambda;
 			list[counter - 1].index = n;
@@ -152,8 +138,8 @@ int main(int argc, char *argv[])
 	if (mpi_rank() == 0)
 	{
 		printf("# MPI CPUs = %zu, OpenMP threads = %d, num. of tasks = %zu, PES name = %s\n", mpi_comm_size(), max_threads(), counter*scatt_grid_size, pes_name());
-		printf("# CPU       R (a.u.)    wall time (s)\n");
-		printf("# -----------------------------------\n");
+		printf("#  CPU       R (a.u.)    wall time (s)\n");
+		printf("# ------------------------------------\n");
 	}
 
 	pes_multipole m =
@@ -177,9 +163,10 @@ int main(int argc, char *argv[])
 		m.R = R_min + as_double(n)*R_step;
 
 		const double wtime = driver(arrang, counter, list, &m, use_omp);
-		save_multipole(arrang, n, &m);
 
-		printf("  %3zu       %06f         %f\n", mpi_rank(), m.R, wtime);
+		pes_multipole_save(&m, arrang, n);
+
+		printf("  %4zu       %06f         %f\n", mpi_rank(), m.R, wtime);
 
 		if (n == mpi_last_task() && mpi_extra_task() > 0)
 		{

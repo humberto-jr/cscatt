@@ -6,19 +6,15 @@
 #include "modules/mpi_lib.h"
 #include "modules/globals.h"
 
-#define FORMAT "  %3d       %3d       %5d       %5d       %06f    %f\n"
-
 #if !defined(COUPLING_MATRIX_FILE_FORMAT)
-	#define COUPLING_MATRIX_FILE_FORMAT "cmatrix_arrang=%c_n=%d_J=%d.bin"
+	#define COUPLING_MATRIX_FILE_FORMAT "cmatrix_arrang=%c_n=%zu_J=%zu.bin"
 #endif
 
 struct tasks
 {
-	int a, b;
+	size_t a, b;
 	fgh_basis *basis_a, *basis_b;
 };
-
-typedef struct tasks tasks;
 
 /******************************************************************************
 
@@ -27,7 +23,8 @@ typedef struct tasks tasks;
 
 ******************************************************************************/
 
-inline static double centr_term(const int l, const double mass, const double x)
+inline static double centr_term(const size_t l,
+                                const double mass, const double x)
 {
 	return as_double(l*(l + 1))/(2.0*mass*x*x);
 }
@@ -39,22 +36,23 @@ inline static double centr_term(const int l, const double mass, const double x)
 
 ******************************************************************************/
 
-double simpson(const int grid_size,
+double simpson(const size_t grid_size,
                const double grid_step,
                const double potential[],
                const double wavef_a[],
                const double wavef_b[])
 {
-	int n_max = grid_size - 1;
+	size_t n_max = grid_size - 1;
 
-	while (n_max%3 != 0) --n_max;
+	while (n_max%3 != 0)
+		--n_max;
 
-	ASSERT(n_max > 3)
+	ASSERT(n_max > 10)
 
 	double sum = potential[0]*wavef_a[0]*wavef_b[0]
 	           + potential[n_max]*wavef_a[n_max]*wavef_b[n_max];
 
-	for (int n = 1; n < (n_max - 3); n += 3)
+	for (size_t n = 1; n < (n_max - 3); n += 3)
 	{
 		sum += 3.0*potential[n]*wavef_a[n]*wavef_b[n];
 
@@ -70,14 +68,13 @@ double simpson(const int grid_size,
 
 /******************************************************************************
 
- Function ab_integral(): performs the integral on the product of wavefunctions
- |a>, |b> and the respective interaction potential V, i.e. <a|V|b>, for all
- lambda values upon which the potential depends.
+ Function integral(): computes the matrix element <a|m|b> for all lambda values
+ and a given total angular momentum, J, using a 3/8-Simpson quadrature rule.
 
 ******************************************************************************/
 
-double ab_integral(const int J,
-                   const pes_multipole *m, const fgh_basis *a, const fgh_basis *b)
+double integral(const size_t J,
+                const pes_multipole *m, const fgh_basis *a, const fgh_basis *b)
 {
 	ASSERT(a->r_step == b->r_step)
 	ASSERT(b->r_step == m->r_step)
@@ -86,16 +83,18 @@ double ab_integral(const int J,
 	ASSERT(b->grid_size == m->grid_size)
 
 	double result = 0.0;
-	for (int lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
+	for (size_t lambda = m->lambda_min; lambda <= m->lambda_max; lambda += m->lambda_step)
 	{
-		ASSERT(m->value != NULL)
+		ASSERT(m->value[lambda] != NULL)
 
-		const double f = math_percival_seaton(J, a->j, b->j, a->l, b->l, lambda);
+		const double f
+			= math_percival_seaton(J, a->j, b->j, a->l, b->l, lambda);
 
 		if (f == 0.0) continue;
 
-		const double v = simpson(m->grid_size, m->r_step,
-		                         m->value[lambda], a->eigenvec, b->eigenvec);
+		const double v
+			= simpson(m->grid_size, m->r_step, m->value[lambda], a->eigenvec, b->eigenvec);
+
 		result += v*f;
 	}
 
@@ -108,43 +107,32 @@ double ab_integral(const int J,
 
 ******************************************************************************/
 
-void driver(const int J,
-            const double mass, const pes_multipole *m, const tasks *job, matrix *c)
+double driver(const double mass, const size_t J, const size_t max_task,
+              const struct tasks job[], const pes_multipole *m, matrix *c, const bool use_omp)
 {
 	const double start_time = wall_time();
 
-	double result = ab_integral(J, m, job->basis_a, job->basis_b);
+	#pragma omp parallel for default(none) shared(job, m, c) schedule(static) if(use_omp)
+	for (size_t task = 0; task < max_task; ++task)
+	{
+		double result = integral(J, m, job[task].basis_a, job[task].basis_b);
+
+		if (job[task].a == job[task].b)
+		{
+			result += job[task].basis_a->eigenval;
+			result += centr_term(job[task].basis_a->l, mass, m->R);
+
+			matrix_set_diag(c, job[task].a, result);
+		}
+		else
+		{
+			matrix_set_symm(c, job[task].a, job[task].b, result);
+		}
+	}
 
 	const double end_time = wall_time();
 
-	if (job->a == job->b)
-	{
-		result += job->basis_a->eigenval + centr_term(job->basis_a->l, mass, m->R);
-		matrix_set_diag(c, job->a, result);
-	}
-	else
-	{
-		matrix_set_symm(c, job->a, job->b, result);
-	}
-
-	#pragma omp critical
-	printf(FORMAT, mpi_rank(), thread_id(), job->a, job->b, m->R, end_time - start_time);
-}
-
-/******************************************************************************
-
- Function save_coupling(): saves in the disk a coupling matrix, c, for a given
- grid point index, n, arrangement and total angular momentum J.
-
-******************************************************************************/
-
-void save_coupling(const char arrang, const int n, const int J, const matrix *c)
-{
-	char filename[MAX_LINE_LENGTH];
-
-	sprintf(filename, COUPLING_MATRIX_FILE_FORMAT, arrang, n, J);
-
-	matrix_save(c, filename);
+	return (end_time - start_time);
 }
 
 /******************************************************************************
@@ -172,7 +160,11 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J = read_int_keyword(stdin, "J", 0, 10000, 0);
+	const size_t J_min = read_int_keyword(stdin, "J_min", 0, 10000, 0);
+
+	const size_t J_max = read_int_keyword(stdin, "J_max", J_min, 10000, J_min);
+
+	const size_t J_step = read_int_keyword(stdin, "J_step", 1, 10000, 1);
 
 /*
  * Directory to read in all basis functions from:
@@ -187,110 +179,109 @@ int main(int argc, char *argv[])
 	}
 
 /*
- *	Scattering grid:
+ *	MPI: whereas each OpenMP thread handle the integration of each matrix element,
+ *	MPI processes are used to handle each scattering grid point, from R_min to R_max.
  */
 
-	const int grid_size = pes_multipole_count(arrang);
+	const size_t scatt_grid_size = pes_multipole_count(arrang);
+
+	ASSERT(scatt_grid_size > 0)
+
+	mpi_set_tasks(scatt_grid_size);
 
 /*
- *	OpenMP. Read all n basis functions from the disk and sort them in an ordered
- *	list of n*(n + 1)/2 tasks, i.e. the upper triangular part of the symmetric
- *	coupling matrix. Thus, a better workload of tasks per thread, if any.
+ *	Load in all J-dependent FGH basis functions and compute the coupling matrix
+ *	for each:
  */
 
-	const bool use_omp = file_read_int_keyword(stdin, "use_omp", 0, 1, 0);
-
-	const int max_channel = fgh_basis_count(dir, arrang, J);
-
-	const int max_task = max_channel*(max_channel + 1)/2;
-
-	fgh_basis *basis = allocate(max_channel, sizeof(fgh_basis), true);
-
-	for (int n = 0; n < max_channel; ++n)
+	for (size_t J = J_min; J <= J_max; J += J_step)
 	{
-		FILE *input = fgh_basis_file(dir, arrang, n, J, "rb", false);
+		const size_t max_channel = fgh_basis_count(dir, arrang, J);
 
-		fgh_basis_read(&basis[n], input);
+		ASSERT(max_channel > 0)
 
-		fclose(input);
-	}
+		fgh_basis *basis = allocate(max_channel, sizeof(fgh_basis), true);
 
-	tasks *list = allocate(max_task, sizeof(tasks), true);
+		for (size_t n = 0; n < max_channel; ++n)
+			fgh_basis_load(&basis[n], dir, arrang, n, J);
 
-	int counter = 0;
-	for (int n = 0; n < max_channel; ++n)
-	{
-		for (int m = n; m < max_channel; ++m)
+/*
+ *		OpenMP: after reading all n basis functions from the disk we sort them in
+ *		an ordered list of n*(n + 1)/2 tasks, i.e. the upper triangular part of a
+ *		symmetric matrix. Thus, a better workload of tasks per thread is made.
+ */
+
+		const bool use_omp = read_int_keyword(stdin, "use_omp", 0, 1, 0);
+
+		const size_t max_task = max_channel*(max_channel + 1)/2;
+
+		struct tasks *list = allocate(max_task, sizeof(struct tasks), true);
+
+		size_t counter = 0;
+		for (size_t n = 0; n < max_channel; ++n)
 		{
-			list[counter].a = n;
-			list[counter].basis_a = &basis[n];
+			for (size_t m = n; m < max_channel; ++m)
+			{
+				list[counter].a = n;
+				list[counter].basis_a = &basis[n];
 
-			list[counter].b = m;
-			list[counter].basis_b = &basis[m];
+				list[counter].b = m;
+				list[counter].basis_b = &basis[m];
 
-			++counter;
+				++counter;
+			}
 		}
-	}
 
-	ASSERT(counter == max_task);
-
-/*
- *	MPI. Whereas each OpenMP thread handle the integration of each matrix element,
- *	MPI processes are used to handle each scattering grid point, from R_min to
- *	R_max.
- */
-
-	mpi_set_tasks(grid_size);
+		ASSERT(counter == max_task)
 
 /*
- *	Resolve all tasks:
+ *		Resolve all tasks:
  */
 
-	if (mpi_rank() == 0)
-	{
-		printf("# MPI CPUs = %d", mpi_comm_size());
-		printf(", OMP threads = %d", max_threads());
-		printf(", num. of channels = %d", max_channel);
-		printf(", num. of grid points = %d\n", grid_size);
+		if (mpi_rank() == 0 && J == J_min)
+		{
+			printf("# MPI CPUs = %zu, OMP threads = %d, num. of grid points = %zu, mass = %f\n",
+			       mpi_comm_size(), max_threads(), scatt_grid_size, mass);
 
-		printf("# CPU    thread       Ch. a       Ch. b       R (a.u.)    wall time (s)\n");
-		printf("# ---------------------------------------------------------------------\n");
-	}
+			printf("#  CPU      J     ch.     R (a.u.)      time (s)\n");
+			printf("# ----------------------------------------------\n");
+		}
 
-	for (int n = mpi_first_task(); n <= mpi_last_task(); ++n)
-	{
-		extra_step: /* This is an empty statement */;
+		pes_multipole m;
+		matrix *c = matrix_alloc(max_channel, max_channel, false);
 
-		FILE *input = pes_multipole_file(arrang, n, "rb", false);
+		for (size_t n = mpi_first_task(); n <= mpi_last_task(); ++n)
+		{
+			extra_step:
+			matrix_set_zero(c);
+			pes_multipole_load(&m, arrang, n);
 
-		pes_multipole m = {.value = NULL};
-		pes_multipole_read(&m, input);
+			const double wtime = driver(mass, J, max_task, list, &m, c, use_omp);
 
-		fclose(input);
+			char filename[MAX_LINE_LENGTH];
+			sprintf(filename, COUPLING_MATRIX_FILE_FORMAT, arrang, n, J);
 
-		matrix *c = matrix_alloc(max_channel, max_channel, true);
+			matrix_save(c, filename);
 
-		#pragma omp parallel for default(none) shared(list, m, c) schedule(static) if(use_omp)
-		for (int task = 0; task < max_task; ++task)
-			driver(J, mass, &m, &list[task], c);
+			printf("  %4zu   %4zu   %4zu      %06f      %f\n", mpi_rank(), J, max_channel, m.R, wtime);
 
-		save_coupling(arrang, n, J, c);
+			pes_multipole_free(&m);
+
+			if (n == mpi_last_task() && mpi_extra_task() > 0)
+			{
+				n = mpi_extra_task();
+				goto extra_step;
+			}
+		}
 
 		matrix_free(c);
-		pes_multipole_free(&m);
+		free(list);
 
-		if (n == mpi_last_task() && mpi_extra_task() > 0)
-		{
-			n = mpi_extra_task();
-			goto extra_step;
-		}
+		for (size_t n = 0; n < max_channel; ++n)
+			if (basis[n].eigenvec != NULL) free(basis[n].eigenvec);
+
+		free(basis);
 	}
-
-	for (int n = 0; n < max_channel; ++n)
-		if (basis[n].eigenvec != NULL) free(basis[n].eigenvec);
-
-	free(basis);
-	free(list);
 
 	mpi_end();
 	return EXIT_SUCCESS;

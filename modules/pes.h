@@ -7,6 +7,15 @@
 	#define PES_MAX_ATOM (PES_MAX_JACOBI_VECTOR + 1)
 	#define PES_MAX_INTERNUC_DISTANCE (3*PES_MAX_ATOM - 6)
 
+	struct pes_coor
+	{
+		char arrang;
+		size_t lambda;
+		double r[PES_MAX_JACOBI_VECTOR], R, theta, phi;
+	};
+
+	typedef struct pes_coor pes_coor;
+
 	/******************************************************************************
 
 	 Type pes_multipole_set: value[lambda][n], n from r1
@@ -88,6 +97,11 @@
 	void pes_multipole_read_all(const size_t n_max, pes_multipole m[], FILE *input);
 
 	size_t pes_multipole_count(const char arrang);
+
+	void pes_multipole_save(const pes_multipole *m,
+	                        const char arrang, const size_t n);
+
+	void pes_multipole_load(pes_multipole *m, const char arrang, const size_t n);
 
 	void pes_multipole_free(pes_multipole *m);
 

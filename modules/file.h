@@ -10,43 +10,28 @@
 
 	bool file_end(FILE *stream);
 
-	void file_delete(const char filename[]);
+	void file_remove(const char filename[]);
 
-	void file_rename(const char old_filename[], const char new_filename[]);
+	void file_rename(const char old_name[], const char new_name[]);
 
 	void file_init_stdin(const char filename[]);
 
 	void file_init_stdout(const char filename[]);
 
-	char *file_find(FILE *input, const char pattern[]);
+	char *file_find(FILE *stream, const char pattern[]);
 
 	double file_keyword(FILE *input, const char key[], const double min,
 	                    const double max, const double default_value);
 
-	double file_read_dbl_keyword(FILE *input,
-	                             const char key[],
-	                             const double min,
-	                             const double max,
-	                             const double default_value);
+	size_t file_row_count(FILE *stream);
 
-	int file_read_int_keyword(FILE *input,
-	                          const char key[],
-	                          const int min,
-	                          const int max,
-	                          const int default_value);
+	size_t file_col_count(FILE *stream);
 
-	char *file_read_str_keyword(FILE *input,
-	                            const char key[], char replacement[]);
+	void file_write(const void *buffer,
+	                const size_t size, const size_t length, FILE *stream);
 
-	int file_row_count(FILE *input);
-
-	int file_col_count(FILE *input);
-
-	void file_write(const void *data,
-	                const int data_size, const int n, FILE *stream);
-
-	void file_read(void *data, const int data_size,
-	               const int n, FILE *stream, const int offset);
+	void file_read(void *buffer, const size_t size,
+	               const size_t length, FILE *stream, const size_t offset);
 
 	void file_about(FILE *output);
 #endif

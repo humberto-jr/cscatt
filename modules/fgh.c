@@ -479,7 +479,7 @@ FILE *fgh_basis_file(const char dir[], const char arrang, const size_t n,
 
 	sprintf(filename, FGH_BASIS_FORMAT, dir, arrang, n, J, ext);
 
-	FILE *stream = fopen(filename, mode);
+	FILE *stream = file_open(filename, mode);
 
 	if (verbose)
 	{
@@ -492,7 +492,7 @@ FILE *fgh_basis_file(const char dir[], const char arrang, const size_t n,
 
 /******************************************************************************
 
- Function fgh_basis_read(): saves in the disk the FGH basis function for the
+ Function fgh_basis_write(): saves in the disk the FGH basis function for the
  n-th channel and a given arrangement with total angular momentum J.
 
 ******************************************************************************/
@@ -544,4 +544,38 @@ void fgh_basis_read(fgh_basis *b, FILE *input)
 	b->eigenvec = allocate(b->grid_size, sizeof(double), false);
 
 	file_read(b->eigenvec, sizeof(double), b->grid_size, input, 0);
+}
+
+/******************************************************************************
+
+ Function fgh_basis_load(): loads from the disk the FGH basis function for the
+ n-th channel and a given arrangement with total angular momentum J.
+
+******************************************************************************/
+
+void fgh_basis_save(const fgh_basis *b, const char dir[],
+                    const char arrang, const size_t n, const size_t J)
+{
+	FILE *output = fgh_basis_file(dir, arrang, n, J, "wb", false);
+
+	fgh_basis_write(b, output);
+
+	file_close(&output);
+}
+
+/******************************************************************************
+
+ Function fgh_basis_load(): loads from the disk the FGH basis function for the
+ n-th channel and a given arrangement with total angular momentum J.
+
+******************************************************************************/
+
+void fgh_basis_load(fgh_basis *b, const char dir[],
+                    const char arrang, const size_t n, const size_t J)
+{
+	FILE *input = fgh_basis_file(dir, arrang, n, J, "rb", false);
+
+	fgh_basis_read(b, input);
+
+	file_close(&input);
 }
