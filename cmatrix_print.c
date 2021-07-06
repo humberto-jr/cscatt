@@ -65,9 +65,9 @@ int main(int argc, char *argv[])
 
 			for (size_t a = 0; a < matrix_rows(c); ++a)
 			{
-				sprintf(filename, "cmatrix_arrang=%c_n=%zu_J=%zu.dat", arrang, n, J);
+				sprintf(filename, "cmatrix_arrang=%c_ch=%zu_J=%zu.dat", arrang, a, J);
 
-				FILE *output = file_open(filename, "w");
+				FILE *output = file_open(filename, "a");
 
 				if (n == 0)
 				{
@@ -102,7 +102,12 @@ int main(int argc, char *argv[])
 			}
 
 			matrix_free(c);
-			if (eigenval != NULL) free(eigenval);
+
+			if (eigenval != NULL)
+			{
+				free(eigenval);
+				eigenval = NULL;
+			}
 		}
 	}
 

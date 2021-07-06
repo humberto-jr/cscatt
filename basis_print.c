@@ -13,21 +13,17 @@ int main(int argc, char *argv[])
  *	Total angular momentum, J:
  */
 
-	const int J_min
-		= read_int_keyword(stdin, "J_min", 0, 10000, 0);
+	const size_t J_min = read_int_keyword(stdin, "J_min", 0, 10000, 0);
 
-	const int J_max
-		= read_int_keyword(stdin, "J_max", J_min, 10000, J_min);
+	const size_t J_max = read_int_keyword(stdin, "J_max", J_min, 10000, J_min);
 
-	const int J_step
-		= read_int_keyword(stdin, "J_step", 1, 10000, 1);
+	const size_t J_step = read_int_keyword(stdin, "J_step", 1, 10000, 1);
 
 /*
  *	Arrangement (a = 1, b = 2, c = 3):
  */
 
-	const char arrang
-		= 96 + read_int_keyword(stdin, "arrang", 1, 3, 1);
+	const char arrang = 96 + read_int_keyword(stdin, "arrang", 1, 3, 1);
 
 /*
  *	Directory to load all basis functions from:
@@ -35,21 +31,15 @@ int main(int argc, char *argv[])
 
 	char *dir = read_str_keyword(stdin, "basis_dir", ".");
 
-	if (!file_exist(dir) && dir[0] != '.')
-	{
-		PRINT_ERROR("%s does not exist\n", dir)
-		exit(EXIT_FAILURE);
-	}
-
 /*
  *	Print the basis functions for each J:
  */
 
-	for (int J = J_min; J <= J_max; J += J_step)
+	for (size_t J = J_min; J <= J_max; J += J_step)
 	{
-		const int max_channel = fgh_basis_count(dir, arrang, J);
+		const size_t max_channel = fgh_basis_count(dir, arrang, J);
 
-		for (int ch = 0; ch < max_channel; ++ch)
+		for (size_t ch = 0; ch < max_channel; ++ch)
 		{
 			fgh_basis b;
 
@@ -63,14 +53,14 @@ int main(int argc, char *argv[])
 
 			ASSERT(output != NULL)
 
-			fprintf(output, "# v = %d\n", b.v);
-			fprintf(output, "# j = %d\n", b.j);
-			fprintf(output, "# l = %d\n", b.l);
-			fprintf(output, "# Component  = %d\n", b.n);
+			fprintf(output, "# v = %zu\n", b.v);
+			fprintf(output, "# j = %zu\n", b.j);
+			fprintf(output, "# l = %zu\n", b.l);
+			fprintf(output, "# Component  = %zu\n", b.n);
 			fprintf(output, "# Eigenvalue = % -8e\n", b.eigenval);
 			fprintf(output, "# File created at %s\n", time_stamp());
 
-			for (int n = 0; n < b.grid_size; ++n)
+			for (size_t n = 0; n < b.grid_size; ++n)
 			{
 				const double r = b.r_min + as_double(n)*b.r_step;
 /*

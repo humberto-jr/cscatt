@@ -19,6 +19,19 @@ inline static int parity(const size_t l)
 }
 
 /******************************************************************************
+
+ Function print_level(): prints the quantum numbers and eigenvalues for a given
+ channel and total angular momentum J.
+
+******************************************************************************/
+
+void print_level(const fgh_basis *b, const size_t ch, const size_t J)
+{
+	printf(FORMAT, J, ch, b->v, b->j, b->l, parity(b->j + b->l),
+	       b->eigenval, b->eigenval*219474.63137054, b->eigenval*27.211385);
+}
+
+/******************************************************************************
 ******************************************************************************/
 
 int main(int argc, char *argv[])
@@ -117,18 +130,12 @@ int main(int argc, char *argv[])
 
 	char *dir = read_str_keyword(stdin, "basis_dir", ".");
 
-	if (!file_exist(dir) && dir[0] != '.')
-	{
-		PRINT_ERROR("%s does not exist\n", dir)
-		exit(EXIT_FAILURE);
-	}
-
 /*
  *	Resolve the diatomic eigenvalue for each j-case and sort results as scatt. channels:
  */
 
 	printf("# Reduced mass = %f a.u., basis dir. = %s, PES name = %s\n", mass, dir, pes_name());
-	printf("#     J     Ch.       v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
+	printf("#     J      ch.      v       j       l       p        E (a.u.)       E (cm-1)        E (eV)   \n");
 	printf("# ---------------------------------------------------------------------------------------------\n");
 
 	size_t *ch_counter = allocate(J_max + 1, sizeof(size_t), true);
@@ -147,11 +154,6 @@ int main(int argc, char *argv[])
 		.eigenvec = NULL
 	};
 
-/*
- *	Step 1: loop over rotational states j of the diatom and solve the diatomic eigenvalue problem
- *	using the Fourier grid Hamiltonian discrete variable representation (FGH-DVR) method.
- */
-
 	for (basis.j = j_min; basis.j <= j_max; basis.j += j_step)
 	{
 		double *pot_energy = allocate(n_max, sizeof(double), false);
@@ -159,27 +161,16 @@ int main(int argc, char *argv[])
 		for (size_t n = 0; n < n_max; ++n)
 			pot_energy[n] = pec(basis.j, r_min + as_double(n)*r_step);
 
-		matrix *fgh
-			= fgh_dense_single_channel(n_max, r_step, pot_energy, mass);
+		matrix *fgh = fgh_dense_single_channel(n_max, r_step, pot_energy, mass);
 
 		free(pot_energy);
 
 		double *eigenval = matrix_symm_eigen(fgh, 'v');
 
-/*
- *		Step 2: loop over the vibrational states v of the diatom, solutions of step 2, and select
- *		only those of interest.
- */
-
 		for (basis.v = v_min; basis.v <= v_max; basis.v += v_step)
 		{
 			basis.eigenval = eigenval[basis.v];
 			basis.eigenvec = fgh_eigenvec(fgh, basis.v, r_step);
-
-/*
- *			Step 3: loop over all partial waves l of the atom around the diatom given by the
- *			respective J and j.
- */
 
 			for (size_t J = J_min; J <= J_max; J += J_step)
 			{
@@ -187,19 +178,9 @@ int main(int argc, char *argv[])
 				{
 					if (parity(basis.j + basis.l) != J_parity && J_parity != 0) continue;
 
-					printf(FORMAT, J, ch_counter[J], basis.v, basis.j, basis.l, parity(basis.j + basis.l),
-					       basis.eigenval, basis.eigenval*219474.63137054, basis.eigenval*27.211385);
+					print_level(&basis, ch_counter[J], J);
 
-/*
- *					Step 4: save each basis function |vjl> in the disk and increment the counter of
- *					channels.
- */
-
-					FILE *output = fgh_basis_file(dir, arrang, ch_counter[J], J, "wb", false);
-
-					fgh_basis_write(&basis, output);
-
-					file_close(&output);
+					fgh_basis_save(&basis, dir, arrang, ch_counter[J], J);
 
 					ch_counter[J] += 1;
 				}

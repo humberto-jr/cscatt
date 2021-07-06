@@ -417,7 +417,7 @@ string: $(MODULES_DIR)/string.c $(MODULES_DIR)/string.h $(MODULES_DIR)/globals.h
 # Rules for drivers:
 #
 
-d_fgh_basis: d_fgh_basis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/fgh.h $(MODULES_DIR)/pes.h $(PES_OBJECT) nist.o mpi_lib.o
+d_dense-fgh_basis: d_dense-fgh_basis.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/math.h $(MODULES_DIR)/fgh.h $(MODULES_DIR)/pes.h $(PES_OBJECT) nist.o mpi_lib.o
 	@echo "$<:"
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o math.o fgh.o pes.o nist.o mpi_lib.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
@@ -432,9 +432,9 @@ pes_print: pes_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/file.h $(MODULES_
 	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out file.o pes.o math.o nist.o $(PES_OBJECT) $(LDFLAGS) $(LINEAR_ALGEBRA_LIB) $(FORT_LIB)
 	@echo
 
-basis_print: basis_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h mpi_lib.o
+basis_print: basis_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h $(MODULES_DIR)/fgh.h mpi_lib.o math.o
 	@echo "$<:"
-	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o fgh.o mpi_lib.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
+	$(CC) $(CFLAGS) -D$(USE_MACRO) $< -o $@.out matrix.o file.o fgh.o mpi_lib.o math.o $(LDFLAGS) $(LINEAR_ALGEBRA_LIB)
 	@echo
 
 cmatrix_print: cmatrix_print.c $(MODULES_DIR)/globals.h $(MODULES_DIR)/matrix.h $(MODULES_DIR)/file.h

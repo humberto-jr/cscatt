@@ -24,6 +24,19 @@ inline static int parity(const size_t l)
 
 /******************************************************************************
 
+ Function print_level(): prints the quantum numbers and eigenvalues for a given
+ channel and total angular momentum J.
+
+******************************************************************************/
+
+void print_level(const fgh_basis *b, const size_t ch, const size_t J)
+{
+	printf(FORMAT, J, ch, b->v, b->j, b->l, parity(b->j + b->l), b->n,
+	       b->eigenval, b->eigenval*219474.63137054, b->eigenval*27.211385);
+}
+
+/******************************************************************************
+
  Function load_cmatrix(): read the coupling matrix from the disk for the n-th
  grid point index, arrangement and total angular momentum J.
 
@@ -64,7 +77,7 @@ int main(int argc, char *argv[])
  *	Vibrational quantum numbers, v:
  */
 
-	const size_t v_min = 	read_int_keyword(stdin, "v_min", 0, 10000, 0);
+	const size_t v_min = read_int_keyword(stdin, "v_min", 0, 10000, 0);
 
 	const size_t v_max = read_int_keyword(stdin, "v_max", v_min, 10000, v_min);
 
@@ -122,18 +135,18 @@ int main(int argc, char *argv[])
 	ASSERT(mass != 0.0)
 
 /*
+ *	Directory to store all basis functions:
+ */
+
+	char *dir = read_str_keyword(stdin, "basis_dir", ".");
+
+/*
  *	Resolve the atom-diatom eigenvalues for each j-case and sort results as scatt. channels:
  */
 
-	printf("# Reduced mass = %f a.u., n = [%zu, %zu]\n", mass, n_min, n_max);
-	printf("#     J     Ch.      v       j       l       p    Comp.       E (a.u.)       E (cm-1)         E (eV)   \n");
+	printf("# Reduced mass = %f a.u., n = [%zu, %zu], basis dir. = %s\n", mass, n_min, n_max, dir);
+	printf("#     J     ch.      v       j       l       p    comp.       E (a.u.)       E (cm-1)         E (eV)   \n");
 	printf("# -----------------------------------------------------------------------------------------------------\n");
-
-/*
- *	Step 1: loop over rotational states j of the atom-diatom and solve a multichannel
- *	eigenvalue problem using the Fourier grid Hamiltonian discrete variable
- *	representation (FGH-DVR) method.
- */
 
 	size_t *ch_counter = allocate(J_max + 1, sizeof(size_t), true);
 
@@ -188,7 +201,8 @@ int main(int argc, char *argv[])
 
 			for (basis.n = 0; basis.n < max_state; ++basis.n)
 			{
-				basis.eigenvec = fgh_multi_channel_eigenvec(fgh, R_step, max_state, basis.v, basis.n);
+				basis.eigenvec
+					= fgh_multi_channel_eigenvec(fgh, R_step, max_state, basis.v, basis.n);
 
 				for (size_t J = J_min; J <= J_max; J += J_step)
 				{
@@ -196,10 +210,9 @@ int main(int argc, char *argv[])
 					{
 						if (parity(basis.j + basis.l) != J_parity && J_parity != 0) continue;
 
-						printf(FORMAT, J, ch_counter[J], basis.v, basis.j, basis.l, parity(basis.j + basis.l),
-						       basis.n, basis.eigenval, basis.eigenval*219474.63137054, basis.eigenval*27.211385);
+						print_level(&basis, ch_counter[J], J);
 
-						fgh_basis_save(&basis, ".", arrang, ch_counter[J], J);
+						fgh_basis_save(&basis, dir, arrang, ch_counter[J], J);
 
 						ch_counter[J] += 1;
 					}
@@ -213,6 +226,7 @@ int main(int argc, char *argv[])
 		free(eigenval);
 	}
 
+	free(dir);
 	free(ch_counter);
 
 	matrix_end_gpu();
