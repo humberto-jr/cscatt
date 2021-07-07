@@ -202,24 +202,32 @@ double math_assoc_legendre_poly(const size_t l, const size_t m, const double x)
 
 /******************************************************************************
 
- Function math_sphe_harmonics(): returns a spherical harmonics, y, for angular
- momentum l and projection m at x = (theta, phi). Where, -l <= m <= +l.
+ Function math_sphe_harmonics(): returns a spherical harmonics of degree l and
+ order m, at x = (theta, phi). Where, -l <= m <= +l. The function includes the
+ Condon-Shortley phase factor and it is normalized.
 
 ******************************************************************************/
 
-double math_sphe_harmonics(const int l, const int m,
+double math_sphe_harmonics(const size_t l, const int m,
                            const double theta, const double phi)
 {
+	const int abs_m = abs(m);
+
 	const double x = cos(theta*M_PI/180.0);
 
-	const double m_phase = (m > 0? pow(-1.0, m) : 1.0);
+	/* NOTE: for negative m-cases the (pi - phi) symmetry is used. */
+	const double y = (m < 0? (180.0 - phi)*M_PI/180.0 : phi*M_PI/180.0);
 
-	const double theta_wavef = math_assoc_legendre_poly(l, abs(m), x);
+	/* NOTE: see Eq. 1.53 (pag. 9) of Angular Momentum by Richard N. Zare. */
+//	const double m_phase = (m < 0? pow(-1.0, m) : 1.0);
 
-	const double phi_wavef = exp(as_double(m)*phi*M_PI/180.0)/MATH_SQRT_2PI;
+	const double theta_wavef = math_assoc_legendre_poly(l, abs_m, x);
+
+	const double phi_wavef = exp(as_double(abs_m)*y)/MATH_SQRT_2PI;
 
 	/* NOTE: see Eq. 1.43 (pag. 8) of Angular Momentum by Richard N. Zare. */
-	return m_phase*theta_wavef*phi_wavef;
+//	return m_phase*theta_wavef*phi_wavef;
+	return theta_wavef*phi_wavef;
 }
 
 /******************************************************************************
@@ -468,76 +476,78 @@ double *math_wigner_d(const double k_in,
 
 	return result;
 }
-
-/******************************************************************************
-
- Function math_wigner_d(): returns the km matrix element of a Wigner d function
- as function of an angle beta, in degree, for all j values in [0, j_in]. The
- returned pointer points to 2*j_in elements. The algorithm is a port of a
- Fortran version available from Ref. [1]. Half-integer input parameters
- are accepted.
-
- NOTE: undefined results are considered zero.
-
- NOTE: the maximum j-value considered is 46340.
-
-******************************************************************************/
-
-double math_wigner_d2(const double n,
-                      const double m,
-                      const double j,
-                      const double beta)
+/*
+double math_wigner_d2(const size_t j,
+                      const int n, const int m, const double beta)
 {
-	ASSERT(n >= m)
-	ASSERT(m >= 0)
-	ASSERT(j > -1.0)
-	ASSERT(j < 46340.0)
+	const double x = ((n < 0) || (m < 0)? (180.0 - beta)*M_PI/180.0 : beta*M_PI/180.0);
 
-	const int nm_sum = as_int(n + m);
+	const double abs_x = fabs(x);
+	const double cos_x = cos(abs_x/2.0);
+	const double sin_x = sin(abs_x/2.0);
 
-	const int nm_sub = as_int(n - m);
+	const int abs_n = (beta < 0.0? abs(m) : abs(n));
+	const int abs_m = (beta < 0.0? abs(n) : abs(m));
 
-	const double x = beta*M_PI/180.0;
-
-	const double cosx = cos(x/2.0);
-
-	const double sinx = sin(x/2.0);
+	const int nm_sum = abs_n + abs_m;
+	const int nm_sub = abs_n - abs_m;
 
 	/* Eq. (20) */
-	const double seed_c = pow(cosx, nm_sum);
+//	const double seed_c = pow(cos_x, nm_sum);
 
 	/* Eq. (20) */
-	const double seed_s = pow(sinx, nm_sub);
+//	const double seed_s = pow(sin_x, nm_sub);
 
 	/* Eq. (21) */
-	const double seed_e = sqrt(math_factorial(n)/(math_factorial(nm_sum)*math_factorial(nm_sub)));
+//	const double seed_e = sqrt(math_factorial(abs_n)/(math_factorial(nm_sum)*math_factorial(nm_sub)));
 
-	const double seed = seed_c*seed_s*seed_e;
+	/* Eq. (16) */
+//	const double t = 2.0*pow(sin_x, 2);
 
-	if (j <= n) return seed;
+	/* Eq. (18) */
+/*	wigner_d[0] = seed_c*seed_s*seed_e;
 
-	const double t = 2.0*pow(sinx, 2);
+	if (j <= abs_n) return wigner_d[0];
 
-	const double i = n*m;
+	size_t l = abs_n + 2;
+	wigner_d[1] = wigner_d[0]*sqrt(as_double(l - 1)/as_double((l + abs_m)*(l - abs_m)))*(as_double(l - abs_m) - as_double(l)*t);
 
-	const double h = j*(j - 2.0);
+	const double i = as_double(abs_n*abs_m);
 
-	const double g = j + n;
+	for (l = (abs_n + 4); l <= j; l += 2)
+	{
+		const double h = as_double(l*(l - 2));
 
-	const double f = j - n;
+		const double g = as_double(l + abs_n);
 
-	const double e = j + m;
+		const double f = as_double(l - abs_n);
 
-	const double d = j - m;
+		const double e = as_double(l + abs_m);
 
-	const double c = 1.0/((j - 2.0)*sqrt(g*f*e*d));
+		const double d = as_double(l - abs_m);
 
-	const double b = c*j*sqrt((g - 2.0)*(f - 2.0)*(e - 2.0)*(d - 2.0));
+		const double c = 1.0/(as_double(l - 2)*sqrt(g*f*e*d));
 
-	const double a = c*(2.0*j - 2.0)*((h - i) - h*t);
+		const double b = c*as_double(l)*sqrt((g - 2.0)*(f - 2.0)*(e - 2.0)*(d - 2.0));
 
-	return a*seed*sqrt((j - 1.0)/(e*d))*(d - j*t) - b*seed;
-}
+		const double a = c*as_double(2*l - 2)*((h - i) - h*t);
+
+		wigner_d[2] = a*wigner_d[1] - b*wigner_d[0];
+		wigner_d[0] = wigner_d[1];
+		wigner_d[1] = wigner_d[2];
+	}
+
+	if ((n < 0) && (m < 0))
+		return pow(-1.0, n - m)*wigner_d[2];
+
+	if ((n < 0) && (m > -1))
+		return pow(-1.0, j + 2*n + 3*m)*wigner_d[2];
+
+	if ((n > -1) && (m < 0))
+		return pow(-1.0, j + n + 2*m)*wigner_d[2];
+
+	return wigner_d[2];
+}*/
 
 /******************************************************************************
 
