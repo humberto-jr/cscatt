@@ -45,8 +45,8 @@
 	double math_assoc_legendre_poly(const size_t l,
 	                                const size_t m, const double x);
 
-	double math_sphe_harmonics(const size_t l, const int m,
-	                           const double theta, const double phi);
+	double complex math_sphe_harmonics(const size_t l, const int m,
+	                                   const double theta, const double phi);
 
 	double math_wigner_3j(const int a, const int b, const int c,
 	                      const int d, const int e, const int f);

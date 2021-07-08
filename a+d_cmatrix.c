@@ -172,12 +172,6 @@ int main(int argc, char *argv[])
 
 	char *dir = read_str_keyword(stdin, "basis_dir", ".");
 
-	if (!file_exist(dir) && dir[0] != '.')
-	{
-		PRINT_ERROR("%s does not exist\n", dir)
-		exit(EXIT_FAILURE);
-	}
-
 /*
  *	MPI: whereas each OpenMP thread handle the integration of each matrix element,
  *	MPI processes are used to handle each scattering grid point, from R_min to R_max.

@@ -204,12 +204,12 @@ double math_assoc_legendre_poly(const size_t l, const size_t m, const double x)
 
  Function math_sphe_harmonics(): returns a spherical harmonics of degree l and
  order m, at x = (theta, phi). Where, -l <= m <= +l. The function includes the
- Condon-Shortley phase factor and it is normalized.
+ Condon-Shortley phase factor and is normalized.
 
 ******************************************************************************/
 
-double math_sphe_harmonics(const size_t l, const int m,
-                           const double theta, const double phi)
+double complex math_sphe_harmonics(const size_t l, const int m,
+                                   const double theta, const double phi)
 {
 	const int abs_m = abs(m);
 
@@ -218,15 +218,11 @@ double math_sphe_harmonics(const size_t l, const int m,
 	/* NOTE: for negative m-cases the (pi - phi) symmetry is used. */
 	const double y = (m < 0? (180.0 - phi)*M_PI/180.0 : phi*M_PI/180.0);
 
-	/* NOTE: see Eq. 1.53 (pag. 9) of Angular Momentum by Richard N. Zare. */
-//	const double m_phase = (m < 0? pow(-1.0, m) : 1.0);
-
 	const double theta_wavef = math_assoc_legendre_poly(l, abs_m, x);
 
-	const double phi_wavef = exp(as_double(abs_m)*y)/MATH_SQRT_2PI;
+	const double complex phi_wavef = cexp(I*as_double(abs_m)*y);
 
 	/* NOTE: see Eq. 1.43 (pag. 8) of Angular Momentum by Richard N. Zare. */
-//	return m_phase*theta_wavef*phi_wavef;
 	return theta_wavef*phi_wavef;
 }
 
