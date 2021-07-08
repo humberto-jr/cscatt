@@ -132,6 +132,12 @@ int main(int argc, char *argv[])
 	mpi_set_tasks(scatt_grid_size);
 
 /*
+ *	Directory to store all multipole coefficients:
+ */
+
+	char *dir = read_str_keyword(stdin, "multipole_dir", ".");
+
+/*
  *	Resolve all tasks:
  */
 
@@ -164,7 +170,7 @@ int main(int argc, char *argv[])
 
 		const double wtime = driver(arrang, counter, list, &m, use_omp);
 
-		pes_multipole_save(&m, arrang, n);
+		pes_multipole_save(&m, dir, arrang, n);
 
 		printf("  %4zu       %06f         %f\n", mpi_rank(), m.R, wtime);
 
@@ -177,6 +183,7 @@ int main(int argc, char *argv[])
 
 	pes_multipole_free(&m);
 	free(list);
+	free(dir);
 
 	mpi_end();
 	return EXIT_SUCCESS;

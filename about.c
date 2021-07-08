@@ -5,6 +5,7 @@
 #include "modules/string.h"
 #include "modules/spline.h"
 #include "modules/matrix.h"
+#include "modules/vector.h"
 #include "modules/mpi_lib.h"
 #include "modules/globals.h"
 
@@ -39,6 +40,9 @@ int main()
 
 	printf("\n");
 	string_about(stdout);
+
+	printf("\n");
+	vector_about(stdout);
 
 	return EXIT_SUCCESS;
 }

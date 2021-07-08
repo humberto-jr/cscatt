@@ -55,12 +55,8 @@
 	double pes_abc(const char arrang,
 	               const double r, const double R, const double theta);
 
-	double pes_abcd(const double r_bc,
-	                const double r_bcd,
-	                const double r_abcd,
-	                const double theta_bc,
-	                const double theta_a,
-	                const double phi_a);
+	double pes_abcd(const double r[],
+	                const double R, const double theta, const double phi);
 
 	double pes_bc(const size_t j, const double r);
 
@@ -68,19 +64,13 @@
 
 	double pes_ab(const size_t j, const double r);
 
-	double pes_legendre_multipole(const char arrang,
-	                              const size_t lambda,
-	                              const double r,
-	                              const double R);
+	double pes_legendre_multipole(const char arrang, const size_t lambda,
+	                              const double r, const double R);
 
-	double pes_harmonics_multipole(const int eta,
-	                               const int m_eta,
-	                               const double r_bc,
-	                               const double r_bcd,
-	                               const double theta,
-	                               const double R);
+	double pes_harmonic_multipole(const size_t lambda,
+	                              const size_t m, const double r[], const double R);
 
-	FILE *pes_multipole_file(const char arrang,
+	FILE *pes_multipole_file(const char dir[], const char arrang,
 	                         const size_t n, const char mode[], const bool verbose);
 
 	void pes_multipole_init(pes_multipole *m);
@@ -96,12 +86,13 @@
 
 	void pes_multipole_read_all(const size_t n_max, pes_multipole m[], FILE *input);
 
-	size_t pes_multipole_count(const char arrang);
+	size_t pes_multipole_count(const char dir[], const char arrang);
 
 	void pes_multipole_save(const pes_multipole *m,
-	                        const char arrang, const size_t n);
+	                        const char dir[], const char arrang, const size_t n);
 
-	void pes_multipole_load(pes_multipole *m, const char arrang, const size_t n);
+	void pes_multipole_load(pes_multipole *m,
+	                        const char dir[], const char arrang, const size_t n);
 
 	void pes_multipole_free(pes_multipole *m);
 

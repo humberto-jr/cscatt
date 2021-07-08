@@ -20,14 +20,10 @@ int main(int argc, char *argv[])
 	const size_t J_step = read_int_keyword(stdin, "J_step", 1, 10000, 1);
 
 /*
- *	Arrangement (a = 1, b = 2, c = 3):
+ *	Arrangement (a = 1, b = 2, c = 3) and directory to load basis from:
  */
 
 	const char arrang = 96 + read_int_keyword(stdin, "arrang", 1, 3, 1);
-
-/*
- *	Directory to load all basis functions from:
- */
 
 	char *dir = read_str_keyword(stdin, "basis_dir", ".");
 

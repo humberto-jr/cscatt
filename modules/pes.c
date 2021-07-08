@@ -36,12 +36,12 @@ static double inf = 100.0;
 
 /******************************************************************************
 
- Macro MULTIPOLE_FILE_FORMAT:
+ Macro PES_MULTIPOLE_FILE_FORMAT:
 
 ******************************************************************************/
 
-#if !defined(MULTIPOLE_FILE_FORMAT)
-	#define MULTIPOLE_FILE_FORMAT "multipole_arrang=%c_n=%zu.%s"
+#if !defined(PES_MULTIPOLE_FILE_FORMAT)
+	#define PES_MULTIPOLE_FILE_FORMAT "%s/multipole_arrang=%c_n=%zu.%s"
 #endif
 
 /******************************************************************************
@@ -184,11 +184,12 @@ void pes_init()
 	ASSERT(mass_c != 0.0)
 
 	bool is_nan = true;
+	const double r[3] = {inf, inf, inf};
 
 	if (mass_d == 0.0)
 		is_nan = isnan(pes_abc('a', inf, inf, 90.0));
 	else
-		is_nan = isnan(pes_abcd(inf, inf, inf, 90.0, 90.0, 0.0));
+		is_nan = isnan(pes_abcd(r, inf, 0.0, 0.0));
 
 	ASSERT(is_nan == false)
 }
@@ -425,27 +426,22 @@ double pes_abc(const char arrang,
 
 ******************************************************************************/
 
-double pes_abcd(const double r_bc,
-                const double r_bcd,
-                const double r_abcd,
-                const double theta_bc,
-                const double theta_a,
-                const double phi_a)
+double pes_abcd(const double r[],
+                const double R, const double theta, const double phi)
 {
+	ASSERT(r != NULL)
+
 	#if defined(USE_JACOBI_COORDINATES)
 	{
-		const double jacobi[6] = {r_bc, r_bcd, theta_bc, r_abcd, theta_a, phi_a};
+		const double jacobi[6] = {r[0], r[1], r[2], R, theta, phi};
 		return EXTERNAL_PES_NAME(jacobi);
 	}
 	#endif
 
-	/* NOTE: ab = 0, ac = 1, ad = 2, bc = 3, bd = 4, cd = 5. */
-	double internuc[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-
 	math_xyz a, b, c, d, bc, bcd;
 
 	b.x = 0.0;
-	b.y = r_bc/2.0;
+	b.y = r[0]/2.0;
 	b.z = 0.0;
 
 	c.x =  0.0;
@@ -459,8 +455,8 @@ double pes_abcd(const double r_bc,
 	bc.z = 0.0;
 
 	d.x = bc.x;
-	d.y = bc.y + r_bcd*sin(theta_bc*M_PI/180.0);
-	d.z = bc.z + r_bcd*cos(theta_bc*M_PI/180.0);
+	d.y = bc.y + r[1]*sin(r[2]*M_PI/180.0);
+	d.z = bc.z + r[1]*cos(r[2]*M_PI/180.0);
 
 	const double mass_bcd = mass_bc + mass_d;
 
@@ -468,9 +464,9 @@ double pes_abcd(const double r_bc,
 	bcd.y = (bc.y*mass_bc + d.y*mass_d)/mass_bcd;
 	bcd.z = (bc.z*mass_bc + d.z*mass_d)/mass_bcd;
 
-	a.x = bcd.x + r_abcd*sin(theta_a*M_PI/180.0)*cos(phi_a*M_PI/180.0);
-	a.y = bcd.y + r_abcd*sin(theta_a*M_PI/180.0)*sin(phi_a*M_PI/180.0);
-	a.z = bcd.z + r_abcd*cos(theta_a*M_PI/180.0);
+	a.x = bcd.x + R*sin(theta*M_PI/180.0)*cos(phi*M_PI/180.0);
+	a.y = bcd.y + R*sin(theta*M_PI/180.0)*sin(phi*M_PI/180.0);
+	a.z = bcd.z + R*cos(theta*M_PI/180.0);
 
 	#if defined(USE_CARTESIAN_COORDINATES)
 	{
@@ -480,6 +476,9 @@ double pes_abcd(const double r_bc,
 		return EXTERNAL_PES_NAME(xyz);
 	}
 	#endif
+
+	/* NOTE: ab = 0, ac = 1, ad = 2, bc = 3, bd = 4, cd = 5. */
+	double internuc[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 	internuc[0] = math_distance(&a, &b);
 	internuc[1] = math_distance(&a, &c);
@@ -531,6 +530,21 @@ double pes_ab(const size_t j, const double r)
 	const double mass = pes_mass_ab();
 
 	return pes_abc('c', r, inf, 90.0) + as_double(j*(j + 1))/(2.0*mass*r*r);
+}
+
+/******************************************************************************
+
+ Function pes_value():
+
+******************************************************************************/
+
+double pes_value(const char arrang, const double r[],
+                 const double R, const double theta, const double phi)
+{
+	if (mass_d == 0.0)
+		return pes_abc(arrang, r[0], R, theta);
+	else
+		return pes_abcd(r, R, theta, phi);
 }
 
 /******************************************************************************
@@ -597,29 +611,26 @@ double pes_legendre_multipole(const char arrang,
 
 ******************************************************************************/
 
-struct harmonics_params
+struct harmonic_params
 {
-	double phi_a;
-	const int eta, m_eta;
-	const double r_bc, r_bcd, r_abcd, theta_bc;
+	double phi;
+	const double r[3], R;
+	const size_t lambda, m;
 };
 
 static double pes_theta_integrand(const double theta, void *params)
 {
-	struct harmonics_params *p = (struct harmonics_params *) params;
+	struct harmonic_params *p = (struct harmonic_params *) params;
 
-	const double theta_a = theta*180.0/M_PI;
+	const double x = theta*180.0/M_PI;
 
-	const double v
-		= pes_abcd(p->r_bc, p->r_bcd, p->r_abcd, p->theta_bc, theta_a, p->phi_a);
+	const double v = pes_abcd(p->r, p->R, x, p->phi);
 
-	const double v_inf
-		= pes_abcd(p->r_bc, p->r_bcd, inf, p->theta_bc, theta_a, p->phi_a);
+	const double v_inf = pes_abcd(p->r, inf, x, p->phi);
 
-	const double y
-		= math_sphe_harmonics(p->eta, p->m_eta, theta_a, p->phi_a);
+	const double complex y = math_sphe_harmonics(p->lambda, p->m, x, p->phi);
 
-	return (v - v_inf)*y*sin(theta);
+	return (v - v_inf)*creal(y)*sin(theta);
 }
 
 /******************************************************************************
@@ -632,9 +643,9 @@ static double pes_theta_integrand(const double theta, void *params)
 
 static double pes_phi_integrand(const double phi, void *params)
 {
-	struct harmonics_params *p = (struct harmonics_params *) params;
+	struct harmonic_params *p = (struct harmonic_params *) params;
 
-	p->phi_a = phi*180.0/M_PI;
+	p->phi = phi*180.0/M_PI;
 
 	return math_gauss_legendre(0.0, M_PI, 64, &p, pes_theta_integrand);
 }
@@ -649,27 +660,20 @@ static double pes_phi_integrand(const double phi, void *params)
 
 ******************************************************************************/
 
-double pes_harmonics_multipole(const int eta,
-                               const int m_eta,
-                               const double r_bc,
-                               const double r_bcd,
-                               const double theta,
-                               const double R)
+double pes_harmonic_multipole(const size_t lambda,
+                              const size_t m, const double r[], const double R)
 {
-	struct harmonics_params p =
+	struct harmonic_params p =
 	{
-		.r_bc = r_bc,
-		.r_bcd = r_bcd,
-		.r_abcd = R,
-		.theta_bc = theta,
-
-		.eta = eta,
-		.m_eta = abs(m_eta)
+		.lambda = lambda,
+		.r[0] = r[0],
+		.r[1] = r[1],
+		.r[2] = r[2],
+		.R = R,
+		.m = m
 	};
 
-	const double phase = (m_eta < 0? pow(-1.0, m_eta) : 1.0);
-
-	return phase*math_gauss_legendre(0.0, 2.0*M_PI, 64, &p, pes_phi_integrand);
+	return math_gauss_legendre(0.0, 2.0*M_PI, 64, &p, pes_phi_integrand);
 }
 
 /******************************************************************************
@@ -683,7 +687,7 @@ double pes_harmonics_multipole(const int eta,
 
 ******************************************************************************/
 
-FILE *pes_multipole_file(const char arrang,
+FILE *pes_multipole_file(const char dir[], const char arrang,
                          const size_t n, const char mode[], const bool verbose)
 {
 	char filename[MAX_LINE_LENGTH], ext[4];
@@ -693,9 +697,9 @@ FILE *pes_multipole_file(const char arrang,
 	else
 		sprintf(ext, "%s", "dat");
 
-	sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, n, ext);
+	sprintf(filename, PES_MULTIPOLE_FILE_FORMAT, dir, arrang, n, ext);
 
-	FILE *stream = fopen(filename, mode);
+	FILE *stream = file_open(filename, mode);
 
 	if (verbose)
 	{
@@ -835,17 +839,17 @@ void pes_multipole_read_all(const size_t n_max, pes_multipole m[], FILE *input)
 
 ******************************************************************************/
 
-size_t pes_multipole_count(const char arrang)
+size_t pes_multipole_count(const char dir[], const char arrang)
 {
 	char filename[MAX_LINE_LENGTH];
 
 	size_t counter = 0;
-	sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, counter, "bin");
+	sprintf(filename, PES_MULTIPOLE_FILE_FORMAT, dir, arrang, counter, "bin");
 
 	while (file_exist(filename))
 	{
 		++counter;
-		sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, counter, "bin");
+		sprintf(filename, PES_MULTIPOLE_FILE_FORMAT, dir, arrang, counter, "bin");
 	}
 
 	return counter;
@@ -859,13 +863,14 @@ size_t pes_multipole_count(const char arrang)
 ******************************************************************************/
 
 void pes_multipole_save(const pes_multipole *m,
-                        const char arrang, const size_t n)
+                        const char dir[], const char arrang, const size_t n)
 {
 	ASSERT(m != NULL)
+	ASSERT(dir != NULL)
 	ASSERT(m->value != NULL)
 
 	char filename[MAX_LINE_LENGTH];
-	sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, n, "bin");
+	sprintf(filename, PES_MULTIPOLE_FILE_FORMAT, dir, arrang, n, "bin");
 
 	FILE *output = file_open(filename, "wb");
 
@@ -898,12 +903,14 @@ void pes_multipole_save(const pes_multipole *m,
 
 ******************************************************************************/
 
-void pes_multipole_load(pes_multipole *m, const char arrang, const size_t n)
+void pes_multipole_load(pes_multipole *m,
+                        const char dir[], const char arrang, const size_t n)
 {
 	ASSERT(m != NULL)
+	ASSERT(dir != NULL)
 
 	char filename[MAX_LINE_LENGTH];
-	sprintf(filename, MULTIPOLE_FILE_FORMAT, arrang, n, "bin");
+	sprintf(filename, PES_MULTIPOLE_FILE_FORMAT, dir, arrang, n, "bin");
 
 	FILE *input = file_open(filename, "rb");
 
@@ -1085,5 +1092,9 @@ void pes_about(FILE *output)
 
 	#if !defined(USE_JACOBI_COORDINATES) && !defined(USE_CARTESIAN_COORDINATES)
 		fprintf(output, "# coordinates  = internuclear distances\n");
+	#endif
+
+	#if defined(PES_MULTIPOLE_FILE_FORMAT)
+		fprintf(output, "# PES_MULTIPOLE_FILE_FORMAT = %s\n", PRINT_MACRO(PES_MULTIPOLE_FILE_FORMAT));
 	#endif
 }
