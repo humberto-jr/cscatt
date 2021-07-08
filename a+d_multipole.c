@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
 
 	if (mpi_rank() == 0)
 	{
-		printf("# MPI CPUs = %zu, OpenMP threads = %d, num. of tasks = %zu, PES name = %s\n", mpi_comm_size(), max_threads(), counter*scatt_grid_size, pes_name());
+		printf("# MPI CPUs = %zu, OpenMP threads = %d, num. of tasks = %zu, mult. dir. = %s, PES name = %s\n", mpi_comm_size(), max_threads(), counter*scatt_grid_size, dir, pes_name());
 		printf("#  CPU       R (a.u.)    wall time (s)\n");
 		printf("# ------------------------------------\n");
 	}
