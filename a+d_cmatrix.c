@@ -167,21 +167,32 @@ int main(int argc, char *argv[])
 	const size_t J_step = read_int_keyword(stdin, "J_step", 1, 10000, 1);
 
 /*
- * Directory to read in all basis functions from:
+ * Directory to read all basis functions and multipoles from:
  */
 
-	char *dir = read_str_keyword(stdin, "basis_dir", ".");
+	char *b_dir = read_str_keyword(stdin, "basis_dir", ".");
+
+	char *m_dir = read_str_keyword(stdin, "multipole_dir", ".");
 
 /*
  *	MPI: whereas each OpenMP thread handle the integration of each matrix element,
  *	MPI processes are used to handle each scattering grid point, from R_min to R_max.
  */
 
-	const size_t scatt_grid_size = pes_multipole_count(arrang);
+	const size_t scatt_grid_size = pes_multipole_count(m_dir, arrang);
 
 	ASSERT(scatt_grid_size > 0)
 
 	mpi_set_tasks(scatt_grid_size);
+
+	if (mpi_rank())
+	{
+		printf("# MPI CPUs = %zu, OMP threads = %d, num. of grid points = %zu, mass = %f\n",
+		       mpi_comm_size(), max_threads(), scatt_grid_size, mass);
+
+		printf("#  CPU      J     ch.     R (a.u.)      time (s)\n");
+		printf("# ----------------------------------------------\n");
+	}
 
 /*
  *	Load in all J-dependent FGH basis functions and compute the coupling matrix
@@ -190,14 +201,14 @@ int main(int argc, char *argv[])
 
 	for (size_t J = J_min; J <= J_max; J += J_step)
 	{
-		const size_t max_channel = fgh_basis_count(dir, arrang, J);
+		const size_t max_channel = fgh_basis_count(b_dir, arrang, J);
 
 		ASSERT(max_channel > 0)
 
 		fgh_basis *basis = allocate(max_channel, sizeof(fgh_basis), true);
 
 		for (size_t n = 0; n < max_channel; ++n)
-			fgh_basis_load(&basis[n], dir, arrang, n, J);
+			fgh_basis_load(&basis[n], b_dir, arrang, n, J);
 
 /*
  *		OpenMP: after reading all n basis functions from the disk we sort them in
@@ -232,15 +243,6 @@ int main(int argc, char *argv[])
  *		Resolve all tasks:
  */
 
-		if (mpi_rank() == 0 && J == J_min)
-		{
-			printf("# MPI CPUs = %zu, OMP threads = %d, num. of grid points = %zu, mass = %f\n",
-			       mpi_comm_size(), max_threads(), scatt_grid_size, mass);
-
-			printf("#  CPU      J     ch.     R (a.u.)      time (s)\n");
-			printf("# ----------------------------------------------\n");
-		}
-
 		pes_multipole m;
 		matrix *c = matrix_alloc(max_channel, max_channel, false);
 
@@ -248,7 +250,7 @@ int main(int argc, char *argv[])
 		{
 			extra_step:
 			matrix_set_zero(c);
-			pes_multipole_load(&m, arrang, n);
+			pes_multipole_load(&m, m_dir, arrang, n);
 
 			const double wtime = driver(mass, J, max_task, list, &m, c, use_omp);
 
@@ -276,6 +278,9 @@ int main(int argc, char *argv[])
 
 		free(basis);
 	}
+
+	free(b_dir);
+	free(m_dir);
 
 	mpi_end();
 	return EXIT_SUCCESS;
